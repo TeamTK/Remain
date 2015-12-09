@@ -31,6 +31,8 @@ void Player::Update()
 	Animation();
 	Camera();
 	CCharacter::Update();
+
+	m_Model.DebugAxis();
 }
 /*
 void Player::Render()
@@ -210,7 +212,7 @@ void Player::Camera()
 	if (m_Vertical > -0.5f) m_Vertical = -0.5f;	//è„å¿
 	if (m_Vertical < -2.0f) m_Vertical = -2.0f;	//â∫å¿
 
-	Vector3D v = m_Model.GetTranselate() + m_Model.GetAxisX(1.0f) * 0.4f;
+	Vector3D v = m_Model.GetAxisX(-0.2f);
 	v.y = m_CameraPosY;
 
 	//ÉJÉÅÉâÇÃç¿ïW
