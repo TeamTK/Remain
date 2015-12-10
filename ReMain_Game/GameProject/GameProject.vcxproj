@@ -23,6 +23,7 @@
     <ClCompile Include="GEKO\Collider\LineSegment.cpp" />
     <ClCompile Include="GEKO\Collider\SphereCollider.cpp" />
     <ClCompile Include="GEKO\Collider\StaticMeshCollider.cpp" />
+    <ClCompile Include="GEKO\Figure\Sphere3D.cpp" />
     <ClCompile Include="GEKO\Figure\Triangle3D.cpp" />
     <ClCompile Include="GEKO\GEKO.cpp" />
     <ClCompile Include="GEKO\ImageSystem\ImageAsset.cpp" />
@@ -55,6 +56,7 @@
     <ClCompile Include="MainGame\CCharacter.cpp" />
     <ClCompile Include="MainGame\CEnemy.cpp" />
     <ClCompile Include="MainGame\Player.cpp" />
+    <ClCompile Include="MainGame\WeaponBase.cpp" />
     <ClCompile Include="Scene\BaseCamp.cpp" />
     <ClCompile Include="Scene\GameEnd.cpp" />
     <ClCompile Include="Scene\MainGame.cpp" />
@@ -75,6 +77,7 @@
     <ClInclude Include="GEKO\Collider\LineSegment.h" />
     <ClInclude Include="GEKO\Collider\SphereCollider.h" />
     <ClInclude Include="GEKO\Collider\StaticMeshCollider.h" />
+    <ClInclude Include="GEKO\Figure\Sphere3D.h" />
     <ClInclude Include="GEKO\Figure\Triangle3D.h" />
     <ClInclude Include="GEKO\GEKO.h" />
     <ClInclude Include="GEKO\ImageSystem\ImageAsset.h" />
@@ -182,6 +185,7 @@
     <ClInclude Include="MainGame\CCharacter.h" />
     <ClInclude Include="MainGame\CEnemy.h" />
     <ClInclude Include="MainGame\Player.h" />
+    <ClInclude Include="MainGame\WeaponBase.h" />
     <ClInclude Include="Scene\BaseCamp.h" />
     <ClInclude Include="Scene\GameEnd.h" />
     <ClInclude Include="Scene\MainGame.h" />

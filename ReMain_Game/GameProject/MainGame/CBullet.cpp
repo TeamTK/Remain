@@ -1,13 +1,19 @@
 #include "CBullet.h"
+static void func(Result_Capsule& r) {
 
+}
 CBullet::CBullet() : m_isActive(TRUE), m_cnt(0), m_Atk(1){
-	//, m_LineSegmentCollider(&m_Oldpos,&m_pos, std::bind(&CBullet::LineSegment_vs_CapsuleCallback, std::ref(*this), std::placeholders::_1)){
-//	m_LineSegmentCollider.SetID(eHITID3, eHITID0| eHITID2);
-//	ColliderManager::GetInstance()->Add(&m_LineSegmentCollider);
+	m_Sphere.radius = 0.0f;
+	m_Collider.Regist_S_vs_C(&m_pos, &m_Sphere.radius, REGIST_FUNC(CBullet::LineSegment_vs_CapsuleCallback));
+	m_Collider.SetID(eHITID3, eHITID2);
+
+	m_ColliderMap.Regist_L_vs_SMesh(&m_Oldpos, &m_pos, REGIST_FUNC(CBullet::LineSegment_vs_MeshCallback));
+	m_ColliderMap.SetID(eHITID3, eHITID0);
 
 }
 CBullet::~CBullet() {
-//	ColliderManager::GetInstance()->Clear(&m_LineSegmentCollider);
+	m_Collider.Release();
+	m_ColliderMap.Release();
 }
 bool CBullet::UpDate(){
 	m_Oldpos = m_pos;
@@ -38,11 +44,12 @@ void CBullet::Render(){
 	//glDepthMask(GL_TRUE);
 	
 }
-/*
 void CBullet::LineSegment_vs_CapsuleCallback(Result_Capsule& r) {
 	m_isActive = false;
 }
-*/
+void CBullet::LineSegment_vs_MeshCallback(Result_Porygon& r) {
+	m_isActive = false;
+}
 CBulletManager* CBulletManager::m_Obj = NULL;
 CBulletManager::CBulletManager() {
 	StaticMeshAsset::LoadMesh("media\\bullet.x", "Bullet");
@@ -81,6 +88,16 @@ void CBulletManager::Render(){
 		it++;
 	}
 }
+/*
+void CBulletManager::CollisionMap(CModel *m){
+	std::vector<CBullet*>::iterator it = m_core.begin();
+	while (it != m_core.end()) {
+
+		if ((*it)->m_isActive) (*it)->CollisionMap(m);
+		it++;
+	}
+}
+*/
 CBullet *CBulletManager::Add(const Vector3D pos, const Vector3D &dir,const float speed) {
 	CBullet *p = new CBullet();
 	if(!p) return NULL;

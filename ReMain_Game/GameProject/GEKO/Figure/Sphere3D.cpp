@@ -20,7 +20,7 @@ Sphere3D::~Sphere3D()
 {
 }
 
-void Sphere3D::Render(const Vector3D &pos, const Vector3D &Color)
+void Sphere3D::Render(const Matrix &World, const Vector3D &Color)
 {
 	ID3D11DeviceContext *pDeviceContext;
 	pDeviceContext = Direct3D11::Get().GetID3D11DeviceContext();
@@ -35,7 +35,7 @@ void Sphere3D::Render(const Vector3D &pos, const Vector3D &Color)
 	if (SUCCEEDED(pDeviceContext->Map(m_FigureInfo.pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
 		//ワールド、カメラ、射影行列を渡す
-		D3DXMATRIX m = (*Camera::GetView()) * (*Camera::GetProjection());
+		D3DXMATRIX m = *(D3DXMATRIX*)(&World) *(*Camera::GetView()) * (*Camera::GetProjection());
 		D3DXMatrixTranspose(&m, &m);
 		cb.mWVP = m;
 
@@ -58,24 +58,53 @@ void Sphere3D::Render(const Vector3D &pos, const Vector3D &Color)
 	pDeviceContext->IASetInputLayout(m_FigureInfo.pVertexLayout);
 
 	//プリミティブ・トポロジーをセット
-	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//プリミティブをレンダリング
-	pDeviceContext->Draw(2, 0);
+	pDeviceContext->Draw(3*8, 0);
 }
 
 HRESULT Sphere3D::InitVertex()
-{
-	//バーテックスバッファー作成
+{	//バーテックスバッファー作成
 	D3DXVECTOR3 vertices[] =
 	{
+		D3DXVECTOR3(0.0f, 1.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 1.0f),
+		D3DXVECTOR3(1.0f, 0.0f, 0.0f),
+
+		D3DXVECTOR3(0.0f, 1.0f, 0.0f),
+		D3DXVECTOR3(1.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, -1.0f),
+
+		D3DXVECTOR3(0.0f, 1.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, -1.0f),
+		D3DXVECTOR3(-1.0f, 0.0f, 0.0f),
+
+		D3DXVECTOR3(0.0f, 1.0f, 0.0f),
+		D3DXVECTOR3(-1.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 1.0f),
+
+
+		D3DXVECTOR3(0.0f, -1.0f, 0.0f),
+		D3DXVECTOR3(1.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 1.0f),
+
+		D3DXVECTOR3(0.0f, -1.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, -1.0f),
+		D3DXVECTOR3(1.0f, 0.0f, 0.0f),
+
+		D3DXVECTOR3(0.0f, -1.0f, 0.0f),
+		D3DXVECTOR3(-1.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, -1.0f),
+
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 1.0f),
+		D3DXVECTOR3(-1.0f, 0.0f, 0.0f),
 	};
 
 	D3D11_BUFFER_DESC bd;
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(D3DXVECTOR3) * 2;
+	bd.ByteWidth = sizeof(vertices);
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;

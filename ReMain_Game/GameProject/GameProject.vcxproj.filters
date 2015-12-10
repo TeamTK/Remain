@@ -80,6 +80,8 @@
     <ClCompile Include="GEKO\Collider\StaticMeshCollider.cpp" />
     <ClCompile Include="GEKO\Collider\BaseCollider.cpp" />
     <ClCompile Include="GEKO\Collider\CapsuleCollider.cpp" />
+    <ClCompile Include="GEKO\Figure\Sphere3D.cpp" />
+    <ClCompile Include="MainGame\WeaponBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -225,6 +227,8 @@
     <ClInclude Include="GEKO\Collider\StaticMeshCollider.h" />
     <ClInclude Include="GEKO\Collider\BaseCollider.h" />
     <ClInclude Include="GEKO\Collider\CapsuleCollider.h" />
+    <ClInclude Include="GEKO\Figure\Sphere3D.h" />
+    <ClInclude Include="MainGame\WeaponBase.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">
