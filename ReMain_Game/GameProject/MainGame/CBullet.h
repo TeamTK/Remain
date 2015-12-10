@@ -1,13 +1,15 @@
 #pragma once
 
 #include "../GEKO/GEKO.h"
-//#include "../GEKO/Collider/ColliderManager.h"
-//#include "../GEKO/Collider/LineSegment.h"
-
+#include "../GEKO/Collider/Collider.h"
 class CBullet  {
 public:
 	bool m_isActive;
-//	LineSegment_vs_CapsuleCollider m_LineSegmentCollider;
+	Collider m_ColliderMap;
+
+	Collider m_Collider;
+	SphereInfo m_Sphere;
+
 	Vector3D m_pos;			//位置
 	Vector3D m_Oldpos;		//移動前位置（線分判定用）
 	int   m_cnt;			//寿命用カウンター
@@ -19,7 +21,9 @@ public:
 	~CBullet();
 	bool UpDate();
 	void Render();
-//	void LineSegment_vs_CapsuleCallback(Result_Capsule& r);
+	void LineSegment_vs_CapsuleCallback(Result_Capsule& r);
+	void LineSegment_vs_MeshCallback(Result_Porygon& r);
+//	void CollisionMap(const StaticMesh *m);
 };
 
 

@@ -46,7 +46,6 @@ public:
 	Player();
 	~Player();
 	void Update();
-//	void Render();
 	void Move();
 	void Attack();
 	void Camera();
@@ -54,10 +53,12 @@ public:
 	Matrix GetBomeMat(int bornIndex);
 	int GetAnim();
 	float GetPlayTime();
+	void SetGunMtx(Matrix m);
 
 private:
-//	DynamicMesh m_Player;
 	Vector3D m_Dir;
+	Vector3D m_CamDir;
+	Matrix m_GunMatrix;
 	EPlayerAnimation m_Anim;
 	EPlayerState m_State;
 	EWeapons m_Weapons;
@@ -78,12 +79,13 @@ public:
 	~Shotgun();
 	void Update();
 	void Render();
+	Matrix GetMatrix();
 
 private:
 	Player* m_pPlayer;
 	StaticMesh m_Shotgun;
 	Matrix m_BoneMat;
-
+	Matrix m_Matrix;
 
 };
 
@@ -94,11 +96,13 @@ public:
 	~Handgun();
 	void Update();
 	void Render();
+	Matrix GetMatrix();
 
 private:
 	Player* m_pPlayer;
 	StaticMesh m_Handgun;
 	Matrix m_BoneMat;
+	Matrix m_Matrix;
 
 };
 

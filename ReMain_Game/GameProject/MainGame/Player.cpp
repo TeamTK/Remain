@@ -8,13 +8,21 @@
 #define CROUCH_WALK_SPPED 0.03f	//しゃがみ歩きスピード
 
 Player::Player() :
+	CCharacter(ePlayer), m_CamDir(0.0f, 0.0f, 0.0f),
 	m_Dir(0.0f, 0.0f, 0.0f), m_Horizontal(0.0f),
-	m_Vertical(0.0f), m_MoveSpeed(0), m_CameraPosY(1.8f),
+	m_Vertical(0.0f), m_MoveSpeed(0.0f), m_CameraPosY(1.8f),
 	m_isCrouch(false), m_isAttack(false), m_isMove(false), isTakeWeapons(false),
 	m_Anim(eIdle), m_State(eWait), m_Weapons(eShotgun)
 {
-	DynamicMeshAsset::LoadMesh("media\\Player.x", "Player");
-	m_Model.SetAsset("Player");
+	m_ColliderMap.SetID(eHITID1, eHITID0 | eHITID1 | eHITID2);
+	for (int i = 0; i < m_pCharaData->BoneCapsule.size(); i++)
+	{
+		//eHITID0…マップ
+		//eHITID1…プレイヤー
+		//eHITID2…敵
+		//eHITID3…弾
+		m_pCollider[i].SetID(eHITID1, 0);
+	}
 	m_Model.SetRotationRadian(0.0f, 3.14f, 0.0f);
 	m_Model.SetScale(1.0f, 1.0f, 1.0f);
 }
@@ -31,15 +39,8 @@ void Player::Update()
 	Animation();
 	Camera();
 	CCharacter::Update();
+}
 
-	m_Model.DebugAxis();
-}
-/*
-void Player::Render()
-{
-	m_Model.Render();
-}
-*/
 void Player::Move()
 {
 	m_Dir = Vector3D(0.0f, 0.0f, 0.0f);
@@ -78,7 +79,6 @@ void Player::Move()
 		m_Anim = eIdle;
 		m_State = eWait;
 	}
-
 
 	if (Input::KeyLShift.Pressed() && m_State == eMove && !isTakeWeapons)
 	{
@@ -139,14 +139,9 @@ void Player::Move()
 
 		//playerRot = (m_Model.GetRotation() + (playerRot - m_Model.GetRotation()) * 0.2);
 
-		//m_Model.SetRotationRadian(0.0f, playerRot.y, 0.0f);
 		m_rot.y = playerRot.y;
-
 		Vector3D pos(sinf(m_Model.GetRotation().y), 0.0f, cosf(m_Model.GetRotation().y));
-		//Vector3D playerPos = m_Model.GetTranselate();
-
 		m_pos += pos * m_MoveSpeed;
-		//m_Model.SetTranselate(playerPos);
 	}
 
 	if (Input::KeyB.Pressed())
@@ -188,14 +183,13 @@ void Player::Attack()
 	}
 
 
-	if (Input::KeyG.Pressed()) {
-
+	if (Input::KeyG.Pressed())
+	{
 		D3DXVECTOR4 pos;
-	//	D3DXVec3Transform(&pos, &D3DXVECTOR3(0, 0, 20), &m_GunMatrix);
-	//	CBulletManager::GetInstance()->Add(Vector3D(pos.x, pos.y, pos.z), m_CamDir, 1.00f);
-		CBulletManager::GetInstance()->Add(Vector3D(m_pos.x, m_pos.y+10.0f, m_pos.z), Vector3D(0,0,1), 0.10f);
+		D3DXVec3Transform(&pos, &D3DXVECTOR3(0, 0, 20), &m_GunMatrix);
+		CBulletManager::GetInstance()->Add(Vector3D(pos.x, pos.y, pos.z), m_CamDir, 1.00f);
+		CBulletManager::GetInstance()->Add(Vector3D(m_pos.x, m_pos.y + 1.0f, m_pos.z), Vector3D(0,0,1), 0.10f);
 	}
-
 }
 
 void Player::Camera()
@@ -214,6 +208,8 @@ void Player::Camera()
 
 	Vector3D v = m_Model.GetAxisX(-0.2f);
 	v.y = m_CameraPosY;
+
+	m_CamDir = Vector3D(cosf(m_Vertical) * sinf(m_Horizontal), -sinf(m_Vertical), cosf(m_Vertical) * cosf(m_Horizontal));
 
 	//カメラの座標
 	Vector3D camPos = v;
@@ -377,7 +373,10 @@ float Player::GetPlayTime()
 	return m_Model.GetPlayTime();
 }
 
-
+void Player::SetGunMtx(Matrix m)
+{
+	m_GunMatrix = m;
+}
 
 
 
@@ -410,6 +409,7 @@ void Shotgun::Update()
 		m_Shotgun.SetRotationDegree(65, 0, 12);
 		m_BoneMat = m_pPlayer->GetBomeMat(21);
 	}
+	m_Matrix = *m_Shotgun.GetMatrix();
 }
 
 void Shotgun::Render()
@@ -417,6 +417,10 @@ void Shotgun::Render()
 	m_Shotgun.RenderMatrix(*m_Shotgun.GetMatrix() * m_BoneMat);
 }
 
+Matrix Shotgun::GetMatrix()
+{
+	return m_Matrix;
+}
 
 
 
@@ -448,9 +452,15 @@ void Handgun::Update()
 		m_Handgun.SetRotationDegree(10, 100, 0);
 		m_BoneMat = m_pPlayer->GetBomeMat(3);
 	}
+	m_Matrix = *m_Handgun.GetMatrix();
 }
 
 void Handgun::Render()
 {
 	m_Handgun.RenderMatrix(*m_Handgun.GetMatrix() * m_BoneMat);
+}
+
+Matrix Handgun::GetMatrix()
+{
+	return m_Matrix;
 }

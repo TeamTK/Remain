@@ -2,23 +2,53 @@
 
 #include "../GEKO/GEKO.h"
 #include "CBullet.h"
-//#include "../GEKO/Collider/ColliderManager.h"
-//#include "../GEKO/Collider/CapsuleCollider.h"
+#include "../GEKO/Collider/Collider.h"
+enum {
+	ePlayer,
+	eEnemy1,
+	eCharacterMax
+};
 class CCharacter
 {
+	struct SCharacterData {
+		char aseetName[64];
+		int	hp;
+		float collitionMapRad;
+		struct SBoneCalpule {
+			float radius;
+			int start;
+			int end;
+			SBoneCalpule(float r, int s, int e) {
+				radius = r;
+				start = s;
+				end = e;
+			}
+		};
+		std::vector<SBoneCalpule> BoneCapsule;
+
+	};
 protected:
 	bool m_isActive;
 	float m_Hp;
 	Vector3D m_pos;
 	Vector3D m_rot;
+	Collider m_ColliderMap;
+	SphereInfo m_SphereMap;
+
+	Collider *m_pCollider;
+	CapsuleInfo *m_pCapsule;
+	SCharacterData *m_pCharaData;
 public:
-	CCharacter();
+	CCharacter() {}
+	CCharacter(int type);
+	~CCharacter();
 	DynamicMesh m_Model;
-//	Capsule_vs_LineSegmentCollider m_CapsuleCollider;
-	CapsuleInfo m_Capsule;
 	virtual void Update();
 	virtual void Render();
-//	void Capsule_vs_LineSegmentCallback(Result_LineSegment& r);
+	virtual void HitBullet();
+	//	void Capsule_vs_LineSegmentCallback(Result_LineSegment& r);_
+	void Capsule_vs_LineSegmentCallback(Result_Sphere& r);
+	void Sphere_vs_MeshCallback(Result_Porygon_Group& r);
 	friend class CCharacterManager;
 	friend class CCharacter;
 };
