@@ -71,12 +71,18 @@ public:
 	void Hit();
 
 private:
+	void HitCamera(Result_Porygon &hitData);
+
+private:
 	Vector3D m_Dir;
 	Vector3D m_CamDir;
+	Vector3D m_CameraPos;
+	Vector3D m_LookPos;
 	Matrix m_GunMatrix;
 	EPlayerAnimation m_Anim;
 	EPlayerState m_State;
 	EWeapons m_Weapons;
+	Collider m_HitCamera;
 	float m_Vertical;
 	float m_Horizontal;
 	float m_MoveSpeed;
