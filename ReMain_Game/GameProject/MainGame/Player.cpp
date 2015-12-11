@@ -2,7 +2,7 @@
 #include "../GEKO/System/Input.h"
 
 #define CAMERA_NO_CROUCH_POS_Y 1.8f;	//しゃがみ姿勢じゃないときのカメラのY座標の高さ
-#define CAMERA_CROUCH_POS_Y 0.85f;	//しゃがみ姿勢のときのカメラのY座標の高さ
+#define CAMERA_CROUCH_POS_Y 0.8f;	//しゃがみ姿勢のときのカメラのY座標の高さ
 #define WALK_SPEED 0.07f		//歩くスピード
 #define RUN_SPEED 0.16f			//走るスピード
 #define CROUCH_WALK_SPPED 0.03f	//しゃがみ歩きスピード
