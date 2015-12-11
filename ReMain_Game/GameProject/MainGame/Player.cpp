@@ -1,26 +1,26 @@
 #include "Player.h"
 #include "../GEKO/System/Input.h"
 
-#define CAMERA_NO_CROUCH_POS_Y 1.8f;	//ã—ã‚ƒãŒã¿å§¿å‹¢ã˜ã‚ƒãªã„ã¨ãã®ã‚«ãƒ¡ãƒ©ã®Yåº§æ¨™ã®é«˜ã•
-#define CAMERA_CROUCH_POS_Y 0.8f;	//ã—ã‚ƒãŒã¿å§¿å‹¢ã®ã¨ãã®ã‚«ãƒ¡ãƒ©ã®Yåº§æ¨™ã®é«˜ã•
-#define WALK_SPEED 0.07f		//æ­©ãã‚¹ãƒ”ãƒ¼ãƒ‰
-#define RUN_SPEED 0.16f			//èµ°ã‚‹ã‚¹ãƒ”ãƒ¼ãƒ‰
-#define CROUCH_WALK_SPPED 0.03f	//ã—ã‚ƒãŒã¿æ­©ãã‚¹ãƒ”ãƒ¼ãƒ‰
+#define CAMERA_NO_CROUCH_POS_Y 1.8f;	//‚µ‚á‚ª‚İp¨‚¶‚á‚È‚¢‚Æ‚«‚ÌƒJƒƒ‰‚ÌYÀ•W‚Ì‚‚³
+#define CAMERA_CROUCH_POS_Y 0.85f;	//‚µ‚á‚ª‚İp¨‚Ì‚Æ‚«‚ÌƒJƒƒ‰‚ÌYÀ•W‚Ì‚‚³
+#define WALK_SPEED 0.07f		//•à‚­ƒXƒs[ƒh
+#define RUN_SPEED 0.16f			//‘–‚éƒXƒs[ƒh
+#define CROUCH_WALK_SPPED 0.03f	//‚µ‚á‚ª‚İ•à‚«ƒXƒs[ƒh
 
 Player::Player() :
 	CCharacter(ePlayer), m_CamDir(0.0f, 0.0f, 0.0f),
 	m_Dir(0.0f, 0.0f, 0.0f), m_Horizontal(0.0f),
 	m_Vertical(0.0f), m_MoveSpeed(0.0f), m_CameraPosY(1.8f),
-	m_isCrouch(false), m_isAttack(false), m_isMove(false), isTakeWeapons(false),
-	m_Anim(eIdle), m_State(eWait), m_Weapons(eShotgun)
+	m_isCrouch(false), m_isAttack(false), m_isTakeWeapons(false), m_isMove(false),
+	m_Anim(eAnim_Idle), m_State(eState_Idle), m_Weapons(eShotgun)
 {
 	m_ColliderMap.SetID(eHITID1, eHITID0 | eHITID1 | eHITID2);
 	for (int i = 0; i < m_pCharaData->BoneCapsule.size(); i++)
 	{
-		//eHITID0â€¦ãƒãƒƒãƒ—
-		//eHITID1â€¦ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼
-		//eHITID2â€¦æ•µ
-		//eHITID3â€¦å¼¾
+		//eHITID0cƒ}ƒbƒv
+		//eHITID1cƒvƒŒƒCƒ„[
+		//eHITID2c“G
+		//eHITID3c’e
 		m_pCollider[i].SetID(eHITID1, 0);
 	}
 	m_Model.SetRotationRadian(0.0f, 3.14f, 0.0f);
@@ -39,100 +39,75 @@ void Player::Update()
 	Animation();
 	Camera();
 	CCharacter::Update();
+
+	printf("%d\n", m_isCrouch);
 }
 
 void Player::Move()
 {
 	m_Dir = Vector3D(0.0f, 0.0f, 0.0f);
-	m_Anim = EPlayerAnimation::eIdle;
-	m_State = EPlayerState::eWait;
+	m_State = eState_Idle;
 	m_isMove = false;
 
-	//å‰å¾Œå·¦å³ç§»å‹•
+	//‘OŒã¶‰EˆÚ“®
 	if (Input::KeyW.Pressed())	m_Dir.z = 1;
 	if (Input::KeyS.Pressed())	m_Dir.z = -1;
 	if (Input::KeyD.Pressed())	m_Dir.x = 1;
 	if (Input::KeyA.Pressed())	m_Dir.x = -1;
 
-	if (m_Dir.x != 0 || m_Dir.z != 0 && !isTakeWeapons)
+	//•à‚­
+	if (m_Dir.x != 0 || m_Dir.z != 0)
 	{
-		//æ­©ã
-		m_Anim = eWalk;
-		m_State = eMove;
+		m_State = eState_Walk;
+		m_isMove = true;
 	}
-	else if (m_Dir.x != 0 || m_Dir.z != 0 && isTakeWeapons)
+
+	//‘–‚é
+	if (m_Dir.x != 0 || m_Dir.z != 0 && Input::KeyLShift.Pressed())
 	{
-		//æ­¦å™¨ã‚’æŒã£ã¦æ­©ã
-		if (m_Weapons == eShotgun)
-		{
-			m_Anim = eWalkTakeGun;
-			m_State = eMove;
-		}
-		else
-		{
-			m_Anim = eWalkTakeHandgun;
-			m_State = eMove;
-		}
+		m_State = eState_Run;
+		m_isMove = true;
+	}
+
+	//‚µ‚á‚ª‚Ş
+	if (Input::KeyLControl.Pressed())
+	{
+		m_State = eState_Crouch;
 	}
 	else
 	{
-		m_Anim = eIdle;
-		m_State = eWait;
+		m_isCrouch = false;
 	}
 
-	if (Input::KeyLShift.Pressed() && m_State == eMove && !isTakeWeapons)
-	{
-		//èµ°ã‚‹
-		m_Anim = eRun;
-		m_State = eMove;
-	}
-	else if (Input::KeyLShift.Pressed() && m_State == eMove && isTakeWeapons)
-	{
-		//æ­¦å™¨ã‚’æŒã£ã¦èµ°ã‚‹
-		if (m_Weapons == eShotgun)
-		{
-			m_Anim = eRunTakeGun;
-			m_State = eMove;
-		}
-		else
-		{
-			m_Anim = eRunTakeHandgun;
-			m_State = eMove;
-		}
-	}
-
-	if (m_State == eWait && isTakeWeapons)
-	{
-		m_Anim = eIdleTakeGun;
-	}
-
-	//ã—ã‚ƒãŒã¿çŠ¶æ…‹ã«ç§»è¡Œ
+	/*
+	//‚µ‚á‚ª‚İó‘Ô‚ÉˆÚs
 	if (Input::KeyLControl.Pressed())
 	{
-		if (m_isCrouch)
-		{	//ã—ã‚ƒãŒã¿å¾…æ©Ÿ
-			m_Anim = EPlayerAnimation::eCrouchIdle;
-		}
-		else
-		{	//ã—ã‚ƒãŒã‚€é€”ä¸­
-			m_Anim = EPlayerAnimation::eCrouch;
-		}
-		if (Input::KeyLControl.Pressed() && m_State == EPlayerState::eMove)
-		{
-			m_Anim = EPlayerAnimation::eCrouchWalk;
-		}
+	if (m_isCrouch)
+	{	//‚µ‚á‚ª‚İ‘Ò‹@
+	m_Anim = eAnim_CrouchIdle;
 	}
-	else //ã‚­ãƒ¼ã‚’é›¢ã—ãŸ
+	else
+	{	//‚µ‚á‚ª‚Ş“r’†
+	m_Anim = eAnim_Crouch;
+	}
+	if (Input::KeyLControl.Pressed() && m_State == eState_Walk)
 	{
-		m_isCrouch = false;
+	m_Anim = eAnim_CrouchWalk;
+	}
+	}
+	else //ƒL[‚ğ—£‚µ‚½
+	{
+	m_isCrouch = false;
 	}
 	if (Input::KeyLControl.Clicked())
 	{
-		m_Model.SetTime(0);
+	m_Model.SetTime(0);
 	}
+	*/
 
-	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒæ­©ãçŠ¶æ…‹ãªã‚‰ç§»å‹•å‡¦ç†
-	if (m_State == EPlayerState::eMove)
+	//ƒvƒŒƒCƒ„[‚ª•à‚«ó‘Ô‚È‚çˆÚ“®ˆ—
+	if (m_isMove)
 	{
 		const D3DXMATRIX *camDir = Camera::GetView();
 		Vector3D playerRot(0.0f, atan2f(camDir->m[0][2], camDir->m[2][2]) + atan2f(m_Dir.x, m_Dir.z), 0.0f);
@@ -146,19 +121,18 @@ void Player::Move()
 
 	if (Input::KeyB.Pressed())
 	{
-		m_Anim = EPlayerAnimation::eDie;
+		m_Anim = eAnim_Die;
 	}
 }
 
 void Player::Attack()
 {
-	if (Input::KeyG.Clicked())
+	if (Input::KeyF.Clicked())
 	{
-		isTakeWeapons = !isTakeWeapons;
+		m_isTakeWeapons = !m_isTakeWeapons;
 	}
 
-
-	if (Input::KeyT.Clicked() && !isTakeWeapons)
+	if (Input::KeyT.Clicked() && !m_isTakeWeapons)
 	{
 		if (m_Weapons == eShotgun)
 		{
@@ -170,25 +144,30 @@ void Player::Attack()
 		}
 	}
 
-	if (isTakeWeapons)
+	if (m_isTakeWeapons)
 	{
 		if (m_Weapons == eShotgun)
 		{
-			m_Anim = eTakeGun;
+			m_Anim = eAnim_TakeGun;
 		}
 		else if (m_Weapons == eHandgun)
 		{
-			m_Anim = eTakeHandgun;
+			m_Anim = eAnim_TakeHandgun;
 		}
 	}
 
+	if (m_isAttack)
+	{
+		m_Anim = eAnim_SetupGun;
+	}
 
-	if (Input::KeyG.Pressed())
+	if (Input::KeyG.Clicked())
 	{
 		D3DXVECTOR4 pos;
 		D3DXVec3Transform(&pos, &D3DXVECTOR3(0, 0, 20), &m_GunMatrix);
-		CBulletManager::GetInstance()->Add(Vector3D(pos.x, pos.y, pos.z), m_CamDir, 1.00f);
-		CBulletManager::GetInstance()->Add(Vector3D(m_pos.x, m_pos.y + 1.0f, m_pos.z), Vector3D(0,0,1), 0.10f);
+		CBulletManager::GetInstance()->Add(Vector3D(pos.x, pos.y + 1.0f, pos.z), m_CamDir, 2.00f);
+
+		m_isAttack = !m_isAttack;
 	}
 }
 
@@ -198,20 +177,20 @@ void Player::Camera()
 	Vector3D look(0.6f, 1.8f, 0.0f);
 	static float lenge = 2.0f;
 
-	//ãƒã‚¦ã‚¹å…¥åŠ›
+	//ƒ}ƒEƒX“ü—Í
 	m_Horizontal -= mouseValue.x * 0.002f;
 	m_Vertical -= -mouseValue.y * 0.002f;
 
-	//ã‚«ãƒ¡ãƒ©è§’åº¦åˆ¶é™
-	if (m_Vertical > -0.5f) m_Vertical = -0.5f;	//ä¸Šé™
-	if (m_Vertical < -2.0f) m_Vertical = -2.0f;	//ä¸‹é™
+	//ƒJƒƒ‰Šp“x§ŒÀ
+	if (m_Vertical > -0.5f) m_Vertical = -0.5f;	//ãŒÀ
+	if (m_Vertical < -2.0f) m_Vertical = -2.0f;	//‰ºŒÀ
 
 	Vector3D v = m_Model.GetAxisX(-0.2f);
-	v.y = m_CameraPosY;
+	v.y = m_CameraPosY + m_pos.y;
 
 	m_CamDir = Vector3D(cosf(m_Vertical) * sinf(m_Horizontal), -sinf(m_Vertical), cosf(m_Vertical) * cosf(m_Horizontal));
 
-	//ã‚«ãƒ¡ãƒ©ã®åº§æ¨™
+	//ƒJƒƒ‰‚ÌÀ•W
 	Vector3D camPos = v;
 	camPos.x += lenge * sinf(m_Vertical) * cosf(m_Horizontal);
 	camPos.y += lenge * cosf(m_Vertical);
@@ -219,151 +198,66 @@ void Player::Camera()
 
 	if (m_isAttack)
 	{
+		m_Model.SetTranselate(m_pos);
+		m_Model.SetRotationRadian(m_rot.x, m_rot.y, m_rot.z);
 
-
+		Matrix mat = m_Model.GetBornMatrix(6, true);
+		D3DXVECTOR4 eye;
+		D3DXVec3Transform(&eye, &D3DXVECTOR3(-0.2f, 0.0f, 0.0f), &mat);
+		D3DXVECTOR4 at;
+		D3DXVec3Transform(&at, &D3DXVECTOR3(-0.2f, 0.0f, 2.0f), &mat);
+		Camera::SetEye(Vector3D(eye.x, eye.y, eye.z));
+		Camera::SetLookat(Vector3D(at.x, at.y, at.z));
+		Camera::SetUpVec(Vector3D(0, 1, 0));
 	}
 	else
 	{
 		Camera::SetEye(camPos);
 		Camera::SetLookat(v);
+		Camera::SetUpVec(Vector3D(0, 1, 0));
 	}
 }
 
 void Player::Animation()
 {
 	m_CameraPosY = CAMERA_NO_CROUCH_POS_Y;
-
-	switch (m_Anim)
+	switch (m_State)
 	{
-	case eCrouch:
-		m_Model.ChangeAnimation(eCrouch);
-		m_Model.SetPlayTime(80);
-
-		if (m_Model.GetPlayTime() >= 29)
-		{
-			m_Anim = eCrouchIdle;
-			m_isCrouch = true;
-		}
+	case eState_Idle:
+		Idle();
 		break;
-	case eCrouchIdle:
-		m_Model.ChangeAnimation(eCrouchIdle);
-		m_Model.SetPlayTime(15);
-		m_CameraPosY = CAMERA_CROUCH_POS_Y;
-
+	case eState_Walk:
+		Walk();
 		break;
-	case eCrouchWalk:
-		m_Model.ChangeAnimation(eCrouchWalk);
-		m_Model.SetPlayTime(30);
-		m_MoveSpeed = CROUCH_WALK_SPPED;
-		m_CameraPosY = CAMERA_CROUCH_POS_Y;
-
+	case eState_Run:
+		Run();
 		break;
-	case eDie:
-		m_Model.ChangeAnimation(eDie);
-		m_Model.SetPlayTime(30);
-		if (m_Model.GetPlayTime() >= 29)
-		{
-			m_Model.SetTime(29);
-		}
-
+	case eState_Crouch:
+		Crouch();
 		break;
-	case eHit:
-		m_Model.ChangeAnimation(eHit);
-		m_Model.SetPlayTime(30);
-
+	case eState_TakeGun:
+		TakeGun();
 		break;
-	case eIdle:
-		m_Model.ChangeAnimation(eIdle);
-		m_Model.SetPlayTime(15);
-
+	case eState_SetupGun:
+		SetupGun();
 		break;
-	case eIdleTakeGun:
-		m_Model.ChangeAnimation(eIdleTakeGun);
-		m_Model.SetPlayTime(15);
-
+	case eState_Hit:
+		Hit();
 		break;
-	case eIdleTakeHandgun:
-		m_Model.ChangeAnimation(eIdleTakeHandgun);
-		m_Model.SetPlayTime(15);
-
-		break;
-	case eRun:
-		m_Model.ChangeAnimation(eRun);
-		m_Model.SetPlayTime(50);
-		m_MoveSpeed = RUN_SPEED;
-
-		break;
-	case eRunTakeGun:
-		m_Model.ChangeAnimation(eRunTakeGun);
-		m_Model.SetPlayTime(50);
-		m_MoveSpeed = RUN_SPEED;
-
-		break;
-	case eRunTakeHandgun:
-		m_Model.ChangeAnimation(eRunTakeHandgun);
-		m_Model.SetPlayTime(50);
-		m_MoveSpeed = RUN_SPEED;
-
-		break;
-	case eSetupGun:
-		m_Model.ChangeAnimation(eSetupGun);
-		m_Model.SetPlayTime(50);
-
-		break;
-	case eSetupHandgun:
-		m_Model.ChangeAnimation(eSetupHandgun);
-		m_Model.SetPlayTime(50);
-
-		break;
-	case eTakeGun:
-		m_Model.ChangeAnimation(eTakeGun);
-		m_Model.SetPlayTime(40);
-		if (m_Model.GetPlayTime() >= 29)
-		{
-			m_Model.ChangeAnimation(eIdleTakeGun);
-		}
-
-		break;
-	case eTakeHandgun:
-		m_Model.ChangeAnimation(eTakeHandgun);
-		m_Model.SetPlayTime(40);
-		if (m_Model.GetPlayTime() >= 29)
-		{
-			m_Model.ChangeAnimation(eIdleTakeHandgun);
-		}
-
-		break;
-	case eWalk:
-		m_Model.ChangeAnimation(eWalk);
-		m_Model.SetPlayTime(30);
-		m_MoveSpeed = WALK_SPEED;
-
-		break;
-	case eWalkTakeGun:
-		m_Model.ChangeAnimation(eWalkTakeGun);
-		m_Model.SetPlayTime(30);
-		m_MoveSpeed = WALK_SPEED;
-
-		break;
-	case eWalkTakeHandgun:
-		m_Model.ChangeAnimation(eWalkTakeHandgun);
-		m_Model.SetPlayTime(30);
-		m_MoveSpeed = WALK_SPEED;
-
+	case eState_Die:
+		Die();
 		break;
 	default:
 		break;
 	}
-	//printf("%d\n", m_Anim);
 }
-
 
 Matrix Player::GetBomeMat(int bornIndex)
 {
 	return m_Model.GetBornMatrix(bornIndex, true);
 }
 
-int Player::GetAnim()
+EPlayerAnimation Player::GetAnim()
 {
 	return m_Anim;
 }
@@ -379,10 +273,162 @@ void Player::SetGunMtx(Matrix m)
 }
 
 
+void Player::Idle()
+{
+	//•Ší‚ğ‚Á‚Ä‘Ò‹@
+	if (m_isTakeWeapons)
+	{
+		m_Model.ChangeAnimation(eAnim_IdleTakeGun);
+		m_Model.SetPlayTime(15);
+	}
+	//‘Ò‹@
+	else
+	{
+		m_Model.ChangeAnimation(eAnim_Idle);
+		m_Model.SetPlayTime(15);
+	}
+}
+
+void Player::Walk()
+{
+	m_MoveSpeed = WALK_SPEED;
+
+	if (m_isTakeWeapons) //•Ší‚ğ‚Á‚Ä‚¢‚é‚Æ‚«
+	{
+		if (m_Weapons == eShotgun)
+		{
+			m_Model.ChangeAnimation(eAnim_WalkTakeGun);
+			m_Model.SetPlayTime(30);
+		}
+		else
+		{
+			m_Model.ChangeAnimation(eAnim_WalkTakeHandgun);
+			m_Model.SetPlayTime(30);
+		}
+	}
+	else
+	{
+		//•à‚«
+		m_Model.ChangeAnimation(eAnim_Walk);
+		m_Model.SetPlayTime(30);
+	}
+}
+
+void Player::Run()
+{
+	m_MoveSpeed = RUN_SPEED;
+
+	//•Ší‚ğ‚Á‚Ä‚¢‚é‚Æ‚«
+	if (m_isTakeWeapons)
+	{
+		if (m_Weapons == eShotgun)
+		{
+			m_Model.ChangeAnimation(eAnim_RunTakeGun);
+			m_Model.SetPlayTime(50);
+		}
+		else
+		{
+			m_Model.ChangeAnimation(eAnim_RunTakeHandgun);
+			m_Model.SetPlayTime(50);
+		}
+	}
+	else//•Ší‚ğ‚Á‚Ä‚¢‚È‚¢‚Æ‚«
+	{
+		m_Model.ChangeAnimation(eAnim_Run);
+		m_Model.SetPlayTime(50);
+	}
+}
+
+void Player::Crouch()
+{
+	static int time = 29;
+
+	//•Ší‚ğ‚Á‚Ä‚¢‚é‚Í•Ší‚ğ‚µ‚Ü‚Á‚Ä‚©‚ç‚µ‚á‚ª‚Ş
+	if (m_isTakeWeapons)
+	{
+		if (m_Weapons == eShotgun)
+		{
+			m_Model.ChangeAnimation(eAnim_TakeGun);
+			m_Model.SetTime(time);
+			if (time >= 0)	time--;
+		}
+		else
+		{
+			m_Model.ChangeAnimation(eAnim_TakeHandgun);
+			m_Model.SetTime(time);
+			if (time >= 0)	time--;
+		}
+		//‚µ‚Ü‚¤ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌI‚í‚è
+		if (m_Model.GetPlayTime() == 0)
+		{
+			m_isTakeWeapons = false;
+			time = 29;
+		}
+	}
+	else
+	{
+		//‚µ‚á‚ª‚İˆÚs
+		if (!m_isCrouch)
+		{
+			m_Model.ChangeAnimation(eAnim_Crouch);
+			m_Model.SetPlayTime(70);
+		}
+
+		//‚µ‚á‚ª‚İ‘Ò‹@
+		if (m_Dir.x == 0 && m_Dir.z == 0 && m_isCrouch)
+		{
+			m_CameraPosY = CAMERA_CROUCH_POS_Y;
+			m_Model.ChangeAnimation(eAnim_CrouchIdle);
+			m_Model.SetPlayTime(15);
+		}
+		//‚µ‚á‚ª‚İ•à‚«
+		else if (m_Dir.x != 0 || m_Dir.z != 0 && m_isCrouch)
+		{
+			m_CameraPosY = CAMERA_CROUCH_POS_Y;
+			m_MoveSpeed = CROUCH_WALK_SPPED;
+			m_Model.ChangeAnimation(eAnim_CrouchWalk);
+			m_Model.SetPlayTime(30);
+			m_isMove = true;
+		}
+
+		if (m_Model.GetPlayTime() >= 29 && !m_isCrouch)
+		{
+			m_isCrouch = true;
+		}
+	}
+}
+
+void Player::TakeGun()
+{
+	m_Model.ChangeAnimation(eAnim_TakeGun);
+	m_Model.SetPlayTime(40);
+	if (m_Model.GetPlayTime() >= 29)
+	{
+		m_Model.ChangeAnimation(eAnim_IdleTakeGun);
+	}
+
+}
+
+void Player::SetupGun()
+{
+
+}
+
+void Player::Die()
+{
+
+}
+
+void Player::Hit()
+{
+
+}
+
+
+
 
 Shotgun::Shotgun(Player* p)
 {
-	StaticMeshAsset::LoadMesh("media\\Shotgun.x", "Shotgun");
 	m_Shotgun.SetAsset("Shotgun");
 	m_pPlayer = p;
 }
@@ -397,14 +443,14 @@ void Shotgun::Update()
 {
 	if (m_pPlayer->GetAnim() == 11 && m_pPlayer->GetPlayTime() >= 14)
 	{
-		//æ§‹ãˆçŠ¶æ…‹
+		//\‚¦ó‘Ô
 		m_Shotgun.SetTranselate(0.05f, 0.05f, 0.0f);
 		m_Shotgun.SetRotationDegree(175, -92, 30);
 		m_BoneMat = m_pPlayer->GetBomeMat(24);
 	}
 	else
 	{
-		//è‚©ã«ã‹ã‘ã¦ã„ã‚‹çŠ¶æ…‹
+		//Œ¨‚É‚©‚¯‚Ä‚¢‚éó‘Ô
 		m_Shotgun.SetTranselate(0.2f, 0.14f, 0.0f);
 		m_Shotgun.SetRotationDegree(65, 0, 12);
 		m_BoneMat = m_pPlayer->GetBomeMat(21);
@@ -428,7 +474,6 @@ Matrix Shotgun::GetMatrix()
 Handgun::Handgun(Player* p)
 {
 	m_pPlayer = p;
-	StaticMeshAsset::LoadMesh("media\\Handgun.x", "Handgun");
 	m_Handgun.SetAsset("Handgun");
 }
 
@@ -441,7 +486,7 @@ void Handgun::Update()
 {
 	if (m_pPlayer->GetAnim() == 12 && m_pPlayer->GetPlayTime() >= 14)
 	{
-		//æ§‹ãˆçŠ¶æ…‹
+		//\‚¦ó‘Ô
 		m_Handgun.SetTranselate(0.05f, 0.0f, 0.0f);
 		m_Handgun.SetRotationDegree(180, 90, 30);
 		m_BoneMat = m_pPlayer->GetBomeMat(25);

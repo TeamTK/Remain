@@ -8,3 +8,5 @@ StaticMesh media\Cabin.x Cabin
 StaticMesh media\Ground.x Ground
 StaticMesh media\RockWall.x RockWall
 StaticMesh media\SkyDome.x SkyDome
+StaticMesh media\Shotgun.x Shotgun
+StaticMesh media\Handgun.x Handgun

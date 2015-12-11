@@ -4,34 +4,40 @@
 #include "../GEKO/GEKO.h"
 #include "CCharacter.h"
 
-//プレイヤーのアニメーション状態
+//プレイヤーのアニメーション
 enum EPlayerAnimation
 {
-	eCrouch = 0,		//しゃがみ移行
-	eCrouchIdle,		//しゃがみ待機
-	eCrouchWalk,		//しゃがみ歩き
-	eDie,				//やられ
-	eHit,				//被攻撃
-	eIdle,				//待機状態
-	eIdleTakeGun,		//ショットガン持ち待機状態
-	eIdleTakeHandgun,	//ハンドガン持ち待機状態
-	eRun,				//走り
-	eRunTakeGun,		//ショットガンを持って走る
-	eRunTakeHandgun,	//ハンドガンを持って走る
-	eSetupGun,			//ショットガンを持った状態から構える
-	eSetupHandgun,		//ハンドガンを持った状態から構える
-	eTakeGun,			//ショットガンを手に持つ
-	eTakeHandgun,		//ハンドガンを手に持つ
-	eWalk,				//歩く
-	eWalkTakeGun,		//ショットガンを持って歩く
-	eWalkTakeHandgun	//ハンドガンを持って歩く
+	eAnim_Crouch,			//しゃがみ移行
+	eAnim_CrouchIdle,		//しゃがみ待機
+	eAnim_CrouchWalk,		//しゃがみ歩き
+	eAnim_Die,				//やられ
+	eAnim_Hit,				//被攻撃
+	eAnim_Idle,				//待機状態
+	eAnim_IdleTakeGun,		//ショットガン持ち待機状態
+	eAnim_IdleTakeHandgun,	//ハンドガン持ち待機状態
+	eAnim_Run,				//走り
+	eAnim_RunTakeGun,		//ショットガンを持って走る
+	eAnim_RunTakeHandgun,	//ハンドガンを持って走る
+	eAnim_SetupGun,			//ショットガンを持った状態から構える
+	eAnim_SetupHandgun,		//ハンドガンを持った状態から構える
+	eAnim_TakeGun,			//ショットガンを手に持つ
+	eAnim_TakeHandgun,		//ハンドガンを手に持つ
+	eAnim_Walk,				//歩く
+	eAnim_WalkTakeGun,		//ショットガンを持って歩く
+	eAnim_WalkTakeHandgun	//ハンドガンを持って歩く
 };
 
 //プレイヤーの状態
 enum EPlayerState
 {
-	eWait = 0,
-	eMove
+	eState_Idle,
+	eState_Walk,
+	eState_Run,
+	eState_Crouch,
+	eState_TakeGun,
+	eState_SetupGun,
+	eState_Hit,
+	eState_Die,
 };
 
 enum EWeapons
@@ -51,9 +57,18 @@ public:
 	void Camera();
 	void Animation();
 	Matrix GetBomeMat(int bornIndex);
-	int GetAnim();
+	EPlayerAnimation GetAnim();
 	float GetPlayTime();
 	void SetGunMtx(Matrix m);
+
+	void Idle();
+	void Walk();
+	void Run();
+	void Crouch();
+	void TakeGun();
+	void SetupGun();
+	void Die();
+	void Hit();
 
 private:
 	Vector3D m_Dir;
@@ -66,12 +81,11 @@ private:
 	float m_Horizontal;
 	float m_MoveSpeed;
 	float m_CameraPosY;
-	bool m_isMove;
 	bool m_isCrouch;
-	bool isTakeWeapons;
+	bool m_isMove;
+	bool m_isTakeWeapons;
 	bool m_isAttack;
 };
-
 class Shotgun
 {
 public:
@@ -105,5 +119,4 @@ private:
 	Matrix m_Matrix;
 
 };
-
 #endif
