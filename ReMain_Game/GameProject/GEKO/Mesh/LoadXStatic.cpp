@@ -415,7 +415,7 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 				m_MeshInfo.pvVertex[i].vTex.y = 0.0f;
 			}
 			/////////////////////////////////////////////////////////////////////////////////ïœçX
-			for (int i = 0; i < face.size(); i++)
+			for (unsigned int i = 0; i < face.size(); i++)
 			{
 				m_MeshInfo.pvVertex[face[i]].vNormal = normal[normalIndex[i]];
 			}

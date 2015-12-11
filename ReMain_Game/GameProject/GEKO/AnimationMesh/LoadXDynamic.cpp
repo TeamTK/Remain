@@ -513,6 +513,11 @@ float LoadXDynamic::GetPlayTime()
 	return m_FrameAnim;
 }
 
+int LoadXDynamic::GetPlayAnimation()
+{
+	return m_AnimSetNum;
+}
+
 int LoadXDynamic::GetBornAllNum()
 {
 	return m_BornInfo.BornList.size();

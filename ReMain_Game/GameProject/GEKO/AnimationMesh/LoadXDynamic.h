@@ -13,6 +13,7 @@ public:
 	void SetRenewalTime(float animSpeed); //アニメーション速度更新
 	void SetTime(float animTime);		  //指定のアニメーション時間に設定
 	float GetPlayTime();
+	int GetPlayAnimation();
 	int GetBornAllNum();
 	std::string GetBornName(int bornIndex);
 	Matrix GetBornWorld(int bornIndex);
