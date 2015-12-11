@@ -13,9 +13,10 @@ public:
 	void SetAsset(const std::string &MeshName);
 	void ChangeAnimation(int num);
 	void SetPlayTime(float animSpeed); //アニメーション速度更新
-	void SetTime(float animTime);		  //指定のアニメーション時間に設定
+	void SetTime(float animTime);	   //指定のアニメーション時間に設定
 	SkinVertexInfo *GetVertex();
 	float GetPlayTime();
+	int GetPlayAnimation();
 	int GetFaceAllNum();
 	int GetBornNum(std::string name);
 	int GetBornAllNum();

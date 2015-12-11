@@ -223,6 +223,11 @@ float SkinMeshData::GetPlayTime()
 	return 0.0f;
 }
 
+int SkinMeshData::GetPlayAnimation()
+{
+	return 0;
+}
+
 int SkinMeshData::GetBornAllNum()
 {
 	return 0;

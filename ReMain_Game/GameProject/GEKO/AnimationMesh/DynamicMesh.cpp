@@ -75,6 +75,11 @@ float DynamicMesh::GetPlayTime()
 	return m_pSkinMeshData->GetPlayTime();
 }
 
+int DynamicMesh::GetPlayAnimation()
+{
+	return m_pSkinMeshData->GetPlayAnimation();
+}
+
 int DynamicMesh::GetFaceAllNum()
 {
 	return m_pSkinMeshData->GetSkinMeshInfo()->faceNumAll;

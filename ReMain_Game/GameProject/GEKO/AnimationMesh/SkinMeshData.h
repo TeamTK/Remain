@@ -163,6 +163,7 @@ public:
 	virtual void SetRenewalTime(float animSpeed); //アニメーション速度更新
 	virtual void SetTime(float animTime);		  //指定のアニメーション時間に設定
 	virtual float GetPlayTime();
+	virtual int GetPlayAnimation();
 	virtual int GetBornAllNum();
 	virtual std::string GetBornName(int bornIndex);
 	virtual Matrix GetBornWorld(int bornIndex);
