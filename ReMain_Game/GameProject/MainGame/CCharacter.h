@@ -73,6 +73,7 @@ public:
 	void Update();
 	void Render();
 	void Add(CCharacter* c);
+	void AllClear();
 	CCharacter*GetPlayer() {
 		return m_pPayer;
 

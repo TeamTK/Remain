@@ -292,16 +292,17 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 	m_MeshInfo.m_pMaterial = new MaterialInfo[m_MeshInfo.materialNumAll];
 	m_MeshInfo.m_ppIndexBuffer = new ID3D11Buffer*[m_MeshInfo.materialNumAll];
 	m_MeshInfo.pvVertex = new VertexInfo[m_MeshInfo.vertexNumAll];
-
+	
 	D3D11_BUFFER_DESC bd;
 	D3D11_SUBRESOURCE_DATA InitData;
 
 	//マテリアルの数分インデックスバッファー作成
 	int count = 0;
-	int *faceBuffer = nullptr;
+	int *pFaceBuffer = nullptr;
 	for (int i = 0; i < m_MeshInfo.materialNumAll; i++)
 	{
-		faceBuffer = new int[m_MeshInfo.faceNumAll * 3];
+		pFaceBuffer = new int[m_MeshInfo.faceNumAll * 3];
+		//faceBuffer = new int[m_MeshInfo.m_pMaterial[i].dwNumFace * 3];
 		count = 0;
 
 		m_MeshInfo.m_pMaterial[i].Ambient = material[i].Ambient;
@@ -329,14 +330,23 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 		{
 			if (i == materialList[j])
 			{
-				faceBuffer[count] = face[j * 3];
-				faceBuffer[count + 1] = face[j * 3 + 1];
-				faceBuffer[count + 2] = face[j * 3 + 2];
+				pFaceBuffer[count] = face[j * 3];
+				pFaceBuffer[count + 1] = face[j * 3 + 1];
+				pFaceBuffer[count + 2] = face[j * 3 + 2];
 				m_MeshInfo.m_pMaterial[i].dwNumFace += 1;
 				count += 3;
 			}
 		}
 		if (count == 0) continue;
+
+		//ポリゴンのインデックス作成
+		count = 0;
+		int num = m_MeshInfo.m_pMaterial[i].dwNumFace * 3;
+		m_MeshInfo.m_pMaterial[i].pPolygonIndex = new int[num];
+		for (int k = 0; k < num; k++, count++)
+		{
+			m_MeshInfo.m_pMaterial[i].pPolygonIndex[k] = pFaceBuffer[count];
+		}
 
 		//インデックスバッファーを作成
 		bd.Usage = D3D11_USAGE_DEFAULT;
@@ -344,15 +354,15 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		bd.CPUAccessFlags = 0;
 		bd.MiscFlags = 0;
-		InitData.pSysMem = faceBuffer;
+		InitData.pSysMem = pFaceBuffer;
 		if (FAILED(pDevice->CreateBuffer(&bd, &InitData, &m_MeshInfo.m_ppIndexBuffer[i])))
 			return FALSE;
 
-		delete [] faceBuffer;
-		faceBuffer = nullptr;
+		delete [] pFaceBuffer;
+		pFaceBuffer = nullptr;
 	}
 
-	SAFE_DELETE_ARRAY(faceBuffer);
+	SAFE_DELETE_ARRAY(pFaceBuffer);
 
 	//法線の数が違う対策（違うなら面一つで一つの法線を割り当てる）
 	if (m_MeshInfo.normalNumAll == m_MeshInfo.vertexNumAll)
@@ -453,6 +463,7 @@ void LoadXStatic::Relese()
 		for (int i = 0; i < m_MeshInfo.materialNumAll; i++)
 		{
 			SAFE_RELEASE(m_MeshInfo.m_pMaterial[i].pTexture);
+			SAFE_DELETE_ARRAY(m_MeshInfo.m_pMaterial[i].pPolygonIndex);
 			m_MeshInfo.m_ppIndexBuffer[i]->Release();
 		}
 

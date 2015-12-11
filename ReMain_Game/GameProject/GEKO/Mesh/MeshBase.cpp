@@ -151,7 +151,6 @@ Vector3D MeshBase::GetAxisZ(float length)
 	return z + z_Normal * length;
 }
 
-
 Matrix *MeshBase::GetMatrix()
 {
 	return &m_Matrix;

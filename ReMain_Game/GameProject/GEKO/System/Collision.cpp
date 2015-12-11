@@ -60,7 +60,7 @@ HitResult_SphereTriangle Collision3D::SphereTriangle(const SphereInfo &sphere, c
 
 	Vector3D VP = sphere.pos - triangle.v1;	//三角形の頂点から球の中心までのベクトル
 
-	float dist = abs(Vector3D::Dot(VP, normal)); //点から三角形までの距離
+	float dist = fabsf(Vector3D::Dot(VP, normal)); //点から三角形までの距離
 
 	//球の半径外なら当たっていない
 	if (dist > sphere.radius) return hitResult;
@@ -125,7 +125,7 @@ HitResult_SphereTriangle Collision3D::SphereTriangle(const SphereInfo &sphere, c
 
 	Vector3D VP = sphere.pos - triangle.v1;	//三角形の頂点から球の中心までのベクトル
 
-	float dist = abs(Vector3D::Dot(VP, normal)); //点から三角形までの距離
+	float dist = fabsf(Vector3D::Dot(VP, normal)); //点から三角形までの距離
 									
 	if (dist > sphere.radius) return hitResult;//球の半径外なら当たっていない
 
@@ -349,9 +349,9 @@ float CollisionMath::DistanceLineSegment(const LineSegmentInfo &segment1, const 
 bool CollisionMath::TriangleIntersect(const Vector3D &point, const TriangleInfo &triangle, const Vector3D& Normal)
 {
 	//向き算出
-	Vector3D cross1 = Vector3D::Cross(point - triangle.v1, triangle.v2 - triangle.v1);
-	Vector3D cross2 = Vector3D::Cross(point - triangle.v2, triangle.v3 - triangle.v2);
-	Vector3D cross3 = Vector3D::Cross(point - triangle.v3, triangle.v1 - triangle.v3);
+	Vector3D cross1 = Vector3D::Cross(triangle.v2 - triangle.v1, point - triangle.v1);
+	Vector3D cross2 = Vector3D::Cross(triangle.v3 - triangle.v2, point - triangle.v2);
+	Vector3D cross3 = Vector3D::Cross(triangle.v1 - triangle.v3, point - triangle.v3);
 
 	//全ての外積の向きが同じ方向なら点は三角形上に有る
 	if (Vector3D::Dot(cross1, Normal) > 0.0f) return false;

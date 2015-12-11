@@ -11,8 +11,11 @@ public:
 	void SetAsset(MeshData *meshData);
 	void SetAsset(const std::string &MeshName);
 	VertexInfo *GetVertex();
+	MaterialInfo *GetMaterial();
 	Matrix *GetLocalMatrix();
-	int GetFaceNum();
+	int *GetPolygonIndex(int materialIndex);
+	int GetFaceAllNum();
+	int GetMaterialAllNum();
 	void Render();
 	void RenderMatrix(Matrix &matrix);
 	void DebugNormal();

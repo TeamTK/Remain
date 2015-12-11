@@ -72,4 +72,5 @@ public:
 	**/
 	CBullet *Add(const Vector3D pos, const Vector3D &dir,const float speed);
 
+	void AllClear();
 };

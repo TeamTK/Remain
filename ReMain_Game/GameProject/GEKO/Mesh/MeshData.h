@@ -32,45 +32,17 @@ struct MaterialInfo
 	Vector3D Specular;	//スペキュラー
 	Vector3D Ambient;	//アンビエント
 	std::string TextureName;//テクスチャーファイル名
+	int *pPolygonIndex;	 //ポリゴンのインデックス
 	int dwNumFace;		//そのマテリアルであるポリゴン数
 	MaterialInfo()
 	{
-		//ZeroMemory(this, sizeof(MaterialInfo));
 		pTexture = nullptr;
 		dwNumFace = 0;
 	}
 	~MaterialInfo()
 	{
-		//SAFE_RELEASE(pTexture);
 	}
 };
-
-/*
-struct Material
-{
-	D3DXVECTOR4 Ambient;	//アンビエント
-	D3DXVECTOR4 Diffuse;	//ディフューズ
-	D3DXVECTOR4 Specular;	//スペキュラー
-
-	Material(D3DXVECTOR4 &Diffuse, D3DXVECTOR4 &Specular, D3DXVECTOR4 &Ambient) :
-		Diffuse(Diffuse),
-		Specular(Specular),
-		Ambient(Ambient)
-	{
-	}
-};
-
-struct TextureInfo
-{
-	std::string TextureName;//テクスチャーファイル名
-	ID3D11ShaderResourceView* pTexture;
-	TextureInfo(const std::string &TextureName) : 
-		TextureName(TextureName)
-	{
-	}
-	
-};
-*/
 
 //頂点の構造体
 struct VertexInfo

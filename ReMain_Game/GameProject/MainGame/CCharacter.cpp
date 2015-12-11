@@ -58,6 +58,7 @@ void CCharacter::Update() {
 	m_SphereMap.pos = m_pos + Vector3D(0, m_SphereMap.radius, 0);
 }
 void CCharacter::Render() {
+	/*
 	static Sphere3D *debug_model=NULL;
 	if (!debug_model) {
 		debug_model = new Sphere3D;
@@ -67,13 +68,15 @@ void CCharacter::Render() {
 			matS.Scale(m_pCapsule[i].radius, m_pCapsule[i].radius, m_pCapsule[i].radius);
 			matTS.Transelate(m_pCapsule[i].segment.start.x, m_pCapsule[i].segment.start.y, m_pCapsule[i].segment.start.z);
 			matTE.Transelate(m_pCapsule[i].segment.end.x, m_pCapsule[i].segment.end.y, m_pCapsule[i].segment.end.z);
-			debug_model->Render(matS*matTS,Vector3D(1,0,0));
-			debug_model->Render(matS*matTE, Vector3D(1, 0, 0));
+			//debug_model->Render(matS*matTS,Vector3D(1,0,0));
+			//debug_model->Render(matS*matTE, Vector3D(1, 0, 0));
 		}
 	}
+	*/
 	m_Model.SetTranselate(m_pos);
 	m_Model.SetRotationRadian(m_rot.x, m_rot.y, m_rot.z);
 	m_Model.Render();
+	m_pos.y -= 0.01f;
 }
 
 void CCharacter::HitBullet() {
@@ -134,4 +137,15 @@ void CCharacterManager::AddPlayer(CCharacter *c) {
 	m_pPayer = c;
 	Add(c);
 
+}
+
+void CCharacterManager::AllClear()
+{
+	auto it = m_Core.begin();
+	for (; it != m_Core.end();)
+	{
+		delete *it;
+		it = m_Core.erase(it);
+	}
+	m_Core.clear();
 }
