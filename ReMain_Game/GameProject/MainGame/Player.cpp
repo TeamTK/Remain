@@ -11,7 +11,7 @@ Player::Player() :
 	CCharacter(ePlayer), m_CamDir(0.0f, 0.0f, 0.0f),
 	m_Dir(0.0f, 0.0f, 0.0f), m_Horizontal(0.0f),
 	m_Vertical(0.0f), m_MoveSpeed(0.0f), m_CameraPosY(1.8f),
-	m_isCrouch(false), m_isAttack(false), m_isTakeWeapons(false), m_isMove(false),
+	m_isCrouch(false), m_isAttack(false), m_isTakeWeapon(false), m_isMove(false), m_ChangeTakeWeapon(false),
 	m_Anim(eAnim_Idle), m_State(eState_Idle), m_Weapons(eShotgun)
 {
 	m_ColliderMap.SetID(eHITID1, eHITID0 | eHITID1 | eHITID2);
@@ -42,8 +42,6 @@ void Player::Update()
 	Animation();
 	Camera();
 	CCharacter::Update();
-
-	printf("%d\n", m_isCrouch);
 }
 
 void Player::Move()
@@ -82,33 +80,6 @@ void Player::Move()
 		m_isCrouch = false;
 	}
 
-	/*
-	//しゃがみ状態に移行
-	if (Input::KeyLControl.Pressed())
-	{
-	if (m_isCrouch)
-	{	//しゃがみ待機
-	m_Anim = eAnim_CrouchIdle;
-	}
-	else
-	{	//しゃがむ途中
-	m_Anim = eAnim_Crouch;
-	}
-	if (Input::KeyLControl.Pressed() && m_State == eState_Walk)
-	{
-	m_Anim = eAnim_CrouchWalk;
-	}
-	}
-	else //キーを離した
-	{
-	m_isCrouch = false;
-	}
-	if (Input::KeyLControl.Clicked())
-	{
-	m_Model.SetTime(0);
-	}
-	*/
-
 	//プレイヤーが歩き状態なら移動処理
 	if (m_isMove)
 	{
@@ -132,10 +103,10 @@ void Player::Attack()
 {
 	if (Input::KeyF.Clicked())
 	{
-		m_isTakeWeapons = !m_isTakeWeapons;
+		m_isTakeWeapon = !m_isTakeWeapon;
 	}
 
-	if (Input::KeyT.Clicked() && !m_isTakeWeapons)
+	if (Input::KeyT.Clicked() && !m_isTakeWeapon)
 	{
 		if (m_Weapons == eShotgun)
 		{
@@ -147,29 +118,14 @@ void Player::Attack()
 		}
 	}
 
-	if (m_isTakeWeapons)
-	{
-		if (m_Weapons == eShotgun)
-		{
-			m_Anim = eAnim_TakeGun;
-		}
-		else if (m_Weapons == eHandgun)
-		{
-			m_Anim = eAnim_TakeHandgun;
-		}
-	}
 
-	if (m_isAttack)
-	{
-		m_Anim = eAnim_SetupGun;
-	}
-
-	if (Input::KeyG.Clicked())
+	if (Input::KeyG.Clicked() && m_isTakeWeapon)
 	{
 		D3DXVECTOR4 pos;
 		D3DXVec3Transform(&pos, &D3DXVECTOR3(0, 0, 20), &m_GunMatrix);
 		CBulletManager::GetInstance()->Add(Vector3D(pos.x, pos.y + 1.0f, pos.z), m_CamDir, 2.00f);
 
+		m_State = eState_SetupGun;
 		m_isAttack = !m_isAttack;
 	}
 }
@@ -188,7 +144,7 @@ void Player::Camera()
 	if (m_Vertical > -0.5f) m_Vertical = -0.5f;	//上限
 	if (m_Vertical < -2.0f) m_Vertical = -2.0f;	//下限
 
-	m_LookPos = m_Model.GetAxisX(-0.2f);
+	m_LookPos = m_Model.GetAxisX(-0.5f);
 	m_LookPos.y = m_CameraPosY + m_pos.y;
 
 	m_CamDir = Vector3D(cosf(m_Vertical) * sinf(m_Horizontal), -sinf(m_Vertical), cosf(m_Vertical) * cosf(m_Horizontal));
@@ -239,10 +195,10 @@ void Player::Animation()
 		Crouch();
 		break;
 	case eState_TakeGun:
-		TakeGun();
+		TakeWeapon();
 		break;
 	case eState_SetupGun:
-		SetupGun();
+		SetupWeapon();
 		break;
 	case eState_Hit:
 		Hit();
@@ -260,9 +216,9 @@ Matrix Player::GetBomeMat(int bornIndex)
 	return m_Model.GetBornMatrix(bornIndex, true);
 }
 
-EPlayerAnimation Player::GetAnim()
+int Player::GetAnim()
 {
-	return m_Anim;
+	return m_Model.GetPlayAnimation();
 }
 
 float Player::GetPlayTime()
@@ -279,7 +235,7 @@ void Player::SetGunMtx(Matrix m)
 void Player::Idle()
 {
 	//武器を持って待機
-	if (m_isTakeWeapons)
+	if (m_isTakeWeapon)
 	{
 		m_Model.ChangeAnimation(eAnim_IdleTakeGun);
 		m_Model.SetPlayTime(15);
@@ -296,7 +252,7 @@ void Player::Walk()
 {
 	m_MoveSpeed = WALK_SPEED;
 
-	if (m_isTakeWeapons) //武器を持っているとき
+	if (m_isTakeWeapon) //武器を持っているとき
 	{
 		if (m_Weapons == eShotgun)
 		{
@@ -322,7 +278,7 @@ void Player::Run()
 	m_MoveSpeed = RUN_SPEED;
 
 	//武器を持っているとき
-	if (m_isTakeWeapons)
+	if (m_isTakeWeapon)
 	{
 		if (m_Weapons == eShotgun)
 		{
@@ -347,7 +303,7 @@ void Player::Crouch()
 	static int time = 29;
 
 	//武器を持っている時は武器をしまってからしゃがむ
-	if (m_isTakeWeapons)
+	if (m_isTakeWeapon)
 	{
 		if (m_Weapons == eShotgun)
 		{
@@ -364,7 +320,7 @@ void Player::Crouch()
 		//しまうアニメーションの終わり
 		if (m_Model.GetPlayTime() == 0)
 		{
-			m_isTakeWeapons = false;
+			m_isTakeWeapon = false;
 			time = 29;
 		}
 	}
@@ -401,18 +357,24 @@ void Player::Crouch()
 	}
 }
 
-void Player::TakeGun()
+void Player::TakeWeapon()
 {
-	m_Model.ChangeAnimation(eAnim_TakeGun);
-	m_Model.SetPlayTime(40);
-	if (m_Model.GetPlayTime() >= 29)
+	if (m_Weapons == eShotgun)
 	{
-		m_Model.ChangeAnimation(eAnim_IdleTakeGun);
+		m_Model.ChangeAnimation(eAnim_TakeGun);
+		m_Model.SetPlayTime(40);
+		if (m_Model.GetPlayTime() >= 29)
+		{
+			m_Model.ChangeAnimation(eAnim_IdleTakeGun);
+		}
 	}
+	else if (m_Weapons == eHandgun)
+	{
 
+	}
 }
 
-void Player::SetupGun()
+void Player::SetupWeapon()
 {
 
 }
@@ -432,6 +394,10 @@ void Player::HitCamera(Result_Porygon &hitData)
 	m_CameraPos = hitData.contactPos;
 	Camera::SetEye(hitData.contactPos);
 }
+
+
+
+
 
 
 Shotgun::Shotgun(Player* p)

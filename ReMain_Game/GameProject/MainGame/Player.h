@@ -57,7 +57,7 @@ public:
 	void Camera();
 	void Animation();
 	Matrix GetBomeMat(int bornIndex);
-	EPlayerAnimation GetAnim();
+	int GetAnim();
 	float GetPlayTime();
 	void SetGunMtx(Matrix m);
 
@@ -65,8 +65,8 @@ public:
 	void Walk();
 	void Run();
 	void Crouch();
-	void TakeGun();
-	void SetupGun();
+	void TakeWeapon();
+	void SetupWeapon();
 	void Die();
 	void Hit();
 
@@ -87,9 +87,10 @@ private:
 	float m_Horizontal;
 	float m_MoveSpeed;
 	float m_CameraPosY;
+	bool m_ChangeTakeWeapon;
 	bool m_isCrouch;
 	bool m_isMove;
-	bool m_isTakeWeapons;
+	bool m_isTakeWeapon;
 	bool m_isAttack;
 };
 class Shotgun
