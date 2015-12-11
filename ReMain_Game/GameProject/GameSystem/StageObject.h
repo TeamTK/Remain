@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include "../GEKO//Mesh/StaticMesh.h"
+#include "../GEKO/Collider/Collider.h"
 
 struct XYZ
 {
@@ -30,8 +31,10 @@ public:
 	void Update();
 	void Render();
 
-private:
+protected:
 	StaticMesh m_Object;
+	Collider m_CharacterHit;
+
 };
 
 class StageObjectManager
@@ -77,7 +80,11 @@ class Tree_1 : public StageObject
 {
 public:
 	Tree_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos,rot,sca,name){}
+		StageObject(pos,rot,sca,name)
+	{
+		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
+		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+	}
 	~Tree_1(){}
 };
 
@@ -85,7 +92,11 @@ class Tree_2 : public StageObject
 {
 public:
 	Tree_2(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name){}
+		StageObject(pos, rot, sca, name)
+	{
+		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
+		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+	}
 	~Tree_2(){}
 };
 
@@ -117,7 +128,11 @@ class Ground : public StageObject
 {
 public:
 	Ground(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name) {}
+		StageObject(pos, rot, sca, name) 
+	{
+		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
+		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+	}
 	~Ground() {}
 };
 
@@ -125,7 +140,11 @@ class RockWall : public StageObject
 {
 public:
 	RockWall(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name) {}
+		StageObject(pos, rot, sca, name) 
+	{
+		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
+		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+	}
 	~RockWall() {}
 };
 

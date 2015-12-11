@@ -88,8 +88,8 @@ struct Result_Porygon
 	Vector3D vertexPos[3];
 	Vector3D contactPos;
 	Vector3D normal;
+	int materialIndex;
 	float dist;
-	//int materialNum;
 	Result_Porygon() {};
 	~Result_Porygon() {};
 };

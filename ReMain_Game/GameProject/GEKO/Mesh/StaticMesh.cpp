@@ -65,14 +65,29 @@ VertexInfo *StaticMesh::GetVertex()
 	return m_pMeshData->GetMeshInfo()->pvVertex;
 }
 
+MaterialInfo *StaticMesh::GetMaterial()
+{
+	return m_pMeshData->GetMeshInfo()->m_pMaterial;
+}
+
 Matrix *StaticMesh::GetLocalMatrix()
 {
 	return &m_pMeshData->GetMeshInfo()->m_LocalMat;
 }
 
-int StaticMesh::GetFaceNum()
+int *StaticMesh::GetPolygonIndex(int materialIndex)
+{
+	return m_pMeshData->GetMeshInfo()->m_pMaterial[materialIndex].pPolygonIndex;
+}
+
+int StaticMesh::GetFaceAllNum()
 {
 	return m_pMeshData->GetMeshInfo()->faceNumAll;
+}
+
+int StaticMesh::GetMaterialAllNum()
+{
+	return m_pMeshData->GetMeshInfo()->materialNumAll;
 }
 
 void StaticMesh::RenderFunc(Matrix &matrix)
@@ -196,7 +211,7 @@ void StaticMesh::DebugNormal()
 
 	Matrix m = m_pMeshData->GetMeshInfo()->m_LocalMat * m_Matrix;
 
-	for (int i = 0; i < GetFaceNum(); i++)
+	for (int i = 0; i < GetFaceAllNum(); i++)
 	{
 		v1 = m_pMeshData->GetMeshInfo()->pvVertex[i * 3].vPos;
 		v2 = m_pMeshData->GetMeshInfo()->pvVertex[i * 3 + 1].vPos;

@@ -478,32 +478,38 @@ bool ColliderManager::HitCheckLineSegment(LineSegmentHitData &pHitData1, LineSeg
 bool ColliderManager::HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, LineSegmentHitData &hitData2, Result_Porygon *pory)
 {
 	HitResult_SegmentTriangle hit;
-	//Matrix inverse = hitData1.GetMatrix()->GetInverse();
 	Matrix m = *hitData1.GetLocalMatrix() * *hitData1.GetMatrix(); //ƒ‚ƒfƒ‹‚Ì•ÏŠ·s—ñ
 	Matrix inverse = m.GetInverse();
 	TriangleInfo hitTriangle;
 	LineSegmentInfo hitLine(*hitData2.pStart * inverse, *hitData2.pEnd * inverse);
 	VertexInfo *ver = hitData1.GetVertex();
+	MaterialInfo *material = hitData1.GetMaterial();
 
-	//‘S‚Ä‚ÌOŠpŒ`ƒ|ƒŠƒSƒ“‚É“–‚½‚è”»’è‚ğ‚·‚é
-	for (int i = 0; i < hitData1.GetFaceNum(); i++)
+	//ƒ}ƒeƒŠƒAƒ‹‚²‚Æ‚Éƒ|ƒŠƒSƒ“‚Æ‚Ì“–‚½‚è”»’è‚ğ‚·‚é
+	int materialAllNum = hitData1.GetMaterialAllNum();
+	for (int i = 0; i < materialAllNum; i++)
 	{
-		hitTriangle.v1 = ver[i * 3].vPos;
-		hitTriangle.v2 = ver[i * 3 + 1].vPos;
-		hitTriangle.v3 = ver[i * 3 + 2].vPos;
-
-		hit = Collision3D::LineSegmentTriangle(hitLine, hitTriangle, ver[i * 3].vNormal);
-		
-		//“–‚½‚Á‚½‚çî•ñ‚ğŠi”[
-		if (hit.isHit)
+		int *index = hitData1.GetPolygonIndex(i);
+		int faceNum = material[i].dwNumFace;
+		for (int j = 0; j < faceNum; j++)
 		{
-			pory->contactPos = hit.pos * m;
-			pory->normal = Vector3D::Matrix3x3(hit.normal, m).GetNormalize();
-			pory->vertexPos[0] = hitTriangle.v1 * m;
-			pory->vertexPos[1] = hitTriangle.v2 * m;
-			pory->vertexPos[2] = hitTriangle.v3 * m;
+			hitTriangle.v1 = ver[index[j * 3]].vPos;
+			hitTriangle.v2 = ver[index[j * 3 + 1]].vPos;
+			hitTriangle.v3 = ver[index[j * 3 + 2]].vPos;
 
-			return true;
+			hit = Collision3D::LineSegmentTriangle(hitLine, hitTriangle);
+
+			//“–‚½‚Á‚½‚ç“–‚½‚Á‚½’¸“_Ši”[
+			if (hit.isHit)
+			{
+				pory->contactPos = hit.pos * m;
+				pory->normal = Vector3D::Matrix3x3(hit.normal, m).GetNormalize();
+				pory->vertexPos[0] = hitTriangle.v1 * m;
+				pory->vertexPos[1] = hitTriangle.v2 * m;
+				pory->vertexPos[2] = hitTriangle.v3 * m;
+				pory->materialIndex = i;
+				return true;
+			}
 		}
 	}
 	return false;
@@ -516,27 +522,35 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereH
 	TriangleInfo hitTriangle;
 	SphereInfo hitSphere(*hitData2.pPosition * m.GetInverse(), *hitData2.pRadius);
 	VertexInfo *ver = hitData1.GetVertex();
+	MaterialInfo *material = hitData1.GetMaterial();
 	std::vector<Vector3D> hitPos;
 	std::vector<Vector3D> hitNormal;
+	std::vector<int> materialNum;
 	std::vector<float> hitDist;
 	std::vector<TriangleInfo> hitVer;
 
-	//‘S‚Ä‚ÌOŠpŒ`ƒ|ƒŠƒSƒ“‚É“–‚½‚è”»’è‚ğ‚·‚é
-	for (int i = 0; i < hitData1.GetFaceNum(); i++)
+	//ƒ}ƒeƒŠƒAƒ‹‚²‚Æ‚Éƒ|ƒŠƒSƒ“‚Æ‚Ì“–‚½‚è”»’è‚ğ‚·‚é
+	int materialAllNum = hitData1.GetMaterialAllNum();
+	for (int i = 0; i < materialAllNum; i++)
 	{
-		hitTriangle.v1 = ver[i * 3].vPos;
-		hitTriangle.v2 = ver[i * 3 + 1].vPos;
-		hitTriangle.v3 = ver[i * 3 + 2].vPos;
-
-		Hitdata = Collision3D::SphereTriangle(hitSphere, hitTriangle, ver[i * 3].vNormal);
-
-		//“–‚½‚Á‚½‚ç“–‚½‚Á‚½’¸“_Ši”[
-		if (Hitdata.isHit)
+		int *index = hitData1.GetPolygonIndex(i);
+		int faceNum = material[i].dwNumFace;
+		for (int j = 0; j < faceNum; j++)
 		{
-			hitPos.emplace_back(Hitdata.pos);
-			hitNormal.emplace_back(ver[i * 3].vNormal);
-			hitVer.emplace_back(hitTriangle.v1, hitTriangle.v2, hitTriangle.v3);
-			hitDist.emplace_back(Hitdata.dist);
+			hitTriangle.v1 = ver[index[j * 3]].vPos;
+			hitTriangle.v2 = ver[index[j * 3 + 1]].vPos;
+			hitTriangle.v3 = ver[index[j * 3 + 2]].vPos;
+			Hitdata = Collision3D::SphereTriangle(hitSphere, hitTriangle);
+
+			//“–‚½‚Á‚½‚ç“–‚½‚Á‚½’¸“_Ši”[
+			if (Hitdata.isHit)
+			{
+				hitPos.emplace_back(Hitdata.pos);
+				hitNormal.emplace_back(Hitdata.normal);
+				hitVer.emplace_back(hitTriangle.v1, hitTriangle.v2, hitTriangle.v3);
+				materialNum.emplace_back(i);
+				hitDist.emplace_back(Hitdata.dist);
+			}
 		}
 	}
 
@@ -551,6 +565,7 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereH
 		pory->pArray[i].vertexPos[0] = hitVer[i].v1 * m;
 		pory->pArray[i].vertexPos[1] = hitVer[i].v2 * m;
 		pory->pArray[i].vertexPos[2] = hitVer[i].v3 * m;
+		pory->pArray[i].materialIndex = materialNum[i];
 		pory->pArray[i].dist = hitDist[i];
 	}
 	pory->hitNum = hitVer.size();
@@ -562,6 +577,8 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereH
 	hitNormal.shrink_to_fit();
 	hitVer.clear();
 	hitVer.shrink_to_fit();
+	materialNum.clear();
+	materialNum.shrink_to_fit();
 	hitDist.clear();
 	hitDist.shrink_to_fit();
 

@@ -207,7 +207,7 @@ void Player::Camera()
 	if (m_Vertical < -2.0f) m_Vertical = -2.0f;	//‰ºŒÀ
 
 	Vector3D v = m_Model.GetAxisX(-0.2f);
-	v.y = m_CameraPosY;
+	v.y = m_CameraPosY + m_pos.y;
 
 	m_CamDir = Vector3D(cosf(m_Vertical) * sinf(m_Horizontal), -sinf(m_Vertical), cosf(m_Vertical) * cosf(m_Horizontal));
 

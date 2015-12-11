@@ -115,3 +115,14 @@ CBullet *CBulletManager::Add(const Vector3D pos, const Vector3D &dir,const float
 	m_Core.push_back(p);
 	return p;
 }
+
+void CBulletManager::AllClear()
+{
+	auto it = m_Core.begin();
+	for (; it != m_Core.end();)
+	{
+		delete *it;
+		it = m_Core.erase(it);
+	}
+	m_Core.clear();
+}

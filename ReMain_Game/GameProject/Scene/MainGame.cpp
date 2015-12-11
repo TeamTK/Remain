@@ -20,7 +20,9 @@ MainGame::~MainGame()
 {
 	delete m_pShotgun;
 	delete m_pHandgun;
+	CCharacterManager::GetInstance()->AllClear();
 	CCharacterManager::GetInstance()->ClearInstance();
+	CBulletManager::GetInstance()->AllClear();
 	CBulletManager::GetInstance()->ClearInstance();
 	StageObjectManager::GetInstance()->ClearList();
 	StageObjectManager::GetInstance()->ClearInstance();

@@ -166,6 +166,7 @@ void MeshData::Relese()
 		for (int i = 0; i < m_MeshInfo.materialNumAll; i++)
 		{
 			SAFE_RELEASE(m_MeshInfo.m_pMaterial[i].pTexture);
+			SAFE_DELETE_ARRAY(m_MeshInfo.m_pMaterial[i].pPolygonIndex);
 			m_MeshInfo.m_ppIndexBuffer[i]->Release();
 		}
 

@@ -16,7 +16,7 @@ public:
 	void SetTime(float animTime);		  //指定のアニメーション時間に設定
 	SkinVertexInfo *GetVertex();
 	float GetPlayTime();
-	int GetFaceNum();
+	int GetFaceAllNum();
 	int GetBornNum(std::string name);
 	int GetBornAllNum();
 	std::string GetBornName(int bornIndex);
