@@ -84,8 +84,8 @@ public:
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
-		m_CamraHit.Regist_SMesh_vs_L(&m_Object);
-		m_CamraHit.SetID(eHITID1, eHITID0);
+	//	m_CamraHit.Regist_SMesh_vs_L(&m_Object);
+		//m_CamraHit.SetID(eHITID1, eHITID0);
 	}
 	~Tree_1(){}
 
@@ -101,8 +101,8 @@ public:
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
-		m_CamraHit.Regist_SMesh_vs_L(&m_Object);
-		m_CamraHit.SetID(eHITID1, eHITID0);
+		//m_CamraHit.Regist_SMesh_vs_L(&m_Object);
+		//m_CamraHit.SetID(eHITID1, eHITID0);
 	}
 	~Tree_2(){}
 
