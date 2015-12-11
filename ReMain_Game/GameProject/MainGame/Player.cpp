@@ -25,6 +25,9 @@ Player::Player() :
 	}
 	m_Model.SetRotationRadian(0.0f, 3.14f, 0.0f);
 	m_Model.SetScale(1.0f, 1.0f, 1.0f);
+
+	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_LookPos, REGIST_FUNC(Player::HitCamera));
+	m_HitCamera.SetID(eHITID0, eHITID1);
 }
 
 Player::~Player()
@@ -185,16 +188,16 @@ void Player::Camera()
 	if (m_Vertical > -0.5f) m_Vertical = -0.5f;	//è„å¿
 	if (m_Vertical < -2.0f) m_Vertical = -2.0f;	//â∫å¿
 
-	Vector3D v = m_Model.GetAxisX(-0.2f);
-	v.y = m_CameraPosY + m_pos.y;
+	m_LookPos = m_Model.GetAxisX(-0.2f);
+	m_LookPos.y = m_CameraPosY + m_pos.y;
 
 	m_CamDir = Vector3D(cosf(m_Vertical) * sinf(m_Horizontal), -sinf(m_Vertical), cosf(m_Vertical) * cosf(m_Horizontal));
 
 	//ÉJÉÅÉâÇÃç¿ïW
-	Vector3D camPos = v;
-	camPos.x += lenge * sinf(m_Vertical) * cosf(m_Horizontal);
-	camPos.y += lenge * cosf(m_Vertical);
-	camPos.z += lenge * sinf(m_Vertical) * sinf(m_Horizontal);
+	m_CameraPos = m_LookPos;
+	m_CameraPos.x += lenge * sinf(m_Vertical) * cosf(m_Horizontal);
+	m_CameraPos.y += lenge * cosf(m_Vertical);
+	m_CameraPos.z += lenge * sinf(m_Vertical) * sinf(m_Horizontal);
 
 	if (m_isAttack)
 	{
@@ -212,8 +215,8 @@ void Player::Camera()
 	}
 	else
 	{
-		Camera::SetEye(camPos);
-		Camera::SetLookat(v);
+		Camera::SetEye(m_CameraPos);
+		Camera::SetLookat(m_LookPos);
 		Camera::SetUpVec(Vector3D(0, 1, 0));
 	}
 }
@@ -424,7 +427,11 @@ void Player::Hit()
 
 }
 
-
+void Player::HitCamera(Result_Porygon &hitData)
+{
+	m_CameraPos = hitData.contactPos;
+	Camera::SetEye(hitData.contactPos);
+}
 
 
 Shotgun::Shotgun(Player* p)

@@ -12,7 +12,7 @@ Collider::Collider() :
 
 Collider::~Collider()
 {
-	if (m_pBaseCollider != nullptr)
+	if (m_pBaseCollider)
 	{
 		delete m_pBaseCollider;
 	}
@@ -116,7 +116,7 @@ void Collider::Sleep()
 
 void Collider::Release()
 {
-	if (m_pBaseCollider != nullptr)
+	if (m_pBaseCollider)
 	{
 		delete m_pBaseCollider;
 		m_pBaseCollider = nullptr;

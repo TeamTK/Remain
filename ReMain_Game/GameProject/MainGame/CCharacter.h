@@ -41,7 +41,7 @@ protected:
 public:
 	CCharacter() {}
 	CCharacter(int type);
-	~CCharacter();
+	virtual ~CCharacter();
 	DynamicMesh m_Model;
 	virtual void Update();
 	virtual void Render();

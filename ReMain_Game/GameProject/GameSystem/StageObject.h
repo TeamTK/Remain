@@ -27,7 +27,7 @@ class StageObject
 public:
 	StageObject();
 	StageObject(XYZ pos, XYZ rot, XYZ sca, std::string name);
-	~StageObject();
+	virtual ~StageObject();
 	void Update();
 	void Render();
 
@@ -84,8 +84,13 @@ public:
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+		m_CamraHit.Regist_SMesh_vs_L(&m_Object);
+		m_CamraHit.SetID(eHITID1, eHITID0);
 	}
 	~Tree_1(){}
+
+private:
+	Collider m_CamraHit;
 };
 
 class Tree_2 : public StageObject
@@ -96,8 +101,13 @@ public:
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+		m_CamraHit.Regist_SMesh_vs_L(&m_Object);
+		m_CamraHit.SetID(eHITID1, eHITID0);
 	}
 	~Tree_2(){}
+
+private:
+	Collider m_CamraHit;
 };
 
 class Grass_1 : public StageObject
@@ -132,8 +142,13 @@ public:
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+		m_CamraHit.Regist_SMesh_vs_L(&m_Object);
+		m_CamraHit.SetID(eHITID1, eHITID0);
 	}
 	~Ground() {}
+
+private:
+	Collider m_CamraHit;
 };
 
 class RockWall : public StageObject
@@ -144,8 +159,13 @@ public:
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+		m_CamraHit.Regist_SMesh_vs_L(&m_Object);
+		m_CamraHit.SetID(eHITID1, eHITID0);
 	}
 	~RockWall() {}
+
+private:
+	Collider m_CamraHit;
 };
 
 class SkyDome : public StageObject
