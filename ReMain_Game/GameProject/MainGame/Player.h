@@ -90,6 +90,7 @@ private:
 	bool m_ChangeTakeWeapon;	//e‚ğ‚Â
 	bool m_isTakeWeapon;	//e‚ğ‚Á‚Ä‚¢‚é‚©
 	bool m_isCrouch;	//‚µ‚á‚ª‚ñ‚Å‚¢‚é‚©
+	bool m_isRun;	//‘–‚Á‚Ä‚¢‚é‚©
 	bool m_isMove;		//ˆÚ“®’†‚©
 	bool m_isAttack;	//UŒ‚’†‚©
 };
