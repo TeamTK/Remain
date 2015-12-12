@@ -7,6 +7,7 @@ Shotgun::Shotgun()
 Shotgun::Shotgun(Player* p)
 {
 	m_Model.SetAsset("Shotgun");
+	m_pPlayer = p;
 }
 
 Shotgun::~Shotgun()
@@ -16,7 +17,7 @@ Shotgun::~Shotgun()
 
 void Shotgun::Update()
 {
-	if (m_pPlayer->GetAnim() == EPlayerAnimation::eSetupGun && m_pPlayer->GetPlayTime() >= 14)
+	if (m_pPlayer->GetAnim() == EPlayerAnimation::eAnim_SetupGun && m_pPlayer->GetPlayTime() >= 29)
 	{
 		//\‚¦ó‘Ô
 		m_Model.SetTranselate(0.05f, 0.0f, 0.0f);

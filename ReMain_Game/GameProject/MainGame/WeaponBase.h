@@ -7,11 +7,11 @@ class WeaponBase
 {
 public:
 	WeaponBase();
-	WeaponBase(Player* p);
 	~WeaponBase();
 	void Update();
 	void Render();
 	Matrix GetMatrix();
+
 protected:
 	Player* m_pPlayer;
 	StaticMesh m_Model;
