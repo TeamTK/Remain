@@ -34,8 +34,8 @@ enum EPlayerState
 	eState_Walk,
 	eState_Run,
 	eState_Crouch,
-	eState_TakeGun,
-	eState_SetupGun,
+	eState_TakeWeapon,
+	eState_SetupWeapon,
 	eState_Hit,
 	eState_Die,
 };
@@ -87,11 +87,11 @@ private:
 	float m_Horizontal;
 	float m_MoveSpeed;
 	float m_CameraPosY;
-	bool m_ChangeTakeWeapon;
-	bool m_isCrouch;
-	bool m_isMove;
-	bool m_isTakeWeapon;
-	bool m_isAttack;
+	bool m_ChangeTakeWeapon;	//e‚ğ‚Â
+	bool m_isTakeWeapon;	//e‚ğ‚Á‚Ä‚¢‚é‚©
+	bool m_isCrouch;	//‚µ‚á‚ª‚ñ‚Å‚¢‚é‚©
+	bool m_isMove;		//ˆÚ“®’†‚©
+	bool m_isAttack;	//UŒ‚’†‚©
 };
 class Shotgun
 {
