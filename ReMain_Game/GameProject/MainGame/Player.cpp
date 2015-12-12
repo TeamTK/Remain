@@ -42,6 +42,8 @@ void Player::Update()
 	Animation();
 	Camera();
 	CCharacter::Update();
+
+	printf("%d %d\n", m_ChangeTakeWeapon, m_isTakeWeapon);
 }
 
 void Player::Move()
@@ -101,11 +103,18 @@ void Player::Move()
 
 void Player::Attack()
 {
+	//e‚ð‚à‚Â
 	if (Input::KeyF.Clicked())
 	{
-		m_isTakeWeapon = !m_isTakeWeapon;
+		m_ChangeTakeWeapon = !m_ChangeTakeWeapon;
 	}
 
+	if (m_ChangeTakeWeapon)
+	{
+		m_State = eState_TakeWeapon;
+	}
+
+	//•Ší‚ÌØ‚è‘Ö‚¦
 	if (Input::KeyT.Clicked() && !m_isTakeWeapon)
 	{
 		if (m_Weapons == eShotgun)
@@ -118,14 +127,14 @@ void Player::Attack()
 		}
 	}
 
-
-	if (Input::KeyG.Clicked() && m_isTakeWeapon)
+	//e‚ð\‚¦‚é
+	if (Input::KeyG.Pressed() && m_isTakeWeapon)
 	{
 		D3DXVECTOR4 pos;
 		D3DXVec3Transform(&pos, &D3DXVECTOR3(0, 0, 20), &m_GunMatrix);
 		CBulletManager::GetInstance()->Add(Vector3D(pos.x, pos.y + 1.0f, pos.z), m_CamDir, 2.00f);
 
-		m_State = eState_SetupGun;
+		m_State = eState_SetupWeapon;
 		m_isAttack = !m_isAttack;
 	}
 }
@@ -167,13 +176,11 @@ void Player::Camera()
 		D3DXVec3Transform(&at, &D3DXVECTOR3(-0.2f, 0.0f, 2.0f), &mat);
 		Camera::SetEye(Vector3D(eye.x, eye.y, eye.z));
 		Camera::SetLookat(Vector3D(at.x, at.y, at.z));
-		Camera::SetUpVec(Vector3D(0, 1, 0));
 	}
 	else
 	{
 		Camera::SetEye(m_CameraPos);
 		Camera::SetLookat(m_LookPos);
-		Camera::SetUpVec(Vector3D(0, 1, 0));
 	}
 }
 
@@ -194,10 +201,10 @@ void Player::Animation()
 	case eState_Crouch:
 		Crouch();
 		break;
-	case eState_TakeGun:
+	case eState_TakeWeapon:
 		TakeWeapon();
 		break;
-	case eState_SetupGun:
+	case eState_SetupWeapon:
 		SetupWeapon();
 		break;
 	case eState_Hit:
@@ -361,22 +368,66 @@ void Player::TakeWeapon()
 {
 	if (m_Weapons == eShotgun)
 	{
-		m_Model.ChangeAnimation(eAnim_TakeGun);
-		m_Model.SetPlayTime(40);
-		if (m_Model.GetPlayTime() >= 29)
+		if (m_Dir.x != 0 || m_Dir.x != 0 && m_isTakeWeapon)
+		{
+			m_Model.ChangeAnimation(eAnim_WalkTakeGun);
+			m_Model.SetPlayTime(30);
+		}
+		else if (m_Dir.x == 0 && m_Dir.x == 0 && m_isTakeWeapon)
 		{
 			m_Model.ChangeAnimation(eAnim_IdleTakeGun);
+			m_Model.SetPlayTime(30);
+		}
+		else
+		{
+			m_Model.ChangeAnimation(eAnim_TakeGun);
+			m_Model.SetPlayTime(30);
 		}
 	}
-	else if (m_Weapons == eHandgun)
+	else
 	{
+		if (m_Dir.x != 0 || m_Dir.x != 0 && m_isTakeWeapon)
+		{
+			m_Model.ChangeAnimation(eAnim_WalkTakeHandgun);
+			m_Model.SetPlayTime(30);
+		}
+		else if (m_Dir.x == 0 && m_Dir.x == 0 && m_isTakeWeapon)
+		{
+			m_Model.ChangeAnimation(eAnim_IdleTakeHandgun);
+			m_Model.SetPlayTime(30);
+		}
+		else
+		{
+			m_Model.ChangeAnimation(eAnim_TakeHandgun);
+			m_Model.SetPlayTime(30);
+		}
+	}
 
+	if (m_Model.GetPlayAnimation() == eAnim_TakeGun || m_Model.GetPlayAnimation() == eAnim_TakeHandgun &&
+		m_Model.GetPlayTime() >= 29)
+	{
+		m_isTakeWeapon = true;
 	}
 }
 
 void Player::SetupWeapon()
 {
+	if (m_Weapons == eShotgun)
+	{
+		m_Model.ChangeAnimation(eAnim_TakeHandgun);
+		m_Model.SetPlayTime(30);
+	}
+	else
+	{
+		m_Model.ChangeAnimation(eAnim_SetupHandgun);
+		m_Model.SetPlayTime(30);
+	}
 
+	if (m_Model.GetPlayAnimation() == eAnim_TakeGun || m_Model.GetPlayAnimation() == eAnim_TakeHandgun &&
+		m_Model.GetPlayTime() >= 29)
+	{
+		m_Model.SetTime(29);
+	}
 }
 
 void Player::Die()
