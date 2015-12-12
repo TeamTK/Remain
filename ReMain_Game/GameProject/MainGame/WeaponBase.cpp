@@ -4,11 +4,6 @@ WeaponBase::WeaponBase()
 {
 }
 
-WeaponBase::WeaponBase(Player* p)
-{
-	m_pPlayer = p;
-}
-
 WeaponBase::~WeaponBase()
 {
 

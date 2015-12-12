@@ -7,6 +7,7 @@ Handgun::Handgun()
 Handgun::Handgun(Player* p)
 {
 	m_Model.SetAsset("Handgun");
+	m_pPlayer = p;
 }
 
 Handgun::~Handgun()
@@ -16,7 +17,7 @@ Handgun::~Handgun()
 
 void Handgun::Update()
 {
-	if (m_pPlayer->GetAnim() == EPlayerAnimation::eSetupHandgun && m_pPlayer->GetPlayTime() >= 14)
+	if (m_pPlayer->GetAnim() == EPlayerAnimation::eAnim_SetupHandgun && m_pPlayer->GetPlayTime() >= 29)
 	{
 		//\‚¦ó‘Ô
 		m_Model.SetTranselate(0.05f, 0.05f, 0.0f);

@@ -4,9 +4,11 @@
 #include "Scene.h"
 #include "../GameSystem/StageObject.h"
 #include "../MainGame/Player.h"
-
 #include "../MainGame/CBullet.h"
 #include "../MainGame/CEnemy.h"
+#include "../MainGame/Shotgun.h"
+#include "../MainGame/Handgun.h"
+
 class MainGame : public Scene
 {
 public:

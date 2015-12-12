@@ -55,7 +55,9 @@
     <ClCompile Include="MainGame\CBullet.cpp" />
     <ClCompile Include="MainGame\CCharacter.cpp" />
     <ClCompile Include="MainGame\CEnemy.cpp" />
+    <ClCompile Include="MainGame\Handgun.cpp" />
     <ClCompile Include="MainGame\Player.cpp" />
+    <ClCompile Include="MainGame\Shotgun.cpp" />
     <ClCompile Include="MainGame\WeaponBase.cpp" />
     <ClCompile Include="Scene\BaseCamp.cpp" />
     <ClCompile Include="Scene\GameEnd.cpp" />
@@ -184,7 +186,9 @@
     <ClInclude Include="MainGame\CBullet.h" />
     <ClInclude Include="MainGame\CCharacter.h" />
     <ClInclude Include="MainGame\CEnemy.h" />
+    <ClInclude Include="MainGame\Handgun.h" />
     <ClInclude Include="MainGame\Player.h" />
+    <ClInclude Include="MainGame\Shotgun.h" />
     <ClInclude Include="MainGame\WeaponBase.h" />
     <ClInclude Include="Scene\BaseCamp.h" />
     <ClInclude Include="Scene\GameEnd.h" />

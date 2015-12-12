@@ -93,37 +93,4 @@ private:
 	bool m_isMove;		//ˆÚ“®’†‚©
 	bool m_isAttack;	//UŒ‚’†‚©
 };
-class Shotgun
-{
-public:
-	Shotgun(Player* p);
-	~Shotgun();
-	void Update();
-	void Render();
-	Matrix GetMatrix();
-
-private:
-	Player* m_pPlayer;
-	StaticMesh m_Shotgun;
-	Matrix m_BoneMat;
-	Matrix m_Matrix;
-
-};
-
-class Handgun
-{
-public:
-	Handgun(Player* p);
-	~Handgun();
-	void Update();
-	void Render();
-	Matrix GetMatrix();
-
-private:
-	Player* m_pPlayer;
-	StaticMesh m_Handgun;
-	Matrix m_BoneMat;
-	Matrix m_Matrix;
-
-};
 #endif
