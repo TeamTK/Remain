@@ -47,7 +47,10 @@ void Player::Update()
 	//printf("%d %d\n", m_ChangeTakeWeapon, m_isTakeWeapon);
 	//printf("%f %f\n", m_Vertical, m_Horizontal);
 	//printf("%f %f\n", m_pos.x, m_pos.z);
-	printf("Move %d Run %d\n", m_isMove, m_isRun);
+	//printf("Move %d Run %d\n", m_isMove, m_isRun);
+	printf("%f\n", m_Vertical);
+
+	m_Model.GetBornMatrix("Armature_hand_R", true);
 }
 
 void Player::Move()
@@ -92,7 +95,7 @@ void Player::Move()
 
 		if (m_isAttack)
 		{
-
+			m_pos.x += m_Dir.x * m_MoveSpeed;
 		}
 		else
 		{
@@ -177,8 +180,11 @@ void Player::Camera()
 
 	if (m_isAttack)
 	{
+		m_rot.x = m_Vertical;
+		m_rot.y = m_Horizontal;
+
 		m_Model.SetTranselate(m_pos);
-		m_Model.SetRotationRadian(m_Vertical, m_Horizontal, 0.0f);
+		m_Model.SetRotationRadian(m_rot.x, m_rot.y, m_rot.z);
 
 		//Matrix mat = m_Model.GetBornMatrix(6, true);
 		//D3DXVECTOR4 eye;
@@ -190,7 +196,7 @@ void Player::Camera()
 	}
 	else
 	{
-		m_Model.SetRotationRadian(0.0f, 0.0f, 0.0f);
+		m_rot.x = 0.0f;
 		Camera::SetEye(m_CameraPos);
 		Camera::SetLookat(m_LookPos);
 	}
@@ -398,7 +404,7 @@ void Player::TakeWeapon()
 		else if (!m_isMove && m_isTakeWeapon)
 		{
 			m_Model.ChangeAnimation(eAnim_IdleTakeGun);
-			m_Model.SetPlayTime(30);
+			m_Model.SetPlayTime(15);
 		}
 		//ƒVƒ‡ƒbƒgƒKƒ“‚ðŽæ‚é
 		else
