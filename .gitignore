@@ -30,6 +30,7 @@
 *.opensdf
 *.sdf
 *.rej
+*.suo
 Debug/
 Release/
 ReMain_Game/Debug/
