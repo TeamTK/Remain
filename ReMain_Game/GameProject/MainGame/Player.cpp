@@ -322,7 +322,7 @@ void Player::Crouch()
 	static int time = 29;
 
 	//•Ší‚ğ‚Á‚Ä‚¢‚é‚Í•Ší‚ğ‚µ‚Ü‚Á‚Ä‚©‚ç‚µ‚á‚ª‚Ş
-	if (m_isTakeWeapon)
+	if (m_ChangeTakeWeapon || m_isTakeWeapon)
 	{
 		if (m_Weapons == eShotgun)
 		{
