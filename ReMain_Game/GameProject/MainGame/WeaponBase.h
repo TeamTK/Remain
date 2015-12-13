@@ -7,7 +7,7 @@ class WeaponBase
 {
 public:
 	WeaponBase();
-	~WeaponBase();
+	virtual ~WeaponBase();
 	void Update();
 	void Render();
 	Matrix GetMatrix();
