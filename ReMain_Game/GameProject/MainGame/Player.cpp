@@ -45,12 +45,11 @@ void Player::Update()
 	CCharacter::Update();
 
 	//printf("%d %d\n", m_ChangeTakeWeapon, m_isTakeWeapon);
+	//printf("%d\n", m_isCrouch);
 	//printf("%f %f\n", m_Vertical, m_Horizontal);
 	//printf("%f %f\n", m_pos.x, m_pos.z);
 	//printf("Move %d Run %d\n", m_isMove, m_isRun);
-	printf("%f\n", m_Vertical);
-
-	m_Model.GetBornMatrix("Armature_hand_R", true);
+	//printf("%f\n", m_Vertical);
 }
 
 void Player::Move()
@@ -59,7 +58,6 @@ void Player::Move()
 	m_State = eState_Idle;
 	m_isMove = false;
 	m_isRun = false;
-	m_isCrouch = false;
 
 	//前後左右移動
 	if (Input::KeyW.Pressed())	m_Dir.z = 1;
@@ -73,6 +71,7 @@ void Player::Move()
 		m_State = eState_Walk;
 		m_isMove = true;
 	}
+
 	//走る
 	if (m_isMove && Input::KeyLShift.Pressed())
 	{
@@ -85,6 +84,11 @@ void Player::Move()
 	{
 		m_State = eState_Crouch;
 	}
+	else
+	{
+		m_isCrouch = false;
+	}
+
 
 	//プレイヤーが歩き状態なら移動処理
 	if (m_isMove)
@@ -375,7 +379,7 @@ void Player::Crouch()
 			m_isMove = true;
 		}
 
-		if (m_Model.GetPlayTime() >= 29 && !m_isCrouch)
+		if (m_Model.GetPlayTime() >= 29 && !m_isCrouch);
 		{
 			m_isCrouch = true;
 		}

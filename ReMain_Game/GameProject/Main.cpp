@@ -8,7 +8,6 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 	Debug::SearchMemoryLeak();
 	GEKO::WindowFixing();
 	GEKO::Init(L"GEKO3DX", 800, 600);
-	GEKO::BackgroundColor(0, 60, 100);
 
 	DirectionalLight::SetIntensity(0.8f);
 	DirectionalLight::SetDirection(0.0f, 0.5f);
@@ -17,6 +16,7 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 
 	while (GEKO::Loop())
 	{
+		GEKO::BackgroundColor(0, 0, 0);
 		GEKO::DrawFps();
 		SceneManager::Update();
 		SceneManager::Render();
