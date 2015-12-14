@@ -1,5 +1,5 @@
-#ifndef _DIRECTIONALLIGHT_
-#define _DIRECTIONALLIGHT_
+#ifndef _DIRECTIONAL_LIGHT_
+#define _DIRECTIONAL_LIGHT_
 
 #include "Direct3D11.h"
 

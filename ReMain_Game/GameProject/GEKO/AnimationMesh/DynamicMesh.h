@@ -1,5 +1,5 @@
-#ifndef _DYNAMICMESH_H_
-#define _DYNAMICMESH_H_
+#ifndef _DYNAMIC_MESH_H_
+#define _DYNAMIC_MESH_H_
 
 #include "..\Mesh\MeshBase.h"
 #include "DynamicMeshAsset.h"
@@ -11,7 +11,7 @@ public:
 	~DynamicMesh();
 	void SetAsset(SkinMeshData *meshData);
 	void SetAsset(const std::string &MeshName);
-	void ChangeAnimation(int num);
+	void ChangeAnimation(unsigned int num);
 	void SetPlayTime(float animSpeed); //アニメーション速度更新
 	void SetTime(float animTime);	   //指定のアニメーション時間に設定
 	SkinVertexInfo *GetVertex();

@@ -58,31 +58,31 @@ void MeshBase::SetTranselate(const Vector3D &pos)
 
 void MeshBase::SetDiffuse(int r, int g, int b, int materialIndex)
 {
-	m_Diffuse[materialIndex].x = (float)r / 255;
-	m_Diffuse[materialIndex].y = (float)g / 255;
-	m_Diffuse[materialIndex].z = (float)b / 255;
+	m_Diffuse[materialIndex].x = (float)r * RGB;
+	m_Diffuse[materialIndex].y = (float)g * RGB;
+	m_Diffuse[materialIndex].z = (float)b * RGB;
 }
 
 void MeshBase::SetSpecular(int r, int g, int b, int materialIndex)
 {
-	Vector3D specular = Vector3D((float)r / 255, (float)g / 255, (float)b / 255);
+	Vector3D specular = Vector3D((float)r * RGB, (float)g * RGB, (float)b * RGB);
 	m_Specular[materialIndex] = specular;
 }
 
 void MeshBase::SetAmbient(int r, int g, int b, int materialIndex)
 {
-	Vector3D ambient = Vector3D((float)r / 255, (float)g / 255, (float)b / 255);
+	Vector3D ambient = Vector3D((float)r * RGB, (float)g * RGB, (float)b * RGB);
 	m_Ambient[materialIndex] = ambient;
 }
 
 void MeshBase::SetAlpha(int alpha, int materialIndex)
 {
-	m_Diffuse[materialIndex].w = ((float)alpha / 255);
+	m_Diffuse[materialIndex].w = ((float)alpha * RGB);
 }
 
 void MeshBase::SetAlphaAll(int alpha)
 {
-	float a = ((float)alpha / 255);
+	float a = ((float)alpha * RGB);
 	for (unsigned int i = 0; i < m_Diffuse.size(); i++) m_Diffuse[i].w = a;
 }
 

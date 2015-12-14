@@ -1,5 +1,5 @@
-#ifndef _DYNAMICMESHASSET_H_
-#define _DYNAMICMESHASSET_H_
+#ifndef _DYNAMICMESH_ASSET_H_
+#define _DYNAMICMESH_ASSET_H_
 
 #include "LoadXDynamic.h"
 

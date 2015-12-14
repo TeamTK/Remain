@@ -4,8 +4,10 @@
 #define	DIRECTINPUT_VERSION	0x0800
 
 #include "..\Include\\dinput.h"
+#include "..\Include\\Xinput.h"
 #pragma comment(lib,"GEKO\\Lib\\dxguid.lib")
 #pragma comment(lib,"GEKO\\Lib\\dinput8.lib")
+#pragma comment(lib,"GEKO\\Lib\\Xinput.lib")
 
 struct Point
 {
@@ -19,6 +21,33 @@ struct Point
 		x(x), y(y)
 	{
 	}
+};
+
+//XInputボタンの種類
+enum KeyXInputPadType
+{
+	eUp = (1 << 0),
+	eDown = (1 << 1),
+	eLeft = (1 << 2),
+	eRight = (1 << 3),
+	eStart = (1 << 4),
+	eBack = (1 << 5),
+	eLeftThumb = (1 << 6),
+	eRightThumb = (1 << 7),
+	eLeftShoulder = (1 << 8),
+	eRightShoulder = (1 << 9),
+	eA = (1 << 10),
+	eB = (1 << 11),
+	eX = (1 << 12),
+	eY = (1 << 13),
+};
+
+//マウスホイールの状態
+enum EMouseWheel
+{
+	E_WHEEL_NO,
+	E_WHEEL_UP,
+	E_WHEEL_DOWN,
 };
 
 namespace Input
@@ -44,6 +73,8 @@ namespace Input
 		/// </summary>
 		void End();
 
+		void Update();
+
 		/// <summary>
 		/// キーボードのドライバーを返す
 		/// </summary>
@@ -60,6 +91,10 @@ namespace Input
 		/// </returns>
 		LPDIRECTINPUTDEVICE8& GetMouseDevice8();
 
+		DIMOUSESTATE2 *GetMouseState();
+
+		XINPUT_STATE *GetXInputState(int index);
+
 	private:
 		KeyManagement(){};
 
@@ -67,6 +102,8 @@ namespace Input
 		LPDIRECTINPUT8		 m_Dinput;		//DirectInput
 		LPDIRECTINPUTDEVICE8 m_KeyDevice;	//キーボードドライバー
 		LPDIRECTINPUTDEVICE8 m_MouseDevice;	//マウスドライバー
+		DIMOUSESTATE2 m_MouseState;
+		XINPUT_STATE m_XInputState[4];
 	};
 
 	class Key
@@ -100,14 +137,6 @@ namespace Input
 	private:
 		int	 m_key;	 //キーの識別番号
 		bool m_fkey; //キー管理
-	};
-
-	//マウスホイールの状態
-	enum EMouseWheel
-	{
-		E_WHEEL_NO,
-		E_WHEEL_UP,
-		E_WHEEL_DOWN,
 	};
 
 	class KeyMouse
@@ -146,7 +175,7 @@ namespace Input
 		/// <returns>
 		/// 現在のホイール量
 		/// </returns>
-		int GetWheelAmount();
+		float GetWheelAmount();
 
 		/// <summary>
 		/// ホイールを押した判定を返す
@@ -204,6 +233,54 @@ namespace Input
 		bool mf_LeftMouse;	//マウス左クリック管理
 		bool mf_RightMouse; //マウス右クリック管理
 		POINT m_Relative;   //マウスの相対値
+		DIMOUSESTATE2 *m_pDims;
+	};
+
+	class KeyXInputPad
+	{
+	public:
+		KeyXInputPad(int index);
+		~KeyXInputPad();
+		bool UpPressed();
+		bool UpClicked();
+		bool DownPressed();
+		bool DownClicked();
+		bool LeftPressed();
+		bool LeftClicked();
+		bool RightPressed();
+		bool RightClicked();
+		bool StartPressed();
+		bool StartClicked();
+		bool BackPressed();
+		bool BackClicked();
+		bool ThumbLeftPressed();
+		bool ThumbLeftClicked();
+		bool ThumbRightPressed();
+		bool ThumbRightClicked();
+		bool ShoulderLeftPressed();
+		bool ShoulderLeftClicked();
+		bool ShoulderRightPressed();
+		bool ShoulderRightClicked();
+		bool APressed();
+		bool AClicked();
+		bool BPressed();
+		bool BClicked();
+		bool XPressed();
+		bool XClicked();
+		bool YPressed();
+		bool YClicked();
+		int TriggerLeft();
+		int TriggerRight();
+		int ThumbLeftX();
+		int ThumbLeftY();
+		int ThumbRightX();
+		int ThumbRightY();
+		void Vibration(int index, int leftMotorSpeed, int rightMotorSpeed);
+
+	private:
+		XINPUT_STATE *m_pXInputState;
+		unsigned int m_keyState;
+
 	};
 
 	//キーボード
@@ -258,6 +335,11 @@ namespace Input
 
 	//マウス
 	static KeyMouse Mouse;
+
+	static KeyXInputPad XInputPad1(0);
+	static KeyXInputPad XInputPad2(1);
+	static KeyXInputPad XInputPad3(2);
+	static KeyXInputPad XInputPad4(3);
 }
 
 #endif

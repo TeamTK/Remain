@@ -23,6 +23,7 @@ namespace GEKO
 
 	bool Loop()
 	{
+		Input::KeyManagement::Get().Update();
 		WorldMatrixManager::GetInstance()->Update(); //モデルの行列更新
 		ColliderManager::GetInstance()->Update();
 		Camera::Update();
@@ -31,7 +32,7 @@ namespace GEKO
 
 	void BackgroundColor(int Red, int Green, int Blue)
 	{
-		Direct3D11::Get().Clear(Red / 255.0f, Green / 255.0f, Blue / 255.0f);
+		Direct3D11::Get().Clear(Red * RGB, Green * RGB, Blue * RGB);
 	}
 
 	void WindowFixing()

@@ -130,26 +130,13 @@ void Camera::SpaceViewTPS(const Vector3D &lookPos)
 	if (Input::Mouse.RPressed())
 	{
 		//ˆÚ“®•ª‚ÅŒvŽZ
-		pInstance->m_Vertical -= mouseValue.x * 0.001f;
-		pInstance->m_Horizontal -= mouseValue.y * 0.001f;
+		pInstance->m_Vertical -= mouseValue.x * 0.002f;
+		pInstance->m_Horizontal -= mouseValue.y * 0.002f;
 	}
 
 	static float lenge = 30.0f;
 
-	Input::EMouseWheel wheel = Input::Mouse.GetWheelState();
-
-	if (wheel == Input::EMouseWheel::E_WHEEL_UP)
-	{
-		lenge += 1.0f;
-	}
-	if (wheel == Input::EMouseWheel::E_WHEEL_DOWN)
-	{
-		lenge -= 1.0f;
-	}
-	//Input::EMouseWheel wheel = Input::Mouse.GetWheelState();
-
-	if (Input::KeyUp.Pressed()) lenge -= 1.0f;
-	if (Input::KeyDown.Pressed()) lenge += 1.0f;
+	lenge -= Input::Mouse.GetWheelAmount() * 0.2f;
 
 	Vector3D pos = lookPos;
 	pos.x += lenge * sinf(pInstance->m_Horizontal) * cosf(pInstance->m_Vertical);

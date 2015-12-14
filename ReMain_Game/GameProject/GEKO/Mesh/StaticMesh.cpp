@@ -211,24 +211,30 @@ void StaticMesh::DebugNormal()
 
 	Matrix m = m_pMeshData->GetMeshInfo()->m_LocalMat * m_Matrix;
 
-	for (int i = 0; i < GetFaceAllNum(); i++)
+	int materialNum = m_pMeshData->GetMeshInfo()->materialNumAll;
+	for (int i = 0; i < materialNum; i++)
 	{
-		v1 = m_pMeshData->GetMeshInfo()->pvVertex[i * 3].vPos;
-		v2 = m_pMeshData->GetMeshInfo()->pvVertex[i * 3 + 1].vPos;
-		v3 = m_pMeshData->GetMeshInfo()->pvVertex[i * 3 + 2].vPos;
-		normal1 = m_pMeshData->GetMeshInfo()->pvVertex[i * 3].vNormal;
-		normal2 = m_pMeshData->GetMeshInfo()->pvVertex[i * 3 + 1].vNormal;
-		normal3 = m_pMeshData->GetMeshInfo()->pvVertex[i * 3 + 2].vNormal;
+		int *pFaceIndex = m_pMeshData->GetMeshInfo()->m_pMaterial[i].pPolygonIndex;
+		int faceNum = m_pMeshData->GetMeshInfo()->m_pMaterial[i].dwNumFace;
+		for (int j = 0; j < faceNum; j++)
+		{
+			v1 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3]].vPos;
+			v2 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3 + 1]].vPos;
+			v3 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3 + 2]].vPos;
+			normal1 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3]].vNormal;
+			normal2 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3 + 1]].vNormal;
+			normal3 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3 + 2]].vNormal;
 
-		v1 = v1 * m;
-		v2 = v2 * m;
-		v3 = v3 * m;
-		normal1 = Vector3D::Matrix3x3(normal1, m).GetNormalize();
-		normal2 = Vector3D::Matrix3x3(normal2, m).GetNormalize();
-		normal3 = Vector3D::Matrix3x3(normal3, m).GetNormalize();
+			v1 = v1 * m;
+			v2 = v2 * m;
+			v3 = v3 * m;
+			normal1 = Vector3D::Matrix3x3(normal1, m).GetNormalize();
+			normal2 = Vector3D::Matrix3x3(normal2, m).GetNormalize();
+			normal3 = Vector3D::Matrix3x3(normal3, m).GetNormalize();
 
-		Fiqure::RenderLine3D(v1, normal1 + v1, Vector3D(0.0f, 1.0f, 0.8f));
-		Fiqure::RenderLine3D(v2, normal2 + v2, Vector3D(0.0f, 1.0f, 0.8f));
-		Fiqure::RenderLine3D(v3, normal3 + v3, Vector3D(0.0f, 1.0f, 0.8f));
+			Fiqure::RenderLine3D(v1, normal1 + v1, Vector3D(0.0f, 1.0f, 0.8f));
+			Fiqure::RenderLine3D(v2, normal2 + v2, Vector3D(0.0f, 1.0f, 0.8f));
+			Fiqure::RenderLine3D(v3, normal3 + v3, Vector3D(0.0f, 1.0f, 0.8f));
+		}
 	}
 }

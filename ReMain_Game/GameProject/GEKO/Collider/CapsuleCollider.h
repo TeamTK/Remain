@@ -41,4 +41,19 @@ private:
 	std::function<void(Result_Sphere &)> m_Func;
 };
 
+//ƒJƒvƒZƒ‹‚Æü•ª‚Ì“–‚½‚è”»’è
+class Capsule_vs_LineSegmentCollider : public BaseCollider
+{
+public:
+	friend ColliderManager;
+
+public:
+	Capsule_vs_LineSegmentCollider(Vector3D *pStart, Vector3D *pEnd, float *pRadius, std::function<void(Result_LineSegment &)> func);
+	~Capsule_vs_LineSegmentCollider();
+
+private:
+	CapsuleHitData m_HitData;
+	std::function<void(Result_LineSegment &)> m_Func;
+};
+
 #endif

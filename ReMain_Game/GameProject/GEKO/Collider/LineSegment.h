@@ -12,6 +12,7 @@ struct LineSegmentHitData
 	Vector3D *pEnd;
 };
 
+//ü•ª‚Æü•ª‚Ì“–‚½‚è”»’è
 class LineSegmentCollider : public BaseCollider
 {
 public:
@@ -26,6 +27,37 @@ private:
 	std::function<void(Result_LineSegment &)> m_Func;
 };
 
+//ü‚Æ‹…‚Æ‚Ì“–‚½‚è”»’è
+class LineSegment_vs_SphereCollider : public BaseCollider
+{
+public:
+	friend ColliderManager;
+
+public:
+	LineSegment_vs_SphereCollider(Vector3D *pStart, Vector3D *pEnd, std::function<void(Result_Sphere &)> func);
+	~LineSegment_vs_SphereCollider();
+
+private:
+	LineSegmentHitData m_HitData;
+	std::function<void(Result_Sphere &)> m_Func;
+};
+
+//ü‚ÆƒJƒvƒZƒ‹‚Æ‚Ì“–‚½‚è”»’è
+class LineSegment_vs_CapsuleCollider : public BaseCollider
+{
+public:
+	friend ColliderManager;
+
+public:
+	LineSegment_vs_CapsuleCollider(Vector3D *pStart, Vector3D *pEnd, std::function<void(Result_Capsule &)> func);
+	~LineSegment_vs_CapsuleCollider();
+
+private:
+	LineSegmentHitData m_HitData;
+	std::function<void(Result_Capsule &)> m_Func;
+};
+
+//ü‚ÆStaticMesh‚Æ‚Ì“–‚½‚è”»’è
 class LineSegment_vs_StaticMeshCollider : public BaseCollider
 {
 public:

@@ -40,6 +40,21 @@ private:
 	std::function<void(Result_Capsule &)> m_Func;
 };
 
+//‹…‚Æü•ª‚Ì“–‚½‚è”»’è
+class Sphere_vs_LineSegmentCollider : public BaseCollider
+{
+public:
+	friend ColliderManager;
+
+public:
+	Sphere_vs_LineSegmentCollider(Vector3D *pPos, float *pRadius, std::function<void(Result_LineSegment &)> func);
+	~Sphere_vs_LineSegmentCollider();
+
+private:
+	SphereHitData m_HitData;
+	std::function<void(Result_LineSegment &)> m_Func;
+};
+
 //‹…‚ÆStaticMesh‚Ì“–‚½‚è”»’è
 class Sphere_vs_StaticMeshCollider : public BaseCollider
 {
