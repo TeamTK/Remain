@@ -56,7 +56,7 @@ void DirectionalLight::SetIntensity(float instensity)
 void DirectionalLight::SetColor(int r, int g, int b)
 {
 	DirectionalLight *temp = GetInstance();
-	temp->m_LightColor.x = (float)r / 255;
-	temp->m_LightColor.y = (float)g / 255;
-	temp->m_LightColor.z = (float)b / 255;
+	temp->m_LightColor.x = (float)r * RGB;
+	temp->m_LightColor.y = (float)g * RGB;
+	temp->m_LightColor.z = (float)b * RGB;
 }

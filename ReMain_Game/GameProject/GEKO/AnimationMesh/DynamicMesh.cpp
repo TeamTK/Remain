@@ -50,7 +50,7 @@ void DynamicMesh::SetAsset(const std::string &MeshName)
 	}
 }
 
-void DynamicMesh::ChangeAnimation(int num)
+void DynamicMesh::ChangeAnimation(unsigned int num)
 {
 	m_pSkinMeshData->ChangeAnimation(num);
 }

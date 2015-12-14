@@ -203,19 +203,16 @@ void SkinMeshData::Relese()
 	}
 }
 
-void SkinMeshData::ChangeAnimation(int num)
+void SkinMeshData::ChangeAnimation(unsigned int num)
 {
-
 }
 
 void SkinMeshData::SetRenewalTime(float animSpeed)
 {
-
 }
 
 void SkinMeshData::SetTime(float animTime)
 {
-
 }
 
 float SkinMeshData::GetPlayTime()
@@ -248,27 +245,14 @@ Vector3D SkinMeshData::GetBornPos(int bornIndex)
 	return Vector3D();
 }
 
-Vector3D SkinMeshData::GetScale()
-{
-	return Vector3D();
-}
-
-Vector3D SkinMeshData::GetRotation()
-{
-	return Vector3D();
-}
-
 void SkinMeshData::Update()
 {
-
 }
 
 void SkinMeshData::BornDebug(eBornDebug eBornDebug)
 {
-
 }
 
 void SkinMeshData::AnimationDebug(int animNum)
 {
-
 }

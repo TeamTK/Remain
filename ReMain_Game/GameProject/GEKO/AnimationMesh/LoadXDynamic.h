@@ -1,5 +1,5 @@
-#ifndef _LOADXDYNAMIC_H_
-#define _LOADXDYNAMIC_H_
+#ifndef _LOAD_X_DYNAMIC_H_
+#define _LOAD_X_DYNAMIC_H_
 
 #include "SkinMeshData.h"
 
@@ -9,7 +9,7 @@ public:
 	LoadXDynamic(std::string fileName);
 	~LoadXDynamic();
 	void Relese();
-	void ChangeAnimation(int num);
+	void ChangeAnimation(unsigned int num);
 	void SetRenewalTime(float animSpeed); //アニメーション速度更新
 	void SetTime(float animTime);		  //指定のアニメーション時間に設定
 	float GetPlayTime();
@@ -18,8 +18,6 @@ public:
 	std::string GetBornName(int bornIndex);
 	Matrix GetBornWorld(int bornIndex);
 	Vector3D GetBornPos(int bornIndex);
-	Vector3D GetScale();
-	Vector3D GetRotation();
 	void Update();
 	void BornDebug(eBornDebug eBornDebug);
 	void AnimationDebug(int animNum);
@@ -36,7 +34,7 @@ private:
 private:
 	std::string m_buffer; //階層戻り時にボーン名格納
 	int m_BornIndex;	  //ボーンのインデックスカウント
-	int m_AnimSetNum;	  //現在のアニメーションセット
+	unsigned int m_AnimSetNum;	  //現在のアニメーションセット
 	int m_Back;			  //下の階層の番号
 	float m_FrameAnim;	  //現在のアニメーション時間
 };

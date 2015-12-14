@@ -22,6 +22,7 @@
 #define SAFE_DELETE_ARRAY(x) if(x){ delete[] x; x = nullptr;}
 #define SAFE_RELEASE(x)		 if(x){ x->Release(); x = nullptr;}
 #define ALIGN16				 _declspec(align(16))
+#define RGB 0.003921568627451f
 
 class Direct3D11
 {

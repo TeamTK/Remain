@@ -37,9 +37,7 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 	}
 
 	std::vector<int> face;
-	/////////////////////////////////////////////////////////////////////////////////変更
 	std::vector<int> normalIndex;
-	/////////////////////////////////////////////////////////////////////////////////変更
 	std::vector<D3DXVECTOR3> coordinate;
 	std::vector<D3DXVECTOR3> normal;
 	std::vector<D3DXVECTOR2> uv;
@@ -127,9 +125,7 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 			char leftCurlyBracket;
 			fscanf_s(fp, " %c", &leftCurlyBracket, sizeof(leftCurlyBracket));
 
-			/////////////////////////////////////////////////////////////////////////////////変更
 			assert(leftCurlyBracket == '{' && "法線の初め波括弧が正しくありません");
-			/////////////////////////////////////////////////////////////////////////////////変更
 
 			//法線の数
 			fgets(str, sizeof(str), fp);
@@ -142,7 +138,6 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 				normal.emplace_back(x, y, z);
 			}
 
-			/////////////////////////////////////////////////////////////////////////////////変更
 			//法線の数
 			int NormalNumAll = 0;
 			fgets(str, sizeof(str), fp);
@@ -160,7 +155,6 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 				normalIndex.emplace_back(index2); 
 				normalIndex.emplace_back(index3);
 			}
-			/////////////////////////////////////////////////////////////////////////////////変更
 		}
 
 		//UV座標読み込み
@@ -302,9 +296,9 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 	for (int i = 0; i < m_MeshInfo.materialNumAll; i++)
 	{
 		pFaceBuffer = new int[m_MeshInfo.faceNumAll * 3];
-		//faceBuffer = new int[m_MeshInfo.m_pMaterial[i].dwNumFace * 3];
 		count = 0;
 
+		//マテリアル割り当て
 		m_MeshInfo.m_pMaterial[i].Ambient = material[i].Ambient;
 		m_MeshInfo.m_pMaterial[i].Diffuse = material[i].Diffuse;
 		m_MeshInfo.m_pMaterial[i].Specular = material[i].Specular;
@@ -364,63 +358,24 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 
 	SAFE_DELETE_ARRAY(pFaceBuffer);
 
-	//法線の数が違う対策（違うなら面一つで一つの法線を割り当てる）
-	if (m_MeshInfo.normalNumAll == m_MeshInfo.vertexNumAll)
+	//頂点に割り当て
+	if (uv.size() >= 1)
 	{
-		if (uv.size() >= 1)
+		//uv有りバージョン
+		for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
 		{
-			//uv有りバージョン
-			for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
-			{
-				m_MeshInfo.pvVertex[i].vPos = coordinate[i];
-				m_MeshInfo.pvVertex[i].vNormal = normal[i];
-				m_MeshInfo.pvVertex[i].vTex = uv[i];
-			}
-		}
-		else
-		{
-			//uvなしバージョン
-			for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
-			{
-				m_MeshInfo.pvVertex[i].vPos = coordinate[i];
-				m_MeshInfo.pvVertex[i].vNormal = normal[i];
-				m_MeshInfo.pvVertex[i].vTex.x = 0.0f;
-				m_MeshInfo.pvVertex[i].vTex.y = 0.0f;
-			}
+			m_MeshInfo.pvVertex[i].vPos = coordinate[i];
+			m_MeshInfo.pvVertex[face[i]].vNormal = normal[normalIndex[i]];
+			m_MeshInfo.pvVertex[i].vTex = uv[i];
 		}
 	}
 	else
 	{
-		//法線別割り当て
-		if (uv.size() >= 1)
+		//uvなしバージョン
+		for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
 		{
-			//uv有りバージョン
-			for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
-			{
-				m_MeshInfo.pvVertex[i].vPos = coordinate[i];
-				m_MeshInfo.pvVertex[i].vTex = uv[i];
-				m_MeshInfo.pvVertex[i].vNormal = normal[i % 3];
-			}
-		}
-		else
-		{
-			//uvなしバージョン
-			for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
-			{
-				m_MeshInfo.pvVertex[i].vPos = coordinate[i];
-				/////////////////////////////////////////////////////////////////////////////////変更
-				//m_MeshInfo.pvVertex[i].vNormal = normal[i % 3];
-				/////////////////////////////////////////////////////////////////////////////////変更
-				m_MeshInfo.pvVertex[i].vTex.x = 0.0f;
-				m_MeshInfo.pvVertex[i].vTex.y = 0.0f;
-			}
-			/////////////////////////////////////////////////////////////////////////////////変更
-			for (unsigned int i = 0; i < face.size(); i++)
-			{
-				m_MeshInfo.pvVertex[face[i]].vNormal = normal[normalIndex[i]];
-			}
-			/////////////////////////////////////////////////////////////////////////////////変更
-
+			m_MeshInfo.pvVertex[i].vPos = coordinate[i];
+			m_MeshInfo.pvVertex[i].vNormal = normal[i];
 		}
 	}
 
@@ -434,12 +389,11 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 	if (FAILED(pDevice->CreateBuffer(&bd, &InitData, &m_MeshInfo.m_pVertexBuffer)))
 		return FALSE;
 
+	//削除
 	 face.clear();
 	 face.shrink_to_fit();
-	 /////////////////////////////////////////////////////////////////////////////////変更
 	 normalIndex.clear();
 	 normalIndex.shrink_to_fit();
-	 /////////////////////////////////////////////////////////////////////////////////変更
 	 coordinate.clear();
 	 coordinate.shrink_to_fit();
 	 normal.clear();

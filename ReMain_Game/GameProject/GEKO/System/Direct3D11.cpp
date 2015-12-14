@@ -160,7 +160,6 @@ void Direct3D11::Clear(float R, float G, float B)
 	float ClearColor[4] = { R, G, B, 1 };// クリア色　RGBAの順
 	m_pDeviceContext->ClearRenderTargetView(m_pBackBuffer_TexRTV, ClearColor);//カラーバッファクリア
 	m_pDeviceContext->ClearDepthStencilView(m_pBuckBuffer_DSTexDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);//デプスステンシルバッファクリア
-
 }
 
 void Direct3D11::Present()

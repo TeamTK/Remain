@@ -29,6 +29,20 @@ Sphere_vs_CapsuleCollider::~Sphere_vs_CapsuleCollider()
 	ColliderManager::GetInstance()->Clear(this);
 }
 
+//‹…‚ÆƒJƒvƒZƒ‹‚Ì“–‚½‚è”»’è
+Sphere_vs_LineSegmentCollider::Sphere_vs_LineSegmentCollider(Vector3D *pPos, float *pRadius, std::function<void(Result_LineSegment &)> func)
+{
+	m_HitData.pPosition = pPos;
+	m_HitData.pRadius = pRadius;
+	m_Func = func;
+	ColliderManager::GetInstance()->Add(this);
+}
+
+Sphere_vs_LineSegmentCollider::~Sphere_vs_LineSegmentCollider()
+{
+	ColliderManager::GetInstance()->Clear(this);
+}
+
 //‹…‚ÆStaticMesh‚Ì“–‚½‚è”»’è
 Sphere_vs_StaticMeshCollider::Sphere_vs_StaticMeshCollider(Vector3D *pPos, float *pRadius, std::function<void(Result_Porygon_Group &)> func)
 {

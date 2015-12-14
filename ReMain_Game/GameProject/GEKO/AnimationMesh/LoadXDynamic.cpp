@@ -2,6 +2,7 @@
 #include "..\Mesh\LoadXStatic.h"
 #include "..\System\Window.h"
 #include <sstream>
+#include <chrono>
 
 struct SkinWeightInfo
 {
@@ -23,10 +24,10 @@ struct AnimationInfo
 };
 
 LoadXDynamic::LoadXDynamic(std::string fileName) :
-m_Back(-1),
-m_BornIndex(0),
-m_AnimSetNum(0),
-m_FrameAnim(0.0f)
+	m_Back(-1),
+	m_BornIndex(0),
+	m_AnimSetNum(0),
+	m_FrameAnim(0.0f)
 {
 	//メッシュの読み込み
 	if (FAILED(LoadXMesh(fileName)))
@@ -77,6 +78,7 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	}
 
 	std::vector<int> face;
+	std::vector<int> normalIndex;
 	std::vector<D3DXVECTOR3> coordinate;
 	std::vector<D3DXVECTOR3> normal;
 	std::vector<D3DXVECTOR2> uv;
@@ -157,6 +159,24 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 			{
 				fscanf_s(fp, "%f; %f; %f;,", &x, &y, &z);
 				normal.emplace_back(x, y, z);
+			}
+
+			//法線の数
+			int NormalNumAll = 0;
+			fgets(str, sizeof(str), fp);
+			fscanf_s(fp, "%d;", &NormalNumAll);
+
+			//法線のインデックス番号読み込み
+			int NormalNum = 0;
+			for (int i = 0; i < NormalNumAll; i++)
+			{
+				fscanf_s(fp, "%d; %d, %d, %d;,", &NormalNum, &index1, &index2, &index3);
+
+				assert(NormalNum == 3 && "Xファイルの3Dモデルは法線が三つではありません");
+
+				normalIndex.emplace_back(index1);
+				normalIndex.emplace_back(index2);
+				normalIndex.emplace_back(index3);
 			}
 		}
 
@@ -284,6 +304,8 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 		}
 	}
 
+	fclose(fp);
+
 	//マテリアルとインデックスバッファー動的作成
 	m_MeshInfo.m_pMaterial = new SkinMaterialInfo[m_MeshInfo.materialNumAll];
 	m_MeshInfo.m_ppIndexBuffer = new ID3D11Buffer*[m_MeshInfo.materialNumAll];
@@ -300,6 +322,7 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 		faceBuffer = new int[m_MeshInfo.faceNumAll * 3];
 		count = 0;
 
+		//マテリアル割り当て
 		m_MeshInfo.m_pMaterial[i].Ambient = material[i].Ambient;
 		m_MeshInfo.m_pMaterial[i].Diffuse = material[i].Diffuse;
 		m_MeshInfo.m_pMaterial[i].Specular = material[i].Specular;
@@ -349,84 +372,24 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	}
 
 	SAFE_DELETE_ARRAY(faceBuffer);
-	/*
-	//法線の数が違う対策（違うなら面一つで一つの法線を割り当てる）
-	if (m_MeshInfo.normalNumAll == m_MeshInfo.vertexNumAll)
+	//頂点に割り当て
+	if (uv.size() >= 1)
 	{
+		//uv有りバージョン
 		for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
 		{
 			m_MeshInfo.pvVertex[i].vPos = coordinate[i];
-			m_MeshInfo.pvVertex[i].vNormal = normal[i];
+			m_MeshInfo.pvVertex[face[i]].vNormal = normal[normalIndex[i]];
 			m_MeshInfo.pvVertex[i].vTex = uv[i];
 		}
 	}
 	else
 	{
-		//座標とUV
+		//uvなしバージョン
 		for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
 		{
 			m_MeshInfo.pvVertex[i].vPos = coordinate[i];
-			m_MeshInfo.pvVertex[i].vTex = uv[i];
-		}
-
-		//法線
-		for (int i = 0; i < m_MeshInfo.normalNumAll; i++)
-		{
-			m_MeshInfo.pvVertex[i * 3].vNormal = normal[i];
-			m_MeshInfo.pvVertex[i * 3 + 1].vNormal = normal[i];
-			m_MeshInfo.pvVertex[i * 3 + 2].vNormal = normal[i];
-		}
-	}
-	*/
-
-	//法線の数が違う対策（違うなら面一つで一つの法線を割り当てる）
-	if (m_MeshInfo.normalNumAll == m_MeshInfo.vertexNumAll)
-	{
-		if (uv.size() >= 1)
-		{
-			//uv有りバージョン
-			for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
-			{
-				m_MeshInfo.pvVertex[i].vPos = coordinate[i];
-				m_MeshInfo.pvVertex[i].vNormal = normal[i];
-				m_MeshInfo.pvVertex[i].vTex = uv[i];
-			}
-		}
-		else
-		{
-			//uvなしバージョン
-			for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
-			{
-				m_MeshInfo.pvVertex[i].vPos = coordinate[i];
-				m_MeshInfo.pvVertex[i].vNormal = normal[i];
-				m_MeshInfo.pvVertex[i].vTex.x = 0.0f;
-				m_MeshInfo.pvVertex[i].vTex.y = 0.0f;
-			}
-		}
-	}
-	else
-	{
-		//法線別割り当て
-		if (uv.size() >= 1)
-		{
-			//uv有りバージョン
-			for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
-			{
-				m_MeshInfo.pvVertex[i].vPos = coordinate[i];
-				m_MeshInfo.pvVertex[i].vTex = uv[i];
-				m_MeshInfo.pvVertex[i].vNormal = normal[i % 3];
-			}
-		}
-		else
-		{
-			//uvなしバージョン
-			for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
-			{
-				m_MeshInfo.pvVertex[i].vPos = coordinate[i];
-				m_MeshInfo.pvVertex[i].vNormal = normal[i / 3];
-				m_MeshInfo.pvVertex[i].vTex.x = 0.0f;
-				m_MeshInfo.pvVertex[i].vTex.y = 0.0f;
-			}
+			m_MeshInfo.pvVertex[face[i]].vNormal = normal[normalIndex[i]];
 		}
 	}
 
@@ -436,7 +399,9 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	{
 		std::cerr << "失敗" << std::endl;
 	}
+
 	AddBoneHierarchy(&m_BornInfo.sBorn, &ifs, 0); //ボーン階層構造読み込み
+
 	LoadAnimation(fileName, m_MeshInfo.pvVertex); //アニメーションとスキンウェイト読み込み
 
 	//バーテックスバッファーを作成
@@ -452,6 +417,8 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	//削除
 	face.clear();
 	face.shrink_to_fit();
+	normalIndex.clear();
+	normalIndex.shrink_to_fit();
 	coordinate.clear();
 	coordinate.shrink_to_fit();
 	normal.clear();
@@ -462,8 +429,6 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	material.shrink_to_fit();
 	materialList.clear();
 	materialList.shrink_to_fit();
-
-	fclose(fp);
 
 	return S_OK;
 }
@@ -493,9 +458,12 @@ void LoadXDynamic::Relese()
 	}
 }
 
-void LoadXDynamic::ChangeAnimation(int num)
+void LoadXDynamic::ChangeAnimation(unsigned int num)
 {
 	m_AnimSetNum = num;
+	unsigned int AnimSetAllNum = m_BornInfo.AnimationSetFrameNum.size() - 1;
+	if (m_AnimSetNum > AnimSetAllNum) m_AnimSetNum = AnimSetAllNum;
+	else if (m_AnimSetNum < 0) m_AnimSetNum = 0;
 }
 
 void LoadXDynamic::SetRenewalTime(float animSpeed)
@@ -539,19 +507,6 @@ Vector3D LoadXDynamic::GetBornPos(int bornIndex)
 	return Vector3D(m._41, m._42, m._43);
 }
 
-Vector3D LoadXDynamic::GetScale()
-{
-	auto born2 = m_BornInfo.BornList.end();
-	born2--;
-	return Vector3D((*born2)->initMat._11, (*born2)->initMat._22, (*born2)->initMat._33);
-}
-
-Vector3D LoadXDynamic::GetRotation()
-{
-	auto born1 = m_BornInfo.BornList.begin();
-	return Vector3D(-atan2f((*born1)->initMat._32, (*born1)->initMat._33), asinf((*born1)->initMat._31) - 3.14f, -atan2f((*born1)->initMat._21, (*born1)->initMat._11));
-}
-
 void LoadXDynamic::Update()
 {
 	//アニメーション更新
@@ -572,11 +527,12 @@ void LoadXDynamic::Update()
 
 void LoadXDynamic::BornDebug(eBornDebug eBornDebug)
 {
+	D3DXMATRIX m;
+	std::string str;
 	auto it = m_BornInfo.BornList.begin();
-	for (; it != m_BornInfo.BornList.end(); it++)
+	auto itEnd = m_BornInfo.BornList.end();
+	for (; it != itEnd; it++)
 	{
-		D3DXMATRIX m;
-		std::string str;
 		switch (eBornDebug)
 		{
 		case eInitMat:   m = (*it)->initMat; str = "InitMat"; break;
@@ -600,6 +556,7 @@ void LoadXDynamic::BornDebug(eBornDebug eBornDebug)
 
 void LoadXDynamic::AnimationDebug(int animNum)
 {
+	/*
 	int FrameNum = m_BornInfo.AnimationSetFrameNum[animNum].size();
 	std::cout << " FrameNum" << FrameNum << "\n";
 
@@ -616,6 +573,7 @@ void LoadXDynamic::AnimationDebug(int animNum)
 		printf("%f, %f, %f, %f\n", m._31, m._32, m._33, m._34);
 		printf("%f, %f, %f, %f\n", m._41, m._42, m._43, m._44);
 	}
+	*/
 }
 
 void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
@@ -686,11 +644,8 @@ void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
 			for (int matCnt = 0; matCnt < 4; matCnt++)
 			{
 				getline(ifs, str);
-				std::istringstream stream(str);
-				getline(stream, str, ','); x = std::stof(str);
-				getline(stream, str, ','); y = std::stof(str);
-				getline(stream, str, ','); z = std::stof(str);
-				getline(stream, str, ','); w = std::stof(str);
+				sscanf_s(str.data(), "%f, %f, %f, %f,", &x, &y, &z, &w);
+
 				SkinWeightInfo[bornName].offsetMat.m[matCnt][0] = x;
 				SkinWeightInfo[bornName].offsetMat.m[matCnt][1] = y;
 				SkinWeightInfo[bornName].offsetMat.m[matCnt][2] = z;
@@ -702,6 +657,9 @@ void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
 		if (str == "AnimationSet")
 		{
 			int count = 1;
+			int frameNum = 0;
+			float x, y, z, w;
+			x = y = z = w = 0;
 			bool is = true;
 			bool isFrameLoad = false;
 
@@ -742,19 +700,13 @@ void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
 
 					int t = std::stoi(str); //コマ数
 					getline(ifs, str);
-
+					
+					int temp;
 					//回転値取得
 					for (int r = 0; r < t; r++)
 					{
-						std::istringstream stream(str);
-						getline(stream, str, ';'); int frameNum = std::stoi(str);
-						getline(stream, str, ';');
-						getline(stream, str, ','); float w = std::stof(str);
-						getline(stream, str, ','); float x = std::stof(str);
-						getline(stream, str, ','); float y = std::stof(str);
-						getline(stream, str, ';'); float z = std::stof(str);
+						sscanf_s(str.data(), "%d;%d; %f, %f, %f, %f;;,", &frameNum, &temp, &w, &x, &y, &z);
 						getline(ifs, str);
-						stream.clear();
 
 						AnimationSet[AnimSetNumAll][bornName].rotation.emplace_back(x, y, z, w);
 
@@ -775,14 +727,8 @@ void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
 					//スケール値取得
 					for (int s = 0; s < t; s++)
 					{
-						std::istringstream stream(str);
-						getline(stream, str, ';'); int frameNum = std::stoi(str);
-						getline(stream, str, ';');
-						getline(stream, str, ','); float x = std::stof(str);
-						getline(stream, str, ','); float y = std::stof(str);
-						getline(stream, str, ';'); float z = std::stof(str);
+						sscanf_s(str.data(), "%d;%d; %f, %f, %f;;,", &frameNum, &temp, &x, &y, &z);
 						getline(ifs, str);
-						stream.clear();
 
 						AnimationSet[AnimSetNumAll][bornName].scale.emplace_back(x, y, z);
 					}
@@ -796,12 +742,7 @@ void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
 					//位置取得
 					for (int p = 0; p < t; p++)
 					{
-						std::istringstream stream(str);
-						getline(stream, str, ';'); int frameNum = std::stoi(str);
-						getline(stream, str, ';');
-						getline(stream, str, ','); float x = std::stof(str);
-						getline(stream, str, ','); float y = std::stof(str);
-						getline(stream, str, ';'); float z = std::stof(str);
+						sscanf_s(str.data(), "%d;%d; %f, %f, %f;;,", &frameNum, &temp, &x, &y, &z);
 						getline(ifs, str);
 
 						AnimationSet[AnimSetNumAll][bornName].position.emplace_back(x, y, z);
@@ -817,11 +758,13 @@ void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
 	D3DXMATRIX m;
 	D3DXMATRIX S;
 	auto it = AnimationSet.begin();
-	for (int i = 0; it != AnimationSet.end(); it++, i++)
+	auto itEnd = AnimationSet.end();
+	for (int i = 0; it != itEnd; it++, i++)
 	{
 		int loopNum = m_BornInfo.AnimationSetFrameNum[i].size();
 		auto it2 = it->second.begin();
-		for (; it2 != it->second.end(); it2++)
+		auto it2End = it->second.end();
+		for (; it2 != it2End; it2++)
 		{
 			for (int j = 0; j < loopNum; j++)
 			{
@@ -849,7 +792,8 @@ void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
 
 	//頂点にボーンの番号とウェイト値を割り当てる
 	auto it2 = SkinWeightInfo.begin();
-	for (; it2 != SkinWeightInfo.end(); it2++)
+	auto it2End = SkinWeightInfo.end();
+	for (; it2 != it2End; it2++)
 	{
 		//ボーンに割り当ててる数分実行
 		for (int i = 0; i < it2->second.listNumAll; i++)
@@ -883,18 +827,21 @@ void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
 
 	//ボーンオフセット行列格納
 	auto itBornList = m_BornInfo.BornList.begin();
-	for (; itBornList != m_BornInfo.BornList.end(); itBornList++)
+	auto itBornListEnd = m_BornInfo.BornList.end();
+	for (; itBornList != itBornListEnd; itBornList++)
 	{
 		(*itBornList)->offsetMat = SkinWeightInfo[(*itBornList)->BornName].offsetMat;
 	}
 
 	//アニメーションセット削除
 	auto itAnim = AnimationSet.begin();
-	for (; itAnim != AnimationSet.end(); itAnim++)
+	auto itAnimEnd = AnimationSet.end();
+	for (; itAnim != itAnimEnd; itAnim++)
 	{
 		//回転とスケールと平行移動を削除
 		auto anim = itAnim->second.begin();
-		for (; anim != itAnim->second.end(); anim++)
+		auto animEnd = itAnim->second.end();
+		for (; anim != animEnd; anim++)
 		{
 			anim->second.rotation.clear();
 			anim->second.rotation.shrink_to_fit();
@@ -909,7 +856,8 @@ void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
 
 	//スキンウェイト削除
 	auto itWeight = SkinWeightInfo.begin();
-	for (; itWeight != SkinWeightInfo.end(); itWeight++)
+	auto itWeightEnd = SkinWeightInfo.end();
+	for (; itWeight != itWeightEnd; itWeight++)
 	{
 		itWeight->second.weightList.clear();
 		itWeight->second.weightList.shrink_to_fit();
@@ -928,15 +876,10 @@ void LoadXDynamic::LoadMat(Born *pBorn, std::ifstream *pIfs)
 
 	D3DXMATRIX m;
 
-	std::istringstream stream(str);
 	float x, y, z, w;
 	for (int matCnt = 0; matCnt < 4; matCnt++)
 	{
-		std::istringstream stream(str);
-		getline(stream, str, ','); x = std::stof(str);
-		getline(stream, str, ','); y = std::stof(str);
-		getline(stream, str, ','); z = std::stof(str);
-		getline(stream, str, ','); w = std::stof(str);
+		sscanf_s(str.data(), "%f, %f, %f, %f,", &x, &y, &z, &w);
 		m.m[matCnt][0] = x; m.m[matCnt][1] = y; m.m[matCnt][2] = z; m.m[matCnt][3] = w;
 		getline(*pIfs, str);
 	}
@@ -946,7 +889,6 @@ void LoadXDynamic::LoadMat(Born *pBorn, std::ifstream *pIfs)
 
 void LoadXDynamic::BornMatUpdate(Born *pBorn, D3DXMATRIX &bornMat)
 {
-
 	pBorn->ParentAndChildMat = pBorn->worldMat * bornMat;
 	pBorn->bornMat = pBorn->offsetMat * pBorn->ParentAndChildMat;
 
@@ -966,38 +908,42 @@ void LoadXDynamic::AnimUpdate(Born *pBorn)
 	std::vector<D3DXMATRIX> *pAnimMat = &m_BornInfo.AnimationSetMat[m_AnimSetNum][pBorn->BornName];
 	auto itAnimMat = pAnimMat->begin();
 
+	//指定のアニメーションフレームを超えたら戻す
+	if (m_FrameAnim > pFrameNum->size() - 1)
+	{
+		m_FrameAnim = 0;
+	}
+	else if (m_FrameAnim < 0.0f)
+	{
+		m_FrameAnim = (float)pFrameNum->size() - 1;
+	}
+
 	//アニメーション補間
 	if (pAnimMat->size() != 0)
 	{
-		for (unsigned int i = 0; i < pFrameNum->size() - 1; i++)
+		unsigned int frameNum = pFrameNum->size() - 1;
+		for (unsigned int i = 0; i < frameNum; i++)
 		{
-			if ((m_FrameAnim >= (float)itFrame[i]) && (m_FrameAnim <= (float)itFrame[i + 1]))
+			float frameBefore = (float)itFrame[i];
+			float frameAfter = (float)itFrame[i + 1];
+			if ((m_FrameAnim >= frameBefore) && (m_FrameAnim <= frameAfter))
 			{
 				//フレーム時間
-				float animKeyB = (float)itFrame[i];
-				float animKeyF = (float)itFrame[i + 1];
-				float lengeTime = m_FrameAnim - animKeyB;
+				float lengeTime = m_FrameAnim - frameBefore;
 
-				float lenge = animKeyF - animKeyB;
+				float lenge = frameAfter - frameBefore;
 				float t = lengeTime / lenge;
 
 				D3DXMATRIX mb = itAnimMat[i];
-				D3DXMATRIX mf = itAnimMat[i + 1];
-				m = mb * (1 - t) + mf * t;
+				D3DXMATRIX ma = itAnimMat[i + 1];
+				m = mb * (1 - t) + ma * t;
 
 				break;
 			}
 		}
 	}
 
-	if ((m_FrameAnim < 0.0f) || (m_FrameAnim > pFrameNum->size() - 1))
-	{
-		m_FrameAnim = 0;
-	}
-	else
-	{
-		pBorn->worldMat = m;
-	}
+	pBorn->worldMat = m;
 
 	if (pBorn->child != nullptr) AnimUpdate(pBorn->child);
 	if (pBorn->brother != nullptr) AnimUpdate(pBorn->brother);
@@ -1020,6 +966,7 @@ bool LoadXDynamic::AddBoneHierarchy(Born *pBorn, std::ifstream *pIfs, int hierar
 	while (!pIfs->eof())
 	{
 		*pIfs >> str;
+		if (str == "Mesh") break;
 
 		//テンプレートでの間違い防止	
 		if (str == "template")

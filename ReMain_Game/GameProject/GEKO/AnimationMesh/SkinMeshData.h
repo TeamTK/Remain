@@ -1,5 +1,5 @@
-#ifndef _SKINMESHDATA_H_
-#define _SKINMESHDATA_H_
+#ifndef _SKINMESH_DATA_H_
+#define _SKINMESH_DATA_H_
 
 #include "..\System\Math.h"
 #include <string>
@@ -159,7 +159,7 @@ public:
 	SkinMeshInfo *GetSkinMeshInfo();
 	BornInfo *GetBornInfo();
 	virtual void Relese();
-	virtual void ChangeAnimation(int num);
+	virtual void ChangeAnimation(unsigned int num);
 	virtual void SetRenewalTime(float animSpeed); //アニメーション速度更新
 	virtual void SetTime(float animTime);		  //指定のアニメーション時間に設定
 	virtual float GetPlayTime();
@@ -168,8 +168,6 @@ public:
 	virtual std::string GetBornName(int bornIndex);
 	virtual Matrix GetBornWorld(int bornIndex);
 	virtual Vector3D GetBornPos(int bornIndex);
-	virtual Vector3D GetScale();
-	virtual Vector3D GetRotation();
 	virtual void Update();
 	virtual void BornDebug(eBornDebug eBornDebug);
 	virtual void AnimationDebug(int animNum);
