@@ -25,7 +25,7 @@ void Handgun::Update()
 		m_Model.SetRotationDegree(180, -90, 0);
 		m_BoneMat = m_pPlayer->GetBomeMat(24);
 	}
-	else if (m_pPlayer->GetAnim() == EPlayerAnimation::eAnim_TakeHandgun || 
+	else if ((m_pPlayer->GetAnim() == EPlayerAnimation::eAnim_TakeHandgun  && m_pPlayer->GetPlayTime() >= 15) ||
 			 m_pPlayer->GetAnim() == EPlayerAnimation::eAnim_IdleTakeHandgun ||
 			 m_pPlayer->GetAnim() == EPlayerAnimation::eAnim_WalkTakeHandgun ||
 			 m_pPlayer->GetAnim() == EPlayerAnimation::eAnim_RunTakeHandgun)

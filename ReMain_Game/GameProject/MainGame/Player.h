@@ -87,11 +87,15 @@ private:
 	float m_Horizontal;
 	float m_MoveSpeed;
 	float m_CameraPosY;
+	float m_CameraT;
 	bool m_ChangeTakeWeapon;	//e‚ğ‚Â
 	bool m_isTakeWeapon;	//e‚ğ‚Á‚Ä‚¢‚é‚©
 	bool m_isCrouch;	//‚µ‚á‚ª‚ñ‚Å‚¢‚é‚©
 	bool m_isRun;	//‘–‚Á‚Ä‚¢‚é‚©
 	bool m_isMove;		//ˆÚ“®’†‚©
 	bool m_isAttack;	//UŒ‚’†‚©
+
+	float m_Alpha;
+	int m_Count;
 };
 #endif
