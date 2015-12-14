@@ -525,8 +525,9 @@ void Player::Hit()
 
 void Player::HitCamera(Result_Porygon &hitData)
 {
-	m_CameraPos = hitData.contactPos;
-	Camera::SetEye(hitData.contactPos);
+	Vector3D vec = m_LookPos - m_CameraPos;
+	float dist = (hitData.contactPos - m_CameraPos).Length();
+	m_CameraPos += vec.GetNormalize() * dist;
 }
 
 Vector3D Player::Lerp(Vector3D start, Vector3D finish, float percentage)
