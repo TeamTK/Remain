@@ -18,7 +18,7 @@ Player::Player() :
 	m_Anim(eAnim_Idle), m_State(eState_Idle), m_Weapons(eShotgun)
 {
 	m_ColliderMap.SetID(eHITID1, eHITID0 | eHITID1 | eHITID2);
-	for (int i = 0; i < m_pCharaData->BoneCapsule.size(); i++)
+	for (unsigned int i = 0; i < m_pCharaData->BoneCapsule.size(); i++)
 	{
 		//eHITID0…マップ
 		//eHITID1…プレイヤー
@@ -31,6 +31,8 @@ Player::Player() :
 
 	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_LookPos, REGIST_FUNC(Player::HitCamera));
 	m_HitCamera.SetID(eHITID0, eHITID1);
+
+	aa.SetAsset("Grass_1");
 }
 
 Player::~Player()
@@ -46,13 +48,15 @@ void Player::Update()
 	Camera();
 	CCharacter::Update();
 
+	aa.Render();
+
 	//printf("ChangeTakeWeapon %d TakeWeapon %d Attack %d\n", m_ChangeTakeWeapon, m_isTakeWeapon, m_isAttack);
 	//printf("State %d\n", m_State);
 	//printf("%d\n", m_isCrouch);
 	//printf("%f %f\n", m_Vertical, m_Horizontal);
 	//printf("%f %f\n", m_pos.x, m_pos.z);
 	//printf("Move %d Run %d\n", m_isMove, m_isRun);
-	printf("%f\n", m_Vertical);
+	//printf("%f\n", m_Vertical);
 }
 
 void Player::Move()
@@ -117,6 +121,7 @@ void Player::Attack()
 	//銃をもつ
 	if (Input::KeyF.Clicked())
 	{
+		m_Model.SetPlayTime(0);
 		m_ChangeTakeWeapon = !m_ChangeTakeWeapon;
 	}
 	else if (Input::KeyLControl.Pressed())
@@ -126,6 +131,7 @@ void Player::Attack()
 
 	if (m_ChangeTakeWeapon)
 	{
+		m_Model.SetPlayTime(0);
 		m_State = eState_TakeWeapon;
 	}
 	else
@@ -136,6 +142,7 @@ void Player::Attack()
 	//武器の切り替え
 	if (Input::KeyT.Clicked() && !m_isTakeWeapon)
 	{
+		m_Model.SetPlayTime(0);
 		if (m_Weapons == eShotgun)
 		{
 			m_Weapons = eHandgun;
@@ -147,14 +154,9 @@ void Player::Attack()
 	}
 
 	//銃を持っているときに銃を構える
-	if (Input::KeyG.Pressed() && m_isTakeWeapon)
+	if (Input::Mouse.RPressed() && m_isTakeWeapon)
 	{
-		D3DXVECTOR4 pos;
-		D3DXVec3Transform(&pos, &D3DXVECTOR3(0, 0, 20), &m_GunMatrix);
-		CBulletManager::GetInstance()->Add(Vector3D(pos.x, pos.y + 1.0f, pos.z), m_CamDir, 2.00f);
-
 		m_State = eState_SetupWeapon;
-
 		if (!m_isAttack) m_CameraT = 0.0f;
 		m_isAttack = true;
 	}
@@ -162,6 +164,21 @@ void Player::Attack()
 	{
 		if (m_isAttack) m_CameraT = 0.0f;
 		m_isAttack = false;
+	}
+
+	if (Input::Mouse.LPressed() && m_isAttack)
+	{
+		Vector4D pos;
+		CBulletManager::GetInstance()->Add(m_CameraPos, ((m_LookPos - m_CameraPos).GetNormalize()) * 4 + m_LookPos, 2.00f);
+		Fiqure::RenderLine3D(m_LookPos, ((m_LookPos - m_CameraPos).GetNormalize()) * 4 + m_LookPos, Vector3D(1.0f, 0.0f, 0.0f));
+
+		aa.SetTranselate(((m_LookPos - m_CameraPos).GetNormalize()) * 4 + m_LookPos);
+
+		m_CameraPos.DebugDraw("m_CameraPos");
+		m_LookPos.DebugDraw("m_LookPos");
+		((m_LookPos - m_CameraPos).GetNormalize()*2).DebugDraw("Normalize");
+		printf("\n");
+
 	}
 }
 
@@ -199,7 +216,7 @@ void Player::Camera()
 		D3DXVECTOR4 eye;
 		D3DXVec3Transform(&eye, &D3DXVECTOR3(-0.2f, 0.15f, -0.3f), &mat);
 		D3DXVECTOR4 at;
-		D3DXVec3Transform(&at, &D3DXVECTOR3(-0.2f, 0.15f, 2.0f), &mat);
+		D3DXVec3Transform(&at, &D3DXVECTOR3(-0.2f, 0.2f, 2.0f), &mat);
 		newCameraPos = Vector3D(eye.x, eye.y, eye.z);
 		newLookPos = Vector3D(at.x, at.y, at.z);
 	}
@@ -235,7 +252,6 @@ void Player::Camera()
 
 	m_CameraPos = Lerp(m_CameraPos, newCameraPos, 0.3f);
 	m_LookPos = Lerp(m_LookPos, newLookPos, 0.3f);
-
 
 	Camera::SetEye(m_CameraPos);
 	Camera::SetLookat(m_LookPos);
@@ -409,7 +425,7 @@ void Player::Crouch()
 			m_isMove = true;
 		}
 
-		if (m_Model.GetPlayTime() >= 29 && m_Model.GetPlayAnimation() == eAnim_Crouch);
+		if (m_Model.GetPlayTime() >= 29 && m_Model.GetPlayAnimation() == eAnim_Crouch)
 		{
 			m_isCrouch = true;
 		}

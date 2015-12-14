@@ -84,6 +84,7 @@ private:
 	EPlayerState m_State;
 	EWeapons m_Weapons;
 	Collider m_HitCamera;
+	Collider m_Bullet;
 	float m_Vertical;
 	float m_Horizontal;
 	float m_MoveSpeed;
@@ -95,5 +96,7 @@ private:
 	bool m_isRun;	//‘–‚Á‚Ä‚¢‚é‚©
 	bool m_isMove;		//ˆÚ“®’†‚©
 	bool m_isAttack;	//UŒ‚’†‚©
+
+	StaticMesh aa;
 };
 #endif
