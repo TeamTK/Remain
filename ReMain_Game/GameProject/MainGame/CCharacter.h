@@ -10,15 +10,18 @@ enum {
 };
 class CCharacter
 {
-	struct SCharacterData {
+	struct SCharacterData
+	{
 		char aseetName[64];
 		int	hp;
 		float collitionMapRad;
-		struct SBoneCalpule {
+		struct SBoneCalpule
+		{
 			float radius;
 			int start;
 			int end;
-			SBoneCalpule(float r, int s, int e) {
+			SBoneCalpule(float r, int s, int e)
+			{
 				radius = r;
 				start = s;
 				end = e;
@@ -61,11 +64,13 @@ class CCharacterManager
 	CCharacter *m_pPayer;
 public:
 	CCharacterManager();
-	static CCharacterManager* GetInstance() {
+	static CCharacterManager* GetInstance()
+	{
 		if (!m_Obj) m_Obj = new CCharacterManager;
 		return m_Obj;
 	}
-	static void ClearInstance() {
+	static void ClearInstance()
+	{
 		delete m_Obj;
 		m_Obj = NULL;
 	}
@@ -74,7 +79,8 @@ public:
 	void Render();
 	void Add(CCharacter* c);
 	void AllClear();
-	CCharacter*GetPlayer() {
+	CCharacter*GetPlayer()
+	{
 		return m_pPayer;
 
 	}

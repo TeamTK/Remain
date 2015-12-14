@@ -13,7 +13,6 @@ MainGame::MainGame()
 
 	m_pShotgun = new Shotgun(m_pPlayer);
 	m_pHandgun = new Handgun(m_pPlayer);
-	m_pPlayer->SetGunMtx(m_pShotgun->GetMatrix());
 }
 
 MainGame::~MainGame()
@@ -34,6 +33,7 @@ void MainGame::Update()
 	CBulletManager::GetInstance()->UpDate();
 	m_pShotgun->Update();
 	m_pHandgun->Update();
+	m_pPlayer->SetGunMtx(m_pShotgun->GetMatrix());
 }
 
 void MainGame::Render()
