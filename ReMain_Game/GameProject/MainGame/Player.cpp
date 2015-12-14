@@ -11,7 +11,7 @@
 
 Player::Player() :
 	CCharacter(ePlayer), m_CamDir(0.0f, 0.0f, 0.0f),
-	m_Dir(0.0f, 0.0f, 0.0f), m_Horizontal(0.134f), m_CameraT(1),
+	m_Dir(0.0f, 0.0f, 0.0f), m_Horizontal(0.134f), m_CameraT(1.0f),
 	m_Vertical(-1.5f), m_MoveSpeed(0.0f), m_CameraPosY(1.8f),
 	m_isCrouch(false), m_isAttack(false), m_isTakeWeapon(false), m_isMove(false),
 	m_ChangeTakeWeapon(false), m_isRun(false),
@@ -106,8 +106,6 @@ void Player::Move()
 		}
 		else
 		{
-			//playerRot = (m_Model.GetRotation() + (playerRot - m_Model.GetRotation()) * 0.2);
-
 			Vector3D pos(sinf(m_Model.GetRotation().y), 0.0f, cosf(m_Model.GetRotation().y));
 			m_pos += pos * m_MoveSpeed;
 		}
@@ -148,7 +146,7 @@ void Player::Attack()
 		}
 	}
 
-	//銃を構える
+	//銃を持っているときに銃を構える
 	if (Input::KeyG.Pressed() && m_isTakeWeapon)
 	{
 		D3DXVECTOR4 pos;
@@ -156,12 +154,13 @@ void Player::Attack()
 		CBulletManager::GetInstance()->Add(Vector3D(pos.x, pos.y + 1.0f, pos.z), m_CamDir, 2.00f);
 
 		m_State = eState_SetupWeapon;
-		if (!m_isAttack) m_CameraT = 0;
+
+		if (!m_isAttack) m_CameraT = 0.0f;
 		m_isAttack = true;
 	}
 	else
 	{
-		if (m_isAttack) m_CameraT = 0;
+		if (m_isAttack) m_CameraT = 0.0f;
 		m_isAttack = false;
 	}
 }
@@ -187,8 +186,8 @@ void Player::Camera()
 	if (m_isAttack)
 	{
 		//カメラ角度制限
-		if (m_Vertical >  0.5f) m_Vertical = 0.5f;	//上限
-		if (m_Vertical < -0.3f) m_Vertical = -0.3f; //下限
+		if (m_Vertical < -0.15f) m_Vertical = -0.15f; //
+		if (m_Vertical > 0.5f) m_Vertical = 0.5f;	//
 
 		m_rot.x = -m_Vertical;
 		m_rot.y = m_Horizontal;
@@ -201,39 +200,42 @@ void Player::Camera()
 		D3DXVec3Transform(&eye, &D3DXVECTOR3(-0.2f, 0.15f, -0.3f), &mat);
 		D3DXVECTOR4 at;
 		D3DXVec3Transform(&at, &D3DXVECTOR3(-0.2f, 0.15f, 2.0f), &mat);
-
 		newCameraPos = Vector3D(eye.x, eye.y, eye.z);
 		newLookPos = Vector3D(at.x, at.y, at.z);
 	}
 	else
 	{
+		//カメラ角度制限
 		if (m_Vertical < -0.15f) m_Vertical = -0.15f;
 		if (m_Vertical > 1.2f) m_Vertical = 1.2f;
 
 		m_rot.x = 0.0f;
 		newLookPos = m_pos + mat.GetAxisX() * 0.4f;
 		newLookPos.y = m_CameraPosY;
-		newCameraPos.y = m_CameraPosY;
 
 		//カメラの座標
 		newCameraPos = newLookPos;
 		newCameraPos -= m_CamDir * lenge;
+	}
+	/*
+		m_CameraT += 0.01f;
 
-	}
-	m_CameraT += 0.01f;
+		if (m_CameraT > 1.0f)
+		{
+			m_CameraT = 1.0f;
+			m_CameraPos = newCameraPos;
+			m_LookPos = newLookPos;
+		}
+		else
+		{
+			m_CameraPos = Lerp(m_CameraPos, newCameraPos, m_CameraT);
+			m_LookPos = Lerp(m_LookPos, newLookPos, m_CameraT);
+		}
+		*/
 
-	if (m_CameraT > 1.0f)
-	{
-		m_CameraT = 1.0f;
-		m_CameraPos = newCameraPos;
-		m_LookPos = newLookPos;
-	}
-	else 
-	{
-		//カメラ座標の補完
-		m_CameraPos = m_CameraPos * (1.0 - m_CameraT) + newCameraPos * m_CameraT;
-		m_LookPos = m_LookPos * (1.0 - m_CameraT) + newLookPos * m_CameraT;
-	}
+	m_CameraPos = Lerp(m_CameraPos, newCameraPos, 0.3f);
+	m_LookPos = Lerp(m_LookPos, newLookPos, 0.3f);
+
 
 	Camera::SetEye(m_CameraPos);
 	Camera::SetLookat(m_LookPos);
@@ -362,28 +364,23 @@ void Player::Run()
 
 void Player::Crouch()
 {
-	static int time = 29;
-
 	//武器を持っている時は武器をしまってからしゃがむ
 	if (m_isTakeWeapon)
 	{
 		if (m_Weapons == eShotgun)
 		{
 			m_Model.ChangeAnimation(eAnim_TakeGun);
-			m_Model.SetTime(time);
-			if (time >= 0)	time--;
+			m_Model.SetTime(-29);
 		}
 		else
 		{
 			m_Model.ChangeAnimation(eAnim_TakeHandgun);
-			m_Model.SetTime(time);
-			if (time >= 0)	time--;
+			m_Model.SetTime(-29);
 		}
 		//しまうアニメーションの終わり
 		if (m_Model.GetPlayTime() == 0)
 		{
 			m_isTakeWeapon = false;
-			time = 29;
 		}
 	}
 	else
@@ -530,4 +527,9 @@ void Player::HitCamera(Result_Porygon &hitData)
 {
 	m_CameraPos = hitData.contactPos;
 	Camera::SetEye(hitData.contactPos);
+}
+
+Vector3D Player::Lerp(Vector3D start, Vector3D finish, float percentage)
+{
+	return start * (1 - percentage) + finish * percentage;
 }

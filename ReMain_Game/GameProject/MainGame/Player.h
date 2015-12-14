@@ -72,6 +72,7 @@ public:
 
 private:
 	void HitCamera(Result_Porygon &hitData);
+	Vector3D Lerp(Vector3D start, Vector3D finish, float percentage);
 
 private:
 	Vector3D m_Dir;
@@ -94,8 +95,5 @@ private:
 	bool m_isRun;	//‘–‚Á‚Ä‚¢‚é‚©
 	bool m_isMove;		//ˆÚ“®’†‚©
 	bool m_isAttack;	//UŒ‚’†‚©
-
-	float m_Alpha;
-	int m_Count;
 };
 #endif
