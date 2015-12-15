@@ -15,6 +15,7 @@ MainGame::MainGame()
 
 MainGame::~MainGame()
 {
+	SightManager::GetInstance()->AllClear();
 	CCharacterManager::GetInstance()->AllClear();
 	CCharacterManager::GetInstance()->ClearInstance();
 	CBulletManager::GetInstance()->AllClear();
@@ -25,6 +26,7 @@ MainGame::~MainGame()
 
 void MainGame::Update()
 {
+	SightManager::GetInstance()->Update();
 	CCharacterManager::GetInstance()->Update();
 	CBulletManager::GetInstance()->UpDate();
 }

@@ -24,7 +24,7 @@ bool EnemySight::GetSleep() const
 
 void EnemySight::Regist(SightData *pSightdata, std::function<void()> func)
 {
-	assert(m_Func != nullptr && "EnemySight‚Í‚·‚Å‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚·");
+	assert(m_Func == nullptr && "EnemySight‚Í‚·‚Å‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚·");
 	m_pSightData = pSightdata;
 	m_Func = func;
 	SightManager::GetInstance()->AddEnemy(this);
@@ -67,7 +67,7 @@ PlayerSightInfo::~PlayerSightInfo()
 
 void PlayerSightInfo::SetPos(Vector3D *pPos)
 {
-	pPos = pPos;
+	m_pPos = pPos;
 }
 
 void PlayerSightInfo::Sleep()
@@ -143,6 +143,11 @@ void SightManager::AllClear()
 
 void SightManager::Update()
 {
+	float angle = 0;
+	float dot = 0;
+	Vector3D plyaerVec;
+	Vector3D EnemyVec;
+
 	auto it = m_pSightPimpl->EnemyList.begin();
 	auto itEnd = m_pSightPimpl->EnemyList.end();
 	for (; it != itEnd; it++)
@@ -150,14 +155,21 @@ void SightManager::Update()
 		if ((*it)->m_isSleep) continue;
 		if (m_pPlayerSightInfo->m_isSleep) continue;
 		
-		float dot = Vector3D::Dot(*(*it)->m_pSightData->pSightVec, *m_pPlayerSightInfo->pPos);
-		float angle = acos(dot);
+		//Ž‹ŠEŒvŽZ
+		EnemyVec = *(*it)->m_pSightData->pSightVec;
+		plyaerVec = *m_pPlayerSightInfo->m_pPos - *(*it)->m_pSightData->pSightPos;
+		dot = Vector3D::Dot(plyaerVec.GetNormalize(), EnemyVec.GetNormalize());
+		angle = Math::ChangeToDegree(acos(dot));
 
-		std::cout << (*it)->m_pSightData->angle << "\n";
+		std::cout << "angle = " << angle << "\n";
 
-		if ((*it)->m_pSightData->angle < angle)
+		if (angle < (*it)->m_pSightData->angle)
 		{
-			std::cout << "aaaaaaaaaaaaaaaaaaaaaa" << "\n";
+			if (plyaerVec.Length() < (*it)->m_pSightData->distance)
+			{
+				std::cout << "leng = " << plyaerVec.Length() << "\n";
+				std::cout << "HIT" << "\n";
+			}
 		}
 	}
 }

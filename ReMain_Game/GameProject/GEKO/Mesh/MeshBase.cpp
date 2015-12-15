@@ -120,35 +120,26 @@ Vector3D MeshBase::GetAmbient(int materialIndex) const
 
 Vector3D MeshBase::GetAxisX(float length)
 {
-	Vector3D x(1.0f, 0.0f, 0.0f);
 	Vector3D x_Normal(1.0f, 0.0f, 0.0f);
-
-	x = x * m_Matrix;
 	x_Normal = Vector3D::Matrix3x3(x_Normal, m_Matrix);
 
-	return x + x_Normal * length;
+	return x_Normal * length;
 }
 
 Vector3D MeshBase::GetAxisY(float length)
 {
-	Vector3D y(0.0f, 1.0f, 0.0f);
 	Vector3D y_Normal(0.0f, 1.0f, 0.0f);
-
-	y = y * m_Matrix;
 	y_Normal = Vector3D::Matrix3x3(y_Normal, m_Matrix);
 
-	return y + y_Normal * length;
+	return y_Normal * length;
 }
 
 Vector3D MeshBase::GetAxisZ(float length)
 {
-	Vector3D z(0.0f, 0.0f, 1.0f);
 	Vector3D z_Normal(0.0f, 0.0f, 1.0f);
-
-	z = z * m_Matrix;
 	z_Normal = Vector3D::Matrix3x3(z_Normal, m_Matrix);
 
-	return z + z_Normal * length;
+	return z_Normal * length;
 }
 
 Matrix *MeshBase::GetMatrix()
@@ -158,26 +149,18 @@ Matrix *MeshBase::GetMatrix()
 
 void MeshBase::DebugAxis()
 {
-	//基底ベクトル
-	Vector3D x(1.0f, 0.0f, 0.0f);
-	Vector3D y(0.0f, 1.0f, 0.0f);
-	Vector3D z(0.0f, 0.0f, 1.0f);
-
 	Vector3D x_Normal(1.0f, 0.0f, 0.0f);
 	Vector3D y_Normal(0.0f, 1.0f, 0.0f);
 	Vector3D z_Normal(0.0f, 0.0f, 1.0f);
 
-	//モデルの変換後位置
-	x = x * m_Matrix;
-	y = y * m_Matrix;
-	z = z * m_Matrix;
+	Vector3D pos(m_Matrix._41, m_Matrix._42, m_Matrix._43);
 
 	//モデルの変換後の法線
 	x_Normal = Vector3D::Matrix3x3(x_Normal, m_Matrix);
 	y_Normal = Vector3D::Matrix3x3(y_Normal, m_Matrix);
 	z_Normal = Vector3D::Matrix3x3(z_Normal, m_Matrix);
 
-	Fiqure::RenderLine3D(x, x + x_Normal * 2, Vector3D(1.0f, 0.0f, 0.0f));
-	Fiqure::RenderLine3D(y, y + y_Normal * 2, Vector3D(0.0f, 1.0f, 0.0f));
-	Fiqure::RenderLine3D(z, z + z_Normal * 2, Vector3D(0.0f, 0.0f, 1.0f));
+	Fiqure::RenderLine3D(pos, pos + x_Normal * 2, Vector3D(1.0f, 0.0f, 0.0f));
+	Fiqure::RenderLine3D(pos, pos + y_Normal * 2, Vector3D(0.0f, 1.0f, 0.0f));
+	Fiqure::RenderLine3D(pos, pos + z_Normal * 2, Vector3D(0.0f, 0.0f, 1.0f));
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "CCharacter.h"
+#include "..\GameSystem\SightSystem.h"
 
 class CEnemy : public CCharacter {
 public:
@@ -25,6 +26,15 @@ public:
 	void Die();
 	void Update();
 	void HitBullet();
+
+private:
+	EnemySight m_Sight;
+	SightData m_SightData;
+	Vector3D m_SightPos;
+	Vector3D m_SightVec;
+
+private:
+	void HitSight();
 };
 
 class CEnemyManager {

@@ -238,3 +238,30 @@ void StaticMesh::DebugNormal()
 		}
 	}
 }
+
+void StaticMesh::DebugPolygon()
+{
+	Vector3D v1, v2, v3;
+	Matrix m = m_pMeshData->GetMeshInfo()->m_LocalMat * m_Matrix;
+
+	int materialNum = m_pMeshData->GetMeshInfo()->materialNumAll;
+	for (int i = 0; i < materialNum; i++)
+	{
+		int *pFaceIndex = m_pMeshData->GetMeshInfo()->m_pMaterial[i].pPolygonIndex;
+		int faceNum = m_pMeshData->GetMeshInfo()->m_pMaterial[i].dwNumFace;
+		for (int j = 0; j < faceNum; j++)
+		{
+			v1 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3]].vPos;
+			v2 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3 + 1]].vPos;
+			v3 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3 + 2]].vPos;
+
+			v1 = v1 * m;
+			v2 = v2 * m;
+			v3 = v3 * m;
+
+			Fiqure::RenderLine3D(v1, v2, Vector3D(0.0f, 0.0f, 0.0f));
+			Fiqure::RenderLine3D(v2, v3, Vector3D(0.0f, 0.0f, 0.0f));
+			Fiqure::RenderLine3D(v3, v1, Vector3D(0.0f, 0.0f, 0.0f));
+		}
+	}
+}

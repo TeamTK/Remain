@@ -114,10 +114,11 @@ public:
 	float	 LengthSq();
 	void	 SetNormalize();
 	Vector3D GetNormalize() const;
-	static float Dot(const Vector3D& v1, const Vector3D& v2);
-	static Vector3D Cross(const Vector3D &v1, const Vector3D &v2);
-	static float Distance(const Vector3D &v1, const Vector3D &v2);
+	static Vector3D Lerp(Vector3D start, Vector3D end, float percentage);
 	static Vector3D Matrix3x3(const Vector3D &v, const Matrix &matrix);
+	static Vector3D Cross(const Vector3D &v1, const Vector3D &v2);
+	static float Dot(const Vector3D& v1, const Vector3D& v2);
+	static float Distance(const Vector3D &v1, const Vector3D &v2);
 	void DebugDraw(const char *name);
 };
 

@@ -8,6 +8,7 @@ class SightManager;
 
 struct SightData
 {
+	Vector3D *pSightPos;
 	Vector3D *pSightVec;
 	float angle;
 	float distance;
@@ -71,7 +72,7 @@ public:
 
 private:
 	bool m_isSleep;
-	Vector3D *pPos;
+	Vector3D *m_pPos;
 
 };
 

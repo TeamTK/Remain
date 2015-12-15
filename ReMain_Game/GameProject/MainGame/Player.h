@@ -7,6 +7,7 @@
 
 #include "../MainGame/Shotgun.h"
 #include "../MainGame/Handgun.h"
+#include "..\GameSystem\SightSystem.h"
 
 class Player : public CCharacter
 {
@@ -61,6 +62,8 @@ private:
 	bool m_isMove;		//ˆÚ“®’†‚©
 	bool m_isAttack;	//UŒ‚’†‚©
 
+	PlayerSightInfo m_PlayerSightInfo;
+	Vector3D m_SightPos;
 	StaticMesh aa;
 };
 #endif

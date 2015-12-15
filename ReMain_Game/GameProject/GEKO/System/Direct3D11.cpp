@@ -169,7 +169,7 @@ void Direct3D11::Present()
 
 void Direct3D11::FullScreen(bool isFullScreen)
 {
-	m_pSwapChain->SetFullscreenState(isFullScreen, 0);
+	m_pSwapChain->SetFullscreenState(isFullScreen, NULL);
 }
 
 void Direct3D11::SetViewport(float width, float height, float x, float y)
