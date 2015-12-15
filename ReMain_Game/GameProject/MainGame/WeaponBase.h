@@ -11,8 +11,7 @@ public:
 	virtual ~WeaponBase();
 	void Update();
 	void Render();
-	void Shot(Vector3D start, Vector3D end);
-	void LineSegment_vs_CapsuleCallback();
+	void Shot();
 	void SetPlayerData(int anim, int frame, Vector3D start, Vector3D end);
 	void SetPlayerBomeMtx(Matrix* m);
 

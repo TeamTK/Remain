@@ -5,8 +5,9 @@ Shotgun::Shotgun()
 {
 	m_Model.SetAsset("Shotgun");
 
-	//m_Collider.Regist_L_vs_C(&m_Start, &m_End, REGIST_FUNC(Shotgun::LineSegment_vs_CapsuleCallback));
-	//m_Collider.SetID(eHITID3, eHITID2);
+	m_Collider.Regist_L_vs_C(&m_Start, &m_End, REGIST_FUNC(Shotgun::Hit));
+	m_Collider.SetID(eHITID3, eHITID2);
+	m_Collider.Sleep();
 }
 
 
@@ -43,7 +44,12 @@ void Shotgun::Update()
 	m_Matrix = *m_Model.GetMatrix();
 }
 
-void Shotgun::Shot(Vector3D start, Vector3D end)
+void Shotgun::Hit(Result_Capsule &r)
 {
+	m_Collider.Sleep();
+}
 
+void Shotgun::Shot()
+{
+	m_Collider.Awake();
 }

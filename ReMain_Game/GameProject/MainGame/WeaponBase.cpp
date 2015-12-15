@@ -19,12 +19,7 @@ void WeaponBase::Render()
 	m_Model.RenderMatrix(*m_Model.GetMatrix() * *m_BoneMtx);
 }
 
-void WeaponBase::Shot(Vector3D start, Vector3D end)
-{
-
-}
-
-void WeaponBase::LineSegment_vs_CapsuleCallback()
+void WeaponBase::Shot()
 {
 
 }

@@ -9,7 +9,8 @@ public:
 	Shotgun();
 	~Shotgun();
 	void Update();
-	void Shot(Vector3D start, Vector3D end);
+	void Shot();
+	void Hit(Result_Capsule &r);
 
 private:
 
