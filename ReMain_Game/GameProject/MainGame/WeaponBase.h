@@ -11,11 +11,10 @@ public:
 	virtual ~WeaponBase();
 	void Update();
 	void Render();
-	void Shot();
+	void Shot(Vector3D start, Vector3D end);
 	void LineSegment_vs_CapsuleCallback();
 	void SetPlayerData(int anim, int frame, Vector3D start, Vector3D end);
 	void SetPlayerBomeMtx(Matrix* m);
-	Matrix GetMatrix();		//e‚Ìs—ñæ“¾
 
 protected:
 	int m_Ammo;		//’e”

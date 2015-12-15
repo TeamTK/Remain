@@ -38,7 +38,7 @@ void Handgun::Update()
 	m_Matrix = *m_Model.GetMatrix();
 }
 
-void Handgun::Shot()
+void Handgun::Shot(Vector3D start, Vector3D end)
 {
 
 }

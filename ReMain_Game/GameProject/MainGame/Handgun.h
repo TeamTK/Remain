@@ -9,7 +9,7 @@ public:
 	Handgun();
 	~Handgun();
 	void Update();
-	void Shot();
+	void Shot(Vector3D start, Vector3D end);
 private:
 
 };
