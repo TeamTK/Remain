@@ -84,6 +84,7 @@
     <ClCompile Include="MainGame\WeaponBase.cpp" />
     <ClCompile Include="MainGame\Shotgun.cpp" />
     <ClCompile Include="MainGame\Handgun.cpp" />
+    <ClCompile Include="GameSystem\SightSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -233,6 +234,8 @@
     <ClInclude Include="MainGame\WeaponBase.h" />
     <ClInclude Include="MainGame\Shotgun.h" />
     <ClInclude Include="MainGame\Handgun.h" />
+    <ClInclude Include="GameSystem\SightSystem.h" />
+    <ClInclude Include="MainGame\enums.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

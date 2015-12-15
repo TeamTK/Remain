@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameSystem\SightSystem.cpp" />
     <ClCompile Include="GameSystem\StageObject.cpp" />
     <ClCompile Include="GEKO\AnimationMesh\DynamicMesh.cpp" />
     <ClCompile Include="GEKO\AnimationMesh\DynamicMeshAsset.cpp" />
@@ -67,6 +68,7 @@
     <ClCompile Include="Scene\Title.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameSystem\SightSystem.h" />
     <ClInclude Include="GameSystem\StageObject.h" />
     <ClInclude Include="GEKO\AnimationMesh\DynamicMesh.h" />
     <ClInclude Include="GEKO\AnimationMesh\DynamicMeshAsset.h" />
@@ -186,6 +188,7 @@
     <ClInclude Include="MainGame\CBullet.h" />
     <ClInclude Include="MainGame\CCharacter.h" />
     <ClInclude Include="MainGame\CEnemy.h" />
+    <ClInclude Include="MainGame\enums.h" />
     <ClInclude Include="MainGame\Handgun.h" />
     <ClInclude Include="MainGame\Player.h" />
     <ClInclude Include="MainGame\Shotgun.h" />
