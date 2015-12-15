@@ -22,12 +22,12 @@ void Shotgun::Update()
 		//構え状態
 		//SetTranselate(上, 前, 左)
 		m_Model.SetTranselate(0.03f, 0.1f, 0.05f);
-		m_Model.SetRotationDegree(180, -90, 0);
+		m_Model.SetRotationDegree(180, -90, 8);
 	}
-	else if ((m_PlayerAnim == EPlayerAnim::eAnim_TakeGun && m_PlayerAnimFrame >= 15 )||
-			 m_PlayerAnim == EPlayerAnim::eAnim_IdleTakeGun ||
-			 m_PlayerAnim == EPlayerAnim::eAnim_WalkTakeGun ||
-			 m_PlayerAnim == EPlayerAnim::eAnim_RunTakeGun)
+	else if ((m_PlayerAnim == EPlayerAnim::eAnim_TakeGun && m_PlayerAnimFrame >= 15) ||
+		m_PlayerAnim == EPlayerAnim::eAnim_IdleTakeGun ||
+		m_PlayerAnim == EPlayerAnim::eAnim_WalkTakeGun ||
+		m_PlayerAnim == EPlayerAnim::eAnim_RunTakeGun)
 	{
 		//構え状態
 		//SetTranselate(左, 前, 下)
@@ -43,7 +43,7 @@ void Shotgun::Update()
 	m_Matrix = *m_Model.GetMatrix();
 }
 
-void Shotgun::Shot()
+void Shotgun::Shot(Vector3D start, Vector3D end)
 {
 
 }
