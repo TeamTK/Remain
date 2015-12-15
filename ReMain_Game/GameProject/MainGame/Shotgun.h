@@ -7,9 +7,10 @@ class Shotgun :public WeaponBase
 {
 public:
 	Shotgun();
-	Shotgun(Player* p);
 	~Shotgun();
 	void Update();
+	void Shot();
+
 private:
 
 };

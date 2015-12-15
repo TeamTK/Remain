@@ -3,48 +3,10 @@
 
 #include "../GEKO/GEKO.h"
 #include "CCharacter.h"
+#include "enums.h"
 
-//プレイヤーのアニメーション
-enum EPlayerAnimation
-{
-	eAnim_Crouch,			//しゃがみ移行
-	eAnim_CrouchIdle,		//しゃがみ待機
-	eAnim_CrouchWalk,		//しゃがみ歩き
-	eAnim_Die,				//やられ
-	eAnim_Hit,				//被攻撃
-	eAnim_Idle,				//待機状態
-	eAnim_IdleTakeGun,		//ショットガン持ち待機状態
-	eAnim_IdleTakeHandgun,	//ハンドガン持ち待機状態
-	eAnim_Run,				//走り
-	eAnim_RunTakeGun,		//ショットガンを持って走る
-	eAnim_RunTakeHandgun,	//ハンドガンを持って走る
-	eAnim_SetupGun,			//ショットガンを持った状態から構える
-	eAnim_SetupHandgun,		//ハンドガンを持った状態から構える
-	eAnim_TakeGun,			//ショットガンを手に持つ
-	eAnim_TakeHandgun,		//ハンドガンを手に持つ
-	eAnim_Walk,				//歩く
-	eAnim_WalkTakeGun,		//ショットガンを持って歩く
-	eAnim_WalkTakeHandgun	//ハンドガンを持って歩く
-};
-
-//プレイヤーの状態
-enum EPlayerState
-{
-	eState_Idle,
-	eState_Walk,
-	eState_Run,
-	eState_Crouch,
-	eState_TakeWeapon,
-	eState_SetupWeapon,
-	eState_Hit,
-	eState_Die,
-};
-
-enum EWeapons
-{
-	eShotgun = 0,
-	eHandgun
-};
+#include "../MainGame/Shotgun.h"
+#include "../MainGame/Handgun.h"
 
 class Player : public CCharacter
 {
@@ -59,8 +21,8 @@ public:
 	Matrix GetBomeMat(int bornIndex);
 	int GetAnim();
 	float GetPlayTime();
-	void SetGunMtx(Matrix m);
 
+private:
 	void Idle();
 	void Walk();
 	void Run();
@@ -70,30 +32,32 @@ public:
 	void Die();
 	void Hit();
 
-private:
 	void HitCamera(Result_Porygon &hitData);
 	Vector3D Lerp(Vector3D start, Vector3D finish, float percentage);
 
 private:
-	Vector3D m_Dir;
-	Vector3D m_CamDir;
-	Vector3D m_CameraPos;
-	Vector3D m_LookPos;
-	Matrix m_GunMatrix;
-	EPlayerAnimation m_Anim;
-	EPlayerState m_State;
-	EWeapons m_Weapons;
-	Collider m_HitCamera;
-	Collider m_Bullet;
-	float m_Vertical;
-	float m_Horizontal;
-	float m_MoveSpeed;
-	float m_CameraPosY;
-	float m_CameraT;
+	Shotgun* m_pShotgun;
+	Handgun* m_pHandgun;
+	Vector3D m_KeyDir;		//キー入力軸
+	Vector3D m_CamDir;		//カメラの方向
+	Vector3D m_CameraPos;	//カメラの位置
+	Vector3D m_LookPos;		//カメラの注視点
+	Vector3D m_Start;		//線分の当たり判定用 始点
+	Vector3D m_End;			//線分の当たり判定用 終点
+	Matrix m_Matrix;		//ショットガンの行列
+	EPlayerState m_State;	//プレイヤーの状態	
+	EWeapons m_Weapons;		//選択している銃
+	Collider m_HitCamera;	//カメラの当たり判定
+	Collider m_Bullet;		//弾の当たり判定
+	float m_Vertical;		//垂直方向のマウス入力量
+	float m_Horizontal;		//水平方向のマウス入力量
+	float m_MoveSpeed;		//移動速度
+	float m_CameraPosY;		//カメラのY座標
+	//float m_CameraT;
 	bool m_ChangeTakeWeapon;	//銃を持つ
 	bool m_isTakeWeapon;	//銃を持っているか
 	bool m_isCrouch;	//しゃがんでいるか
-	bool m_isRun;	//走っているか
+	bool m_isRun;		//走っているか
 	bool m_isMove;		//移動中か
 	bool m_isAttack;	//攻撃中か
 

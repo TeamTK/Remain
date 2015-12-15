@@ -1,14 +1,14 @@
 #include "Shotgun.h"
+#include "enums.h"
 
 Shotgun::Shotgun()
 {
+	m_Model.SetAsset("Shotgun");
+
+	//m_Collider.Regist_L_vs_C(&m_Start, &m_End, REGIST_FUNC(Shotgun::LineSegment_vs_CapsuleCallback));
+	//m_Collider.SetID(eHITID3, eHITID2);
 }
 
-Shotgun::Shotgun(Player* p)
-{
-	m_Model.SetAsset("Shotgun");
-	m_pPlayer = p;
-}
 
 Shotgun::~Shotgun()
 {
@@ -17,31 +17,33 @@ Shotgun::~Shotgun()
 
 void Shotgun::Update()
 {
-	if (m_pPlayer->GetAnim() == EPlayerAnimation::eAnim_SetupGun)
+	if (m_PlayerAnim == EPlayerAnim::eAnim_SetupGun)
 	{
 		//構え状態
 		//SetTranselate(上, 前, 左)
 		m_Model.SetTranselate(0.03f, 0.1f, 0.05f);
 		m_Model.SetRotationDegree(180, -90, 0);
-		m_BoneMat = m_pPlayer->GetBomeMat(24);
 	}
-	else if ((m_pPlayer->GetAnim() == EPlayerAnimation::eAnim_TakeGun && m_pPlayer->GetPlayTime() >= 15 )|| 
-			 m_pPlayer->GetAnim() == EPlayerAnimation::eAnim_IdleTakeGun ||
-			 m_pPlayer->GetAnim() == EPlayerAnimation::eAnim_WalkTakeGun ||
-			 m_pPlayer->GetAnim() == EPlayerAnimation::eAnim_RunTakeGun)
+	else if ((m_PlayerAnim == EPlayerAnim::eAnim_TakeGun && m_PlayerAnimFrame >= 15 )||
+			 m_PlayerAnim == EPlayerAnim::eAnim_IdleTakeGun ||
+			 m_PlayerAnim == EPlayerAnim::eAnim_WalkTakeGun ||
+			 m_PlayerAnim == EPlayerAnim::eAnim_RunTakeGun)
 	{
 		//構え状態
 		//SetTranselate(左, 前, 下)
 		m_Model.SetTranselate(0.0f, 0.11f, 0.05f);
 		m_Model.SetRotationDegree(200, 0, -80);
-		m_BoneMat = m_pPlayer->GetBomeMat(24);
 	}
 	else
 	{
 		//肩にかけている状態
 		m_Model.SetTranselate(0.2f, 0.14f, 0.0f);
 		m_Model.SetRotationDegree(65, 0, 12);
-		m_BoneMat = m_pPlayer->GetBomeMat(21);
 	}
 	m_Matrix = *m_Model.GetMatrix();
+}
+
+void Shotgun::Shot()
+{
+
 }

@@ -2,7 +2,9 @@
 
 #include "../GEKO/GEKO.h"
 #include "../GEKO/Collider/Collider.h"
-class CBullet  {
+
+class CBullet
+{
 public:
 	bool m_isActive;
 	Collider m_ColliderMap;
@@ -27,7 +29,8 @@ public:
 };
 
 
-class CBulletManager {
+class CBulletManager
+{
 public:
 	static CBulletManager *m_Obj;
 	std::vector<CBullet*> m_Core;
