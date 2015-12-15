@@ -6,8 +6,6 @@
 #include "../MainGame/Player.h"
 #include "../MainGame/CBullet.h"
 #include "../MainGame/CEnemy.h"
-#include "../MainGame/Shotgun.h"
-#include "../MainGame/Handgun.h"
 
 class MainGame : public Scene
 {
@@ -19,8 +17,6 @@ public:
 
 private:
 	Player* m_pPlayer;
-	Shotgun* m_pShotgun;
-	Handgun* m_pHandgun;
 };
 
 #endif

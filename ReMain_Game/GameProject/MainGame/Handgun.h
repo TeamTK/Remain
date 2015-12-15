@@ -7,9 +7,9 @@ class Handgun :public WeaponBase
 {
 public:
 	Handgun();
-	Handgun(Player* p);
 	~Handgun();
 	void Update();
+	void Shot();
 private:
 
 };

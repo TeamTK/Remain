@@ -1,5 +1,6 @@
 #include "CBullet.h"
-static void func(Result_Capsule& r) {
+static void func(Result_Capsule& r)
+{
 
 }
 CBullet::CBullet() : m_isActive(TRUE), m_cnt(0), m_Atk(1)
@@ -65,7 +66,8 @@ CBulletManager::CBulletManager()
 CBulletManager::~CBulletManager()
 {
 	auto it = m_Core.begin();
-	while (it != m_Core.end()) {
+	while (it != m_Core.end())
+	{
 		//íœˆ—
 		delete *it;
 		it = m_Core.erase(it);
@@ -75,17 +77,21 @@ CBulletManager::~CBulletManager()
 void CBulletManager::UpDate()
 {
 	auto it = m_Core.begin();
-	while (it != m_Core.end()) {
+	while (it != m_Core.end())
+	{
 		CBullet *b = *it;
 		//¶‘¶‚µ‚Ä‚¢‚ê‚Î
-		if (b->m_isActive) {
-			if (b->UpDate()) {
+		if (b->m_isActive)
+		{
+			if (b->UpDate())
+			{
 				it = m_Core.begin();
 				while (b != *it && it != m_Core.end()) it++;
 			}
 			it++;
 		}
-		else {
+		else
+		{
 			//íœˆ—
 			delete *it;
 			it = m_Core.erase(it);
@@ -95,7 +101,8 @@ void CBulletManager::UpDate()
 void CBulletManager::Render()
 {
 	auto it = m_Core.begin();
-	while (it != m_Core.end()) {
+	while (it != m_Core.end())
+	{
 		(*it)->Render();
 		it++;
 	}
