@@ -34,6 +34,8 @@ Player::Player() :
 
 	m_pShotgun = new Shotgun();
 	m_pHandgun = new Handgun();
+
+	m_PlayerSightInfo.SetPos(&m_SightPos);
 }
 
 Player::~Player()
@@ -45,6 +47,9 @@ Player::~Player()
 
 void Player::Update()
 {
+	m_SightPos = m_pos;
+	m_SightPos.y = 2.5f;
+
 	Move();
 	Attack();
 	Animation();

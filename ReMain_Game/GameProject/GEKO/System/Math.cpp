@@ -282,9 +282,18 @@ Vector3D Vector3D::GetNormalize() const
 	return out;
 }
 
-float Vector3D::Dot(const Vector3D& v1, const Vector3D& v2)
+Vector3D Vector3D::Lerp(Vector3D start, Vector3D end, float percentage)
 {
-	return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
+	return start * (1 - percentage) + end * percentage;
+}
+
+Vector3D Vector3D::Matrix3x3(const Vector3D &v, const Matrix &matrix)
+{
+	Vector3D vec;
+	vec.x = v.x * matrix._11 + v.y * matrix._21 + v.z * matrix._31;
+	vec.y = v.x * matrix._12 + v.y * matrix._22 + v.z * matrix._32;
+	vec.z = v.x * matrix._13 + v.y * matrix._23 + v.z * matrix._33;
+	return vec;
 }
 
 Vector3D Vector3D::Cross(const Vector3D& v1, const Vector3D& v2)
@@ -295,13 +304,9 @@ Vector3D Vector3D::Cross(const Vector3D& v1, const Vector3D& v2)
 		v1.x * v2.y - v1.y * v2.x);
 }
 
-Vector3D Vector3D::Matrix3x3(const Vector3D &v, const Matrix &matrix)
+float Vector3D::Dot(const Vector3D& v1, const Vector3D& v2)
 {
-	Vector3D vec;
-	vec.x = v.x * matrix._11 + v.y * matrix._21 + v.z * matrix._31;
-	vec.y = v.x * matrix._12 + v.y * matrix._22 + v.z * matrix._32;
-	vec.z = v.x * matrix._13 + v.y * matrix._23 + v.z * matrix._33;
-	return vec;
+	return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
 }
 
 float Vector3D::Distance(const Vector3D &v1, const Vector3D &v2)
@@ -397,15 +402,6 @@ Matrix::Matrix(const Matrix &matrix)
 	_21 = matrix._21; _22 = matrix._22; _23 = matrix._23; _24 = matrix._24;
 	_31 = matrix._31; _32 = matrix._32; _33 = matrix._33; _34 = matrix._34;
 	_41 = matrix._41; _42 = matrix._42; _43 = matrix._43; _44 = matrix._44;
-	/*
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			m[i][j] = matrix.m[i][j];
-		}
-	}
-	*/
 }
 
 Matrix::Matrix(const D3DXMATRIX &d3dxMatrix)
@@ -414,16 +410,6 @@ Matrix::Matrix(const D3DXMATRIX &d3dxMatrix)
 	_21 = d3dxMatrix._21; _22 = d3dxMatrix._22; _23 = d3dxMatrix._23; _24 = d3dxMatrix._24;
 	_31 = d3dxMatrix._31; _32 = d3dxMatrix._32; _33 = d3dxMatrix._33; _34 = d3dxMatrix._34;
 	_41 = d3dxMatrix._41; _42 = d3dxMatrix._42; _43 = d3dxMatrix._43; _44 = d3dxMatrix._44;
-
-	/*
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			m[i][j] = d3dxMatrix.m[i][j];
-		}
-	}
-	*/
 }
 
 void Matrix::Indentity()

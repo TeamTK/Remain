@@ -32,6 +32,7 @@ public:
 	void DebugAxis();
 
 protected:
+	Matrix m_LocalMatrix;
 	Matrix m_Matrix;
 	Vector3D m_Rotation;
 	Vector3D m_Scale;

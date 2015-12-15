@@ -19,6 +19,7 @@ public:
 	void Render();
 	void RenderMatrix(Matrix &matrix);
 	void DebugNormal();
+	void DebugPolygon();
 
 private:
 	void RenderFunc(Matrix &matrix);

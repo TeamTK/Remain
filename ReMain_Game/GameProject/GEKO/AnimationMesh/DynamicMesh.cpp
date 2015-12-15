@@ -29,6 +29,8 @@ void DynamicMesh::SetAsset(SkinMeshData *meshData)
 		m_Specular.emplace_back(specular.x, specular.y, specular.z);
 		m_Ambient.emplace_back(ambient.x, ambient.y, ambient.z);
 	}
+	BornInfo *pBornData = m_pSkinMeshData->GetBornInfo();
+	m_LocalMatrix = pBornData->BornList[0]->initMat * pBornData->BornList[pBornData->BornList.size() - 1]->initMat;
 }
 
 void DynamicMesh::SetAsset(const std::string &MeshName)
@@ -48,6 +50,8 @@ void DynamicMesh::SetAsset(const std::string &MeshName)
 		m_Specular.emplace_back(specular.x, specular.y, specular.z);
 		m_Ambient.emplace_back(ambient.x, ambient.y, ambient.z);
 	}
+	BornInfo *pBornData = m_pSkinMeshData->GetBornInfo();
+	m_LocalMatrix = pBornData->BornList[0]->initMat * pBornData->BornList[pBornData->BornList.size() - 1]->initMat;
 }
 
 void DynamicMesh::ChangeAnimation(unsigned int num)

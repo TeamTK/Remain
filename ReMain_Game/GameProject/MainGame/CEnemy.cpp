@@ -2,6 +2,11 @@
 
 CEnemy::CEnemy(int type,Vector3D pos) : CCharacter(type){
 	m_pos = pos;
+	m_SightData.angle = 60.0f;
+	m_SightData.distance = 5.0f;
+	m_SightData.pSightPos = &m_SightPos;
+	m_SightData.pSightVec = &m_SightVec;
+	m_Sight.Regist(&m_SightData, REGIST_RENDER_FUNC(CEnemy::HitSight));
 }
 void CEnemy::Hit() {
 	m_Model.ChangeAnimation(eAnimationHit);
@@ -24,6 +29,10 @@ void CEnemy::Die() {
 	}
 }
 void CEnemy::Update() {
+	m_SightVec = m_Model.GetAxisZ(1.0f);
+	m_SightPos = m_pos;
+	m_SightPos.y = 2.5f;
+
 	switch (m_state)
 	{
 	case eState_Idle:
@@ -51,6 +60,12 @@ void CEnemy::HitBullet() {
 	}
 
 }
+
+void CEnemy::HitSight()
+{
+
+}
+
 CEnemy *CEnemyManager::Add(int type,Vector3D pos) {
 	CEnemy *e = new CEnemy(type,pos);
 
