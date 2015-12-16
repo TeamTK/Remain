@@ -15,6 +15,7 @@ public:
 	};
 	enum {
 		eState_Idle,
+		eState_Chase,
 		eState_Hit,
 		eState_Die
 	};
@@ -30,11 +31,11 @@ public:
 private:
 	EnemySight m_Sight;
 	SightData m_SightData;
-	Vector3D m_SightPos;
 	Vector3D m_SightVec;
+	const Vector3D *m_pPlayerPos;
 
 private:
-	void HitSight();
+	void HitSight(const Vector3D *pPos);
 };
 
 class CEnemyManager {

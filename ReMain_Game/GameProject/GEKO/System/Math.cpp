@@ -315,11 +315,10 @@ float Vector3D::Distance(const Vector3D &v1, const Vector3D &v2)
 	return powf((v.x * v.x) + (v.y * v.y) + (v.z * v.z), 0.5f);
 }
 
-void Vector3D::DebugDraw(const char *name)
+void Vector3D::DebugDraw(const char *name) const
 {
-	printf("******************************************************************************\n");
 	printf("%s\n", name);
-	printf("Vector3D : X = %f : Y = %f : Z = %f\n", x, y, z);
+	printf("Vector3D :X = %f :Y = %f :Z = %f\n", x, y, z);
 }
 
 /////Vector4D/////
