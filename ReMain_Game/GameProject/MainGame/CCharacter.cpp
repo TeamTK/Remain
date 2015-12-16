@@ -15,7 +15,8 @@ CCharacter::CCharacter(int type) : m_isActive(true)
 			"Monster_A",
 			10,
 			0.2f,
-			{	SCharacterData::SBoneCalpule(0.3f,25,25),	//“ª
+			{
+				SCharacterData::SBoneCalpule(0.4f,25,4),	//“ª
 				SCharacterData::SBoneCalpule(0.4f,2,4),		//“·‘Ì
 				SCharacterData::SBoneCalpule(0.2f,6,8),		//¶˜r
 				SCharacterData::SBoneCalpule(0.2f,16,18) ,	//‰E˜r
@@ -62,6 +63,7 @@ void CCharacter::Update()
 		m_pCapsule[i].radius = m_pCharaData->BoneCapsule[i].radius;
 		m_pCapsule[i].segment.start = m_Model.GetBornPos(m_pCharaData->BoneCapsule[i].start);
 		m_pCapsule[i].segment.end = m_Model.GetBornPos(m_pCharaData->BoneCapsule[i].end);
+
 	}
 	m_SphereMap.radius = m_pCharaData->collitionMapRad;
 	m_SphereMap.pos = m_pos + Vector3D(0, m_SphereMap.radius, 0);
@@ -75,6 +77,8 @@ void CCharacter::Render()
 		matS.Scale(m_pCapsule[i].radius, m_pCapsule[i].radius, m_pCapsule[i].radius);
 		matTS.Transelate(m_pCapsule[i].segment.start.x, m_pCapsule[i].segment.start.y, m_pCapsule[i].segment.start.z);
 		matTE.Transelate(m_pCapsule[i].segment.end.x, m_pCapsule[i].segment.end.y, m_pCapsule[i].segment.end.z);
+
+		Fiqure::RenderLine3D(m_pCapsule[i].segment.start, m_pCapsule[i].segment.end, Vector3D(1.0f, 0.0f, 0.0f));
 	}
 
 

@@ -51,6 +51,7 @@ public:
 
 private:
 	int m_cnt;
+	int m_num;	//合計オブジェクト数
 	float m_number;	//各オブジェクトの数
 	std::vector<std::string> m_ClsName;	//クラス名
 	std::vector<std::string> m_MdlName;	//モデル名
@@ -132,6 +133,14 @@ public:
 	Cabin(XYZ pos, XYZ rot, XYZ sca, std::string name) :
 		StageObject(pos, rot, sca, name){}
 	~Cabin(){}
+};
+
+class Cabin_Collision : public StageObject
+{
+public:
+	Cabin_Collision(XYZ pos, XYZ rot, XYZ sca, std::string name) :
+		StageObject(pos, rot, sca, name) {}
+	~Cabin_Collision() {}
 };
 
 class Ground : public StageObject

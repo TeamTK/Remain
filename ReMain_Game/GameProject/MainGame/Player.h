@@ -39,7 +39,7 @@ private:
 private:
 	Shotgun* m_pShotgun;
 	Handgun* m_pHandgun;
-	Image m_Reticle;		//レイティクル画像(仮)
+	Image m_Reticle;		//レティクル画像(仮)
 	Vector3D m_KeyDir;		//キー入力軸
 	Vector3D m_CamDir;		//カメラの方向
 	Vector3D m_CameraPos;	//カメラの位置

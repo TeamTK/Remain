@@ -5,6 +5,7 @@ StaticMesh media\Grass_2.x Grass_2
 StaticMesh media\Bush.x Bush
 StaticMesh media\Fern.x Fern
 StaticMesh media\Cabin.x Cabin
+StaticMesh media\Cabin_Collision.x Cabin_Collision
 StaticMesh media\Ground.x Ground
 StaticMesh media\RockWall.x RockWall
 StaticMesh media\SkyDome.x SkyDome
