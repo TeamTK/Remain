@@ -119,7 +119,7 @@ public:
 	static Vector3D Cross(const Vector3D &v1, const Vector3D &v2);
 	static float Dot(const Vector3D& v1, const Vector3D& v2);
 	static float Distance(const Vector3D &v1, const Vector3D &v2);
-	void DebugDraw(const char *name);
+	void DebugDraw(const char *name) const;
 };
 
 class Vector4D : public SVector4D

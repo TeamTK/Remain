@@ -40,7 +40,7 @@ public:
 	EnemySight();
 	~EnemySight();
 	bool GetSleep() const;
-	void Regist(SightData *pSightdata, std::function<void()> func);
+	void Regist(SightData *pSightdata, std::function<void(const Vector3D *)> func);
 	void Release();
 	void Sleep();
 	void Awake();
@@ -51,10 +51,9 @@ private:
 private:
 	bool m_isSleep;
 	bool m_isObstacle;
-	std::function<void()> m_Func;
+	std::function<void(const Vector3D *)> m_Func;
 	SightData *m_pSightData;
 	Collider m_HitSight;
-
 };
 
 //ƒvƒŒƒCƒ„[‘¤‚Ì‹ŠEî•ñ
@@ -73,7 +72,6 @@ public:
 private:
 	bool m_isSleep;
 	Vector3D *m_pPos;
-
 };
 
 class SightManager

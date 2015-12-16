@@ -4,9 +4,11 @@
 
 EnemySight::EnemySight() :
 	m_isSleep(false),
-	m_isObstacle(false),
+	m_isObstacle(true),
 	m_pSightData(nullptr)
 {
+	//m_HitSight.SetID(eHITID2, eHITID0);
+	//m_HitSight.Sleep();	
 }
 
 EnemySight::~EnemySight()
@@ -22,7 +24,7 @@ bool EnemySight::GetSleep() const
 	return m_isSleep;
 }
 
-void EnemySight::Regist(SightData *pSightdata, std::function<void()> func)
+void EnemySight::Regist(SightData *pSightdata, std::function<void(const Vector3D *)> func)
 {
 	assert(m_Func == nullptr && "EnemySight‚Í‚·‚Å‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚·");
 	m_pSightData = pSightdata;
@@ -51,6 +53,8 @@ void EnemySight::Awake()
 
 void EnemySight::HitSight(Result_Porygon &data)
 {
+	std::cout << "HITSIGHT" << "\n";
+
 	m_isObstacle = true;
 	m_HitSight.Sleep();
 }
@@ -148,6 +152,7 @@ void SightManager::Update()
 	Vector3D plyaerVec;
 	Vector3D EnemyVec;
 
+	//‘S‚Ä‚Ì“G‚ÌŽ‹ŠE”»’è
 	auto it = m_pSightPimpl->EnemyList.begin();
 	auto itEnd = m_pSightPimpl->EnemyList.end();
 	for (; it != itEnd; it++)
@@ -163,13 +168,36 @@ void SightManager::Update()
 
 		std::cout << "angle = " << angle << "\n";
 
+		//Ž‹ŠEŠp“x
 		if (angle < (*it)->m_pSightData->angle)
 		{
-			if (plyaerVec.Length() < (*it)->m_pSightData->distance)
+			//‹——£
+			if (plyaerVec.LengthSq() < (*it)->m_pSightData->distance * (*it)->m_pSightData->distance)
 			{
-				std::cout << "leng = " << plyaerVec.Length() << "\n";
-				std::cout << "HIT" << "\n";
+				(*it)->m_Func(m_pPlayerSightInfo->m_pPos);
+
+				/*
+				if (!(*it)->m_isObstacle)
+				{
+					std::cout << "leng = " << plyaerVec.Length() << "\n";
+					std::cout << "HIT" << "\n";
+					(*it)->m_Func();
+				}
+				else
+				{
+					(*it)->Awake();
+					(*it)->m_isObstacle = false;
+				}
+				*/
 			}
+			else
+			{
+				//(*it)->Sleep();
+			}
+		}
+		else
+		{
+			//(*it)->Sleep();
 		}
 	}
 }

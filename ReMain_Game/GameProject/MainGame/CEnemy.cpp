@@ -4,9 +4,9 @@ CEnemy::CEnemy(int type,Vector3D pos) : CCharacter(type){
 	m_pos = pos;
 	m_SightData.angle = 60.0f;
 	m_SightData.distance = 5.0f;
-	m_SightData.pSightPos = &m_SightPos;
+	m_SightData.pSightPos = &m_pos;
 	m_SightData.pSightVec = &m_SightVec;
-	m_Sight.Regist(&m_SightData, REGIST_RENDER_FUNC(CEnemy::HitSight));
+	m_Sight.Regist(&m_SightData, REGIST_FUNC(CEnemy::HitSight));
 }
 void CEnemy::Hit() {
 	m_Model.ChangeAnimation(eAnimationHit);
@@ -30,14 +30,18 @@ void CEnemy::Die() {
 }
 void CEnemy::Update() {
 	m_SightVec = m_Model.GetAxisZ(1.0f);
-	m_SightPos = m_pos;
-	m_SightPos.y = 2.5f;
 
 	switch (m_state)
 	{
 	case eState_Idle:
 		Idle();
 		break;
+
+	case eState_Chase:
+		m_pos += (*m_pPlayerPos - m_pos).GetNormalize() * 0.1f;
+
+		break;
+
 	case eState_Hit:
 		Hit();
 		break;
@@ -47,7 +51,6 @@ void CEnemy::Update() {
 		break;
 	}
 	CCharacter::Update();
-
 }
 
 void CEnemy::HitBullet() {
@@ -61,9 +64,11 @@ void CEnemy::HitBullet() {
 
 }
 
-void CEnemy::HitSight()
+void CEnemy::HitSight(const Vector3D *pPos)
 {
-
+	m_pPlayerPos = pPos;
+	//m_state = eState_Chase;
+	m_Sight.Sleep();
 }
 
 CEnemy *CEnemyManager::Add(int type,Vector3D pos) {
