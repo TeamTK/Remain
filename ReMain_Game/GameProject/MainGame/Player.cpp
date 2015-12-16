@@ -88,7 +88,7 @@ void Player::Update()
 	//m_pHandgun->Render();
 
 	m_Reticle.SetAlpha(150.0f);
-	m_Reticle.Draw(400, 300, 16, 16);
+	m_Reticle.Draw(400, 300, 32, 32);
 
 	//printf("%d %d\n",m_ChangeTakeWeapon, m_isTakeWeapon);
 
@@ -160,7 +160,7 @@ void Player::Move()
 void Player::Attack()
 {
 	//èeÇÇ‡Ç¬
-	if (Input::KeyF.Clicked())
+	if (Input::KeyF.Clicked() && !m_isCrouch)
 	{
 		m_Model.SetPlayTime(0);
 		m_ChangeTakeWeapon = !m_ChangeTakeWeapon;
