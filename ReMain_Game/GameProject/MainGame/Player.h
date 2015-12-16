@@ -39,7 +39,7 @@ private:
 private:
 	Shotgun* m_pShotgun;
 	Handgun* m_pHandgun;
-	Image m_Reticle;
+	Image m_Reticle;		//レイティクル画像(仮)
 	Vector3D m_KeyDir;		//キー入力軸
 	Vector3D m_CamDir;		//カメラの方向
 	Vector3D m_CameraPos;	//カメラの位置
@@ -56,12 +56,12 @@ private:
 	float m_Horizontal;		//水平方向のマウス入力量
 	float m_MoveSpeed;		//移動速度
 	float m_CameraPosY;		//カメラのY座標
-	//float m_CameraT;
+	int m_Phase;
 	bool m_ChangeTakeWeapon;	//銃を持つ
 	bool m_isTakeWeapon;	//銃を持っているか
 	bool m_isCrouch;	//しゃがんでいるか
 	bool m_isRun;		//走っているか
-	bool m_SetupWeapon;
+	bool m_SetupWeapon;	//武器を構えているか
 	bool m_isMove;		//移動中か
 	bool m_isAttack;	//攻撃中か
 };

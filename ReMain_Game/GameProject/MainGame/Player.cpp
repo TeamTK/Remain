@@ -2,17 +2,20 @@
 #include "../GEKO/System/Input.h"
 #include "CBullet.h"
 
-#define CAMERA_NO_CROUCH_POS_Y 1.8f;	//しゃがみ姿勢じゃないときのカメラのY座標の高さ
+#define CAMERA_NO_CROUCH_POS_Y 1.8f;//しゃがみ姿勢じゃないときのカメラのY座標の高さ
 #define CAMERA_CROUCH_POS_Y 0.8f;	//しゃがみ姿勢のときのカメラのY座標の高さ
-#define WALK_SPEED 0.07f		//歩くスピード
-#define RUN_SPEED 0.16f			//走るスピード
-#define CROUCH_WALK_SPPED 0.03f	//しゃがみ歩きスピード
-#define	SETUPWEAPON_MOVE_SPEED 0.03;	//武器を構えた時の移動速度
-#define CAMERA_LENGE	2.0f
+#define WALK_SPEED 0.07f			//歩くスピード
+#define RUN_SPEED 0.16f				//走るスピード
+#define CROUCH_WALK_SPPED 0.03f		//しゃがみ歩きスピード
+#define	SETUPWEAPON_MOVE_SPEED 0.03;//武器を構えた時の移動速度
+#define CAMERA_LENGE	2.0f		//プレイヤーとカメラの距離
+#define PI 3.14159265359f
+#define T1	60 //周期
+#define T2	20 //周期
 
 Player::Player() :
 	CCharacter(ePlayer), m_CamDir(0.0f, 0.0f, 0.0f),
-	m_KeyDir(0.0f, 0.0f, 0.0f), m_Horizontal(0.134f),// m_CameraT(1.0f),
+	m_KeyDir(0.0f, 0.0f, 0.0f), m_Horizontal(0.134f), m_Phase(0.0f),
 	m_Vertical(-1.5f), m_MoveSpeed(0.0f), m_CameraPosY(1.8f),
 	m_isCrouch(false), m_isAttack(false), m_isTakeWeapon(false), m_isMove(false),
 	m_ChangeTakeWeapon(false), m_isRun(false), m_SetupWeapon(false),
@@ -52,8 +55,8 @@ void Player::Update()
 {
 	Move();
 	Attack();
-	Animation();
 	Camera();
+	Animation();
 	CCharacter::Update();
 
 	//プレイヤーのボーン行列の切り替え
@@ -86,6 +89,8 @@ void Player::Update()
 
 	m_Reticle.SetAlpha(150.0f);
 	m_Reticle.Draw(400, 300, 16, 16);
+
+	//printf("%d %d\n",m_ChangeTakeWeapon, m_isTakeWeapon);
 
 	//printf("%f %f\n", m_Vertical, m_Horizontal);
 }
@@ -133,21 +138,23 @@ void Player::Move()
 		const D3DXMATRIX *camDir = Camera::GetView();
 		Vector3D playerRot(0.0f, atan2f(camDir->m[0][2], camDir->m[2][2]) + atan2f(m_KeyDir.x, m_KeyDir.z), 0.0f);
 		m_rot.y = playerRot.y;
+		m_Phase++;
 
-		if (m_isAttack)
+		if (m_SetupWeapon)
 		{
 			//武器を構えた状態の移動
 			m_pos += m_Model.GetAxisX(1.0f) * m_KeyDir.x * m_MoveSpeed;
-			m_pos += m_Model.GetAxisZ(1.0f) * m_KeyDir.x * m_MoveSpeed;
+			m_pos += m_Model.GetAxisZ(1.0f) * m_KeyDir.z * m_MoveSpeed;
+			//プレイヤーの上下移動
+			m_pos.y += sinf(m_Phase * (PI*10) / 180.0f) / 140.0f;
 		}
 		else
 		{
+			//通常状態の移動
 			Vector3D pos(sinf(m_Model.GetRotation().y), 0.0f, cosf(m_Model.GetRotation().y));
 			m_pos += pos * m_MoveSpeed;
 		}
 	}
-
-	//m_pos = Lerp(m_Model.GetTranselate(), m_pos, 0.5f);
 }
 
 void Player::Attack()
@@ -191,17 +198,15 @@ void Player::Attack()
 	if (Input::Mouse.RPressed() && m_isTakeWeapon)
 	{
 		m_State = EPlayerState::eState_SetupWeapon;
-		//if (!m_isAttack) m_CameraT = 0.0f;
-		m_isAttack = true;
+		m_SetupWeapon = true;
 	}
 	else
 	{
-		//if (m_isAttack) m_CameraT = 0.0f;
-		m_isAttack = false;
+		m_SetupWeapon = false;
 	}
 
 	//発砲
-	if (Input::Mouse.LClicked() && m_isAttack)
+	if (Input::Mouse.LClicked() && m_SetupWeapon)
 	{
 		CBulletManager::GetInstance()->Add(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f);
 	}
@@ -225,11 +230,11 @@ void Player::Camera()
 	mat = mRY * mRX;
 	m_CamDir = mat.GetAxisZ();
 
-	if (m_isAttack)
+	//銃を構えているときのカメラ位置
+	if (m_SetupWeapon)
 	{
-		//カメラ角度制限
-		if (m_Vertical >= 0.50f) m_Vertical = 0.50f;	//上限
-		if (m_Vertical <= -0.2f) m_Vertical = -0.2f;	//下限
+		if (m_Vertical >= 0.55f) m_Vertical = 0.55f;	//カメラ角度上限
+		if (m_Vertical <= -0.5f) m_Vertical = -0.5f;	//カメラ角度下限
 
 		m_rot.x = -m_Vertical;
 		m_rot.y = m_Horizontal;
@@ -239,17 +244,17 @@ void Player::Camera()
 
 		Matrix mat = m_Model.GetBornMatrix(6, true);
 		Vector4D eye;
-		eye = Vector4D(-0.2f, 0.15f, -0.3f, 1.0f) * mat;
+		eye = Vector4D(-0.25f, 0.15f, -0.3f, 1.0f) * mat;
 		Vector4D at;
-		at = Vector4D(-0.2f, 0.2f, 2.0f, 1.0f) *  mat;
+		at = Vector4D(-0.25f, 0.15f, 2.0f, 1.0f) *  mat;
 		newCameraPos = Vector3D(eye.x, eye.y, eye.z);
 		newLookPos = Vector3D(at.x, at.y, at.z);
 	}
+	//通常状態のカメラ位置
 	else
 	{
-		//カメラ角度制限
-		if (m_Vertical >= 0.45f) m_Vertical = 0.45f;	//下限
-		if (m_Vertical <= -0.9f) m_Vertical = -0.9f;	//上限
+		if (m_Vertical >= 0.45f) m_Vertical = 0.45f;	//カメラ角度下限
+		if (m_Vertical <= -0.9f) m_Vertical = -0.9f;	//カメラ角度上限
 
 		m_rot.x = 0.0f;
 		newLookPos = m_pos + mat.GetAxisX() * 0.4f;
@@ -275,10 +280,11 @@ void Player::Camera()
 		}
 		*/
 
-	if (m_SetupWeapon)
+	//カメラ補完移動
+	if (m_isAttack)
 	{
-		m_CameraPos = Lerp(m_CameraPos, newCameraPos, 0.8f);
-		m_LookPos = Lerp(m_LookPos, newLookPos, 0.8f);
+		m_CameraPos = Lerp(m_CameraPos, newCameraPos, 1.0f);
+		m_LookPos = Lerp(m_LookPos, newLookPos, 1.0f);
 	}
 	else
 	{
