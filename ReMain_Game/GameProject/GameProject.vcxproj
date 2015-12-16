@@ -252,8 +252,8 @@
     <ResourceCompile Include="GEKO\System\myicon.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="DynamicMesh.txt" />
-    <Text Include="Image.txt" />
+    <Text Include="TextData\DynamicMesh.txt" />
+    <Text Include="TextData\Image.txt" />
     <Text Include="TextData\StageObject.txt" />
     <Text Include="TextData\StaticMesh.txt" />
   </ItemGroup>

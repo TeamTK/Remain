@@ -39,13 +39,13 @@ private:
 private:
 	Shotgun* m_pShotgun;
 	Handgun* m_pHandgun;
+	Image m_Reticle;
 	Vector3D m_KeyDir;		//キー入力軸
 	Vector3D m_CamDir;		//カメラの方向
 	Vector3D m_CameraPos;	//カメラの位置
 	Vector3D m_LookPos;		//カメラの注視点
 	Vector3D m_Start;		//線分の当たり判定用 始点
 	Vector3D m_End;			//線分の当たり判定用 終点
-	Vector3D m_SightPos;
 	Matrix m_Matrix;		//ショットガンの行列
 	EPlayerState m_State;	//プレイヤーの状態	
 	EWeapons m_Weapons;		//選択している銃
@@ -61,6 +61,7 @@ private:
 	bool m_isTakeWeapon;	//銃を持っているか
 	bool m_isCrouch;	//しゃがんでいるか
 	bool m_isRun;		//走っているか
+	bool m_SetupWeapon;
 	bool m_isMove;		//移動中か
 	bool m_isAttack;	//攻撃中か
 };

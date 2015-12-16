@@ -69,23 +69,14 @@ void CCharacter::Update()
 
 void CCharacter::Render()
 {
-	static Sphere3D *debug_model = NULL;
-	if (!debug_model)
+	for (int i = 0; i < m_pCharaData->BoneCapsule.size(); i++)
 	{
-		debug_model = new Sphere3D;
+		Matrix matS, matTS, matTE;
+		matS.Scale(m_pCapsule[i].radius, m_pCapsule[i].radius, m_pCapsule[i].radius);
+		matTS.Transelate(m_pCapsule[i].segment.start.x, m_pCapsule[i].segment.start.y, m_pCapsule[i].segment.start.z);
+		matTE.Transelate(m_pCapsule[i].segment.end.x, m_pCapsule[i].segment.end.y, m_pCapsule[i].segment.end.z);
 	}
-	else
-	{
-		for (int i = 0; i < m_pCharaData->BoneCapsule.size(); i++)
-		{
-			Matrix matS, matTS, matTE;
-			matS.Scale(m_pCapsule[i].radius, m_pCapsule[i].radius, m_pCapsule[i].radius);
-			matTS.Transelate(m_pCapsule[i].segment.start.x, m_pCapsule[i].segment.start.y, m_pCapsule[i].segment.start.z);
-			matTE.Transelate(m_pCapsule[i].segment.end.x, m_pCapsule[i].segment.end.y, m_pCapsule[i].segment.end.z);
-			//debug_model->Render(matS*matTS,Vector3D(1,0,0));
-			//debug_model->Render(matS*matTE, Vector3D(1, 0, 0));
-		}
-	}
+
 
 	m_Model.SetTranselate(m_pos);
 	m_Model.SetRotationRadian(m_rot.x, m_rot.y, m_rot.z);
@@ -98,7 +89,6 @@ void CCharacter::HitBullet()
 
 }
 
-//void CCharacter::Capsule_vs_LineSegmentCallback(Result_LineSegment& r) {
 void CCharacter::Capsule_vs_LineSegmentCallback(Result_Sphere& r)
 {
 	HitBullet();
@@ -117,19 +107,15 @@ void CCharacter::Sphere_vs_MeshCallback(Result_Porygon_Group& r)
 	}
 	m_pos += v;
 }
+
+
+
+//******************************
+//		CCharacterManager
+//******************************
 CCharacterManager *CCharacterManager::m_Obj = NULL;
 CCharacterManager::CCharacterManager()
 {
-}
-
-void CCharacterManager::LoadFile(const char* filepath)
-{
-	/*
-	‰¼
-	*/
-	DynamicMeshAsset::LoadMesh("media\\Player.x", "Player");
-	DynamicMeshAsset::LoadMesh("media\\Monster_A.x", "Monster_A");
-
 }
 
 void CCharacterManager::Update()
