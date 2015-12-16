@@ -32,11 +32,10 @@ Player::Player() :
 	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_LookPos, REGIST_FUNC(Player::HitCamera));
 	m_HitCamera.SetID(eHITID0, eHITID1);
 
-
 	m_pShotgun = new Shotgun();
 	m_pHandgun = new Handgun();
 
-	a.SetAsset("Grass_1");
+	m_PlayerSightInfo.SetPos(&m_pos);
 }
 
 Player::~Player()
@@ -83,11 +82,6 @@ void Player::Update()
 	//m_pHandgun->Render();
 
 	//printf("%f %f\n", m_Vertical, m_Horizontal);
-	m_CameraPos.DebugDraw("m_CameraPos");
-	m_CamDir.DebugDraw("m_CamDir");
-
-	a.SetTranselate(m_LookPos);
-	//a.Render();
 }
 
 void Player::Move()
