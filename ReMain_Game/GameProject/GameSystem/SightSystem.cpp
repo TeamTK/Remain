@@ -166,8 +166,6 @@ void SightManager::Update()
 		dot = Vector3D::Dot(plyaerVec.GetNormalize(), EnemyVec.GetNormalize());
 		angle = Math::ChangeToDegree(acos(dot));
 
-		std::cout << "angle = " << angle << "\n";
-
 		//Ž‹ŠEŠp“x
 		if (angle < (*it)->m_pSightData->angle)
 		{
