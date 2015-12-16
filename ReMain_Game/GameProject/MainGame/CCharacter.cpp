@@ -69,12 +69,15 @@ void CCharacter::Update()
 
 void CCharacter::Render()
 {
-	/*
-	static Sphere3D *debug_model=NULL;
-	if (!debug_model) {
+	static Sphere3D *debug_model = NULL;
+	if (!debug_model)
+	{
 		debug_model = new Sphere3D;
-	} else {
-		for (int i = 0; i < m_pCharaData->BoneCapsule.size(); i++) {
+	}
+	else
+	{
+		for (int i = 0; i < m_pCharaData->BoneCapsule.size(); i++)
+		{
 			Matrix matS, matTS, matTE;
 			matS.Scale(m_pCapsule[i].radius, m_pCapsule[i].radius, m_pCapsule[i].radius);
 			matTS.Transelate(m_pCapsule[i].segment.start.x, m_pCapsule[i].segment.start.y, m_pCapsule[i].segment.start.z);
@@ -83,7 +86,7 @@ void CCharacter::Render()
 			//debug_model->Render(matS*matTE, Vector3D(1, 0, 0));
 		}
 	}
-	*/
+
 	m_Model.SetTranselate(m_pos);
 	m_Model.SetRotationRadian(m_rot.x, m_rot.y, m_rot.z);
 	m_Model.Render();

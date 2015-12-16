@@ -12,12 +12,12 @@ public:
 	Collider m_Collider;
 	SphereInfo m_Sphere;
 
-	Vector3D m_pos;			//位置
-	Vector3D m_Oldpos;		//移動前位置（線分判定用）
-	int   m_cnt;			//寿命用カウンター
-	Vector3D m_dir;			//方向
+	Vector3D m_pos;		//位置
+	Vector3D m_Oldpos;	//移動前位置（線分判定用）
+	int   m_cnt;		//寿命用カウンター
+	Vector3D m_dir;		//方向
 	float m_speed;		//速さ
-	StaticMesh m_Model;	//モデル
+	//StaticMesh m_Model;	//モデル
 	float m_Atk;		//攻撃力
 	CBullet();
 	~CBullet();

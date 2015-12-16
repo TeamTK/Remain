@@ -1,11 +1,13 @@
 #include "Player.h"
 #include "../GEKO/System/Input.h"
+#include "CBullet.h"
 
 #define CAMERA_NO_CROUCH_POS_Y 1.8f;	//しゃがみ姿勢じゃないときのカメラのY座標の高さ
 #define CAMERA_CROUCH_POS_Y 0.8f;	//しゃがみ姿勢のときのカメラのY座標の高さ
 #define WALK_SPEED 0.07f		//歩くスピード
 #define RUN_SPEED 0.16f			//走るスピード
 #define CROUCH_WALK_SPPED 0.03f	//しゃがみ歩きスピード
+#define CAMERA_LENGE	2.0f
 
 Player::Player() :
 	CCharacter(ePlayer), m_CamDir(0.0f, 0.0f, 0.0f),
@@ -29,11 +31,12 @@ Player::Player() :
 
 	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_LookPos, REGIST_FUNC(Player::HitCamera));
 	m_HitCamera.SetID(eHITID0, eHITID1);
-	
+
+
 	m_pShotgun = new Shotgun();
 	m_pHandgun = new Handgun();
 
-	m_PlayerSightInfo.SetPos(&m_SightPos);
+	a.SetAsset("Grass_1");
 }
 
 Player::~Player()
@@ -45,9 +48,6 @@ Player::~Player()
 
 void Player::Update()
 {
-	m_SightPos = m_pos;
-	m_SightPos.y = 2.5f;
-
 	Move();
 	Attack();
 	Animation();
@@ -71,7 +71,7 @@ void Player::Update()
 
 	//当たり判定用 始点終点
 	m_Start = m_CameraPos;
-	m_End = ((m_LookPos - m_CameraPos).GetNormalize()) * 4 + m_LookPos;
+	m_End = ((m_LookPos - m_CameraPos) + m_LookPos).GetNormalize();
 
 	m_pShotgun->SetPlayerBomeMtx(&m_Matrix);
 	m_pShotgun->SetPlayerData(m_Model.GetPlayAnimation(), m_Model.GetPlayTime(), m_Start, m_End);
@@ -82,13 +82,12 @@ void Player::Update()
 	m_pShotgun->Render();
 	//m_pHandgun->Render();
 
-	//printf("ChangeTakeWeapon %d TakeWeapon %d Attack %d\n", m_ChangeTakeWeapon, m_isTakeWeapon, m_isAttack);
-	//printf("State %d\n", m_State);
-	//printf("%d\n", m_isCrouch);
 	//printf("%f %f\n", m_Vertical, m_Horizontal);
-	//printf("%f %f\n", m_pos.x, m_pos.z);
-	//printf("Move %d Run %d\n", m_isMove, m_isRun);
-	//printf("%f\n", m_Vertical);
+	m_CameraPos.DebugDraw("m_CameraPos");
+	m_CamDir.DebugDraw("m_CamDir");
+
+	a.SetTranselate(m_LookPos);
+	//a.Render();
 }
 
 void Player::Move()
@@ -197,13 +196,10 @@ void Player::Attack()
 		m_isAttack = false;
 	}
 
-	if(Input::Mouse.LClicked() && m_isAttack)
+	//発砲
+	if (Input::Mouse.LClicked() && m_isAttack)
 	{
-		//Vector4D pos;
-		//CBulletManager::GetInstance()->Add(m_CameraPos, ((m_LookPos - m_CameraPos).GetNormalize()) * 4 + m_LookPos, 2.00f);
-		Fiqure::RenderLine3D(m_Start, m_End, Vector3D(1.0f, 0.0f, 0.0f));
-
-		m_pShotgun->Shot();
+		CBulletManager::GetInstance()->Add(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 0.3f);
 	}
 }
 
@@ -213,7 +209,7 @@ void Player::Camera()
 	Vector3D newLookPos;
 	Point mouseValue = Input::Mouse.GetRelativeValue();
 	Vector3D look(0.6f, 1.8f, 0.0f);
-	static float lenge = 2.0f;
+	static float lenge = CAMERA_LENGE;
 
 	//マウス入力
 	m_Horizontal += mouseValue.x * 0.002f;
@@ -238,10 +234,10 @@ void Player::Camera()
 		m_Model.SetRotationRadian(m_rot.x, m_rot.y, m_rot.z);
 
 		Matrix mat = m_Model.GetBornMatrix(6, true);
-		D3DXVECTOR4 eye;
-		D3DXVec3Transform(&eye, &D3DXVECTOR3(-0.2f, 0.15f, -0.3f), &mat);
-		D3DXVECTOR4 at;
-		D3DXVec3Transform(&at, &D3DXVECTOR3(-0.2f, 0.2f, 2.0f), &mat);
+		Vector4D eye;
+		eye = Vector4D(-0.2f, 0.15f, -0.3f, 1.0f) * mat;
+		Vector4D at;
+		at = Vector4D(-0.2f, 0.2f, 2.0f, 1.0f) *  mat;
 		newCameraPos = Vector3D(eye.x, eye.y, eye.z);
 		newLookPos = Vector3D(at.x, at.y, at.z);
 	}
@@ -260,20 +256,20 @@ void Player::Camera()
 		newCameraPos -= m_CamDir * lenge;
 	}
 	/*
-	m_CameraT += 0.01f;
+		m_CameraT += 0.01f;
 
-	if (m_CameraT > 1.0f)
-	{
-	m_CameraT = 1.0f;
-	m_CameraPos = newCameraPos;
-	m_LookPos = newLookPos;
-	}
-	else
-	{
-	m_CameraPos = Lerp(m_CameraPos, newCameraPos, m_CameraT);
-	m_LookPos = Lerp(m_LookPos, newLookPos, m_CameraT);
-	}
-	*/
+		if (m_CameraT > 1.0f)
+		{
+			m_CameraT = 1.0f;
+			m_CameraPos = newCameraPos;
+			m_LookPos = newLookPos;
+		}
+		else
+		{
+			m_CameraPos = Lerp(m_CameraPos, newCameraPos, m_CameraT);
+			m_LookPos = Lerp(m_LookPos, newLookPos, m_CameraT);
+		}
+		*/
 
 	m_CameraPos = Lerp(m_CameraPos, newCameraPos, 0.3f);
 	m_LookPos = Lerp(m_LookPos, newLookPos, 0.3f);
