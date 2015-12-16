@@ -2,10 +2,12 @@
 
 MainGame::MainGame()
 {
+	//アッセットtxt読み込み
 	StaticMeshAsset::LoadFile("TextData\\StaticMesh.txt");
+	DynamicMeshAsset::LoadFile("TextData\\DynamicMesh.txt");
+	ImageAsset::LoadFile("TextData\\Image.txt");
 	StageObjectManager::GetInstance()->LoadObject("TextData\\StageObject.txt");
 
-	CCharacterManager::GetInstance()->LoadFile("");
 	CBulletManager::GetInstance();
 	CCharacterManager::GetInstance()->AddPlayer(new Player());
 	m_pPlayer = (Player*)CCharacterManager::GetInstance()->GetPlayer();

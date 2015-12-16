@@ -7,6 +7,7 @@
 #define WALK_SPEED 0.07f		//歩くスピード
 #define RUN_SPEED 0.16f			//走るスピード
 #define CROUCH_WALK_SPPED 0.03f	//しゃがみ歩きスピード
+#define	SETUPWEAPON_MOVE_SPEED 0.03;	//武器を構えた時の移動速度
 #define CAMERA_LENGE	2.0f
 
 Player::Player() :
@@ -14,7 +15,7 @@ Player::Player() :
 	m_KeyDir(0.0f, 0.0f, 0.0f), m_Horizontal(0.134f),// m_CameraT(1.0f),
 	m_Vertical(-1.5f), m_MoveSpeed(0.0f), m_CameraPosY(1.8f),
 	m_isCrouch(false), m_isAttack(false), m_isTakeWeapon(false), m_isMove(false),
-	m_ChangeTakeWeapon(false), m_isRun(false),
+	m_ChangeTakeWeapon(false), m_isRun(false), m_SetupWeapon(false),
 	m_State(EPlayerState::eState_Idle), m_Weapons(EWeapons::eShotgun)
 {
 	m_ColliderMap.SetID(eHITID1, eHITID0 | eHITID1 | eHITID2);
@@ -28,6 +29,8 @@ Player::Player() :
 	}
 	m_Model.SetScale(1.0f, 1.0f, 1.0f);
 	m_pos = Vector3D(-48.0f, 0.0f, -11.0f);
+
+	m_Reticle.SetAsset("Reticle");
 
 	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_LookPos, REGIST_FUNC(Player::HitCamera));
 	m_HitCamera.SetID(eHITID0, eHITID1);
@@ -81,6 +84,9 @@ void Player::Update()
 	m_pShotgun->Render();
 	//m_pHandgun->Render();
 
+	m_Reticle.SetAlpha(150.0f);
+	m_Reticle.Draw(400, 300, 16, 16);
+
 	//printf("%f %f\n", m_Vertical, m_Horizontal);
 }
 
@@ -131,6 +137,8 @@ void Player::Move()
 		if (m_isAttack)
 		{
 			//武器を構えた状態の移動
+			m_pos += m_Model.GetAxisX(1.0f) * m_KeyDir.x * m_MoveSpeed;
+			m_pos += m_Model.GetAxisZ(1.0f) * m_KeyDir.x * m_MoveSpeed;
 		}
 		else
 		{
@@ -138,6 +146,8 @@ void Player::Move()
 			m_pos += pos * m_MoveSpeed;
 		}
 	}
+
+	//m_pos = Lerp(m_Model.GetTranselate(), m_pos, 0.5f);
 }
 
 void Player::Attack()
@@ -193,7 +203,7 @@ void Player::Attack()
 	//発砲
 	if (Input::Mouse.LClicked() && m_isAttack)
 	{
-		CBulletManager::GetInstance()->Add(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 0.3f);
+		CBulletManager::GetInstance()->Add(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f);
 	}
 }
 
@@ -265,8 +275,16 @@ void Player::Camera()
 		}
 		*/
 
-	m_CameraPos = Lerp(m_CameraPos, newCameraPos, 0.3f);
-	m_LookPos = Lerp(m_LookPos, newLookPos, 0.3f);
+	if (m_SetupWeapon)
+	{
+		m_CameraPos = Lerp(m_CameraPos, newCameraPos, 0.8f);
+		m_LookPos = Lerp(m_LookPos, newLookPos, 0.8f);
+	}
+	else
+	{
+		m_CameraPos = Lerp(m_CameraPos, newCameraPos, 0.3f);
+		m_LookPos = Lerp(m_LookPos, newLookPos, 0.3f);
+	}
 
 	Camera::SetEye(m_CameraPos);
 	Camera::SetLookat(m_LookPos);
@@ -520,7 +538,8 @@ void Player::TakeWeapon()
 
 void Player::SetupWeapon()
 {
-	m_MoveSpeed = WALK_SPEED;
+	m_MoveSpeed = SETUPWEAPON_MOVE_SPEED;
+	m_SetupWeapon = false;
 
 	if (m_Weapons == EWeapons::eShotgun)
 	{
@@ -536,6 +555,7 @@ void Player::SetupWeapon()
 	if (m_Model.GetPlayAnimation() == EPlayerAnim::eAnim_SetupGun || m_Model.GetPlayAnimation() == EPlayerAnim::eAnim_SetupHandgun &&
 		m_Model.GetPlayTime() >= 29)
 	{
+		m_SetupWeapon = true;
 		m_Model.SetTime(29);
 	}
 }

@@ -1,1 +1,0 @@
-DynamicMesh media\Cube.x test

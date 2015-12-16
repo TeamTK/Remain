@@ -49,7 +49,6 @@ public:
 	virtual void Update();
 	virtual void Render();
 	virtual void HitBullet();
-	//	void Capsule_vs_LineSegmentCallback(Result_LineSegment& r);_
 	void Capsule_vs_LineSegmentCallback(Result_Sphere& r);
 	void Sphere_vs_MeshCallback(Result_Porygon_Group& r);
 	friend class CCharacterManager;
@@ -74,7 +73,6 @@ public:
 		delete m_Obj;
 		m_Obj = NULL;
 	}
-	void LoadFile(const char*path);
 	void Update();
 	void Render();
 	void Add(CCharacter* c);

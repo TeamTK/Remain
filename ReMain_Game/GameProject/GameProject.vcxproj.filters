@@ -269,8 +269,8 @@
   <ItemGroup>
     <Text Include="TextData\StageObject.txt" />
     <Text Include="TextData\StaticMesh.txt" />
-    <Text Include="DynamicMesh.txt" />
-    <Text Include="Image.txt" />
+    <Text Include="TextData\DynamicMesh.txt" />
+    <Text Include="TextData\Image.txt" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="GEKO\Lib\d2d1.lib" />
