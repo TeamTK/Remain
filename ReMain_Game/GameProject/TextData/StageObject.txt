@@ -204,4 +204,12 @@ position
 rotation
 0.0,90.0,0.0
 scale
-0.846,0.846,0.846
+1.0,1.0,1.0
+class Cabin_Collision
+name Cabin_Collision
+position
+-7.5,-0.08,12.6
+rotation
+0.0,90.0,0.0
+scale
+1.0,1.0,1.0

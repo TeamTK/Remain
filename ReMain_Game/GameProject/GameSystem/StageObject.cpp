@@ -8,6 +8,7 @@ std::string className[] =
 	"Grass_1",
 	"Grass_2",
 	"Cabin",
+	"Cabin_Collision",
 	"Ground",
 	"RockWall",
 	"SkyDome",
@@ -52,11 +53,10 @@ void StageObject::Render()
 //	  StageObjectManager	*
 //***************************
 
-float num = 0;	//合計オブジェクト数
 StageObjectManager* StageObjectManager::m_Instance = nullptr;
 
 StageObjectManager::StageObjectManager() :
-	m_cnt(0), m_number(0)
+	m_cnt(0), m_number(0), m_num(0)
 {
 
 }
@@ -78,7 +78,7 @@ void StageObjectManager::LoadObject(char* filepath)
 		{
 			ifs >> str;
 			m_number = std::stof(str);
-			num += m_number;
+			m_num += m_number;
 		}
 		ifs >> str;
 		if (str == "class")
@@ -138,11 +138,9 @@ void StageObjectManager::LoadObject(char* filepath)
 		}
 
 	}
-	for (int i = 0; i < num; i++)
+	for (int i = 0; i < m_num; i++)
 	{
-		//m_MapObjectList.push_back(MapObject(m_Position[i], m_Rotation[i], m_Scale[i], m_ClsName[i]));
 		m_MapObjectList.emplace_back(m_Position[i], m_Rotation[i], m_Scale[i], m_ClsName[i]);
-		//printf("%f %f %f %s\n", m_Position[i].x, m_Position[i].y, m_Position[i].z, m_ClsName[i].c_str());
 	}
 
 	m_Position.shrink_to_fit();
@@ -231,21 +229,25 @@ MapObject::MapObject(XYZ &pos, XYZ &rot, XYZ &sca, std::string name)
 	}
 	else if (name == className[5])
 	{
-		mp_StageObject = new Ground(pos, rot, sca, name);
+		mp_StageObject = new Cabin_Collision(pos, rot, sca, name);
 	}
 	else if (name == className[6])
 	{
-		mp_StageObject = new RockWall(pos, rot, sca, name);
+		mp_StageObject = new Ground(pos, rot, sca, name);
 	}
 	else if (name == className[7])
 	{
-		mp_StageObject = new SkyDome(pos, rot, sca, name);
+		mp_StageObject = new RockWall(pos, rot, sca, name);
 	}
 	else if (name == className[8])
 	{
-		mp_StageObject = new Bush(pos, rot, sca, name);
+		mp_StageObject = new SkyDome(pos, rot, sca, name);
 	}
 	else if (name == className[9])
+	{
+		mp_StageObject = new Bush(pos, rot, sca, name);
+	}
+	else if (name == className[10])
 	{
 		mp_StageObject = new Fern(pos, rot, sca, name);
 	}

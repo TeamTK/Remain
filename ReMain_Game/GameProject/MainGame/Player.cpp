@@ -6,12 +6,10 @@
 #define CAMERA_CROUCH_POS_Y 0.8f;	//しゃがみ姿勢のときのカメラのY座標の高さ
 #define WALK_SPEED 0.07f			//歩くスピード
 #define RUN_SPEED 0.16f				//走るスピード
-#define CROUCH_WALK_SPPED 0.03f		//しゃがみ歩きスピード
+#define CROUCH_WALK_SPPED 0.02f		//しゃがみ歩きスピード
 #define	SETUPWEAPON_MOVE_SPEED 0.03;//武器を構えた時の移動速度
 #define CAMERA_LENGE	2.0f		//プレイヤーとカメラの距離
 #define PI 3.14159265359f
-#define T1	60 //周期
-#define T2	20 //周期
 
 Player::Player() :
 	CCharacter(ePlayer), m_CamDir(0.0f, 0.0f, 0.0f),
@@ -33,6 +31,7 @@ Player::Player() :
 	m_Model.SetScale(1.0f, 1.0f, 1.0f);
 	m_pos = Vector3D(-48.0f, 0.0f, -11.0f);
 
+	//レティクル(仮)
 	m_Reticle.SetAsset("Reticle");
 
 	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_LookPos, REGIST_FUNC(Player::HitCamera));
@@ -87,6 +86,7 @@ void Player::Update()
 	m_pShotgun->Render();
 	//m_pHandgun->Render();
 
+	//レティクル(仮)
 	m_Reticle.SetAlpha(150.0f);
 	m_Reticle.Draw(400, 300, 32, 32);
 
@@ -146,7 +146,7 @@ void Player::Move()
 			m_pos += m_Model.GetAxisX(1.0f) * m_KeyDir.x * m_MoveSpeed;
 			m_pos += m_Model.GetAxisZ(1.0f) * m_KeyDir.z * m_MoveSpeed;
 			//プレイヤーの上下移動
-			m_pos.y += sinf(m_Phase * (PI*10) / 180.0f) / 140.0f;
+			m_pos.y += sinf(m_Phase * (PI * 10) / 180.0f) / 140.0f;
 		}
 		else
 		{
@@ -246,7 +246,7 @@ void Player::Camera()
 		Vector4D eye;
 		eye = Vector4D(-0.25f, 0.15f, -0.3f, 1.0f) * mat;
 		Vector4D at;
-		at = Vector4D(-0.25f, 0.15f, 2.0f, 1.0f) *  mat;
+		at = Vector4D(-0.25f, 0.15f, 0.5f, 1.0f) *  mat;
 		newCameraPos = Vector3D(eye.x, eye.y, eye.z);
 		newLookPos = Vector3D(at.x, at.y, at.z);
 	}
@@ -264,21 +264,6 @@ void Player::Camera()
 		newCameraPos = newLookPos;
 		newCameraPos -= m_CamDir * lenge;
 	}
-	/*
-		m_CameraT += 0.01f;
-
-		if (m_CameraT > 1.0f)
-		{
-			m_CameraT = 1.0f;
-			m_CameraPos = newCameraPos;
-			m_LookPos = newLookPos;
-		}
-		else
-		{
-			m_CameraPos = Lerp(m_CameraPos, newCameraPos, m_CameraT);
-			m_LookPos = Lerp(m_LookPos, newLookPos, m_CameraT);
-		}
-		*/
 
 	//カメラ補完移動
 	if (m_isAttack)
