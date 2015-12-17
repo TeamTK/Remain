@@ -1,4 +1,5 @@
 #include "MainGame.h"
+#include "..\GameSystem\Effect.h"
 
 MainGame::MainGame()
 {
@@ -24,6 +25,7 @@ MainGame::~MainGame()
 	CBulletManager::GetInstance()->ClearInstance();
 	StageObjectManager::GetInstance()->ClearList();
 	StageObjectManager::GetInstance()->ClearInstance();
+	EffectGeneration::AllClear();
 }
 
 void MainGame::Update()
@@ -31,6 +33,7 @@ void MainGame::Update()
 	SightManager::GetInstance()->Update();
 	CCharacterManager::GetInstance()->Update();
 	CBulletManager::GetInstance()->UpDate();
+	EffectGeneration::Update();
 }
 
 void MainGame::Render()
@@ -38,5 +41,6 @@ void MainGame::Render()
 	CCharacterManager::GetInstance()->Render();
 	CBulletManager::GetInstance()->Render();
 	StageObjectManager::GetInstance()->Render();
+	EffectGeneration::Render();
 	//std::cout << "MainGame" << '\n';
 }

@@ -1,5 +1,6 @@
 #include "CCharacter.h"
-#include "../GEKO//Figure/Sphere3D.h"
+//#include "../GEKO//Figure/Sphere3D.h"
+#include "..\GameSystem\Effect.h"
 
 CCharacter::CCharacter(int type) : m_isActive(true)
 {
@@ -99,6 +100,14 @@ void CCharacter::HitBullet()
 
 void CCharacter::Capsule_vs_LineSegmentCallback(Result_Sphere& r)
 {
+	EffectInfo effectData;
+	effectData.imageName = "Blood";
+	effectData.num = 60;
+	effectData.pos = r.position;
+	effectData.scale = Vector3D(1.0f, 1.0f, 1.0f);
+	effectData.speed = 0.1f;
+	effectData.time = 120;
+	EffectGeneration::Add(effectData);
 	HitBullet();
 }
 
@@ -119,9 +128,9 @@ void CCharacter::Sphere_vs_MeshCallback(Result_Porygon_Group& r)
 void CCharacter::PushBody(Result_Sphere &data)
 {
 	Vector3D vec = m_pos - data.position;
-	float l = abs(m_BodyRadius - vec.Length());
+	float l = (m_BodyRadius + data.radius) - vec.Length();
 
-	m_pos += vec.GetNormalize() * l;
+	m_pos += vec.GetNormalize() * (l * 0.1f);
 
 	std::cout << l << "\n";
 }

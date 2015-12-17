@@ -39,7 +39,7 @@ HRESULT MeshData::InitShader()
 	{
 		if (FAILED(D3DX11CompileFromFile(L"GEKO\\HLSL\\MESH.hlsl", NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 		{
-			MessageBox(0, L"hlslì«Ç›çûÇ›é∏îs", NULL, MB_OK);
+			MessageBox(0, L"MESH.hlslì«Ç›çûÇ›é∏îs", NULL, MB_OK);
 			return E_FAIL;
 		}
 	}
@@ -47,7 +47,7 @@ HRESULT MeshData::InitShader()
 	{
 		if (FAILED(D3DX11CompileFromFile(L"GEKO\\HLSL\\MESH.hlsl", NULL, NULL, "VS_NoTeX", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 		{
-			MessageBox(0, L"hlslì«Ç›çûÇ›é∏îs", NULL, MB_OK);
+			MessageBox(0, L"MESH.hlslì«Ç›çûÇ›é∏îs", NULL, MB_OK);
 			return E_FAIL;
 		}
 	}
