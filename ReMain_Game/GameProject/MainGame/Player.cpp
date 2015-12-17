@@ -200,7 +200,7 @@ void Player::Attack()
 	}
 
 	//武器の切り替え(Tキー, 方向キー左右)
-	if ((Input::KeyT.Clicked() || Input::XInputPad1.LeftClicked() || Input::XInputPad1.RightClicked()) && !m_isTakeWeapon)
+	if ((Input::KeyR.Clicked() || Input::XInputPad1.LeftClicked() || Input::XInputPad1.RightClicked()) && !m_isTakeWeapon)
 	{
 		m_AnimSpeed = 50;
 		if (m_SelectedWeapon == EWeapons::eShotgun)
