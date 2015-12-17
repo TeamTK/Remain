@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "../GEKO/System/Input.h"
 #include "CBullet.h"
+#include "..\GameSystem\Effect.h"
 
 #define CAMERA_NO_CROUCH_POS_Y 1.8f;//しゃがみ姿勢じゃないときのカメラのY座標の高さ
 #define CAMERA_CROUCH_POS_Y 0.95f;	//しゃがみ姿勢のときのカメラのY座標の高さ
@@ -18,7 +19,6 @@
 #define CROUCH_ANIM_SPEED 60	//しゃがみ
 #define TAKEWEAPON_ANIM_SPEED 40	//武器をとる
 #define SETUPWEAPON_ANIM_SPEED 60	//武器を構える
-
 
 Player::Player() :
 	CCharacter(ePlayer), m_CamDir(0.0f, 0.0f, 0.0f), m_CameraPos(-50.0f, 2.0f, -12.0f),
@@ -228,6 +228,14 @@ void Player::Attack()
 	//発砲　(マウス左クリック, 右ショルダボタン)
 	if ((Input::Mouse.LClicked() || Input::XInputPad1.ShoulderRightPressed()) && m_SetupWeapon)
 	{
+		EffectInfo effectData;
+		effectData.imageName = "Blood";
+		effectData.num = 30;
+		effectData.pos = m_Model.GetBornPos(24) + m_Model.GetAxisZ(1.0f);
+		effectData.scale = Vector3D(0.01f, 0.1f, 0.1f);
+		effectData.speed = 0.1f;
+		effectData.time = 30;
+		EffectGeneration::Add(effectData);
 		CBulletManager::GetInstance()->Add(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f);
 	}
 }

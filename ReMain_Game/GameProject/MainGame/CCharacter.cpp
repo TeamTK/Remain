@@ -76,6 +76,7 @@ void CCharacter::Update()
 
 void CCharacter::Render()
 {
+	/*
 	for (int i = 0; i < m_pCharaData->BoneCapsule.size(); i++)
 	{
 		Matrix matS, matTS, matTE;
@@ -85,7 +86,7 @@ void CCharacter::Render()
 
 		Fiqure::RenderLine3D(m_pCapsule[i].segment.start, m_pCapsule[i].segment.end, Vector3D(1.0f, 0.0f, 0.0f));
 	}
-
+	*/
 
 	m_Model.SetTranselate(m_pos);
 	m_Model.SetRotationRadian(m_rot.x, m_rot.y, m_rot.z);
@@ -100,6 +101,7 @@ void CCharacter::HitBullet()
 
 void CCharacter::Capsule_vs_LineSegmentCallback(Result_Sphere& r)
 {
+	//血しぶきのエフェクト
 	EffectInfo effectData;
 	effectData.imageName = "Blood";
 	effectData.num = 60;
@@ -108,6 +110,7 @@ void CCharacter::Capsule_vs_LineSegmentCallback(Result_Sphere& r)
 	effectData.speed = 0.1f;
 	effectData.time = 120;
 	EffectGeneration::Add(effectData);
+
 	HitBullet();
 }
 
