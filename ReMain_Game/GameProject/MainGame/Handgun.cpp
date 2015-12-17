@@ -4,6 +4,10 @@
 Handgun::Handgun()
 {
 	m_Model.SetAsset("Handgun");
+
+	m_Collider.Regist_L_vs_C(&m_Start, &m_End, REGIST_FUNC(Handgun::Hit));
+	m_Collider.SetID(eHITID3, eHITID2);
+	m_Collider.Sleep();
 }
 
 Handgun::~Handgun()
@@ -32,13 +36,19 @@ void Handgun::Update()
 	}
 	else
 	{
+
 		m_Model.SetTranselate(-0.15f, 0.0f, -0.15f);
 		m_Model.SetRotationDegree(10, 100, 0);
 	}
 	m_Matrix = *m_Model.GetMatrix();
 }
 
-void Handgun::Shot(Vector3D start, Vector3D end)
+void Handgun::Hit(Result_Capsule &r)
 {
+	m_Collider.Sleep();
+}
 
+void Handgun::Shot()
+{
+	m_Collider.Awake();
 }

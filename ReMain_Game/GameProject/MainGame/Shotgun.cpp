@@ -10,7 +10,6 @@ Shotgun::Shotgun()
 	m_Collider.Sleep();
 }
 
-
 Shotgun::~Shotgun()
 {
 

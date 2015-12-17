@@ -24,6 +24,7 @@
     <ClCompile Include="GEKO\Collider\LineSegment.cpp" />
     <ClCompile Include="GEKO\Collider\SphereCollider.cpp" />
     <ClCompile Include="GEKO\Collider\StaticMeshCollider.cpp" />
+    <ClCompile Include="GEKO\Figure\Billboard.cpp" />
     <ClCompile Include="GEKO\Figure\Sphere3D.cpp" />
     <ClCompile Include="GEKO\Figure\Triangle3D.cpp" />
     <ClCompile Include="GEKO\GEKO.cpp" />
@@ -81,6 +82,7 @@
     <ClInclude Include="GEKO\Collider\LineSegment.h" />
     <ClInclude Include="GEKO\Collider\SphereCollider.h" />
     <ClInclude Include="GEKO\Collider\StaticMeshCollider.h" />
+    <ClInclude Include="GEKO\Figure\Billboard.h" />
     <ClInclude Include="GEKO\Figure\Sphere3D.h" />
     <ClInclude Include="GEKO\Figure\Triangle3D.h" />
     <ClInclude Include="GEKO\GEKO.h" />
