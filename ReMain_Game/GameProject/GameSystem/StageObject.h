@@ -85,8 +85,6 @@ public:
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
-	//	m_CamraHit.Regist_SMesh_vs_L(&m_Object);
-		//m_CamraHit.SetID(eHITID1, eHITID0);
 	}
 	~Tree_1(){}
 
@@ -102,8 +100,6 @@ public:
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
-		//m_CamraHit.Regist_SMesh_vs_L(&m_Object);
-		//m_CamraHit.SetID(eHITID1, eHITID0);
 	}
 	~Tree_2(){}
 
@@ -131,8 +127,20 @@ class Cabin : public StageObject
 {
 public:
 	Cabin(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name){}
+		StageObject(pos, rot, sca, name)
+	{
+		//ìñÇΩÇËîªíËópÉÅÉbÉVÉÖ
+		m_HitMesh.SetAsset("Cabin_Collision");
+		m_HitMesh.SetTranselate(-7.5f, -0.08f, 12.6f);
+		m_HitMesh.SetRotationDegree(0, 90, 0);
+
+		m_CharacterHit.Regist_SMesh_vs_S(&m_HitMesh);
+		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+	}
 	~Cabin(){}
+
+private:
+	StaticMesh m_HitMesh;
 };
 
 class Cabin_Collision : public StageObject

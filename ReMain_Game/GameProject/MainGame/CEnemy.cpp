@@ -14,6 +14,8 @@ CEnemy::CEnemy(int type,Vector3D pos) :
 	m_SightData.pSightPos = &m_pos;
 	m_SightData.pSightVec = &m_SightVec;
 	m_Sight.Regist(&m_SightData, REGIST_FUNC(CEnemy::HitSight));
+
+	m_BodyRadius = 0.5f; //“G‚Ì‘Ì‚Ì”¼Œa
 }
 
 void CEnemy::Attack()

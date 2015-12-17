@@ -86,6 +86,7 @@
     <ClCompile Include="MainGame\Handgun.cpp" />
     <ClCompile Include="GameSystem\SightSystem.cpp" />
     <ClCompile Include="GEKO\Figure\Billboard.cpp" />
+    <ClCompile Include="GameSystem\Effect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -238,6 +239,7 @@
     <ClInclude Include="GameSystem\SightSystem.h" />
     <ClInclude Include="MainGame\enums.h" />
     <ClInclude Include="GEKO\Figure\Billboard.h" />
+    <ClInclude Include="GameSystem\Effect.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

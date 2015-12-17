@@ -1,1 +1,2 @@
 Image media\Reticle.png Reticle
+Image media\ti.png Blood
