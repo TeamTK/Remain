@@ -29,6 +29,7 @@ private:
 	void Run();
 	void Crouch();
 	void TakeWeapon();
+	void PutBackWeapon();
 	void SetupWeapon();
 	void Die();
 	void Hit();
@@ -41,6 +42,7 @@ private:
 	Handgun* m_pHandgun;
 	Image m_Reticle;		//レティクル画像(仮)
 	Vector3D m_KeyDir;		//キー入力軸
+	Vector3D m_PadDir;		//コントローラー入力値
 	Vector3D m_CamDir;		//カメラの方向
 	Vector3D m_CameraPos;	//カメラの位置
 	Vector3D m_LookPos;		//カメラの注視点
@@ -48,7 +50,7 @@ private:
 	Vector3D m_End;			//線分の当たり判定用 終点
 	Matrix m_Matrix;		//ショットガンの行列
 	EPlayerState m_State;	//プレイヤーの状態	
-	EWeapons m_Weapons;		//選択している銃
+	EWeapons m_SelectedWeapon;		//選択している銃
 	Collider m_HitCamera;	//カメラの当たり判定
 	Collider m_Bullet;		//弾の当たり判定
 	PlayerSightInfo m_PlayerSightInfo;
@@ -56,6 +58,7 @@ private:
 	float m_Horizontal;		//水平方向のマウス入力量
 	float m_MoveSpeed;		//移動速度
 	float m_CameraPosY;		//カメラのY座標
+	float m_CamSpeed;		//カメラの回転速度
 	int m_Phase;
 	bool m_ChangeTakeWeapon;	//銃を持つ
 	bool m_isTakeWeapon;	//銃を持っているか

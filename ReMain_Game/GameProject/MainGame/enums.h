@@ -32,6 +32,7 @@ enum EPlayerState
 	eState_Run,
 	eState_Crouch,
 	eState_TakeWeapon,
+	eState_PutBackWeapon,
 	eState_SetupWeapon,
 	eState_Hit,
 	eState_Die,
