@@ -154,7 +154,7 @@ float Vector2D::Distance(const Vector2D &v1, const Vector2D &v2)
 	return powf((v.x * v.x) + (v.y * v.y), 0.5f);
 }
 
-void Vector2D::DebugDraw(const char *name)
+void Vector2D::DebugDraw(const char *name) const
 {
 	printf("******************************************************************************\n");
 	printf("%s\n", name);
@@ -379,7 +379,7 @@ D3DXVECTOR4 Vector4D::Change()
 	return D3DXVECTOR4(x, y, z, w);
 }
 
-void Vector4D::DebugDraw(const char *name)
+void Vector4D::DebugDraw(const char *name) const
 {
 	printf("******************************************************************************\n");
 	printf("%s\n", name);
@@ -578,7 +578,7 @@ void Matrix::Scale(float x, float y, float z)
 	_33 = z;
 }
 
-void Matrix::DebugDraw(const char *name)
+void Matrix::DebugDraw(const char *name) const
 {
 	printf("******************************************************************************\n");
 	printf("%s\n", name);

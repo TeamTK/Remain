@@ -1,12 +1,14 @@
 #include "Fiqure.h"
 #include "Line3D.h"
 #include "Triangle3D.h"
+#include "Billboard.h"
 
 class Fiqure::FiqurePimpl
 {
 public:
 	Line3D m_Line3D;
 	Triangle3D m_Triangle3D;
+	Billboard m_Billboard;
 };
 
 Fiqure::Fiqure()
@@ -33,4 +35,9 @@ void Fiqure::RenderLine3D(const Vector3D &Spos, const Vector3D &Epos, const Vect
 void Fiqure::RenderTriangle3D(const Vector3D &pos1, const Vector3D &pos2, const Vector3D &pos3, const Vector3D &color)
 {
 	GetInstance()->m_Fiqure->m_Triangle3D.Render(pos1, pos2, pos3, color);
+}
+
+void Fiqure::RenderBillboard(const Vector3D &pos, const Vector3D &scale, const std::string &name)
+{
+	GetInstance()->m_Fiqure->m_Billboard.Render(pos, scale, name);
 }

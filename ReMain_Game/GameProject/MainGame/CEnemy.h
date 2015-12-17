@@ -35,6 +35,7 @@ public:
 
 private:
 	bool m_isChase;
+	int m_FlinchNum;
 	int m_state;
 	EnemySight m_Sight;
 	SightData m_SightData;

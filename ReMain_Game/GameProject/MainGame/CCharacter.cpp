@@ -43,6 +43,10 @@ CCharacter::CCharacter(int type) : m_isActive(true)
 	m_ColliderMap.Regist_S_vs_SMesh(&m_SphereMap.pos, &m_SphereMap.radius, REGIST_FUNC(CCharacter::Sphere_vs_MeshCallback));
 	m_ColliderMap.SetID(eHITID1 | eHITID2, eHITID0);
 	m_Hp = m_pCharaData->hp;
+
+	m_BodyRadius = 1.0f;
+	m_ColliderBody.Regist_S_vs_S(&m_pos, &m_BodyRadius, REGIST_FUNC(CCharacter::PushBody));
+	m_ColliderBody.SetID(eHITID0, eHITID0);
 }
 
 CCharacter::~CCharacter()
@@ -112,7 +116,15 @@ void CCharacter::Sphere_vs_MeshCallback(Result_Porygon_Group& r)
 	m_pos += v;
 }
 
+void CCharacter::PushBody(Result_Sphere &data)
+{
+	Vector3D vec = m_pos - data.position;
+	float l = abs(m_BodyRadius - vec.Length());
 
+	m_pos += vec.GetNormalize() * l;
+
+	std::cout << l << "\n";
+}
 
 //******************************
 //		CCharacterManager

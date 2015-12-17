@@ -26,17 +26,6 @@
 
 class Direct3D11
 {
-private:
-	Direct3D11(){};
-	ID3D11Device*			m_pDevice;				//ダイレクトｘのドライバー
-	ID3D11DeviceContext*	m_pDeviceContext;		//ダイレクトｘのドライバーの設定
-	IDXGISwapChain*			m_pSwapChain;			//裏画面描画
-	ID3D11Texture2D*		m_pBuckBuffer_DSTex;	//デプスステンシルビュー
-	ID3D11RenderTargetView* m_pBackBuffer_TexRTV;	//レンダーターゲットビュー
-	ID3D11DepthStencilView* m_pBuckBuffer_DSTexDSV; //デプスステンシルビュー
-	ID3D11BlendState*		m_pBlendState;			//ブレンド
-	D3D11_VIEWPORT			m_Viewport;
-
 public:
 	static Direct3D11& Get();
 
@@ -138,6 +127,20 @@ public:
 	/// なし
 	/// </returns>
 	void DestroyD3D11();
+
+private:
+	Direct3D11() {};
+
+private:
+	ID3D11Device*			m_pDevice;				//ダイレクトｘのドライバー
+	ID3D11DeviceContext*	m_pDeviceContext;		//ダイレクトｘのドライバーの設定
+	IDXGISwapChain*			m_pSwapChain;			//スワップチェーン
+	ID3D11Texture2D*		m_pBuckBuffer_DSTex;	//
+	ID3D11RenderTargetView* m_pBackBuffer_TexRTV;	//レンダーターゲットビュー
+	ID3D11DepthStencilView* m_pBuckBuffer_DSTexDSV; //デプスステンシルビュー
+	ID3D11BlendState*		m_pBlendState;			//ブレンド
+	D3D11_VIEWPORT			m_Viewport;				//ビューポート
+
 };
 
 #endif

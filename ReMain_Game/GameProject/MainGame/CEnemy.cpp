@@ -1,10 +1,13 @@
 #include "CEnemy.h"
 
-CEnemy::CEnemy(int type,Vector3D pos) : CCharacter(type)
+CEnemy::CEnemy(int type,Vector3D pos) : 
+	CCharacter(type),
+	m_isChase(false),
+	m_FlinchNum(0),
+	m_state(eState_Idle)
 {
-	m_state = eState_Idle;
 	m_pos = pos;
-	m_isChase = false;
+
 	//éãäEÉVÉXÉeÉÄ
 	m_SightData.angle = 60.0f;
 	m_SightData.distance = 5.0f;
@@ -29,29 +32,32 @@ void CEnemy::Idle()
 
 void CEnemy::Chase()
 {
+	//ÉvÉåÉCÉÑÅ[Çí«ê’
 	m_Distance = (*m_pPlayerPos - m_pos);
 	m_Model.ChangeAnimation(eAnimationTrot);
 	m_rot = Vector3D::Lerp(m_rot, Vector3D(0.0f, atan2f(m_Distance.x, m_Distance.z), 0.0), 0.5f);
 
-	if (m_Distance.LengthSq() < 16)
-	{
-		m_pos += m_Distance.GetNormalize() * 0.05f;
+	float leng = m_Distance.LengthSq();
 
-		if (m_Distance.LengthSq() < 2)
+	//çUåÇîªíf
+	if (leng < 25)
+	{
+		m_pos += m_Distance.GetNormalize() * 0.07f;
+
+		if (leng < 2)
 		{
 			m_state = eState_Attack;
+			m_Model.SetTime(0);
 		}
 	}
 	else
 	{
-		m_pos += m_Distance.GetNormalize() * 0.01f;
+		m_pos += m_Distance.GetNormalize() * 0.03f;
 	}
 }
 
 void CEnemy::HitDamage()
 {
-	m_Model.ChangeAnimation(eAnimationHitDamage);
-
 	if (m_Model.GetPlayTime() == 29)
 	{
 		if (!m_isChase) m_state = eState_Idle;
@@ -70,6 +76,7 @@ void CEnemy::Update()
 	m_SightVec = m_Model.GetAxisZ(1.0f);
 	m_Model.SetPlayTime(30);
 
+	//èÛë‘ëJà⁄
 	switch (m_state)
 	{
 	case eState_Attack:
@@ -99,20 +106,28 @@ void CEnemy::Update()
 
 void CEnemy::HitBullet() 
 {
-	m_Model.SetTime(0);
+	std::cout << "EnemyHit" << "\n";
+
 	m_Hp--;
+	m_FlinchNum++;
 	if(m_Hp <= 0)
 	{
+		m_Model.SetTime(0);
 		m_state = eState_Die;
+
+		//ìGé©êgÇÃçUåÇÇÃìñÇΩÇËîªíËí‚é~
 		int colliderNum = m_pCharaData->BoneCapsule.size();
-		for (int i = 0; i < colliderNum; i++)
-		{
-			m_pCollider[i].Sleep();
-		}
+		for (int i = 0; i < colliderNum; i++) m_pCollider[i].Sleep();
 	} 
 	else 
 	{
-		m_state = eState_HitDamage;
+		if (m_FlinchNum >= 2)
+		{
+			m_FlinchNum = 0;
+			m_state = eState_HitDamage;
+			m_Model.ChangeAnimation(eAnimationHitDamage);
+			m_Model.SetTime(0);
+		}
 		//m_isChase = true;
 		//m_Sight.Sleep();
 	}
