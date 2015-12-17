@@ -2,10 +2,10 @@
 #include "CCharacter.h"
 #include "..\GameSystem\SightSystem.h"
 
-class CEnemy : public CCharacter 
+class CEnemy : public CCharacter
 {
 public:
-	enum 
+	enum
 	{
 		eAnimationWalk,
 		eAnimationAttack,
@@ -15,7 +15,7 @@ public:
 		eAnimationTrot,
 
 	};
-	enum 
+	enum
 	{
 		eState_Attack,
 		eState_Idle,
@@ -24,7 +24,7 @@ public:
 		eState_Die
 	};
 
-	CEnemy(int type,Vector3D pos);
+	CEnemy(int type, Vector3D pos, Vector3D rot);
 	void Attack();
 	void Idle();
 	void Chase();
@@ -47,8 +47,8 @@ private:
 	void HitSight(const Vector3D *pPos);
 };
 
-class CEnemyManager 
+class CEnemyManager
 {
 public:
-	static CEnemy *Add(int type,Vector3D pos);
+	static CEnemy *Add(int type, Vector3D pos, Vector3D rot);
 };
