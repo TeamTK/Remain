@@ -41,6 +41,10 @@ protected:
 	Collider *m_pCollider;
 	CapsuleInfo *m_pCapsule;
 	SCharacterData *m_pCharaData;
+
+	Collider m_ColliderBody;
+	float m_BodyRadius;
+
 public:
 	CCharacter() {}
 	CCharacter(int type);
@@ -53,6 +57,7 @@ public:
 	void Sphere_vs_MeshCallback(Result_Porygon_Group& r);
 	friend class CCharacterManager;
 	friend class CCharacter;
+	void PushBody(Result_Sphere &data);
 };
 
 

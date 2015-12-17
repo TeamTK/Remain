@@ -85,7 +85,7 @@ public:
 	static float Dot(const Vector2D& v1, const Vector2D& v2);
 	static float Cross(const Vector2D &v1, const Vector2D &v2);
 	static float Distance(const Vector2D &v1, const Vector2D &v2);
-	void DebugDraw(const char *name);
+	void DebugDraw(const char *name) const;
 
 private:
 
@@ -133,7 +133,7 @@ public:
 	Vector4D operator * (const Matrix &matrix) const;
 	Vector4D operator * (const D3DXMATRIX &d3dxMatrix) const;
 	D3DXVECTOR4 Change();
-	void DebugDraw(const char *name);
+	void DebugDraw(const char *name) const;
 };
 
 class Matrix : public D3DXMATRIX
@@ -156,7 +156,7 @@ public:
 	void RotationDegreeZ(float degree);
 	void Transelate(float x, float y, float z);
 	void Scale(float x, float y, float z);
-	void DebugDraw(const char *name);
+	void DebugDraw(const char *name) const;
 	Vector3D GetAxisZ();
 	Vector3D GetAxisY();
 	Vector3D GetAxisX();

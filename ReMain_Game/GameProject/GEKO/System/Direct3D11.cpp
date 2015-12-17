@@ -164,7 +164,7 @@ void Direct3D11::Clear(float R, float G, float B)
 
 void Direct3D11::Present()
 {
-	m_pSwapChain->Present(0, 0);//画面更新（バックバッファをフロントバッファに
+	m_pSwapChain->Present(0, 0);//画面更新（バックバッファをフロントバッファに)
 }
 
 void Direct3D11::FullScreen(bool isFullScreen)

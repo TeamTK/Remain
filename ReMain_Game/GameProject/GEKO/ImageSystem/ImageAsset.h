@@ -1,5 +1,5 @@
-#ifndef _IMAGEASSET_H_
-#define _IMAGEASSET_H_
+#ifndef _IMAGE_ASSET_H_
+#define _IMAGE_ASSET_H_
 
 #include "..\System\Direct3D11.h"
 
