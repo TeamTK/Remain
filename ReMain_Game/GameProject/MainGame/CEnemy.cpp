@@ -1,12 +1,13 @@
 #include "CEnemy.h"
 
-CEnemy::CEnemy(int type,Vector3D pos) : 
+CEnemy::CEnemy(int type, Vector3D pos, Vector3D rot) :
 	CCharacter(type),
 	m_isChase(false),
 	m_FlinchNum(0),
 	m_state(eState_Idle)
 {
 	m_pos = pos;
+	m_rot = rot;
 
 	//Ž‹ŠEƒVƒXƒeƒ€
 	m_SightData.angle = 60.0f;
@@ -22,12 +23,12 @@ void CEnemy::Attack()
 {
 	m_Model.ChangeAnimation(eAnimationAttack);
 	if (m_Model.GetPlayTime() == 29)
-	{ 
+	{
 		m_state = eState_Chase;
 	}
 }
 
-void CEnemy::Idle() 
+void CEnemy::Idle()
 {
 	m_Model.ChangeAnimation(eAnimationIdle);
 }
@@ -67,13 +68,13 @@ void CEnemy::HitDamage()
 	}
 }
 
-void CEnemy::Die() 
+void CEnemy::Die()
 {
 	m_Model.ChangeAnimation(eAnimationDie);
 	if (m_Model.GetPlayTime() == 29) m_isActive = false;
 }
 
-void CEnemy::Update() 
+void CEnemy::Update()
 {
 	m_SightVec = m_Model.GetAxisZ(1.0f);
 	m_Model.SetPlayTime(30);
@@ -106,13 +107,13 @@ void CEnemy::Update()
 	CCharacter::Update();
 }
 
-void CEnemy::HitBullet() 
+void CEnemy::HitBullet()
 {
 	std::cout << "EnemyHit" << "\n";
 
 	m_Hp--;
 	m_FlinchNum++;
-	if(m_Hp <= 0)
+	if (m_Hp <= 0)
 	{
 		m_Model.SetTime(0);
 		m_state = eState_Die;
@@ -120,8 +121,8 @@ void CEnemy::HitBullet()
 		//“GŽ©g‚ÌUŒ‚‚Ì“–‚½‚è”»’è’âŽ~
 		int colliderNum = m_pCharaData->BoneCapsule.size();
 		for (int i = 0; i < colliderNum; i++) m_pCollider[i].Sleep();
-	} 
-	else 
+	}
+	else
 	{
 		if (m_FlinchNum >= 2)
 		{
@@ -143,9 +144,9 @@ void CEnemy::HitSight(const Vector3D *pPos)
 	m_Sight.Sleep();
 }
 
-CEnemy *CEnemyManager::Add(int type,Vector3D pos)
+CEnemy *CEnemyManager::Add(int type, Vector3D pos, Vector3D rot)
 {
-	CEnemy *e = new CEnemy(type,pos);
+	CEnemy *e = new CEnemy(type, pos, rot);
 
 	CCharacterManager::GetInstance()->Add(e);
 
