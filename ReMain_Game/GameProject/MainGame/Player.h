@@ -60,6 +60,7 @@ private:
 	float m_CameraPosY;		//カメラのY座標
 	float m_CamSpeed;		//カメラの回転速度
 	int m_Phase;
+	int m_AnimSpeed;		//アニメーションスピード
 	bool m_ChangeTakeWeapon;	//銃を持つ
 	bool m_isTakeWeapon;	//銃を持っているか
 	bool m_isCrouch;	//しゃがんでいるか
