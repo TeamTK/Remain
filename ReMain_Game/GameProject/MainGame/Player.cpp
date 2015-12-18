@@ -121,15 +121,21 @@ void Player::Move()
 	m_isMove = false;
 	m_isRun = false;
 
-	//コントローラー入力
-	m_PadDir = Vector3D(Input::XInputPad1.ThumbLeftX(), 0.0f, Input::XInputPad1.ThumbLeftY());
-	m_KeyDir = (m_PadDir - Vector3D(128, 128, 128)) / 32767;
+	if (Input::XInputPad1.GetIsConnection())
+	{
+		//コントローラー入力
+		m_PadDir = Vector3D(Input::XInputPad1.ThumbLeftX(), 0.0f, Input::XInputPad1.ThumbLeftY());
+		m_KeyDir = (m_PadDir - Vector3D(128, 128, 128)) / 32767;
+	}
+	else
+	{
+		//前後左右移動
+		if (Input::KeyW.Pressed())	m_KeyDir.z = 1;
+		if (Input::KeyS.Pressed())	m_KeyDir.z = -1;
+		if (Input::KeyD.Pressed())	m_KeyDir.x = 1;
+		if (Input::KeyA.Pressed())	m_KeyDir.x = -1;
+	}
 
-	//前後左右移動
-	if (Input::KeyW.Pressed())	m_KeyDir.z = 1;
-	if (Input::KeyS.Pressed())	m_KeyDir.z = -1;
-	if (Input::KeyD.Pressed())	m_KeyDir.x = 1;
-	if (Input::KeyA.Pressed())	m_KeyDir.x = -1;
 
 
 	//歩く(WASD, 左スティック)
