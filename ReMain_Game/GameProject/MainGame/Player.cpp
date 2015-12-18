@@ -229,12 +229,12 @@ void Player::Attack()
 	if ((Input::Mouse.LClicked() || Input::XInputPad1.ShoulderRightPressed()) && m_SetupWeapon)
 	{
 		EffectInfo effectData;
-		effectData.imageName = "Blood";
+		effectData.imageName = "GunEffect";
 		effectData.num = 30;
-		effectData.pos = m_Model.GetBornPos(24) + m_Model.GetAxisZ(1.0f);
-		effectData.scale = Vector3D(0.01f, 0.1f, 0.1f);
-		effectData.speed = 0.1f;
-		effectData.time = 30;
+		effectData.pos = m_Model.GetBornPos(24) + m_Model.GetAxisZ(0.9f);
+		effectData.scale = Vector3D(0.05f, 0.05f, 0.1f);
+		effectData.speed = 0.05f;
+		effectData.time = 60;
 		EffectGeneration::Add(effectData);
 		CBulletManager::GetInstance()->Add(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f);
 	}

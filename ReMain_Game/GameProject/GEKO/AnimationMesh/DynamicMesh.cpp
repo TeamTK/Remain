@@ -61,12 +61,15 @@ void DynamicMesh::ChangeAnimation(unsigned int num)
 
 void DynamicMesh::SetPlayTime(float animSpeed)
 {
-	m_pSkinMeshData->SetRenewalTime(animSpeed);
+	m_AnimTime += Math::VelocityToFrameM(animSpeed);
+	m_pSkinMeshData->SetTime(m_AnimTime);
+	//m_pSkinMeshData->SetRenewalTime(animSpeed);
 }
 
 void DynamicMesh::SetTime(float animTime)
 {
-	m_pSkinMeshData->SetTime(animTime);
+	m_AnimTime = animTime;
+	m_pSkinMeshData->SetTime(m_AnimTime);
 }
 
 SkinVertexInfo *DynamicMesh::GetVertex()
@@ -160,6 +163,7 @@ Vector3D DynamicMesh::GetBornPos(std::string name)
 void DynamicMesh::Render()
 {
 	RenderFunc(m_Matrix);
+	m_AnimTime = GetPlayTime();
 }
 
 void DynamicMesh::RenderMatrix(Matrix &matrix)
