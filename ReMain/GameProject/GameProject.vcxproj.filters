@@ -1,0 +1,350 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Main">
+      <UniqueIdentifier>{529d7112-4f2b-427b-ab6b-29c3219e4b72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GEKO3DX">
+      <UniqueIdentifier>{f5b0de8a-d0a9-4ffb-9ade-0878af077b4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GEKO3DX\HLSL">
+      <UniqueIdentifier>{0ac172ac-41a8-4884-a674-7d3209aed9ef}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="GEKO\Mesh\StaticMesh.cpp" />
+    <ClCompile Include="GEKO\Mesh\MeshData.cpp" />
+    <ClCompile Include="GEKO\Mesh\MeshBase.cpp" />
+    <ClCompile Include="GEKO\Mesh\StaticMeshAsset.cpp" />
+    <ClCompile Include="GEKO\AnimationMesh\DynamicMesh.cpp" />
+    <ClCompile Include="GEKO\AnimationMesh\SkinMeshData.cpp" />
+    <ClCompile Include="GEKO\AnimationMesh\DynamicMeshAsset.cpp" />
+    <ClCompile Include="GEKO\Task\RenderTask.cpp" />
+    <ClCompile Include="GEKO\Task\Task.cpp" />
+    <ClCompile Include="GEKO\System\Camera.cpp">
+      <Filter>GEKO3DX</Filter>
+    </ClCompile>
+    <ClCompile Include="GEKO\System\Change.cpp" />
+    <ClCompile Include="GEKO\System\Debug.cpp">
+      <Filter>GEKO3DX</Filter>
+    </ClCompile>
+    <ClCompile Include="GEKO\System\Direct3D11.cpp">
+      <Filter>GEKO3DX</Filter>
+    </ClCompile>
+    <ClCompile Include="GEKO\System\DirectionalLight.cpp">
+      <Filter>GEKO3DX</Filter>
+    </ClCompile>
+    <ClCompile Include="GEKO\System\Fps.cpp">
+      <Filter>GEKO3DX</Filter>
+    </ClCompile>
+    <ClCompile Include="GEKO\System\Input.cpp">
+      <Filter>GEKO3DX</Filter>
+    </ClCompile>
+    <ClCompile Include="GEKO\System\Math.cpp" />
+    <ClCompile Include="GEKO\System\Window.cpp">
+      <Filter>GEKO3DX</Filter>
+    </ClCompile>
+    <ClCompile Include="GEKO\GEKO.cpp" />
+    <ClCompile Include="GEKO\SoundSystem\Sound.cpp">
+      <Filter>GEKO3DX</Filter>
+    </ClCompile>
+    <ClCompile Include="GEKO\SoundSystem\SoundAsset.cpp" />
+    <ClCompile Include="GEKO\System\Collision.cpp" />
+    <ClCompile Include="Scene\BaseCamp.cpp" />
+    <ClCompile Include="Scene\GameEnd.cpp" />
+    <ClCompile Include="Scene\MainGame.cpp" />
+    <ClCompile Include="Scene\Opening.cpp" />
+    <ClCompile Include="Scene\Scene.cpp" />
+    <ClCompile Include="Scene\Title.cpp" />
+    <ClCompile Include="GEKO\ImageSystem\Image.cpp" />
+    <ClCompile Include="GEKO\ImageSystem\ImageAsset.cpp" />
+    <ClCompile Include="GEKO\Mesh\LoadXStatic.cpp" />
+    <ClCompile Include="GameSystem\StageObject.cpp" />
+    <ClCompile Include="GEKO\Mesh\WorldMatrixManager.cpp" />
+    <ClCompile Include="GEKO\AnimationMesh\LoadXDynamic.cpp" />
+    <ClCompile Include="GEKO\Figure\Fiqure.cpp" />
+    <ClCompile Include="GEKO\Figure\FiqureBase.cpp" />
+    <ClCompile Include="GEKO\Figure\Line3D.cpp" />
+    <ClCompile Include="GEKO\Figure\Triangle3D.cpp" />
+    <ClCompile Include="MainGame\Player.cpp" />
+    <ClCompile Include="MainGame\CCharacter.cpp" />
+    <ClCompile Include="MainGame\CEnemy.cpp" />
+    <ClCompile Include="MainGame\CBullet.cpp" />
+    <ClCompile Include="GEKO\Collider\Collider.cpp" />
+    <ClCompile Include="GEKO\Collider\ColliderManager.cpp" />
+    <ClCompile Include="GEKO\Collider\LineSegment.cpp" />
+    <ClCompile Include="GEKO\Collider\SphereCollider.cpp" />
+    <ClCompile Include="GEKO\Collider\StaticMeshCollider.cpp" />
+    <ClCompile Include="GEKO\Collider\BaseCollider.cpp" />
+    <ClCompile Include="GEKO\Collider\CapsuleCollider.cpp" />
+    <ClCompile Include="GEKO\Figure\Sphere3D.cpp" />
+    <ClCompile Include="MainGame\WeaponBase.cpp" />
+    <ClCompile Include="MainGame\Shotgun.cpp" />
+    <ClCompile Include="MainGame\Handgun.cpp" />
+    <ClCompile Include="GameSystem\SightSystem.cpp" />
+    <ClCompile Include="GEKO\Figure\Billboard.cpp" />
+    <ClCompile Include="GameSystem\Effect.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
+    <ClInclude Include="GEKO\Mesh\MeshData.h" />
+    <ClInclude Include="GEKO\Mesh\MeshBase.h" />
+    <ClInclude Include="GEKO\Mesh\StaticMeshAsset.h" />
+    <ClInclude Include="GEKO\AnimationMesh\DynamicMesh.h" />
+    <ClInclude Include="GEKO\AnimationMesh\DynamicMeshAsset.h" />
+    <ClInclude Include="GEKO\AnimationMesh\SkinMeshData.h" />
+    <ClInclude Include="GEKO\Task\CollisionTask.h" />
+    <ClInclude Include="GEKO\Task\RenderTask.h" />
+    <ClInclude Include="GEKO\Task\Task.h" />
+    <ClInclude Include="GEKO\System\Camera.h">
+      <Filter>GEKO3DX</Filter>
+    </ClInclude>
+    <ClInclude Include="GEKO\System\Change.h" />
+    <ClInclude Include="GEKO\System\Debug.h">
+      <Filter>GEKO3DX</Filter>
+    </ClInclude>
+    <ClInclude Include="GEKO\System\Direct3D11.h">
+      <Filter>GEKO3DX</Filter>
+    </ClInclude>
+    <ClInclude Include="GEKO\System\DirectionalLight.h">
+      <Filter>GEKO3DX</Filter>
+    </ClInclude>
+    <ClInclude Include="GEKO\System\Fps.h">
+      <Filter>GEKO3DX</Filter>
+    </ClInclude>
+    <ClInclude Include="GEKO\System\Input.h">
+      <Filter>GEKO3DX</Filter>
+    </ClInclude>
+    <ClInclude Include="GEKO\System\Math.h" />
+    <ClInclude Include="GEKO\System\MeshObj.h" />
+    <ClInclude Include="GEKO\System\Window.h">
+      <Filter>GEKO3DX</Filter>
+    </ClInclude>
+    <ClInclude Include="GEKO\GEKO.h" />
+    <ClInclude Include="GEKO\SoundSystem\Sound.h">
+      <Filter>GEKO3DX</Filter>
+    </ClInclude>
+    <ClInclude Include="GEKO\SoundSystem\SoundAsset.h" />
+    <ClInclude Include="GEKO\System\Collision.h" />
+    <ClInclude Include="Scene\BaseCamp.h" />
+    <ClInclude Include="Scene\GameEnd.h" />
+    <ClInclude Include="Scene\MainGame.h" />
+    <ClInclude Include="Scene\Opening.h" />
+    <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Scene\Title.h" />
+    <ClInclude Include="GEKO\ImageSystem\Image.h">
+      <Filter>GEKO3DX</Filter>
+    </ClInclude>
+    <ClInclude Include="GEKO\ImageSystem\ImageAsset.h" />
+    <ClInclude Include="GEKO\Mesh\LoadXStatic.h" />
+    <ClInclude Include="GameSystem\StageObject.h" />
+    <ClInclude Include="GEKO\Mesh\WorldMatrixManager.h" />
+    <ClInclude Include="GEKO\AnimationMesh\LoadXDynamic.h" />
+    <ClInclude Include="GEKO\Include\D2D1Helper.h" />
+    <ClInclude Include="GEKO\Include\D2DBaseTypes.h" />
+    <ClInclude Include="GEKO\Include\D2Derr.h" />
+    <ClInclude Include="GEKO\Include\d3d9.h" />
+    <ClInclude Include="GEKO\Include\d3d9caps.h" />
+    <ClInclude Include="GEKO\Include\d3d9types.h" />
+    <ClInclude Include="GEKO\Include\D3D10.h" />
+    <ClInclude Include="GEKO\Include\D3D10_1.h" />
+    <ClInclude Include="GEKO\Include\D3D10_1shader.h" />
+    <ClInclude Include="GEKO\Include\D3D10effect.h" />
+    <ClInclude Include="GEKO\Include\d3d10misc.h" />
+    <ClInclude Include="GEKO\Include\d3d10sdklayers.h" />
+    <ClInclude Include="GEKO\Include\D3D10shader.h" />
+    <ClInclude Include="GEKO\Include\D3D11.h" />
+    <ClInclude Include="GEKO\Include\D3D11SDKLayers.h" />
+    <ClInclude Include="GEKO\Include\D3D11Shader.h" />
+    <ClInclude Include="GEKO\Include\D3Dcommon.h" />
+    <ClInclude Include="GEKO\Include\D3Dcompiler.h" />
+    <ClInclude Include="GEKO\Include\D3DCSX.h" />
+    <ClInclude Include="GEKO\Include\d3dx9.h" />
+    <ClInclude Include="GEKO\Include\d3dx9anim.h" />
+    <ClInclude Include="GEKO\Include\d3dx9core.h" />
+    <ClInclude Include="GEKO\Include\d3dx9effect.h" />
+    <ClInclude Include="GEKO\Include\d3dx9math.h" />
+    <ClInclude Include="GEKO\Include\d3dx9mesh.h" />
+    <ClInclude Include="GEKO\Include\d3dx9shader.h" />
+    <ClInclude Include="GEKO\Include\d3dx9shape.h" />
+    <ClInclude Include="GEKO\Include\d3dx9tex.h" />
+    <ClInclude Include="GEKO\Include\d3dx9xof.h" />
+    <ClInclude Include="GEKO\Include\D3DX10.h" />
+    <ClInclude Include="GEKO\Include\d3dx10async.h" />
+    <ClInclude Include="GEKO\Include\D3DX10core.h" />
+    <ClInclude Include="GEKO\Include\D3DX10math.h" />
+    <ClInclude Include="GEKO\Include\D3DX10mesh.h" />
+    <ClInclude Include="GEKO\Include\D3DX10tex.h" />
+    <ClInclude Include="GEKO\Include\D3DX11.h" />
+    <ClInclude Include="GEKO\Include\D3DX11async.h" />
+    <ClInclude Include="GEKO\Include\D3DX11core.h" />
+    <ClInclude Include="GEKO\Include\D3DX11tex.h" />
+    <ClInclude Include="GEKO\Include\Dcommon.h" />
+    <ClInclude Include="GEKO\Include\dinput.h" />
+    <ClInclude Include="GEKO\Include\dinputd.h" />
+    <ClInclude Include="GEKO\Include\dsconf.h" />
+    <ClInclude Include="GEKO\Include\dsetup.h" />
+    <ClInclude Include="GEKO\Include\dsound.h" />
+    <ClInclude Include="GEKO\Include\DWrite.h" />
+    <ClInclude Include="GEKO\Include\dxdiag.h" />
+    <ClInclude Include="GEKO\Include\DxErr.h" />
+    <ClInclude Include="GEKO\Include\dxfile.h" />
+    <ClInclude Include="GEKO\Include\DXGI.h" />
+    <ClInclude Include="GEKO\Include\DXGIFormat.h" />
+    <ClInclude Include="GEKO\Include\DXGIType.h" />
+    <ClInclude Include="GEKO\Include\dxsdkver.h" />
+    <ClInclude Include="GEKO\Include\gameux.h" />
+    <ClInclude Include="GEKO\Include\PIXPlugin.h" />
+    <ClInclude Include="GEKO\Include\rmxfguid.h" />
+    <ClInclude Include="GEKO\Include\rmxftmpl.h" />
+    <ClInclude Include="GEKO\Include\rpcsal.h" />
+    <ClInclude Include="GEKO\Include\X3DAudio.h" />
+    <ClInclude Include="GEKO\Include\xact3.h" />
+    <ClInclude Include="GEKO\Include\xact3d3.h" />
+    <ClInclude Include="GEKO\Include\xact3wb.h" />
+    <ClInclude Include="GEKO\Include\XAPO.h" />
+    <ClInclude Include="GEKO\Include\XAPOBase.h" />
+    <ClInclude Include="GEKO\Include\XAPOFX.h" />
+    <ClInclude Include="GEKO\Include\XAudio2.h" />
+    <ClInclude Include="GEKO\Include\XAudio2fx.h" />
+    <ClInclude Include="GEKO\Include\XDSP.h" />
+    <ClInclude Include="GEKO\Include\XInput.h" />
+    <ClInclude Include="GEKO\Include\xma2defs.h" />
+    <ClInclude Include="GEKO\Include\xnamath.h" />
+    <ClInclude Include="GEKO\Include\audiodefs.h" />
+    <ClInclude Include="GEKO\Include\comdecl.h" />
+    <ClInclude Include="GEKO\Include\D2D1.h" />
+    <ClInclude Include="GEKO\Figure\Fiqure.h" />
+    <ClInclude Include="GEKO\Figure\FiqureBase.h" />
+    <ClInclude Include="GEKO\Figure\Line3D.h" />
+    <ClInclude Include="GEKO\Figure\Triangle3D.h" />
+    <ClInclude Include="MainGame\Player.h" />
+    <ClInclude Include="MainGame\CCharacter.h" />
+    <ClInclude Include="MainGame\CEnemy.h" />
+    <ClInclude Include="MainGame\CBullet.h" />
+    <ClInclude Include="GEKO\Collider\Collider.h" />
+    <ClInclude Include="GEKO\Collider\ColliderManager.h" />
+    <ClInclude Include="GEKO\Collider\LineSegment.h" />
+    <ClInclude Include="GEKO\Collider\SphereCollider.h" />
+    <ClInclude Include="GEKO\Collider\StaticMeshCollider.h" />
+    <ClInclude Include="GEKO\Collider\BaseCollider.h" />
+    <ClInclude Include="GEKO\Collider\CapsuleCollider.h" />
+    <ClInclude Include="GEKO\Figure\Sphere3D.h" />
+    <ClInclude Include="MainGame\WeaponBase.h" />
+    <ClInclude Include="MainGame\Shotgun.h" />
+    <ClInclude Include="MainGame\Handgun.h" />
+    <ClInclude Include="GameSystem\SightSystem.h" />
+    <ClInclude Include="MainGame\enums.h" />
+    <ClInclude Include="GEKO\Figure\Billboard.h" />
+    <ClInclude Include="GameSystem\Effect.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="GEKO\HLSL\MESH.hlsl">
+      <Filter>GEKO3DX\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="GEKO\HLSL\Fiqure.hlsl" />
+    <FxCompile Include="GEKO\HLSL\SkinMesh.hlsl" />
+    <FxCompile Include="GEKO\HLSL\Image.hlsl">
+      <Filter>GEKO3DX\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="GEKO\HLSL\Triangle3D.hlsl" />
+    <FxCompile Include="GEKO\HLSL\Line3D.hlsl" />
+    <FxCompile Include="GEKO\HLSL\Billboard.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="GEKO\myicon.ico">
+      <Filter>Main</Filter>
+    </Image>
+    <Image Include="media\Cabin.png" />
+    <Image Include="media\Grass_1.png" />
+    <Image Include="media\Grass_2.png" />
+    <Image Include="media\Leaf2.png" />
+    <Image Include="media\Tree_Leaf.png" />
+    <Image Include="media\TreeTrunk.png" />
+    <Image Include="media\Trunk2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GEKO\System\myicon.rc">
+      <Filter>Main</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="TextData\StageObject.txt" />
+    <Text Include="TextData\StaticMesh.txt" />
+    <Text Include="TextData\DynamicMesh.txt" />
+    <Text Include="TextData\Image.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="GEKO\Lib\d2d1.lib" />
+    <Library Include="GEKO\Lib\d3d9.lib" />
+    <Library Include="GEKO\Lib\d3d10.lib" />
+    <Library Include="GEKO\Lib\d3d10_1.lib" />
+    <Library Include="GEKO\Lib\d3d11.lib" />
+    <Library Include="GEKO\Lib\d3dcompiler.lib" />
+    <Library Include="GEKO\Lib\D3DCSX.lib" />
+    <Library Include="GEKO\Lib\D3DCSXd.lib" />
+    <Library Include="GEKO\Lib\d3dx9.lib" />
+    <Library Include="GEKO\Lib\d3dx9d.lib" />
+    <Library Include="GEKO\Lib\d3dx10.lib" />
+    <Library Include="GEKO\Lib\d3dx10d.lib" />
+    <Library Include="GEKO\Lib\d3dx11.lib" />
+    <Library Include="GEKO\Lib\d3dx11d.lib" />
+    <Library Include="GEKO\Lib\d3dxof.lib" />
+    <Library Include="GEKO\Lib\dinput8.lib" />
+    <Library Include="GEKO\Lib\dsetup.lib" />
+    <Library Include="GEKO\Lib\dsound.lib" />
+    <Library Include="GEKO\Lib\dwrite.lib" />
+    <Library Include="GEKO\Lib\DxErr.lib" />
+    <Library Include="GEKO\Lib\dxgi.lib" />
+    <Library Include="GEKO\Lib\dxguid.lib" />
+    <Library Include="GEKO\Lib\X3DAudio.lib" />
+    <Library Include="GEKO\Lib\xapobase.lib" />
+    <Library Include="GEKO\Lib\xapobased.lib" />
+    <Library Include="GEKO\Lib\XAPOFX.lib" />
+    <Library Include="GEKO\Lib\XInput.lib" />
+    <Library Include="GEKO\Include\d2d1.lib" />
+    <Library Include="GEKO\Include\d3d9.lib" />
+    <Library Include="GEKO\Include\d3d10.lib" />
+    <Library Include="GEKO\Include\d3d10_1.lib" />
+    <Library Include="GEKO\Include\d3d11.lib" />
+    <Library Include="GEKO\Include\d3dcompiler.lib" />
+    <Library Include="GEKO\Include\D3DCSX.lib" />
+    <Library Include="GEKO\Include\D3DCSXd.lib" />
+    <Library Include="GEKO\Include\d3dx9.lib" />
+    <Library Include="GEKO\Include\d3dx9d.lib" />
+    <Library Include="GEKO\Include\d3dx10.lib" />
+    <Library Include="GEKO\Include\d3dx10d.lib" />
+    <Library Include="GEKO\Include\d3dx11.lib" />
+    <Library Include="GEKO\Include\d3dx11d.lib" />
+    <Library Include="GEKO\Include\d3dxof.lib" />
+    <Library Include="GEKO\Include\dinput8.lib" />
+    <Library Include="GEKO\Include\dsetup.lib" />
+    <Library Include="GEKO\Include\dsound.lib" />
+    <Library Include="GEKO\Include\dwrite.lib" />
+    <Library Include="GEKO\Include\DxErr.lib" />
+    <Library Include="GEKO\Include\dxgi.lib" />
+    <Library Include="GEKO\Include\dxguid.lib" />
+    <Library Include="GEKO\Include\X3DAudio.lib" />
+    <Library Include="GEKO\Include\xapobase.lib" />
+    <Library Include="GEKO\Include\xapobased.lib" />
+    <Library Include="GEKO\Include\XAPOFX.lib" />
+    <Library Include="GEKO\Include\XInput.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GEKO\Include\D3DX_DXGIFormatConvert.inl" />
+    <None Include="GEKO\Include\d3dx9math.inl" />
+    <None Include="GEKO\Include\D3DX10math.inl" />
+    <None Include="GEKO\Include\xnamathconvert.inl" />
+    <None Include="GEKO\Include\xnamathmatrix.inl" />
+    <None Include="GEKO\Include\xnamathmisc.inl" />
+    <None Include="GEKO\Include\xnamathvector.inl" />
+    <None Include="media\Cabin.x" />
+    <None Include="media\Grass_1.x" />
+    <None Include="media\Grass_2.x" />
+    <None Include="media\Tree_1.x" />
+    <None Include="media\Tree_2.x" />
+  </ItemGroup>
+</Project>
