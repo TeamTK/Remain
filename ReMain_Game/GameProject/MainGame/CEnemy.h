@@ -50,5 +50,5 @@ private:
 class CEnemyManager
 {
 public:
-	static CEnemy *Add(int type, Vector3D pos, Vector3D rot);
+	static void Add(int type, Vector3D pos, Vector3D rot);
 };

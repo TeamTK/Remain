@@ -276,6 +276,7 @@ namespace Input
 		int ThumbRightX();
 		int ThumbRightY();
 		void Vibration(int index, int leftMotorSpeed, int rightMotorSpeed);
+		bool GetIsConnection();
 
 	private:
 		XINPUT_STATE *m_pXInputState;

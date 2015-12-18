@@ -252,6 +252,7 @@
     </FxCompile>
     <FxCompile Include="GEKO\HLSL\Triangle3D.hlsl" />
     <FxCompile Include="GEKO\HLSL\Line3D.hlsl" />
+    <FxCompile Include="GEKO\HLSL\Billboard.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="GEKO\myicon.ico">

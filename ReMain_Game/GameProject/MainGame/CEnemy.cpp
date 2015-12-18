@@ -84,21 +84,26 @@ void CEnemy::Update()
 	{
 	case eState_Attack:
 		Attack();
+		std::cout << "ATTACK" << "\n";
 		break;
 
 	case eState_Idle:
 		Idle();
+		std::cout << "IDLE" << "\n";
 		break;
 
 	case eState_Chase:
 		Chase();
+		std::cout << "CHASE" << "\n";
 		break;
 
 	case eState_HitDamage:
 		HitDamage();
+		std::cout << "HIT_DAMEGE" << "\n";
 		break;
 
 	case eState_Die:
+		std::cout << "DIE" << "\n";
 		Die();
 
 	default:
@@ -109,8 +114,6 @@ void CEnemy::Update()
 
 void CEnemy::HitBullet()
 {
-	std::cout << "EnemyHit" << "\n";
-
 	m_Hp--;
 	m_FlinchNum++;
 	if (m_Hp <= 0)
@@ -144,11 +147,7 @@ void CEnemy::HitSight(const Vector3D *pPos)
 	m_Sight.Sleep();
 }
 
-CEnemy *CEnemyManager::Add(int type, Vector3D pos, Vector3D rot)
+void CEnemyManager::Add(int type, Vector3D pos, Vector3D rot)
 {
-	CEnemy *e = new CEnemy(type, pos, rot);
-
-	CCharacterManager::GetInstance()->Add(e);
-
-	return e;
+	CCharacterManager::GetInstance()->Add(new CEnemy(type, pos, rot));
 }

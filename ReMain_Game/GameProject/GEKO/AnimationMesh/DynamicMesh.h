@@ -35,7 +35,7 @@ private:
 
 private:
 	SkinMeshData *m_pSkinMeshData;
-
+	float m_AnimTime;
 };
 
 #endif

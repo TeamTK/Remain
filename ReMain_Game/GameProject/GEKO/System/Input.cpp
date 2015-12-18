@@ -587,4 +587,14 @@ namespace Input
 		v.wRightMotorSpeed = rightMotorSpeed;
 		DWORD a = XInputSetState(index, &v);
 	}
+
+	bool KeyXInputPad::GetIsConnection()
+	{
+		if (m_pXInputState->dwPacketNumber)
+		{
+			m_pXInputState->dwPacketNumber = 0;
+			return true;
+		}
+		return false;
+	}
 };
