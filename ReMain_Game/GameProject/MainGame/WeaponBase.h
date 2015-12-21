@@ -12,7 +12,7 @@ public:
 	void Update();
 	void Render();
 	void Shot();
-	void SetPlayerData(int anim, int frame, Vector3D start, Vector3D end);
+	void SetPlayerData(int anim, float frame, Vector3D start, Vector3D end);
 	void SetPlayerBomeMtx(Matrix* m);
 
 protected:
