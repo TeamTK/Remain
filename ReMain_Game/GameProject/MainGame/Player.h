@@ -35,7 +35,6 @@ private:
 	void Hit();
 
 	void HitCamera(Result_Porygon &hitData);
-	Vector3D Lerp(Vector3D start, Vector3D finish, float percentage);
 
 private:
 	Shotgun* m_pShotgun;
@@ -63,9 +62,9 @@ private:
 	int m_AnimSpeed;		//アニメーションスピード
 	bool m_ChangeTakeWeapon;	//銃を持つ
 	bool m_isTakeWeapon;	//銃を持っているか
+	bool m_SetupWeapon;	//銃を構えているか
 	bool m_isCrouch;	//しゃがんでいるか
 	bool m_isRun;		//走っているか
-	bool m_SetupWeapon;	//武器を構えているか
 	bool m_isMove;		//移動中か
 	bool m_isAttack;	//攻撃中か
 };
