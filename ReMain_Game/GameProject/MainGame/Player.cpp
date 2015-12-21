@@ -254,13 +254,19 @@ void Player::Camera()
 	Vector3D look(0.6f, 1.8f, 0.0f);
 	static float lenge = CAMERA_LENGE;
 
-	//マウス入力
-	m_Horizontal += mouseValue.x * 0.002f;
-	m_Vertical += -mouseValue.y * 0.002f;
-
-	//コントローラー入力
-	m_Horizontal += (Input::XInputPad1.ThumbRightX() - 128) * m_CamSpeed;
-	m_Vertical += (Input::XInputPad1.ThumbRightY() - 128) * m_CamSpeed;
+	//カメラ移動
+	if (Input::XInputPad1.GetIsConnection())
+	{
+		//コントローラー入力
+		m_Horizontal += (Input::XInputPad1.ThumbRightX() - 128) * m_CamSpeed;
+		m_Vertical += (Input::XInputPad1.ThumbRightY() - 128) * m_CamSpeed;
+	}
+	else
+	{
+		//マウス入力
+		m_Horizontal += mouseValue.x * 0.002f;
+		m_Vertical += -mouseValue.y * 0.002f;
+	}
 
 	Matrix mRX, mRY, mat;
 	mRY.RotationRadianY(m_Horizontal);
@@ -308,13 +314,13 @@ void Player::Camera()
 	//カメラ補完移動
 	if (m_SetupWeapon)
 	{
-		m_CameraPos = Lerp(m_CameraPos, newCameraPos, 0.5f);
-		m_LookPos = Lerp(m_LookPos, newLookPos, 0.5f);
+		m_CameraPos =Vector3D::Lerp(m_CameraPos, newCameraPos, 0.5f);
+		m_LookPos = Vector3D::Lerp(m_LookPos, newLookPos, 0.5f);
 	}
 	else
 	{
-		m_CameraPos = Lerp(m_CameraPos, newCameraPos, 0.3f);
-		m_LookPos = Lerp(m_LookPos, newLookPos, 0.3f);
+		m_CameraPos = Vector3D::Lerp(m_CameraPos, newCameraPos, 0.3f);
+		m_LookPos = Vector3D::Lerp(m_LookPos, newLookPos, 0.3f);
 	}
 
 	Camera::SetEye(m_CameraPos);
@@ -635,9 +641,4 @@ void Player::HitCamera(Result_Porygon &hitData)
 	Vector3D vec = m_LookPos - m_CameraPos;
 	float dist = (hitData.contactPos - m_CameraPos).Length();
 	m_CameraPos += vec.GetNormalize() * dist;
-}
-
-Vector3D Player::Lerp(Vector3D start, Vector3D finish, float percentage)
-{
-	return start * (1 - percentage) + finish * percentage;
 }
