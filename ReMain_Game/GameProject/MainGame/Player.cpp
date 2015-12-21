@@ -232,7 +232,7 @@ void Player::Attack()
 	}
 
 	//発砲　(マウス左クリック, 右ショルダボタン)
-	if ((Input::Mouse.LClicked() || Input::XInputPad1.ShoulderRightPressed()) && m_SetupWeapon)
+	if ((Input::Mouse.LClicked() || Input::XInputPad1.ShoulderRightClicked()) && m_SetupWeapon)
 	{
 		EffectInfo effectData;
 		effectData.imageName = "GunEffect";
