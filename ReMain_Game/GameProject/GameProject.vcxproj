@@ -12,6 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameSystem\Effect.cpp" />
+    <ClCompile Include="GameSystem\GUI\BaseGui.cpp" />
+    <ClCompile Include="GameSystem\GUI\UI_SelectWeapon.cpp" />
     <ClCompile Include="GameSystem\SightSystem.cpp" />
     <ClCompile Include="GameSystem\StageObject.cpp" />
     <ClCompile Include="GEKO\AnimationMesh\DynamicMesh.cpp" />
@@ -71,6 +73,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSystem\Effect.h" />
+    <ClInclude Include="GameSystem\GUI\BaseGui.h" />
+    <ClInclude Include="GameSystem\GUI\SelectWeapon.h" />
+    <ClInclude Include="GameSystem\GUI\UI_SelectWeapon.h" />
     <ClInclude Include="GameSystem\SightSystem.h" />
     <ClInclude Include="GameSystem\StageObject.h" />
     <ClInclude Include="GEKO\AnimationMesh\DynamicMesh.h" />
@@ -250,6 +255,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="GEKO\myicon.ico" />
+    <Image Include="GEKO\smyicon.ico" />
     <Image Include="media\Cabin.png" />
     <Image Include="media\Grass_1.png" />
     <Image Include="media\Grass_2.png" />

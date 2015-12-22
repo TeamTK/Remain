@@ -25,7 +25,7 @@ Player::Player() :
 	m_KeyDir(0.0f, 0.0f, 0.0f), m_Horizontal(0.134f), m_Phase(0.0f), m_AnimSpeed(30),
 	m_Vertical(-1.5f), m_MoveSpeed(0.0f), m_CameraPosY(1.8f), m_CamSpeed(0.000002f),
 	m_isCrouch(false), m_isAttack(false), m_isTakeWeapon(false), m_isMove(false),
-	m_ChangeTakeWeapon(false), m_isRun(false), m_SetupWeapon(false),
+	m_ChangeTakeWeapon(false), m_isRun(false), m_SetupWeapon(false), m_ToggleCrouch(false),
 	m_State(EPlayerState::eState_Idle), m_SelectedWeapon(EWeapons::eShotgun)
 {
 	m_ColliderMap.SetID(eHITID1, eHITID0 | eHITID1 | eHITID2);
@@ -48,6 +48,7 @@ Player::Player() :
 
 	m_pShotgun = new Shotgun();
 	m_pHandgun = new Handgun();
+	m_SelectWeapon = new SelectWeapon();
 
 	m_PlayerSightInfo.SetPos(&m_pos);
 }
@@ -56,6 +57,7 @@ Player::~Player()
 {
 	delete m_pShotgun;
 	delete m_pHandgun;
+	delete m_SelectWeapon;
 
 }
 
@@ -66,6 +68,7 @@ void Player::Update()
 	Camera();
 	Animation();
 	CCharacter::Update();
+	m_SelectWeapon->Update();
 
 	//当たり判定用 始点終点
 	m_Start = m_CameraPos;
@@ -112,6 +115,7 @@ void Player::Update()
 	m_Reticle.Draw(400, 300, 32, 32);
 
 //	printf("%d\n", m_SetupWeapon);
+//	printf("%d %d %d\n", m_ChangeTakeWeapon, m_isTakeWeapon, m_isCrouch);
 }
 
 void Player::Move()
@@ -136,8 +140,6 @@ void Player::Move()
 		if (Input::KeyA.Pressed())	m_KeyDir.x = -1;
 	}
 
-
-
 	//歩く(WASD, 左スティック)
 	if (m_KeyDir.x != 0 || m_KeyDir.z != 0)
 	{
@@ -153,7 +155,12 @@ void Player::Move()
 	}
 
 	//しゃがむ(左コントロールキー, 右トリガー) 
-	if (Input::KeyLControl.Pressed() || Input::XInputPad1.TriggerRight())
+	if (Input::KeyLControl.Clicked() || Input::XInputPad1.TriggerRight())
+	{
+		m_ToggleCrouch = !m_ToggleCrouch;
+	}
+
+	if (m_ToggleCrouch)
 	{
 		m_State = EPlayerState::eState_Crouch;
 	}
@@ -168,10 +175,10 @@ void Player::Move()
 		const D3DXMATRIX *camDir = Camera::GetView();
 		Vector3D playerRot(0.0f, atan2f(camDir->m[0][2], camDir->m[2][2]) + atan2f(m_KeyDir.x, m_KeyDir.z), 0.0f);
 		m_rot.y = playerRot.y;
-		m_Phase++;
 
 		if (m_SetupWeapon)
 		{
+			m_Phase++;
 			//武器を構えた状態の移動
 			m_pos += m_Model.GetAxisX(1.0f) * m_KeyDir.x * m_MoveSpeed;
 			m_pos += m_Model.GetAxisZ(1.0f) * m_KeyDir.z * m_MoveSpeed;
@@ -205,18 +212,10 @@ void Player::Attack()
 		m_isTakeWeapon = false;
 	}
 
-	//武器の切り替え(Tキー, 方向キー左右)
-	if ((Input::KeyR.Clicked() || Input::XInputPad1.LeftClicked() || Input::XInputPad1.RightClicked()) && !m_isTakeWeapon)
+	//武器の切り替え(Rキー, 方向キー左右)
+	if ((Input::KeyR.Clicked() || Input::XInputPad1.ThumbRightClicked()) && !m_isTakeWeapon)
 	{
-		m_AnimSpeed = 50;
-		if (m_SelectedWeapon == EWeapons::eShotgun)
-		{
-			m_SelectedWeapon = EWeapons::eHandgun;
-		}
-		else if (m_SelectedWeapon == EWeapons::eHandgun)
-		{
-			m_SelectedWeapon = EWeapons::eShotgun;
-		}
+		m_SelectWeapon->Select();
 	}
 
 	//銃を持っているときに銃を構える(マウス右クリック, 左ショルダー)
@@ -314,8 +313,8 @@ void Player::Camera()
 	//カメラ補完移動
 	if (m_SetupWeapon)
 	{
-		m_CameraPos =Vector3D::Lerp(m_CameraPos, newCameraPos, 0.5f);
-		m_LookPos = Vector3D::Lerp(m_LookPos, newLookPos, 0.5f);
+		m_CameraPos =Vector3D::Lerp(m_CameraPos, newCameraPos, 0.8f);
+		m_LookPos = Vector3D::Lerp(m_LookPos, newLookPos, 0.8f);
 	}
 	else
 	{
@@ -331,7 +330,7 @@ void Player::Animation()
 {
 	m_CameraPosY = CAMERA_NO_CROUCH_POS_Y;
 	m_Model.SetPlayTime(m_AnimSpeed);
-	printf("%d\n", m_AnimSpeed);
+//	printf("%d\n", m_AnimSpeed);
 	switch (m_State)
 	{
 	case EPlayerState::eState_Idle:

@@ -87,6 +87,8 @@
     <ClCompile Include="GameSystem\SightSystem.cpp" />
     <ClCompile Include="GEKO\Figure\Billboard.cpp" />
     <ClCompile Include="GameSystem\Effect.cpp" />
+    <ClCompile Include="GameSystem\GUI\BaseGui.cpp" />
+    <ClCompile Include="GameSystem\GUI\UI_SelectWeapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -240,6 +242,9 @@
     <ClInclude Include="MainGame\enums.h" />
     <ClInclude Include="GEKO\Figure\Billboard.h" />
     <ClInclude Include="GameSystem\Effect.h" />
+    <ClInclude Include="GameSystem\GUI\BaseGui.h" />
+    <ClInclude Include="GameSystem\GUI\SelectWeapon.h" />
+    <ClInclude Include="GameSystem\GUI\UI_SelectWeapon.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">
@@ -265,6 +270,7 @@
     <Image Include="media\Tree_Leaf.png" />
     <Image Include="media\TreeTrunk.png" />
     <Image Include="media\Trunk2.png" />
+    <Image Include="GEKO\smyicon.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GEKO\System\myicon.rc">

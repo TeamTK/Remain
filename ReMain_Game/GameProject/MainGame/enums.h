@@ -41,8 +41,10 @@ enum EPlayerState
 //•Ší
 enum EWeapons
 {
+	eHand,
 	eShotgun,
-	eHandgun
+	eHandgun,
+	WeaponAll
 };
 
 #endif
