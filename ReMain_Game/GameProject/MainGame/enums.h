@@ -44,6 +44,7 @@ enum EWeapons
 	eHand,
 	eShotgun,
 	eHandgun,
+	eNone,
 	WeaponAll
 };
 

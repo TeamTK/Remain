@@ -18,5 +18,5 @@ void BaseGui::Update()
 
 void BaseGui::Draw()
 {
-	m_Image.Draw(m_Pos.x, m_Pos.y, m_Center.x, m_Center.y);
+	m_Image.Draw(m_Pos.x, m_Pos.y);
 }

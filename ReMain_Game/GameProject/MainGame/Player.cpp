@@ -42,6 +42,7 @@ Player::Player() :
 
 	//レティクル(仮)
 	m_Reticle.SetAsset("Reticle");
+	m_Reticle.SetCenter(32, 32);
 
 	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_LookPos, REGIST_FUNC(Player::HitCamera));
 	m_HitCamera.SetID(eHITID0, eHITID1);
@@ -112,7 +113,7 @@ void Player::Update()
 
 	//レティクル(仮)
 	m_Reticle.SetAlpha(150.0f);
-	m_Reticle.Draw(400, 300, 32, 32);
+	m_Reticle.Draw(400, 300);
 
 //	printf("%d\n", m_SetupWeapon);
 //	printf("%d %d %d\n", m_ChangeTakeWeapon, m_isTakeWeapon, m_isCrouch);
