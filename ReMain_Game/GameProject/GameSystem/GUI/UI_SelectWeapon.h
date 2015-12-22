@@ -16,9 +16,12 @@ public:
 
 private:
 	Image m_Image;
+	Image m_SelectedCircle;
 	EWeapons m_Weapon;
 	Vector2D m_Pos;
+	Vector2D m_ScPos;
 	int m_Size;
+	int m_Selected;
 	bool m_isActive;
 };
 #endif
