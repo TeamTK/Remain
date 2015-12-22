@@ -1,3 +1,0 @@
-Image media\Reticle.png Reticle
-Image media\Blood.png Blood
-Image media\GunEffect.png GunEffect

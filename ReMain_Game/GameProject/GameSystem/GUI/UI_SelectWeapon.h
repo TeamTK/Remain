@@ -11,6 +11,7 @@ public:
 	~SelectWeapon();
 	void Update();
 	void Draw();
+	bool GetisSelected();
 	EWeapons Select();
 
 
@@ -22,6 +23,6 @@ private:
 	Vector2D m_ScPos;
 	int m_Size;
 	int m_Selected;
-	bool m_isActive;
+	bool m_isSelected;
 };
 #endif

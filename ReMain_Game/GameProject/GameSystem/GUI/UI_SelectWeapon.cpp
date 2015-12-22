@@ -17,23 +17,23 @@ struct SData
 
 static SData WeaponData[] =
 {
-	{ 400.0f, 535.0f, eHand		},
-	{ 400.0f, 75.0f, eShotgun	},
-	{ 175.0f, 300.0f, eHandgun	},
-	{ 625.0f, 300.0f, eNone		},
+	{ 400.0f, 535.0f, eHand		},	//Down
+	{ 400.0f, 75.0f, eShotgun	},	//Up
+	{ 175.0f, 300.0f, eHandgun	},	//Left
+	{ 625.0f, 300.0f, eNone		},	//Right
 };
 
 #define MAX_SIZE 512
 
 
 SelectWeapon::SelectWeapon() :
-	m_isActive(false), m_Size(0), m_Selected(0)
+	m_isSelected(false), m_Size(0), m_Selected(1)
 {
 	State = eOpen;
 	m_Image.SetAsset("SelectWeapon");
-	m_SelectedCircle = m_Image;
+	m_SelectedCircle.SetAsset("SelectedCircle");
 	m_SelectedCircle.SetSize(256, 256);
-	m_SelectedCircle.SetCenter(128, 1280);
+	m_SelectedCircle.SetCenter(128, 128);
 	m_Pos = Vector2D(400.0f, 300.0f);
 	m_ScPos = Vector2D(400.0f, 75.0f);
 }
@@ -45,7 +45,7 @@ SelectWeapon::~SelectWeapon()
 
 void SelectWeapon::Update()
 {
-	if (m_isActive)
+	if (m_isSelected)
 	{
 		switch (State)
 		{
@@ -60,7 +60,6 @@ void SelectWeapon::Update()
 			if (Input::KeyUp.Clicked() ||	Input::XInputPad1.UpClicked())		m_Selected = 1;
 			if (Input::KeyLeft.Clicked() || Input::XInputPad1.LeftClicked())	m_Selected = 2;
 			if (Input::KeyRight.Clicked() || Input::XInputPad1.RightClicked())	m_Selected = 3;
-
 			
 			m_ScPos.x = Vector3D::Lerp(Vector3D(m_ScPos.x, 0.0f, 0.0f), Vector3D(WeaponData[m_Selected].x, 0.0f, 0.0f), 0.8).x;
 			m_ScPos.y = Vector3D::Lerp(Vector3D(0.0f, m_ScPos.y, 0.0f), Vector3D(0.0f, WeaponData[m_Selected].y, 0.0f), 0.8).y;
@@ -69,7 +68,7 @@ void SelectWeapon::Update()
 
 			break;
 		case eClose:
-
+			//none
 			break;
 		default:
 
@@ -85,16 +84,21 @@ void SelectWeapon::Update()
 
 	m_Image.SetCenter(m_Size / 2, m_Size / 2);
 	m_Image.Draw(m_Pos.x, m_Pos.y);
-	m_ScPos.DebugDraw("m_ScPos");
+
 }
 
 EWeapons SelectWeapon::Select()
 {
-	m_isActive = !m_isActive;
+	m_isSelected = !m_isSelected;
 	return WeaponData[m_Selected].weapons;
 }
 
 void SelectWeapon::Draw()
 {
 
+}
+
+bool SelectWeapon::GetisSelected()
+{
+	return m_isSelected;
 }
