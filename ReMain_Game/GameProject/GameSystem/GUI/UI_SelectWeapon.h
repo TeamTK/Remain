@@ -18,7 +18,6 @@ private:
 	Image m_Image;
 	EWeapons m_Weapon;
 	Vector2D m_Pos;
-	Vector2D m_Center;
 	int m_Size;
 	bool m_isActive;
 };
