@@ -8,6 +8,7 @@
 #include "../MainGame/Shotgun.h"
 #include "../MainGame/Handgun.h"
 #include "../GameSystem/SightSystem.h"
+#include"../GameSystem/GUI/UI_SelectWeapon.h"
 
 class Player : public CCharacter
 {
@@ -40,6 +41,8 @@ private:
 	Shotgun* m_pShotgun;
 	Handgun* m_pHandgun;
 	Image m_Reticle;		//レティクル画像(仮)
+	SelectWeapon* m_SelectWeapon;
+
 	Vector3D m_KeyDir;		//キー入力軸
 	Vector3D m_PadDir;		//コントローラー入力値
 	Vector3D m_CamDir;		//カメラの方向
@@ -49,7 +52,7 @@ private:
 	Vector3D m_End;			//線分の当たり判定用 終点
 	Matrix m_Matrix;		//ショットガンの行列
 	EPlayerState m_State;	//プレイヤーの状態	
-	EWeapons m_SelectedWeapon;		//選択している銃
+	EWeapons m_SelectedWeapon;	//選択している銃
 	Collider m_HitCamera;	//カメラの当たり判定
 	Collider m_Bullet;		//弾の当たり判定
 	PlayerSightInfo m_PlayerSightInfo;
@@ -61,6 +64,7 @@ private:
 	int m_Phase;
 	int m_AnimSpeed;		//アニメーションスピード
 	bool m_ChangeTakeWeapon;	//銃を持つ
+	bool m_ToggleCrouch;
 	bool m_isTakeWeapon;	//銃を持っているか
 	bool m_SetupWeapon;	//銃を構えているか
 	bool m_isCrouch;	//しゃがんでいるか

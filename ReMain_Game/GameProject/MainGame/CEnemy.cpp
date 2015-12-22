@@ -84,26 +84,26 @@ void CEnemy::Update()
 	{
 	case eState_Attack:
 		Attack();
-		std::cout << "ATTACK" << "\n";
+		//std::cout << "ATTACK" << "\n";
 		break;
 
 	case eState_Idle:
 		Idle();
-		std::cout << "IDLE" << "\n";
+		//std::cout << "IDLE" << "\n";
 		break;
 
 	case eState_Chase:
 		Chase();
-		std::cout << "CHASE" << "\n";
+		//std::cout << "CHASE" << "\n";
 		break;
 
 	case eState_HitDamage:
 		HitDamage();
-		std::cout << "HIT_DAMEGE" << "\n";
+		//std::cout << "HIT_DAMEGE" << "\n";
 		break;
 
 	case eState_Die:
-		std::cout << "DIE" << "\n";
+		//std::cout << "DIE" << "\n";
 		Die();
 
 	default:
