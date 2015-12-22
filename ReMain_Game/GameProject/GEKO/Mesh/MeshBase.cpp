@@ -118,31 +118,22 @@ Vector3D MeshBase::GetAmbient(int materialIndex) const
 	return m_Ambient[materialIndex];
 }
 
-Vector3D MeshBase::GetAxisX(float length)
+Vector3D MeshBase::GetAxisX(float length) const
 {
-	Vector3D x_Normal(1.0f, 0.0f, 0.0f);
-	x_Normal = Vector3D::Matrix3x3(x_Normal, m_Matrix);
-
-	return x_Normal * length;
+	return Vector3D::Matrix3x3(Vector3D(1.0f, 0.0f, 0.0f), m_Matrix) * length;
 }
 
-Vector3D MeshBase::GetAxisY(float length)
+Vector3D MeshBase::GetAxisY(float length) const
 {
-	Vector3D y_Normal(0.0f, 1.0f, 0.0f);
-	y_Normal = Vector3D::Matrix3x3(y_Normal, m_Matrix);
-
-	return y_Normal * length;
+	return Vector3D::Matrix3x3(Vector3D(0.0f, 1.0f, 0.0f), m_Matrix) * length;
 }
 
-Vector3D MeshBase::GetAxisZ(float length)
+Vector3D MeshBase::GetAxisZ(float length) const
 {
-	Vector3D z_Normal(0.0f, 0.0f, 1.0f);
-	z_Normal = Vector3D::Matrix3x3(z_Normal, m_Matrix);
-
-	return z_Normal * length;
+	return Vector3D::Matrix3x3(Vector3D(0.0f, 0.0f, 1.0f), m_Matrix) * length;
 }
 
-Matrix *MeshBase::GetMatrix()
+const Matrix *MeshBase::GetMatrix() const
 {
 	return &m_Matrix;
 }

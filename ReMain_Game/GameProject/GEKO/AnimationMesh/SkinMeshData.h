@@ -99,15 +99,14 @@ struct SkinMeshInfo
 	ID3D11Buffer*		 m_pConstantBuffer1; //コンスタントバッファー（マテリアル）
 	ID3D11Buffer*		 m_pVertexBuffer;	 //頂点バッファー
 	ID3D11Buffer**		 m_ppIndexBuffer;	 //インデックスバッファー
-	ID3D11Buffer*		 m_pConstantBufferBone;
+	ID3D11Buffer*		 m_pConstantBufferBone; //コンスタントバッファー（ボーン）
 	ID3D11SamplerState*  m_pSampleLinear;	 //テクスチャーのサンプラー
 	SkinMaterialInfo*	 m_pMaterial;		 //マテリアル情報
 	ID3D11ShaderResourceView* m_Nothing;     //テクスチャーがない場合使用
 	DWORD				 m_dwNumMaterial;	 //マテリアルの数
 	bool m_IsTexture;						 //テクスチャー判断
 	SkinVertexInfo* pvVertex;				 //頂点情報
-	BornConstantBuffer BornBuffer;
-	int vertexNumAll; //頂点数
+	int vertexNumAll;	//頂点数
 	int faceNumAll;   //面の数
 	int normalNumAll; //法線の数
 	int materialNumAll;  //マテリアルの数
@@ -132,10 +131,22 @@ struct Born
 	std::string BornName;
 	D3DXMATRIX initMat;
 	D3DXMATRIX offsetMat;
+	Born()
+	{
+		brother = nullptr;
+		child = nullptr;
+	}
+};
+
+//コピーするボーン
+struct CopyBorn
+{
+	CopyBorn *brother;
+	CopyBorn *child;
 	D3DXMATRIX worldMat;
 	D3DXMATRIX bornMat;
 	D3DXMATRIX ParentAndChildMat;
-	Born()
+	CopyBorn()
 	{
 		brother = nullptr;
 		child = nullptr;
@@ -159,18 +170,11 @@ public:
 	SkinMeshInfo *GetSkinMeshInfo();
 	BornInfo *GetBornInfo();
 	virtual void Relese();
-	virtual void ChangeAnimation(unsigned int num);
-	virtual void SetRenewalTime(float animSpeed); //アニメーション速度更新
-	virtual void SetTime(float animTime);		  //指定のアニメーション時間に設定
-	virtual float GetPlayTime();
-	virtual int GetPlayAnimation();
 	virtual int GetBornAllNum();
-	virtual std::string GetBornName(int bornIndex);
-	virtual Matrix GetBornWorld(int bornIndex);
-	virtual Vector3D GetBornPos(int bornIndex);
-	virtual void Update();
+	virtual void Update(CopyBorn *pCopyBorn, float *pAinmFrame, int *pAinmNum);
 	virtual void BornDebug(eBornDebug eBornDebug);
 	virtual void AnimationDebug(int animNum);
+	virtual void CopyBornTree(CopyBorn *pBornCopy, std::vector<CopyBorn*> *pCopyBornArray, Born *pBornOriginal);
 
 protected:
 	HRESULT InitShader();

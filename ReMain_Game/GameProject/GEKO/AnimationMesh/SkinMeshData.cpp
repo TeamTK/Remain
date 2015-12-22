@@ -42,17 +42,17 @@ HRESULT SkinMeshData::InitShader()
 	//ブロブからバーテックスシェーダー作成
 	if (m_MeshInfo.m_IsTexture)
 	{
-		if (FAILED(D3DX11CompileFromFile(L"GEKO\\HLSL\\SkinMesh.hlsl", NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+		if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\SkinMesh.hlsl"), NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 		{
-			MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
+			MessageBox(0, TEXT("hlsl読み込み失敗"), NULL, MB_OK);
 			return E_FAIL;
 		}
 	}
 	else
 	{
-		if (FAILED(D3DX11CompileFromFile(L"GEKO\\HLSL\\SkinMesh.hlsl", NULL, NULL, "VS_NoTeX", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+		if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\SkinMesh.hlsl"), NULL, NULL, "VS_NoTeX", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 		{
-			MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
+			MessageBox(0, TEXT("hlsl読み込み失敗"), NULL, MB_OK);
 			return E_FAIL;
 		}
 	}
@@ -60,7 +60,7 @@ HRESULT SkinMeshData::InitShader()
 	if (FAILED(pDevice->CreateVertexShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_MeshInfo.m_pVertexShader)))
 	{
 		SAFE_RELEASE(pCompiledShader);
-		MessageBox(0, L"バーテックスシェーダー作成失敗", NULL, MB_OK);
+		MessageBox(0, TEXT("バーテックスシェーダー作成失敗"), NULL, MB_OK);
 		return E_FAIL;
 	}
 
@@ -100,24 +100,24 @@ HRESULT SkinMeshData::InitShader()
 		layout, numElements, pCompiledShader->GetBufferPointer(),
 		pCompiledShader->GetBufferSize(), &m_MeshInfo.m_pVertexLayout)))
 	{
-		MessageBox(0, L"頂点インプットレイアウト作成失敗", NULL, MB_OK);
+		MessageBox(0, TEXT("頂点インプットレイアウト作成失敗"), NULL, MB_OK);
 		return FALSE;
 	}
 
 	//ブロブからピクセルシェーダー作成
 	if (m_MeshInfo.m_IsTexture)
 	{
-		if (FAILED(D3DX11CompileFromFile(L"GEKO\\HLSL\\SkinMesh.hlsl", NULL, NULL, "PS", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+		if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\SkinMesh.hlsl"), NULL, NULL, "PS", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 		{
-			MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
+			MessageBox(0, TEXT("hlsl読み込み失敗"), NULL, MB_OK);
 			return E_FAIL;
 		}
 	}
 	else
 	{
-		if (FAILED(D3DX11CompileFromFile(L"GEKO\\HLSL\\SkinMesh.hlsl", NULL, NULL, "PS_NoTex", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+		if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\SkinMesh.hlsl"), NULL, NULL, "PS_NoTex", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 		{
-			MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
+			MessageBox(0, TEXT("hlsl読み込み失敗"), NULL, MB_OK);
 			return E_FAIL;
 		}
 	}
@@ -125,7 +125,7 @@ HRESULT SkinMeshData::InitShader()
 	if (FAILED(pDevice->CreatePixelShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_MeshInfo.m_pPixelShader)))
 	{
 		SAFE_RELEASE(pCompiledShader);
-		MessageBox(0, L"ピクセルシェーダー作成失敗", NULL, MB_OK);
+		MessageBox(0, TEXT("ピクセルシェーダー作成失敗"), NULL, MB_OK);
 		return E_FAIL;
 	}
 
@@ -178,7 +178,7 @@ HRESULT SkinMeshData::InitShader()
 	SamDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	SamDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	SamDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	Direct3D11::Get().GetID3D11Device()->CreateSamplerState(&SamDesc, &m_MeshInfo.m_pSampleLinear);
+	pDevice->CreateSamplerState(&SamDesc, &m_MeshInfo.m_pSampleLinear);
 
 	return S_OK;
 }
@@ -187,6 +187,13 @@ void SkinMeshData::Relese()
 {
 	if (m_MeshInfo.m_pMaterial != nullptr)
 	{
+		for (int i = 0; i < m_MeshInfo.materialNumAll; i++)
+		{
+			SAFE_RELEASE(m_MeshInfo.m_pMaterial[i].pTexture);
+			//SAFE_DELETE_ARRAY(m_MeshInfo.m_pMaterial[i].pPolygonIndex);
+			m_MeshInfo.m_ppIndexBuffer[i]->Release();
+		}
+
 		SAFE_DELETE_ARRAY(m_MeshInfo.pvVertex);
 		SAFE_DELETE_ARRAY(m_MeshInfo.m_pMaterial);
 		(*m_MeshInfo.m_ppIndexBuffer)->Release();
@@ -203,49 +210,12 @@ void SkinMeshData::Relese()
 	}
 }
 
-void SkinMeshData::ChangeAnimation(unsigned int num)
-{
-}
-
-void SkinMeshData::SetRenewalTime(float animSpeed)
-{
-}
-
-void SkinMeshData::SetTime(float animTime)
-{
-}
-
-float SkinMeshData::GetPlayTime()
-{
-	return 0.0f;
-}
-
-int SkinMeshData::GetPlayAnimation()
-{
-	return 0;
-}
-
 int SkinMeshData::GetBornAllNum()
 {
 	return 0;
 }
 
-std::string SkinMeshData::GetBornName(int bornIndex)
-{
-	return m_BornInfo.BornList[bornIndex]->BornName;
-}
-
-Matrix SkinMeshData::GetBornWorld(int bornIndex)
-{
-	return Matrix();
-}
-
-Vector3D SkinMeshData::GetBornPos(int bornIndex)
-{
-	return Vector3D();
-}
-
-void SkinMeshData::Update()
+void SkinMeshData::Update(CopyBorn *pCopyBorn, float *pAinmFrame, int *pAinmNum)
 {
 }
 
@@ -254,5 +224,9 @@ void SkinMeshData::BornDebug(eBornDebug eBornDebug)
 }
 
 void SkinMeshData::AnimationDebug(int animNum)
+{
+}
+
+void SkinMeshData::CopyBornTree(CopyBorn *pBornCopy, std::vector<CopyBorn*> *pCopyBornArray, Born *pBornOriginal)
 {
 }

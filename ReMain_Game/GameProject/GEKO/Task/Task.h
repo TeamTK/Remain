@@ -38,7 +38,6 @@ private:
 class TaskManager
 {
 public:
-	static void ClearInstance();
 	static void Add(Task* taskPointer);
 	static void PartClear(const char* taskName);
 	static void AllClear();
@@ -49,7 +48,6 @@ private:
 	inline static TaskManager* GetInstance();
 	TaskManager();
 	~TaskManager();
-	static TaskManager *m_Instance;
 	Task* m_Begin;
 };
 

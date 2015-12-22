@@ -4,10 +4,10 @@
 
 namespace GEKO
 {
-	bool Init(LPCWSTR WinName, INT WinWidth, INT WinHeight)
+	bool Init(char *winName, INT WinWidth, INT WinHeight)
 	{
 		//ウィンドウの初期化
-		if (SUCCEEDED(Window::Get()->InitWindow(WinName, WinWidth, WinHeight)))
+		if (SUCCEEDED(Window::Get()->InitWindow(winName, WinWidth, WinHeight)))
 		{
 			//ダイレクトX11の初期化
 			if (SUCCEEDED(Direct3D11::Get().InitD3D11(WinWidth, WinHeight)))
@@ -90,6 +90,7 @@ namespace GEKO
 
 	void End()
 	{
+		TaskManager::AllClear();
 		RenderManager::AllClear();
 		ColliderManager::GetInstance()->AllClear();
 		WorldMatrixManager::GetInstance()->AllClear();
@@ -99,6 +100,6 @@ namespace GEKO
 		StaticMeshAsset::AllClear();
 		Direct3D11::Get().DestroyD3D11();
 		Input::KeyManagement::Get().End();
-		OutputDebugString(L"GEKO_Systemが正常に終了しました\n");
+		OutputDebugString(TEXT("GEKO_Systemが正常に終了しました\n"));
 	};
 }

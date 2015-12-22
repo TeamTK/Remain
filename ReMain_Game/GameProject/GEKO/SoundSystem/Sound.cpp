@@ -46,7 +46,7 @@ void Sound::Play()
 	}
 	if (FAILED(m_pSoundInfo->m_pSourceVoice->SubmitSourceBuffer(&buffer)))
 	{
-		MessageBox(0, L"ソースボイスにサブミット失敗", 0, MB_OK);
+		MessageBox(0, TEXT("ソースボイスにサブミット失敗"), 0, MB_OK);
 		return;
 	}
 	m_pSoundInfo->m_pSourceVoice->Start(0, XAUDIO2_COMMIT_NOW);
@@ -62,7 +62,7 @@ SoundManagement::~SoundManagement()
 	if (m_pMasteringVoice) m_pMasteringVoice->DestroyVoice();
 	SAFE_RELEASE(m_pXAudio2);
 	CoUninitialize();
-	OutputDebugString(L"SoundManagementが正常に終了しました\n");
+	OutputDebugString(TEXT("SoundManagementが正常に終了しました\n"));
 }
 
 SoundManagement* const SoundManagement::Get()
@@ -83,11 +83,11 @@ void SoundManagement::Init()
 	if (FAILED(XAudio2Create(&m_pXAudio2, 0)))
 	{
 		CoUninitialize();
-		MessageBox(0, L"XAudio2初期化失敗", 0, MB_OK);
+		MessageBox(0, TEXT("XAudio2初期化失敗"), 0, MB_OK);
 	}
 	if (FAILED(m_pXAudio2->CreateMasteringVoice(&m_pMasteringVoice)))
 	{
 		CoUninitialize();
-		MessageBox(0, L"マスターリング失敗", 0, MB_OK);
+		MessageBox(0, TEXT("マスターリング失敗"), 0, MB_OK);
 	}
 }

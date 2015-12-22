@@ -22,14 +22,14 @@ ImageData::ImageData(std::string fileName)
 	ID3D10Blob *pErrors = NULL;
 
 	//ブロブからバーテックスシェーダー作成
-	if (FAILED(D3DX11CompileFromFile(L"GEKO\\HLSL\\Image.hlsl", NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+	if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\Image.hlsl"), NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 	{
-		MessageBox(0, L"Sprite2D.hlsl読み込み失敗", NULL, MB_OK);
+		MessageBox(0, TEXT("Sprite2D.hlsl読み込み失敗"), NULL, MB_OK);
 	}
 
 	if (FAILED(pDevice->CreateVertexShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_ImageInfo.pVertexShader)))
 	{
-		MessageBox(0, L"バーテックスシェーダー作成失敗", NULL, MB_OK);
+		MessageBox(0, TEXT("バーテックスシェーダー作成失敗"), NULL, MB_OK);
 	}
 
 	//頂点インプットレイアウトを定義	
@@ -43,21 +43,21 @@ ImageData::ImageData(std::string fileName)
 	//頂点インプットレイアウトを作成
 	if (FAILED(pDevice->CreateInputLayout(layout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), &m_ImageInfo.pVertexLayout)))
 	{
-		MessageBox(0, L"頂点インプットレイアウト作成失敗", NULL, MB_OK);
+		MessageBox(0, TEXT("頂点インプットレイアウト作成失敗"), NULL, MB_OK);
 	}
 
 	SAFE_RELEASE(pCompiledShader);
 	SAFE_RELEASE(pErrors);
 
 	//ブロブからピクセルシェーダー作成
-	if (FAILED(D3DX11CompileFromFile(L"GEKO\\HLSL\\Image.hlsl", NULL, NULL, "PS", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+	if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\Image.hlsl"), NULL, NULL, "PS", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 	{
-		MessageBox(0, L"Sprite2D.hlsl読み込み失敗", NULL, MB_OK);
+		MessageBox(0, TEXT("Sprite2D.hlsl読み込み失敗"), NULL, MB_OK);
 	}
 
 	if (FAILED(pDevice->CreatePixelShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_ImageInfo.pPixelShader)))
 	{
-		MessageBox(0, L"ピクセルシェーダー作成失敗", NULL, MB_OK);
+		MessageBox(0, TEXT("ピクセルシェーダー作成失敗"), NULL, MB_OK);
 	}
 
 	//コンスタントバッファー作成　ここでは変換行列渡し用
@@ -71,7 +71,7 @@ ImageData::ImageData(std::string fileName)
 
 	if (FAILED(pDevice->CreateBuffer(&cb, NULL, &m_ImageInfo.pConstantBuffer)))
 	{
-		MessageBox(0, L"コンスタントバッファー作成失敗", NULL, MB_OK);
+		MessageBox(0, TEXT("コンスタントバッファー作成失敗"), NULL, MB_OK);
 	}
 
 	//テクスチャー用サンプラー作成
@@ -245,7 +245,7 @@ void ImageAsset::AllClear()
 	//全ての要素を削除
 	imagePimpl->map.clear();
 
-	OutputDebugString(L"ImageDataを全て削除しました\n");
+	OutputDebugString(TEXT("ImageDataを全て削除しました\n"));
 }
 
 void ImageAsset::DebugDraw()

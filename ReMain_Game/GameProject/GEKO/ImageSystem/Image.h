@@ -30,9 +30,9 @@ public:
 	void SetAngle(int angle);
 	void SetRGB(int red, int green, int blue);
 	void SetSize(int w, int h);
-	//void SetCenter(int x, int y);
+	void SetCenter(int x, int y);
 	void SetDrawPos(int x, int y, int width, int height);
-	void Draw(int x, int y, int centerX = 0, int centerY = 0);
+	void Draw(int x, int y);
 
 private:
 	void InitModel(int centerX, int centerY);
@@ -46,6 +46,8 @@ private:
 	int m_SizeW;	//画像の幅
 	int m_SizeH;	//画像の高さ
 	int m_Angle;    //画像の角度（度数）
+	int m_CentrX;	//画像の中心X
+	int m_CentrY;	//画像の中心Y
 };
 
 #endif

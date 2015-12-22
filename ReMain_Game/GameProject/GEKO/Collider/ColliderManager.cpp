@@ -681,18 +681,26 @@ bool ColliderManager::HitCheckLineSegment(LineSegmentHitData &pHitData1, LineSeg
 bool ColliderManager::HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, LineSegmentHitData &hitData2, Result_Porygon *pory)
 {
 	HitResult_SegmentTriangle hit;
-	Matrix m = *hitData1.GetLocalMatrix() * *hitData1.GetMatrix(); //モデルの変換行列
+
+	//モデルの変換行列
+	Matrix world = *hitData1.GetMatrix();
+	Matrix local = *hitData1.GetLocalMatrix();
+	Matrix m = local * world;
 	Matrix inverse = m.GetInverse();
+
+	//当たり判定の形状
 	TriangleInfo hitTriangle;
 	LineSegmentInfo hitLine(*hitData2.pStart * inverse, *hitData2.pEnd * inverse);
-	VertexInfo *ver = hitData1.GetVertex();
-	MaterialInfo *material = hitData1.GetMaterial();
+
+	//頂点データとマテリアルデータ
+	const VertexInfo *ver = hitData1.GetVertex();
+	const MaterialInfo *material = hitData1.GetMaterial();
 
 	//マテリアルごとにポリゴンとの当たり判定をする
 	int materialAllNum = hitData1.GetMaterialAllNum();
 	for (int i = 0; i < materialAllNum; i++)
 	{
-		int *index = hitData1.GetPolygonIndex(i);
+		const int *index = hitData1.GetPolygonIndex(i);
 		int faceNum = material[i].dwNumFace;
 		for (int j = 0; j < faceNum; j++)
 		{
@@ -721,11 +729,21 @@ bool ColliderManager::HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, Li
 bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereHitData &hitData2, Result_Porygon_Group *pory)
 {
 	HitResult_SphereTriangle Hitdata;
-	Matrix m = *hitData1.GetLocalMatrix() * *hitData1.GetMatrix(); //モデルの変換行列
+
+	//モデルの変換行列
+	Matrix world = *hitData1.GetMatrix();
+	Matrix local = *hitData1.GetLocalMatrix();
+	Matrix m = local * world;
+
+	//当たり判定の形状
 	TriangleInfo hitTriangle;
 	SphereInfo hitSphere(*hitData2.pPosition * m.GetInverse(), *hitData2.pRadius);
-	VertexInfo *ver = hitData1.GetVertex();
-	MaterialInfo *material = hitData1.GetMaterial();
+
+	//頂点データとマテリアルデータ
+	const VertexInfo *ver = hitData1.GetVertex();
+	const MaterialInfo *material = hitData1.GetMaterial();
+
+	//当たった情報
 	std::vector<Vector3D> hitPos;
 	std::vector<Vector3D> hitNormal;
 	std::vector<int> materialNum;
@@ -736,7 +754,7 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereH
 	int materialAllNum = hitData1.GetMaterialAllNum();
 	for (int i = 0; i < materialAllNum; i++)
 	{
-		int *index = hitData1.GetPolygonIndex(i);
+		const int *index = hitData1.GetPolygonIndex(i);
 		int faceNum = material[i].dwNumFace;
 		for (int j = 0; j < faceNum; j++)
 		{

@@ -282,6 +282,10 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 		}
 	}
 
+	assert(coordinate.size() != 0 && "Xファイルの頂点座標がありません");
+	assert(normal.size() != 0 && "Xファイルの法線がありません");
+	assert(material.size() != 0 && "Xファイルのマテリアルがありません");
+
 	//マテリアルとインデックスバッファー動的作成
 	m_MeshInfo.m_pMaterial = new MaterialInfo[m_MeshInfo.materialNumAll];
 	m_MeshInfo.m_ppIndexBuffer = new ID3D11Buffer*[m_MeshInfo.materialNumAll];
@@ -305,6 +309,7 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 
 		m_MeshInfo.m_pMaterial[i].TextureName = material[i].TextureName;
 
+		//テクスチャー読み込み
 		if (material[i].TextureName == "NoTexture")
 		{
 			m_MeshInfo.m_IsTexture = false;
@@ -312,9 +317,9 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 		else
 		{
 			//テクスチャーを作成
-			if (FAILED(D3DX11CreateShaderResourceViewFromFileA(pDevice, m_MeshInfo.m_pMaterial[i].TextureName.c_str(), NULL, NULL, &m_MeshInfo.m_pMaterial[i].pTexture, NULL)))
+			if (FAILED(D3DX11CreateShaderResourceViewFromFile(pDevice, material[i].TextureName.c_str(), NULL, NULL, &m_MeshInfo.m_pMaterial[i].pTexture, NULL)))
 			{
-				MessageBoxA(NULL, "テクスチャーの読み込みに失敗しました", NULL, MB_OK);
+				MessageBox(NULL, TEXT("テクスチャーの読み込みに失敗しました"), NULL, MB_OK);
 				return E_FAIL;
 			}
 		}

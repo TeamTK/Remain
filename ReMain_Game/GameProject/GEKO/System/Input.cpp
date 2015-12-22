@@ -68,7 +68,7 @@ namespace Input
 		SAFE_RELEASE(m_MouseDevice);
 		SAFE_RELEASE(m_KeyDevice);
 		SAFE_RELEASE(m_Dinput);
-		OutputDebugString(L"KeyManagementが正常に終了しました\n");
+		OutputDebugString(TEXT("KeyManagementが正常に終了しました\n"));
 	}
 
 	void KeyManagement::Update()

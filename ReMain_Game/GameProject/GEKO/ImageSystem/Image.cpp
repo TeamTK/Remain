@@ -50,7 +50,7 @@ void Image::InitModel(int centerX, int centerY)
 
 	if (FAILED(Direct3D11::Get().GetID3D11Device()->CreateBuffer(&bd, &InitData, &data->pVertexBuffer)))
 	{
-		MessageBox(0, L"バーテックスバッファー作成失敗", NULL, MB_OK);
+		MessageBox(0, TEXT("バーテックスバッファー作成失敗"), NULL, MB_OK);
 	}
 }
 
@@ -108,12 +108,11 @@ void Image::SetSize(int w, int h)
 	m_SizeH = h;
 }
 
-/*
-void Sprite::SetCenter(int x, int y)
+void Image::SetCenter(int x, int y)
 {
-	InitModel(x, y);
+	m_CentrX = x;
+	m_CentrY = y;
 }
-*/
 
 void Image::SetDrawPos(int x, int y, int width, int height)
 {
@@ -123,9 +122,9 @@ void Image::SetDrawPos(int x, int y, int width, int height)
 	m_UvSize.bottom = height;
 }
 
-void Image::Draw(int x, int y, int centerX, int centerY)
+void Image::Draw(int x, int y)
 {
-	InitModel(centerX, centerY);
+	InitModel(m_CentrX, m_CentrY);
 
 	ID3D11DeviceContext *pDeviceContext;
 	pDeviceContext = Direct3D11::Get().GetID3D11DeviceContext();

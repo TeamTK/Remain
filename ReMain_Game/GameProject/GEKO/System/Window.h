@@ -53,7 +53,7 @@ public:
 	/// <returns>
 	/// 初期化が成功の判断を返す
 	/// </returns>
-	HRESULT	InitWindow(LPCWSTR Winname, INT WinWidth, INT WinHeight);
+	HRESULT	InitWindow(LPCSTR Winname, INT WinWidth, INT WinHeight);
 
 	/// <summary>
 	/// ウィンドウハンドルを渡す
