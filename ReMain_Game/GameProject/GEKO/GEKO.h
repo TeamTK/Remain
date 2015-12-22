@@ -18,7 +18,7 @@
 
 namespace GEKO
 {
-	bool Init(LPCWSTR WinName, INT WinWidth, INT WinHeight);
+	bool Init(char* WinName, INT WinWidth, INT WinHeight);
 	bool Loop();
 	void BackgroundColor(int Red, int Green, int Blue);
 	void WindowFixing();

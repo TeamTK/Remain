@@ -18,16 +18,16 @@ HRESULT FiqureBase::InitShader()
 	ID3D10Blob *pErrors = NULL;
 
 	//ブロブからバーテックスシェーダー作成
-	if (FAILED(D3DX11CompileFromFile(L"GEKO\\HLSL\\Fiqure.hlsl", NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+	if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\Fiqure.hlsl"), NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 	{
-		MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
+		MessageBox(0, TEXT("hlsl読み込み失敗"), NULL, MB_OK);
 		return E_FAIL;
 	}
 
 	if (FAILED(pDevice->CreateVertexShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_FigureInfo.pVertexShader)))
 	{
 		SAFE_RELEASE(pCompiledShader);
-		MessageBox(0, L"バーテックスシェーダー作成失敗", NULL, MB_OK);
+		MessageBox(0, TEXT("バーテックスシェーダー作成失敗"), NULL, MB_OK);
 		return E_FAIL;
 	}
 
@@ -50,16 +50,16 @@ HRESULT FiqureBase::InitShader()
 	}
 
 	//ブロブからピクセルシェーダー作成
-	if (FAILED(D3DX11CompileFromFile(L"GEKO\\HLSL\\Fiqure.hlsl", NULL, NULL, "PS", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+	if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\Fiqure.hlsl"), NULL, NULL, "PS", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 	{
-		MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
+		MessageBox(0, TEXT("hlsl読み込み失敗"), NULL, MB_OK);
 		return E_FAIL;
 	}
 
 	if (FAILED(pDevice->CreatePixelShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_FigureInfo.pPixelShader)))
 	{
 		SAFE_RELEASE(pCompiledShader);
-		MessageBox(0, L"ピクセルシェーダー作成失敗", NULL, MB_OK);
+		MessageBox(0, TEXT("ピクセルシェーダー作成失敗"), NULL, MB_OK);
 		return E_FAIL;
 	}
 

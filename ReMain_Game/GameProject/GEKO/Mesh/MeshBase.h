@@ -25,10 +25,10 @@ public:
 	Vector3D GetDiffuse(int materialIndex) const;
 	Vector3D GetSpecular(int materialIndex) const;
 	Vector3D GetAmbient(int materialIndex) const;
-	Vector3D GetAxisX(float length);
-	Vector3D GetAxisY(float length);
-	Vector3D GetAxisZ(float length);
-	Matrix *GetMatrix();
+	Vector3D GetAxisX(float length) const;
+	Vector3D GetAxisY(float length) const;
+	Vector3D GetAxisZ(float length) const;
+	const Matrix *GetMatrix() const;
 	void DebugAxis();
 
 protected:

@@ -10,12 +10,12 @@ public:
 	~StaticMesh();
 	void SetAsset(MeshData *meshData);
 	void SetAsset(const std::string &MeshName);
-	VertexInfo *GetVertex();
-	MaterialInfo *GetMaterial();
-	Matrix *GetLocalMatrix();
-	int *GetPolygonIndex(int materialIndex);
-	int GetFaceAllNum();
-	int GetMaterialAllNum();
+	const VertexInfo *GetVertex() const;
+	const MaterialInfo *GetMaterial() const;
+	const Matrix *GetLocalMatrix() const;
+	const int *GetPolygonIndex(int materialIndex) const;
+	const int GetFaceAllNum() const;
+	const int GetMaterialAllNum() const;
 	void Render();
 	void RenderMatrix(Matrix &matrix);
 	void DebugNormal();

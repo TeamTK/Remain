@@ -41,7 +41,7 @@ SoundData::SoundData(char *flimeName)
 	//ソースボイスにデータを詰め込む	
 	if (FAILED(SoundManagement::Get()->GetAudio2()->CreateSourceVoice(&m_pSourceVoice, pwfex)))
 	{
-		MessageBox(0, L"ソースボイス作成失敗", 0, MB_OK);
+		MessageBox(0, TEXT("ソースボイス作成失敗"), 0, MB_OK);
 	}
 	m_dwWavSize = dwWavSize;
 
@@ -88,7 +88,7 @@ SoundData *SoundAsset::GetSound(const char *name)
 	if (soundPimpl->map.find(name) == soundPimpl->map.end())
 	{
 		GetInstance()->AllClear();
-		MessageBox(0, L"指定のSoundDataはありません", NULL, MB_OK);
+		MessageBox(0, TEXT("指定のSoundDataはありません"), NULL, MB_OK);
 		Window::Get()->WindowEnd();
 	}
 
@@ -103,7 +103,7 @@ void SoundAsset::LoadSound(char *flimeName, const char *name)
 	if (soundPimpl->map.find(name) != soundPimpl->map.end())
 	{
 		GetInstance()->AllClear();
-		MessageBox(0, L"指定の名前は存在します", NULL, MB_OK);
+		MessageBox(0, TEXT("指定の名前は存在します"), NULL, MB_OK);
 		Window::Get()->WindowEnd();
 	}
 

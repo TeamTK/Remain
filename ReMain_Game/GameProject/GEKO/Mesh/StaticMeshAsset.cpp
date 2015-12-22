@@ -34,7 +34,7 @@ MeshData *StaticMeshAsset::GetMesh(const std::string name)
 	if (meshPimpl->m_Map.find(name) == meshPimpl->m_Map.end())
 	{
 		GetInstance()->AllClear();
-		MessageBox(0, L"指定のStaticMeshはありません", NULL, MB_OK);
+		MessageBox(0, TEXT("指定のStaticMeshはありません"), NULL, MB_OK);
 		Window::Get()->WindowEnd();
 	}
 
@@ -58,7 +58,7 @@ void StaticMeshAsset::CopyMesh(std::string copyName, const std::string name)
 	if (meshPimpl->m_Map.find(name) != meshPimpl->m_Map.end())
 	{
 		GetInstance()->AllClear();
-		MessageBox(0, L"すでに同じ名前が存在します", NULL, MB_OK);
+		MessageBox(0, TEXT("すでに同じ名前が存在します"), NULL, MB_OK);
 		Window::Get()->WindowEnd();
 	}
 
@@ -66,7 +66,7 @@ void StaticMeshAsset::CopyMesh(std::string copyName, const std::string name)
 	if (meshPimpl->m_Map.find(copyName) == meshPimpl->m_Map.end())
 	{
 		GetInstance()->AllClear();
-		MessageBox(0, L"コピーする対象がありません", NULL, MB_OK);
+		MessageBox(0, TEXT("コピーする対象がありません"), NULL, MB_OK);
 		Window::Get()->WindowEnd();
 	}
 
@@ -81,7 +81,7 @@ void StaticMeshAsset::LoadMesh(const std::string filmeName, const std::string na
 	if (meshPimpl->m_Map.find(name) != meshPimpl->m_Map.end())
 	{
 		GetInstance()->AllClear();
-		MessageBox(0, L"指定のStaticMeshは存在します", NULL, MB_OK);
+		MessageBox(0, TEXT("指定のStaticMeshは存在します"), NULL, MB_OK);
 		Window::Get()->WindowEnd();
 	}
 
@@ -104,7 +104,7 @@ void StaticMeshAsset::LoadMesh(const std::string filmeName, const std::string na
 
 	//ここまで来たらすべて削除して終了
 	GetInstance()->AllClear();
-	MessageBox(0, L"StaticAssetが読み込みできるファイルではありません", NULL, MB_OK);
+	MessageBox(0, TEXT("StaticAssetが読み込みできるファイルではありません"), NULL, MB_OK);
 	Window::Get()->WindowEnd();
 }
 

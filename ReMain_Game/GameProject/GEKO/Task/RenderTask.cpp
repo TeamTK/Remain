@@ -100,7 +100,7 @@ void RenderManager::AllClear()
 		it = temp->m_pRenderTaskPimpl->RenderList.erase(it);
 	}
 	temp->m_pRenderTaskPimpl->RenderList.clear();
-	OutputDebugString(L"RenderTaskリストの削除を完了しました\n");
+	OutputDebugString(TEXT("RenderTaskリストの削除を完了しました\n"));
 }
 
 void RenderManager::DebugDraw()

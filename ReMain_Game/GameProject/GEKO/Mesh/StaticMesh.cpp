@@ -60,32 +60,32 @@ void StaticMesh::RenderMatrix(Matrix &matrix)
 	RenderFunc(matrix);
 }
 
-VertexInfo *StaticMesh::GetVertex()
+const VertexInfo *StaticMesh::GetVertex() const
 {
 	return m_pMeshData->GetMeshInfo()->pvVertex;
 }
 
-MaterialInfo *StaticMesh::GetMaterial()
+const MaterialInfo *StaticMesh::GetMaterial() const
 {
 	return m_pMeshData->GetMeshInfo()->m_pMaterial;
 }
 
-Matrix *StaticMesh::GetLocalMatrix()
+const Matrix *StaticMesh::GetLocalMatrix() const
 {
 	return &m_pMeshData->GetMeshInfo()->m_LocalMat;
 }
 
-int *StaticMesh::GetPolygonIndex(int materialIndex)
+const int *StaticMesh::GetPolygonIndex(int materialIndex) const
 {
 	return m_pMeshData->GetMeshInfo()->m_pMaterial[materialIndex].pPolygonIndex;
 }
 
-int StaticMesh::GetFaceAllNum()
+const int StaticMesh::GetFaceAllNum() const
 {
 	return m_pMeshData->GetMeshInfo()->faceNumAll;
 }
 
-int StaticMesh::GetMaterialAllNum()
+const int StaticMesh::GetMaterialAllNum() const
 {
 	return m_pMeshData->GetMeshInfo()->materialNumAll;
 }

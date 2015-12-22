@@ -59,7 +59,7 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
-HRESULT Window::InitWindow(LPCWSTR Winname, INT WinWidth, INT WinHeight)
+HRESULT Window::InitWindow(LPCSTR Winname, INT WinWidth, INT WinHeight)
 {
 	m_WinSize.sWidth = WinWidth;
 	m_WinSize.sHeight = WinHeight;

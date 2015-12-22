@@ -81,8 +81,6 @@ Task* Task::GetNext()
 	return m_Next;
 }
 
-TaskManager* TaskManager::m_Instance = nullptr;
-
 TaskManager::TaskManager() :
 	m_Begin(nullptr)
 {
@@ -94,17 +92,8 @@ TaskManager::~TaskManager()
 
 inline TaskManager* TaskManager::GetInstance()
 {
-	if (m_Instance == nullptr) m_Instance = new TaskManager();
-	return m_Instance;
-}
-
-void TaskManager::ClearInstance()
-{
-	if (m_Instance != nullptr)
-	{
-		delete m_Instance;
-	}
-	m_Instance = nullptr;
+	static TaskManager taskManager;
+	return &taskManager;
 }
 
 void TaskManager::Add(Task* taskPointer)

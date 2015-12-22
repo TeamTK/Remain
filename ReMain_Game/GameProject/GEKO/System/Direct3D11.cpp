@@ -199,5 +199,5 @@ void Direct3D11::DestroyD3D11()
 	SAFE_RELEASE(m_pBuckBuffer_DSTex);
 	SAFE_RELEASE(m_pDeviceContext);
 	SAFE_RELEASE(m_pDevice);
-	OutputDebugString(L"Direct3D11‚ª³í‚ÉI—¹‚µ‚Ü‚µ‚½\n");
+	OutputDebugString(TEXT("Direct3D11‚ª³í‚ÉI—¹‚µ‚Ü‚µ‚½\n"));
 }

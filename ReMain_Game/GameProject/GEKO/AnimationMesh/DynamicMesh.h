@@ -11,20 +11,20 @@ public:
 	~DynamicMesh();
 	void SetAsset(SkinMeshData *meshData);
 	void SetAsset(const std::string &MeshName);
-	void ChangeAnimation(unsigned int num);
+	void ChangeAnimation(unsigned int num); //アニメーションを変更
 	void SetPlayTime(float animSpeed); //アニメーション速度更新
 	void SetTime(float animTime);	   //指定のアニメーション時間に設定
-	SkinVertexInfo *GetVertex();
-	float GetPlayTime();
-	int GetPlayAnimation();
-	int GetFaceAllNum();
-	int GetBornNum(std::string name);
-	int GetBornAllNum();
-	std::string GetBornName(int bornIndex);
-	Matrix GetBornMatrix(int bornIndex, bool isWorld);
-	Matrix GetBornMatrix(std::string name, bool isWorld);
-	Vector3D GetBornPos(int bornIndex);
-	Vector3D GetBornPos(std::string name);
+	const SkinVertexInfo *GetVertex() const; 
+	float GetPlayTime() const;
+	int GetPlayAnimation() const;
+	int GetFaceAllNum() const;
+	int GetBornNum(std::string name) const;
+	int GetBornAllNum() const;
+	std::string GetBornName(int bornIndex) const;
+	Matrix GetBornMatrix(int bornIndex, bool isWorld) const;
+	Matrix GetBornMatrix(std::string name, bool isWorld) const;
+	Vector3D GetBornPos(int bornIndex) const;
+	Vector3D GetBornPos(std::string name) const;
 	void Render();
 	void RenderMatrix(Matrix &matrix);
 	void BornDebug(eBornDebug eBornDebug);
@@ -32,10 +32,14 @@ public:
 
 private:
 	void RenderFunc(Matrix &matrix);
+	void ReleseCopyBornTree(CopyBorn *pBornCopy);
 
 private:
 	SkinMeshData *m_pSkinMeshData;
-	float m_AnimTime;
+	CopyBorn m_Born;
+	std::vector<CopyBorn*> m_CopyBornArray;
+	float m_AinmFrame;
+	int m_AinmNum;
 };
 
 #endif
