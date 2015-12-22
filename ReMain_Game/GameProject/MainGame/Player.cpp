@@ -216,7 +216,7 @@ void Player::Attack()
 	//武器の切り替え(Rキー, 方向キー左右)
 	if ((Input::KeyR.Clicked() || Input::XInputPad1.ThumbRightClicked()) && !m_isTakeWeapon)
 	{
-		m_SelectWeapon->Select();
+		m_SelectedWeapon = m_SelectWeapon->Select();
 	}
 
 	//銃を持っているときに銃を構える(マウス右クリック, 左ショルダー)
