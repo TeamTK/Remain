@@ -17,10 +17,10 @@ struct SData
 
 static SData WeaponData[] =
 {
-	{ 400.0f, 535.0f, eHand		},	//Down
-	{ 400.0f, 75.0f, eShotgun	},	//Up
-	{ 175.0f, 300.0f, eHandgun	},	//Left
-	{ 625.0f, 300.0f, eNone		},	//Right
+	{ 400.0f, 445.0f, eHand		},	//Down
+	{ 400.0f, 155.0f, eShotgun	},	//Up
+	{ 255.0f, 300.0f, eHandgun	},	//Left
+	{ 545.0f, 300.0f, eNone		},	//Right
 };
 
 #define MAX_SIZE 512
@@ -56,6 +56,7 @@ void SelectWeapon::Update()
 
 			break;
 		case eSelect:
+			//武器選択(方向キー、十字キー)
 			if (Input::KeyDown.Clicked() || Input::XInputPad1.DownClicked())	m_Selected = 0;
 			if (Input::KeyUp.Clicked() ||	Input::XInputPad1.UpClicked())		m_Selected = 1;
 			if (Input::KeyLeft.Clicked() || Input::XInputPad1.LeftClicked())	m_Selected = 2;
