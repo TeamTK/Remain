@@ -54,6 +54,7 @@ void Player::Update()
 	Camera();
 	Animation();
 	Character::Update();
+	m_SelectWeapon.Update();
 
 	//当たり判定用 始点終点
 	m_Start = m_CameraPos;

@@ -24,8 +24,7 @@ static SData WeaponData[] =
 #define MAX_SIZE 512
 
 UI_SelectWeapon::UI_SelectWeapon() :
-	m_isSelected(false), m_Size(0), m_Selected(1),
-	Task("UI_SelectWeapon", 1)
+	m_isSelected(false), m_Size(0), m_Selected(1)
 {
 	m_RenderTask.Regist(1, REGIST_RENDER_FUNC(UI_SelectWeapon::Draw));
 	State = eOpen;
