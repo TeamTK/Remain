@@ -4,7 +4,7 @@
 #include "../../MainGame/enums.h"
 #include "../../GEKO/GEKO.h"
 
-class UI_SelectWeapon : public Task
+class UI_SelectWeapon
 {
 public:
 	UI_SelectWeapon();

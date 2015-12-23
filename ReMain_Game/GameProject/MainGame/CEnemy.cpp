@@ -23,7 +23,7 @@ CEnemy::CEnemy(Vector3D pos, Vector3D rot) :
 	m_pCapsule = new CapsuleInfo[BoneCapsule.size()];
 
 	unsigned int bornNum = BoneCapsule.size();
-	for (int i = 0; i < bornNum; i++)
+	for (unsigned int i = 0; i < bornNum; i++)
 	{
 		m_pCollider[i].Regist_C_vs_S(&m_pCapsule[i].segment.start, &m_pCapsule[i].segment.end, &m_pCapsule[i].radius, REGIST_FUNC(Character::Capsule_vs_LineSegmentCallback));
 		//eHITID0…マップ
