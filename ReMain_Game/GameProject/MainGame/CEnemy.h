@@ -2,7 +2,20 @@
 #include "CCharacter.h"
 #include "..\GameSystem\SightSystem.h"
 
-class CEnemy : public CCharacter
+struct BoneCalpule
+{
+	float radius;
+	int start;
+	int end;
+	BoneCalpule(float r, int s, int e)
+	{
+		radius = r;
+		start = s;
+		end = e;
+	}
+};
+
+class CEnemy : public Character
 {
 public:
 	enum
@@ -24,7 +37,8 @@ public:
 		eState_Die
 	};
 
-	CEnemy(int type, Vector3D pos, Vector3D rot);
+	CEnemy(Vector3D pos, Vector3D rot);
+	~CEnemy();
 	void Attack();
 	void Idle();
 	void Chase();
@@ -43,12 +57,11 @@ private:
 	Vector3D m_Distance;
 	const Vector3D *m_pPlayerPos;
 
+	//ƒLƒƒƒ‰ƒNƒ^“¯m‚ÌUŒ‚‚³‚ê‚½‚Ì“–‚½‚è”»’è
+	Collider *m_pCollider;
+	CapsuleInfo *m_pCapsule;
+	std::vector<BoneCalpule> BoneCapsule;
+
 private:
 	void HitSight(const Vector3D *pPos);
-};
-
-class CEnemyManager
-{
-public:
-	static void Add(int type, Vector3D pos, Vector3D rot);
 };
