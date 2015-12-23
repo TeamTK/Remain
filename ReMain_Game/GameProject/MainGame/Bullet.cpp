@@ -40,10 +40,6 @@ void Bullet::Render()
 {
 	Fiqure::RenderBillboard(m_Oldpos, Vector3D(2.0f, 2.0f, 2.0f), "SelectedCursor");
 	Fiqure::RenderBillboard(m_pos, Vector3D(2.0f, 2.0f, 2.0f), "SelectedCursor");
-
-	//m_Model.SetTranselate(m_pos);
-	//m_Model.SetRotationRadian(asin(-m_dir.y), atan2f(m_dir.x, m_dir.z), 0);
-	//m_Model.Render();
 }
 
 void Bullet::HitCharacter(Result_Capsule& r)
