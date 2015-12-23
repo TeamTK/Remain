@@ -38,10 +38,9 @@ private:
 	void HitCamera(Result_Porygon &hitData);
 
 private:
-	Shotgun* m_pShotgun;
-	Handgun* m_pHandgun;
-	Image m_Reticle;		//レティクル画像(仮)
-	SelectWeapon* m_SelectWeapon;
+	Shotgun m_pShotgun;
+	Handgun m_pHandgun;
+	UI_SelectWeapon m_SelectWeapon;
 
 	Vector3D m_KeyDir;		//キー入力軸
 	Vector3D m_PadDir;		//コントローラー入力値
@@ -61,8 +60,8 @@ private:
 	float m_MoveSpeed;		//移動速度
 	float m_CameraPosY;		//カメラのY座標
 	float m_CamSpeed;		//カメラの回転速度
+	float m_AnimSpeed;		//アニメーションスピード
 	int m_Phase;
-	int m_AnimSpeed;		//アニメーションスピード
 	bool m_ChangeTakeWeapon;	//銃を持つ
 	bool m_ToggleCrouch;
 	bool m_isTakeWeapon;	//銃を持っているか

@@ -8,7 +8,7 @@
 #define WALK_SPEED 0.07f			//歩くスピード
 #define RUN_SPEED 0.16f				//走るスピード
 #define CROUCH_WALK_SPPED 0.02f		//しゃがみ歩きスピード
-#define	SETUPWEAPON_MOVE_SPEED 0.03;//武器を構えた時の移動速度
+#define	SETUPWEAPON_MOVE_SPEED 0.03f;//武器を構えた時の移動速度
 #define CAMERA_LENGE	2.0f		//プレイヤーとカメラの距離
 #define PI 3.14159265359f
 
@@ -22,7 +22,7 @@
 
 Player::Player() :
 	Character(100.0f, "Player", 0), m_CamDir(0.0f, 0.0f, 0.0f), m_CameraPos(-50.0f, 2.0f, -12.0f),
-	m_KeyDir(0.0f, 0.0f, 0.0f), m_Horizontal(0.134f), m_Phase(0.0f), m_AnimSpeed(30),
+	m_KeyDir(0.0f, 0.0f, 0.0f), m_Horizontal(0.134f), m_Phase(0), m_AnimSpeed(30.0f),
 	m_Vertical(-1.5f), m_MoveSpeed(0.0f), m_CameraPosY(1.8f), m_CamSpeed(0.000002f),
 	m_isCrouch(false), m_isAttack(false), m_isTakeWeapon(false), m_isMove(false),
 	m_ChangeTakeWeapon(false), m_isRun(false), m_SetupWeapon(false), m_ToggleCrouch(false),
@@ -32,29 +32,19 @@ Player::Player() :
 
 	m_Model.SetScale(1.0f, 1.0f, 1.0f);
 	m_pos = Vector3D(-48.0f, 0.0f, -11.0f);
-
-	//レティクル(仮)
-	m_Reticle.SetAsset("Reticle");
-	m_Reticle.SetCenter(32, 32);
-
+	
 	//カメラの当たり判定
 	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_LookPos, REGIST_FUNC(Player::HitCamera));
 	m_HitCamera.SetID(eHITID0, eHITID1);
 
 	m_SphereMap.radius = 0.2f;
-
-	m_pShotgun = new Shotgun();
-	m_pHandgun = new Handgun();
-	m_SelectWeapon = new SelectWeapon();
-
+	
 	m_PlayerSightInfo.SetPos(&m_pos);
 }
 
 Player::~Player()
 {
-	delete m_pShotgun;
-	delete m_pHandgun;
-	delete m_SelectWeapon;
+
 }
 
 void Player::Update()
@@ -64,7 +54,6 @@ void Player::Update()
 	Camera();
 	Animation();
 	Character::Update();
-	m_SelectWeapon->Update();
 
 	//当たり判定用 始点終点
 	m_Start = m_CameraPos;
@@ -84,10 +73,10 @@ void Player::Update()
 	{
 		m_Matrix = m_Model.GetBornMatrix(21, true);
 	}
-	m_pShotgun->SetPlayerBomeMtx(&m_Matrix);
-	m_pShotgun->SetPlayerData(m_Model.GetPlayAnimation(), m_Model.GetPlayTime(), m_Start, m_End);
-	m_pShotgun->Update();
-	m_pShotgun->Render();
+	m_pShotgun.SetPlayerBomeMtx(&m_Matrix);
+	m_pShotgun.SetPlayerData(m_Model.GetPlayAnimation(), m_Model.GetPlayTime(), m_Start, m_End);
+	m_pShotgun.Update();
+	m_pShotgun.Render();
 
 	if ((ainmState == EPlayerAnim::eAnim_TakeHandgun && m_Model.GetPlayTime() >= 15) ||
 		ainmState == EPlayerAnim::eAnim_SetupHandgun ||
@@ -101,17 +90,10 @@ void Player::Update()
 	{
 		m_Matrix = m_Model.GetBornMatrix(3, true);
 	}
-	m_pHandgun->SetPlayerBomeMtx(&m_Matrix);
-	m_pHandgun->SetPlayerData(m_Model.GetPlayAnimation(), m_Model.GetPlayTime(), m_Start, m_End);
-	m_pHandgun->Update();
-	m_pHandgun->Render();
-
-	//レティクル(仮)
-	m_Reticle.SetAlpha(150.0f);
-	m_Reticle.Draw(400, 300);
-
-//	printf("%d\n", m_SetupWeapon);
-//	printf("%d %d %d\n", m_ChangeTakeWeapon, m_isTakeWeapon, m_isCrouch);
+	m_pHandgun.SetPlayerBomeMtx(&m_Matrix);
+	m_pHandgun.SetPlayerData(m_Model.GetPlayAnimation(), m_Model.GetPlayTime(), m_Start, m_End);
+	m_pHandgun.Update();
+	m_pHandgun.Render();
 }
 
 void Player::Move()
@@ -121,10 +103,12 @@ void Player::Move()
 	m_isMove = false;
 	m_isRun = false;
 
+	if (m_SelectWeapon.GetisSelected()) return;
+
 	if (Input::XInputPad1.GetIsConnection())
 	{
 		//コントローラー入力
-		m_PadDir = Vector3D(Input::XInputPad1.ThumbLeftX(), 0.0f, Input::XInputPad1.ThumbLeftY());
+		m_PadDir = Vector3D((float)Input::XInputPad1.ThumbLeftX(), 0.0f, (float)Input::XInputPad1.ThumbLeftY());
 		m_KeyDir = (m_PadDir - Vector3D(128, 128, 128)) / 32767;
 	}
 	else
@@ -211,7 +195,7 @@ void Player::Attack()
 	//武器の切り替え(Rキー, 方向キー左右)
 	if ((Input::KeyR.Clicked() || Input::XInputPad1.ThumbRightClicked()) && !m_isTakeWeapon)
 	{
-		m_SelectedWeapon = m_SelectWeapon->Select();
+		m_SelectedWeapon = m_SelectWeapon.Select();
 	}
 
 	//銃を持っているときに銃を構える(マウス右クリック, 左ショルダー)
@@ -248,6 +232,8 @@ void Player::Camera()
 	Point mouseValue = Input::Mouse.GetRelativeValue();
 	Vector3D look(0.6f, 1.8f, 0.0f);
 	static float lenge = CAMERA_LENGE;
+	
+	if (m_SelectWeapon.GetisSelected()) return;
 
 	//カメラ移動
 	if (Input::XInputPad1.GetIsConnection())

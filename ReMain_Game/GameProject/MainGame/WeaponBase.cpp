@@ -30,7 +30,7 @@ void WeaponBase::SetPlayerBomeMtx(Matrix* m)
 	m_BoneMtx = m;
 }
 
-void WeaponBase::SetPlayerData(int anim, int frame, Vector3D start, Vector3D end)
+void WeaponBase::SetPlayerData(int anim, float frame, Vector3D start, Vector3D end)
 {
 	m_PlayerAnim = anim;
 	m_PlayerAnimFrame = frame;
