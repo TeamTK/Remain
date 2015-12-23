@@ -1,5 +1,9 @@
 Image media\Reticle.png Reticle
 Image media\Blood.png Blood
 Image media\GunEffect.png GunEffect
-Image media\SelectWeapon.png SelectWeapon
+Image media\SelectCircle.png SelectCircle
 Image media\SelectedCursor.png SelectedCursor
+Image media\UI_FreeHand.png UI_FreeHand
+Image media\UI_Shotgun.png UI_Shotgun
+Image media\UI_Handgun.png UI_Handgun
+Image media\UI_None.png UI_None

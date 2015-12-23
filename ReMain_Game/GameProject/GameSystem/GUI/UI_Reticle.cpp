@@ -18,7 +18,7 @@ UI_Reticle::~UI_Reticle()
 
 void UI_Reticle::Update()
 {
-	printf("åƒÇÒÇ≈ÇÈÇ≈Å`\n");
+
 }
 
 void UI_Reticle::Draw()
