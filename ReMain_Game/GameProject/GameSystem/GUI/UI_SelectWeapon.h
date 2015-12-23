@@ -15,12 +15,14 @@ public:
 	EWeapons Select();
 
 private:
-	Image m_Image;
+	Image m_Circle;
 	Image m_SelectedCursor;
-	EWeapons m_Weapon;	//武器の種類
-	Vector2D m_ScPos;	//カーソルの座標	
+	Image m_WeaponUI[4];
+	Vector2D m_ScPos;	//カーソルの座標
+	Vector2D m_UIPos[4];
 	RenderTask m_RenderTask;
-	int m_Size;
+	int m_CircleSize;
+	int m_WeponUISize;
 	int m_Selected;
 	bool m_isSelected;
 };
