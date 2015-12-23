@@ -8,7 +8,6 @@ std::string className[] =
 	"Grass_1",
 	"Grass_2",
 	"Cabin",
-	"Cabin_Collision",
 	"Ground",
 	"RockWall",
 	"SkyDome",
@@ -229,25 +228,21 @@ MapObject::MapObject(XYZ &pos, XYZ &rot, XYZ &sca, std::string name)
 	}
 	else if (name == className[5])
 	{
-		//mp_StageObject = new Cabin_Collision(pos, rot, sca, name);
+		mp_StageObject = new Ground(pos, rot, sca, name);
 	}
 	else if (name == className[6])
 	{
-		mp_StageObject = new Ground(pos, rot, sca, name);
+		mp_StageObject = new RockWall(pos, rot, sca, name);
 	}
 	else if (name == className[7])
 	{
-		mp_StageObject = new RockWall(pos, rot, sca, name);
+		mp_StageObject = new SkyDome(pos, rot, sca, name);
 	}
 	else if (name == className[8])
 	{
-		mp_StageObject = new SkyDome(pos, rot, sca, name);
-	}
-	else if (name == className[9])
-	{
 		mp_StageObject = new Bush(pos, rot, sca, name);
 	}
-	else if (name == className[10])
+	else if (name == className[9])
 	{
 		mp_StageObject = new Fern(pos, rot, sca, name);
 	}
