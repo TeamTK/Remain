@@ -1,6 +1,6 @@
 #include "Player.h"
 #include "../GEKO/System/Input.h"
-#include "CBullet.h"
+#include "Bullet.h"
 #include "..\GameSystem\Effect.h"
 
 #define CAMERA_NO_CROUCH_POS_Y 1.8f;//‚µ‚á‚ª‚ÝŽp¨‚¶‚á‚È‚¢‚Æ‚«‚ÌƒJƒƒ‰‚ÌYÀ•W‚Ì‚‚³
@@ -222,7 +222,7 @@ void Player::Attack()
 		effectData.speed = 0.05f;
 		effectData.time = 60;
 		EffectGeneration::Add(effectData);
-		CBulletManager::GetInstance()->Add(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f);
+		new Bullet(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f, 100.0f);
 	}
 }
 

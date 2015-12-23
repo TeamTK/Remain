@@ -1,5 +1,5 @@
-#ifndef STAGE_OBJECT
-#define STAGE_OBJECT
+#ifndef _STAGE_OBJECT_
+#define _STAGE_OBJECT_
 #include <list>
 #include <vector>
 #include <iostream>
@@ -75,8 +75,7 @@ private:
 	StageObject *mp_StageObject;
 };
 
-
-
+//–Ø1
 class Tree_1 : public StageObject
 {
 public:
@@ -85,13 +84,16 @@ public:
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
+		m_BulletHit.SetID(eHITID3, eHITID2);
 	}
 	~Tree_1(){}
 
 private:
-	Collider m_CamraHit;
+	Collider m_BulletHit;
 };
 
+//–Ø2
 class Tree_2 : public StageObject
 {
 public:
@@ -100,11 +102,13 @@ public:
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
+		m_BulletHit.SetID(eHITID4, eHITID2);
 	}
 	~Tree_2(){}
 
 private:
-	Collider m_CamraHit;
+	Collider m_BulletHit;
 };
 
 class Grass_1 : public StageObject
@@ -134,13 +138,19 @@ public:
 		m_HitMesh.SetTranselate(-7.5f, -0.08f, 12.6f);
 		m_HitMesh.SetRotationDegree(0, 90, 0);
 
+		//ƒLƒƒƒ‰ƒNƒ^‚Ì“–‚½‚è”»’è
 		m_CharacterHit.Regist_SMesh_vs_S(&m_HitMesh);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+
+		//’e‚Ì“–‚½‚è”»’è
+		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
+		m_BulletHit.SetID(eHITID5, eHITID2);
 	}
 	~Cabin(){}
 
 private:
 	StaticMesh m_HitMesh;
+	Collider m_BulletHit;
 };
 
 class Cabin_Collision : public StageObject
@@ -158,14 +168,19 @@ public:
 		StageObject(pos, rot, sca, name) 
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
-		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2 | eHITID3);
+
 		m_CamraHit.Regist_SMesh_vs_L(&m_Object);
 		m_CamraHit.SetID(eHITID1, eHITID0);
+
+		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
+		m_BulletHit.SetID(eHITID6, eHITID2);
 	}
 	~Ground() {}
 
 private:
 	Collider m_CamraHit;
+	Collider m_BulletHit;
 };
 
 class RockWall : public StageObject
@@ -175,14 +190,19 @@ public:
 		StageObject(pos, rot, sca, name) 
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
-		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2 | eHITID3);
+
 		m_CamraHit.Regist_SMesh_vs_L(&m_Object);
 		m_CamraHit.SetID(eHITID1, eHITID0);
+
+		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
+		m_BulletHit.SetID(eHITID7, eHITID2);
 	}
 	~RockWall() {}
 
 private:
 	Collider m_CamraHit;
+	Collider m_BulletHit;
 };
 
 class SkyDome : public StageObject

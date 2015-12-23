@@ -1,12 +1,11 @@
-#include "CCharacter.h"
-#include "..\GameSystem\Effect.h"
+#include "Character.h"
 
 Character::Character(float hp, char *taskName, unsigned int priority) :
 	Task(taskName, priority),
 	m_Hp(hp)
 {
 	//マップとの判定用
-	m_ColliderMap.Regist_S_vs_SMesh(&m_SphereMap.pos, &m_SphereMap.radius, REGIST_FUNC(Character::Sphere_vs_MeshCallback));
+	m_ColliderMap.Regist_S_vs_SMesh(&m_SphereMap.pos, &m_SphereMap.radius, REGIST_FUNC(Character::HitMap));
 	m_ColliderMap.SetID(eHITID1 | eHITID2, eHITID0);
 
 	m_BodyRadius = 1.0f;
@@ -46,27 +45,7 @@ void Character::Render()
 	m_pos.y -= 0.01f;
 }
 
-void Character::HitBullet()
-{
-
-}
-
-void Character::Capsule_vs_LineSegmentCallback(Result_Sphere& r)
-{
-	//血しぶきのエフェクト
-	EffectInfo effectData;
-	effectData.imageName = "Blood";
-	effectData.num = 60;
-	effectData.pos = r.position;
-	effectData.scale = Vector3D(1.0f, 1.0f, 1.0f);
-	effectData.speed = 0.1f;
-	effectData.time = 120;
-	EffectGeneration::Add(effectData);
-
-	HitBullet();
-}
-
-void Character::Sphere_vs_MeshCallback(Result_Porygon_Group& r)
+void Character::HitMap(Result_Porygon_Group& r)
 {
 	Vector3D v(0, 0, 0);
 	for (int i = 0; i < r.hitNum; i++)

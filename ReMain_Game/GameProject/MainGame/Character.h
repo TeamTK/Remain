@@ -1,7 +1,7 @@
-#pragma once
+#ifndef _CHARACTER_H_
+#define _CHARACTER_H_
 
 #include "../GEKO/GEKO.h"
-#include "CBullet.h"
 
 class Character : public Task
 {
@@ -11,9 +11,7 @@ public:
 	virtual ~Character();
 	virtual void Update();
 	virtual void Render();
-	virtual void HitBullet();
-	void Capsule_vs_LineSegmentCallback(Result_Sphere& r);
-	void Sphere_vs_MeshCallback(Result_Porygon_Group& r);
+	void HitMap(Result_Porygon_Group& r);
 	void PushBody(Result_Sphere &data);
 
 protected:
@@ -32,3 +30,5 @@ protected:
 
 	RenderTask m_RenderTask;
 };
+
+#endif

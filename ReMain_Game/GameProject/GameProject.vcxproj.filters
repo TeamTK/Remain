@@ -70,9 +70,6 @@
     <ClCompile Include="GEKO\Figure\Line3D.cpp" />
     <ClCompile Include="GEKO\Figure\Triangle3D.cpp" />
     <ClCompile Include="MainGame\Player.cpp" />
-    <ClCompile Include="MainGame\CCharacter.cpp" />
-    <ClCompile Include="MainGame\CEnemy.cpp" />
-    <ClCompile Include="MainGame\CBullet.cpp" />
     <ClCompile Include="GEKO\Collider\Collider.cpp" />
     <ClCompile Include="GEKO\Collider\ColliderManager.cpp" />
     <ClCompile Include="GEKO\Collider\LineSegment.cpp" />
@@ -90,6 +87,9 @@
     <ClCompile Include="GameSystem\GUI\BaseGui.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_SelectWeapon.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_Reticle.cpp" />
+    <ClCompile Include="MainGame\Enemy.cpp" />
+    <ClCompile Include="MainGame\Character.cpp" />
+    <ClCompile Include="MainGame\Bullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -225,9 +225,6 @@
     <ClInclude Include="GEKO\Figure\Line3D.h" />
     <ClInclude Include="GEKO\Figure\Triangle3D.h" />
     <ClInclude Include="MainGame\Player.h" />
-    <ClInclude Include="MainGame\CCharacter.h" />
-    <ClInclude Include="MainGame\CEnemy.h" />
-    <ClInclude Include="MainGame\CBullet.h" />
     <ClInclude Include="GEKO\Collider\Collider.h" />
     <ClInclude Include="GEKO\Collider\ColliderManager.h" />
     <ClInclude Include="GEKO\Collider\LineSegment.h" />
@@ -247,6 +244,9 @@
     <ClInclude Include="GameSystem\GUI\SelectWeapon.h" />
     <ClInclude Include="GameSystem\GUI\UI_SelectWeapon.h" />
     <ClInclude Include="GameSystem\GUI\UI_Reticle.h" />
+    <ClInclude Include="MainGame\Enemy.h" />
+    <ClInclude Include="MainGame\Character.h" />
+    <ClInclude Include="MainGame\Bullet.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

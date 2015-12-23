@@ -2,7 +2,7 @@
 #define PlAYER_H
 
 #include "../GEKO/GEKO.h"
-#include "CCharacter.h"
+#include "Character.h"
 #include "enums.h"
 
 #include "../MainGame/Shotgun.h"
