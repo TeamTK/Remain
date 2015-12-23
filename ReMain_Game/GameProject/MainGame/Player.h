@@ -10,7 +10,7 @@
 #include "../GameSystem/SightSystem.h"
 #include"../GameSystem/GUI/UI_SelectWeapon.h"
 
-class Player : public CCharacter
+class Player : public Character
 {
 public:
 	Player();

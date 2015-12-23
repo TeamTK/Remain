@@ -1,22 +1,61 @@
 #include "CEnemy.h"
 
-CEnemy::CEnemy(int type, Vector3D pos, Vector3D rot) :
-	CCharacter(type),
+CEnemy::CEnemy(Vector3D pos, Vector3D rot) :
+	Character(10, "Enemy", 1),
 	m_isChase(false),
 	m_FlinchNum(0),
 	m_state(eState_Idle)
 {
+	m_SphereMap.radius = 0.2f;
+
+	//各部位のカプセルの情報
+	BoneCapsule.emplace_back(0.4f, 25, 4);	  //頭
+	BoneCapsule.emplace_back(0.4f, 2, 4);   //胴体
+	BoneCapsule.emplace_back(0.4f, 6, 8);   //左腕
+	BoneCapsule.emplace_back(0.4f, 16, 18); //右腕
+	BoneCapsule.emplace_back(0.4f, 26, 28); //左足
+	BoneCapsule.emplace_back(0.4f, 30, 32); //右足
+
+	m_Model.SetAsset("Monster_A");
+
+	//球（弾）との判定用
+	m_pCollider = new Collider[BoneCapsule.size()];
+	m_pCapsule = new CapsuleInfo[BoneCapsule.size()];
+
+	for (int i = 0; i < BoneCapsule.size(); i++)
+	{
+		m_pCollider[i].Regist_C_vs_S(&m_pCapsule[i].segment.start, &m_pCapsule[i].segment.end, &m_pCapsule[i].radius, REGIST_FUNC(Character::Capsule_vs_LineSegmentCallback));
+		//eHITID0…マップ
+		//eHITID1…プレイヤー
+		//eHITID2…敵
+		//eHITID3…弾
+		m_pCollider[i].SetID(eHITID2, eHITID3);
+	}
+
 	m_pos = pos;
 	m_rot = rot;
 
 	//視界システム
 	m_SightData.angle = 60.0f;
-	m_SightData.distance = 5.0f;
+	m_SightData.distance = 10.0f;
 	m_SightData.pSightPos = &m_pos;
 	m_SightData.pSightVec = &m_SightVec;
 	m_Sight.Regist(&m_SightData, REGIST_FUNC(CEnemy::HitSight));
 
 	m_BodyRadius = 0.5f; //敵の体の半径
+}
+
+CEnemy::~CEnemy()
+{
+	for (int i = 0; i < BoneCapsule.size(); i++)
+	{
+		m_pCollider[i].Release();
+	}
+	BoneCapsule.clear();
+	BoneCapsule.shrink_to_fit();
+
+	delete[] m_pCollider;
+	delete[] m_pCapsule;
 }
 
 void CEnemy::Attack()
@@ -71,11 +110,22 @@ void CEnemy::HitDamage()
 void CEnemy::Die()
 {
 	m_Model.ChangeAnimation(eAnimationDie);
-	if (m_Model.GetPlayTime() == 29) m_isActive = false;
+	if (m_Model.GetPlayTime() == 29) Task::SetKill();
 }
 
 void CEnemy::Update()
 {
+	//攻撃される側の当たり判定更新
+	for (int i = 0; i < BoneCapsule.size(); i++)
+	{
+		m_pCapsule[i].radius = BoneCapsule[i].radius;
+		m_pCapsule[i].segment.start = m_Model.GetBornPos(BoneCapsule[i].start);
+		m_pCapsule[i].segment.end = m_Model.GetBornPos(BoneCapsule[i].end);
+
+	}
+	//m_SphereMap.radius = m_pCharaData->collitionMapRad;
+	m_SphereMap.pos = m_pos + Vector3D(0, m_SphereMap.radius, 0);
+
 	m_SightVec = m_Model.GetAxisZ(1.0f);
 	m_Model.SetPlayTime(30);
 
@@ -109,7 +159,7 @@ void CEnemy::Update()
 	default:
 		break;
 	}
-	CCharacter::Update();
+	Character::Update();
 }
 
 void CEnemy::HitBullet()
@@ -122,7 +172,7 @@ void CEnemy::HitBullet()
 		m_state = eState_Die;
 
 		//敵自身の攻撃の当たり判定停止
-		int colliderNum = m_pCharaData->BoneCapsule.size();
+		int colliderNum = BoneCapsule.size();
 		for (int i = 0; i < colliderNum; i++) m_pCollider[i].Sleep();
 	}
 	else
@@ -145,9 +195,4 @@ void CEnemy::HitSight(const Vector3D *pPos)
 	m_state = eState_Chase;
 	m_isChase = true;
 	m_Sight.Sleep();
-}
-
-void CEnemyManager::Add(int type, Vector3D pos, Vector3D rot)
-{
-	CCharacterManager::GetInstance()->Add(new CEnemy(type, pos, rot));
 }

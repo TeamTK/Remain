@@ -21,22 +21,15 @@
 #define SETUPWEAPON_ANIM_SPEED 60	//武器を構える
 
 Player::Player() :
-	CCharacter(ePlayer), m_CamDir(0.0f, 0.0f, 0.0f), m_CameraPos(-50.0f, 2.0f, -12.0f),
+	Character(100.0f, "Player", 0), m_CamDir(0.0f, 0.0f, 0.0f), m_CameraPos(-50.0f, 2.0f, -12.0f),
 	m_KeyDir(0.0f, 0.0f, 0.0f), m_Horizontal(0.134f), m_Phase(0.0f), m_AnimSpeed(30),
 	m_Vertical(-1.5f), m_MoveSpeed(0.0f), m_CameraPosY(1.8f), m_CamSpeed(0.000002f),
 	m_isCrouch(false), m_isAttack(false), m_isTakeWeapon(false), m_isMove(false),
 	m_ChangeTakeWeapon(false), m_isRun(false), m_SetupWeapon(false), m_ToggleCrouch(false),
 	m_State(EPlayerState::eState_Idle), m_SelectedWeapon(EWeapons::eShotgun)
 {
-	m_ColliderMap.SetID(eHITID1, eHITID0 | eHITID1 | eHITID2);
-	for (unsigned int i = 0; i < m_pCharaData->BoneCapsule.size(); i++)
-	{
-		//eHITID0…マップ
-		//eHITID1…プレイヤー
-		//eHITID2…敵
-		//eHITID3…弾
-		m_pCollider[i].SetID(eHITID1, 0);
-	}
+	m_Model.SetAsset("Player");
+
 	m_Model.SetScale(1.0f, 1.0f, 1.0f);
 	m_pos = Vector3D(-48.0f, 0.0f, -11.0f);
 
@@ -44,8 +37,11 @@ Player::Player() :
 	m_Reticle.SetAsset("Reticle");
 	m_Reticle.SetCenter(32, 32);
 
+	//カメラの当たり判定
 	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_LookPos, REGIST_FUNC(Player::HitCamera));
 	m_HitCamera.SetID(eHITID0, eHITID1);
+
+	m_SphereMap.radius = 0.2f;
 
 	m_pShotgun = new Shotgun();
 	m_pHandgun = new Handgun();
@@ -59,7 +55,6 @@ Player::~Player()
 	delete m_pShotgun;
 	delete m_pHandgun;
 	delete m_SelectWeapon;
-
 }
 
 void Player::Update()
@@ -68,7 +63,7 @@ void Player::Update()
 	Attack();
 	Camera();
 	Animation();
-	CCharacter::Update();
+	Character::Update();
 	m_SelectWeapon->Update();
 
 	//当たり判定用 始点終点

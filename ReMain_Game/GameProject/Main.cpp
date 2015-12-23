@@ -20,6 +20,8 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 		GEKO::DrawFps();
 		SceneManager::Update();
 		SceneManager::Render();
+		TaskManager::Update();
+		RenderManager::Render();
 	}
 	
 	SceneManager::Clear();
