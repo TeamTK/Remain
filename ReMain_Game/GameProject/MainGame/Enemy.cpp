@@ -1,6 +1,7 @@
-#include "CEnemy.h"
+#include "Enemy.h"
+#include "..\GameSystem\Effect.h"
 
-CEnemy::CEnemy(Vector3D pos, Vector3D rot) :
+Enemy::Enemy(Vector3D pos, Vector3D rot) :
 	Character(10, "Enemy", 1),
 	m_isChase(false),
 	m_FlinchNum(0),
@@ -25,12 +26,9 @@ CEnemy::CEnemy(Vector3D pos, Vector3D rot) :
 	unsigned int bornNum = BoneCapsule.size();
 	for (unsigned int i = 0; i < bornNum; i++)
 	{
-		m_pCollider[i].Regist_C_vs_S(&m_pCapsule[i].segment.start, &m_pCapsule[i].segment.end, &m_pCapsule[i].radius, REGIST_FUNC(Character::Capsule_vs_LineSegmentCallback));
-		//eHITID0…マップ
-		//eHITID1…プレイヤー
-		//eHITID2…敵
-		//eHITID3…弾
-		m_pCollider[i].SetID(eHITID2, eHITID3);
+		m_pCollider[i].Regist_C_vs_S(&m_pCapsule[i].segment.start, &m_pCapsule[i].segment.end, 
+									  &m_pCapsule[i].radius, REGIST_FUNC(Enemy::HitBullet));
+		m_pCollider[i].SetID(eHITID0, eHITID1);
 	}
 
 	m_pos = pos;
@@ -41,12 +39,12 @@ CEnemy::CEnemy(Vector3D pos, Vector3D rot) :
 	m_SightData.distance = 10.0f;
 	m_SightData.pSightPos = &m_pos;
 	m_SightData.pSightVec = &m_SightVec;
-	m_Sight.Regist(&m_SightData, REGIST_FUNC(CEnemy::HitSight));
+	m_Sight.Regist(&m_SightData, REGIST_FUNC(Enemy::HitSight));
 
 	m_BodyRadius = 0.5f; //敵の体の半径
 }
 
-CEnemy::~CEnemy()
+Enemy::~Enemy()
 {
 	unsigned int bornNum = BoneCapsule.size();
 	for (unsigned int i = 0; i < bornNum; i++)
@@ -60,7 +58,7 @@ CEnemy::~CEnemy()
 	delete[] m_pCapsule;
 }
 
-void CEnemy::Attack()
+void Enemy::Attack()
 {
 	m_Model.ChangeAnimation(eAnimationAttack);
 	if (m_Model.GetPlayTime() == 29)
@@ -69,12 +67,12 @@ void CEnemy::Attack()
 	}
 }
 
-void CEnemy::Idle()
+void Enemy::Idle()
 {
 	m_Model.ChangeAnimation(eAnimationIdle);
 }
 
-void CEnemy::Chase()
+void Enemy::Chase()
 {
 	//プレイヤーを追跡
 	m_Distance = (*m_pPlayerPos - m_pos);
@@ -100,7 +98,7 @@ void CEnemy::Chase()
 	}
 }
 
-void CEnemy::HitDamage()
+void Enemy::HitDamage()
 {
 	if (m_Model.GetPlayTime() == 29)
 	{
@@ -109,13 +107,13 @@ void CEnemy::HitDamage()
 	}
 }
 
-void CEnemy::Die()
+void Enemy::Die()
 {
 	m_Model.ChangeAnimation(eAnimationDie);
 	if (m_Model.GetPlayTime() == 29) Task::SetKill();
 }
 
-void CEnemy::Update()
+void Enemy::Update()
 {
 	//攻撃される側の当たり判定更新
 	unsigned int bornNum = BoneCapsule.size();
@@ -165,8 +163,18 @@ void CEnemy::Update()
 	Character::Update();
 }
 
-void CEnemy::HitBullet()
+void Enemy::HitBullet(Result_Sphere& r)
 {
+	//血しぶきのエフェクト
+	EffectInfo effectData;
+	effectData.imageName = "Blood";
+	effectData.num = 60;
+	effectData.pos = r.position;
+	effectData.scale = Vector3D(1.0f, 1.0f, 1.0f);
+	effectData.speed = 0.1f;
+	effectData.time = 120;
+	EffectGeneration::Add(effectData);
+
 	m_Hp--;
 	m_FlinchNum++;
 	if (m_Hp <= 0)
@@ -192,7 +200,7 @@ void CEnemy::HitBullet()
 	}
 }
 
-void CEnemy::HitSight(const Vector3D *pPos)
+void Enemy::HitSight(const Vector3D *pPos)
 {
 	m_pPlayerPos = pPos;
 	m_state = eState_Chase;

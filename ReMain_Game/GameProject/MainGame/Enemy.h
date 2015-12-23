@@ -1,5 +1,7 @@
-#pragma once
-#include "CCharacter.h"
+#ifndef _ENEMY_H_
+#define _ENEMY_H_
+
+#include "Character.h"
 #include "..\GameSystem\SightSystem.h"
 
 struct BoneCalpule
@@ -15,7 +17,7 @@ struct BoneCalpule
 	}
 };
 
-class CEnemy : public Character
+class Enemy : public Character
 {
 public:
 	enum
@@ -37,23 +39,26 @@ public:
 		eState_Die
 	};
 
-	CEnemy(Vector3D pos, Vector3D rot);
-	~CEnemy();
+	Enemy(Vector3D pos, Vector3D rot);
+	~Enemy();
 	void Attack();
 	void Idle();
 	void Chase();
 	void HitDamage();
 	void Die();
 	void Update();
-	void HitBullet();
+	void HitBullet(Result_Sphere& r);
 
 private:
 	bool m_isChase;
 	int m_FlinchNum;
 	int m_state;
+
+	//“G‚ÌŽ‹ŠE
 	EnemySight m_Sight;
 	SightData m_SightData;
 	Vector3D m_SightVec;
+
 	Vector3D m_Distance;
 	const Vector3D *m_pPlayerPos;
 
@@ -65,3 +70,5 @@ private:
 private:
 	void HitSight(const Vector3D *pPos);
 };
+
+#endif

@@ -58,9 +58,9 @@
     <ClCompile Include="GEKO\Task\Task.cpp" />
     <ClCompile Include="GEKO\System\Window.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="MainGame\CBullet.cpp" />
-    <ClCompile Include="MainGame\CCharacter.cpp" />
-    <ClCompile Include="MainGame\CEnemy.cpp" />
+    <ClCompile Include="MainGame\Bullet.cpp" />
+    <ClCompile Include="MainGame\Character.cpp" />
+    <ClCompile Include="MainGame\Enemy.cpp" />
     <ClCompile Include="MainGame\Handgun.cpp" />
     <ClCompile Include="MainGame\Player.cpp" />
     <ClCompile Include="MainGame\Shotgun.cpp" />
@@ -196,9 +196,9 @@
     <ClInclude Include="GEKO\ImageSystem\Image.h" />
     <ClInclude Include="GEKO\Task\Task.h" />
     <ClInclude Include="GEKO\System\Window.h" />
-    <ClInclude Include="MainGame\CBullet.h" />
-    <ClInclude Include="MainGame\CCharacter.h" />
-    <ClInclude Include="MainGame\CEnemy.h" />
+    <ClInclude Include="MainGame\Bullet.h" />
+    <ClInclude Include="MainGame\Character.h" />
+    <ClInclude Include="MainGame\Enemy.h" />
     <ClInclude Include="MainGame\enums.h" />
     <ClInclude Include="MainGame\Handgun.h" />
     <ClInclude Include="MainGame\Player.h" />
