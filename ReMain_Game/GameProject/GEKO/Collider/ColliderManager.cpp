@@ -379,9 +379,11 @@ void ColliderManager::CheckSphere()
 
 					hitData1.position = *(*it)->m_HitData.pPosition;
 					hitData1.radius = *(*it)->m_HitData.pRadius;
+					hitData1.targetID = (*it)->m_MyId;
 
 					hitData2.position = *(*it2)->m_HitData.pPosition;
 					hitData2.radius = *(*it2)->m_HitData.pRadius;
+					hitData2.targetID = (*it2)->m_MyId;
 
 					(*it)->m_Func(hitData2);
 					(*it2)->m_Func(hitData1);
@@ -416,9 +418,11 @@ void ColliderManager::CheckSphere_vs_Capsule()
 					hitData1.start = *(*it2)->m_HitData.pStart;
 					hitData1.end = *(*it2)->m_HitData.pEnd;
 					hitData1.radius = *(*it2)->m_HitData.pRadius;
+					hitData1.targetID = (*it2)->m_MyId;
 
 					hitData2.position = *(*it)->m_HitData.pPosition;
 					hitData2.radius = *(*it)->m_HitData.pRadius;
+					hitData2.targetID = (*it)->m_MyId;
 
 					(*it)->m_Func(hitData1);  //ƒJƒvƒZƒ‹‘¤‚Ìî•ñ
 					(*it2)->m_Func(hitData2); //‹…‘¤‚Ìî•ñ
@@ -452,9 +456,11 @@ void ColliderManager::CheckSphere_vs_LineSegment()
 
 					hitData1.start = *(*it2)->m_HitData.pStart;
 					hitData1.end = *(*it2)->m_HitData.pEnd;
+					hitData1.targetID = (*it2)->m_MyId;
 
 					hitData2.position = *(*it)->m_HitData.pPosition;
 					hitData2.radius = *(*it)->m_HitData.pRadius;
+					hitData2.targetID = (*it)->m_MyId;
 
 					(*it)->m_Func(hitData1);  //ü•ª‘¤‚Ìî•ñ
 					(*it2)->m_Func(hitData2); //‹…‘¤‚Ìî•ñ
@@ -488,10 +494,12 @@ void ColliderManager::CheckCapsule()
 					hitData1.start = *(*it)->m_HitData.pStart;
 					hitData1.end = *(*it)->m_HitData.pEnd;
 					hitData1.radius = *(*it)->m_HitData.pRadius;
+					hitData1.targetID = (*it)->m_MyId;
 
 					hitData2.start = *(*it2)->m_HitData.pStart;
 					hitData2.end = *(*it2)->m_HitData.pEnd;
 					hitData2.radius = *(*it2)->m_HitData.pRadius;
+					hitData2.targetID = (*it2)->m_MyId;
 
 					(*it)->m_Func(hitData2);
 					(*it2)->m_Func(hitData1);
@@ -520,15 +528,17 @@ void ColliderManager::CheckCapsule_vs_LineSegment()
 				if (HitCheckCapsule_vs_LineSegment((*it)->m_HitData, (*it2)->m_HitData))
 				{
 					//‚»‚ê‚¼‚ê‚Ì“–‚½‚è”»’èî•ñ‚ð“n‚·
-					Result_LineSegment hitData1;
-					Result_Capsule hitData2;
+					static Result_LineSegment hitData1;
+					static Result_Capsule hitData2;
 
 					hitData1.start = *(*it2)->m_HitData.pStart;
 					hitData1.end = *(*it2)->m_HitData.pEnd;
+					hitData1.targetID = (*it2)->m_MyId;
 
 					hitData2.start = *(*it)->m_HitData.pStart;
 					hitData2.end = *(*it)->m_HitData.pEnd;
 					hitData2.radius = *(*it)->m_HitData.pRadius;
+					hitData2.targetID = (*it)->m_MyId;
 
 					(*it)->m_Func(hitData1);  //ü•ª‘¤‚Ìî•ñ
 					(*it2)->m_Func(hitData2); //ƒJƒvƒZƒ‹‘¤‚Ìî•ñ
@@ -561,9 +571,11 @@ void ColliderManager::CheckLineSegment()
 
 					hitData1.start = *(*it)->m_HitData.pStart;
 					hitData1.end = *(*it)->m_HitData.pEnd;
+					hitData1.targetID = (*it)->m_MyId;
 
 					hitData2.start = *(*it2)->m_HitData.pStart;
 					hitData2.end = *(*it2)->m_HitData.pEnd;
+					hitData2.targetID = (*it2)->m_MyId;
 
 					(*it)->m_Func(hitData2);
 					(*it2)->m_Func(hitData1);
@@ -589,9 +601,10 @@ void ColliderManager::CheckStaitcMesh_vs_LineSegment()
 			//ID‚ªˆê’v‚µ‚½‚ç“–‚½‚è”»’èŒvŽZŠJŽn
 			if ((*it)->m_TargetId & (*it2)->m_MyId)
 			{
-				Result_Porygon pory;
+				static Result_Porygon pory;
 				if (HitCheckStaticMesh_vs_LineSegment(*(*it2)->m_pStaticMeshInfo, (*it)->m_HitData, &pory))
 				{
+					pory.targetID = (*it2)->m_MyId;
 					(*it)->m_Func(pory);
 					//(*it2)->m_Func(&(*it)->m_HitData);
 				}
@@ -778,7 +791,7 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereH
 	if (hitVer.size() <= 0) return false;
 
 	//“–‚½‚Á‚½î•ñŠi”[
-	pory->pArray = new Result_Porygon[hitVer.size()];
+	pory->pArray = new Result_Porygon_Sphere[hitVer.size()];
 	for (unsigned int i = 0; i < hitVer.size(); i++)
 	{
 		pory->pArray[i].contactPos = hitPos[i] * m;

@@ -50,10 +50,12 @@ struct Result_Sphere
 {
 	Vector3D position;
 	float radius;
+	unsigned int targetID;
 	Result_Sphere() {};
-	Result_Sphere(Vector3D &position, float radius) : 
+	Result_Sphere(Vector3D &position, float radius, unsigned int targetID) :
 		position(position),
-		radius(radius){};
+		radius(radius),
+		targetID(targetID) {};
 	~Result_Sphere() {};
 };
 
@@ -63,11 +65,13 @@ struct Result_Capsule
 	Vector3D start;
 	Vector3D end;
 	float radius;
+	unsigned int targetID;
 	Result_Capsule() {};
-	Result_Capsule(Vector3D &start, Vector3D &end, float radius) :
+	Result_Capsule(Vector3D &start, Vector3D &end, float radius, unsigned int targetID) :
 		start(start),
 		end(end),
-		radius(radius) {};
+		radius(radius),
+		targetID(targetID) {};
 	~Result_Capsule() {};
 };
 
@@ -76,10 +80,12 @@ struct Result_LineSegment
 {
 	Vector3D start;
 	Vector3D end;
+	unsigned int targetID;
 	Result_LineSegment() {};
-	Result_LineSegment(Vector3D &start, Vector3D &end) :
+	Result_LineSegment(Vector3D &start, Vector3D &end, unsigned int targetID) :
 		start(start),
-		end(end) {};
+		end(end),
+		targetID(targetID) {};
 };
 
 //ポリゴンに当たった結果
@@ -89,16 +95,28 @@ struct Result_Porygon
 	Vector3D contactPos;
 	Vector3D normal;
 	int materialIndex;
-	float dist;
+	unsigned int targetID;
 	Result_Porygon() {};
 	~Result_Porygon() {};
+};
+
+//ポリゴンに当たった結果(球用)
+struct Result_Porygon_Sphere
+{
+	Vector3D vertexPos[3];
+	Vector3D contactPos;
+	Vector3D normal;
+	int materialIndex;
+	unsigned int targetID;
+	float dist;
 };
 
 //当たったポリゴンの結果（複数）
 struct Result_Porygon_Group
 {
 	int hitNum;
-	Result_Porygon *pArray;
+	float dist;
+	Result_Porygon_Sphere *pArray;
 	Result_Porygon_Group() :
 		hitNum(0),
 		pArray(nullptr) {};

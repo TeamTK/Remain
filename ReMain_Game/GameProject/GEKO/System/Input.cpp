@@ -550,6 +550,42 @@ namespace Input
 		return false;
 	}
 
+	bool KeyXInputPad::TriggerLeftPressed()
+	{
+		if ((int)m_pXInputState->Gamepad.bLeftTrigger) return true;
+		return false;
+	}
+
+	bool KeyXInputPad::TriggerLeftClicked()
+	{
+		if (m_pXInputState->Gamepad.bLeftTrigger && !(m_keyState & eLeftTrigger))
+		{
+			m_keyState |= eLeftTrigger;
+			return true;
+		}
+		else if (!m_pXInputState->Gamepad.bLeftTrigger) m_keyState &= ~eLeftTrigger;
+
+		return false;
+	}
+
+	bool KeyXInputPad::TriggerRightPressed()
+	{
+		if ((int)m_pXInputState->Gamepad.bRightTrigger) return true;
+		return false;
+	}
+
+	bool KeyXInputPad::TriggerRightClicked()
+	{
+		if (m_pXInputState->Gamepad.bRightTrigger && !(m_keyState & eRightTrigger))
+		{
+			m_keyState |= eRightTrigger;
+			return true;
+		}
+		else if (!m_pXInputState->Gamepad.bRightTrigger) m_keyState &= ~eRightTrigger;
+
+		return false;
+	}
+
 	int KeyXInputPad::TriggerLeft()
 	{
 		return (int)m_pXInputState->Gamepad.bLeftTrigger;

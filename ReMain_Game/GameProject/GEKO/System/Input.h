@@ -40,6 +40,8 @@ enum KeyXInputPadType
 	eB = (1 << 11),
 	eX = (1 << 12),
 	eY = (1 << 13),
+	eLeftTrigger = (1 << 14),
+	eRightTrigger = (1 << 15),
 };
 
 //マウスホイールの状態
@@ -269,6 +271,10 @@ namespace Input
 		bool XClicked();
 		bool YPressed();
 		bool YClicked();
+		bool TriggerLeftPressed();
+		bool TriggerLeftClicked();
+		bool TriggerRightPressed();
+		bool TriggerRightClicked();
 		int TriggerLeft();
 		int TriggerRight();
 		int ThumbLeftX();
