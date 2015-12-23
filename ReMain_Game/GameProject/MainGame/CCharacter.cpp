@@ -71,7 +71,7 @@ void Character::Sphere_vs_MeshCallback(Result_Porygon_Group& r)
 	Vector3D v(0, 0, 0);
 	for (int i = 0; i < r.hitNum; i++)
 	{
-		Result_Porygon *poly = &r.pArray[i];
+		Result_Porygon_Sphere *poly = &r.pArray[i];
 		Vector3D nv = poly->normal * (m_SphereMap.radius - poly->dist);
 		if (fabsf(v.x) < fabsf(nv.x)) v.x = nv.x;
 		if (fabsf(v.y) < fabsf(nv.y)) v.y = nv.y;

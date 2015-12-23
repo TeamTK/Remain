@@ -319,7 +319,7 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 			//テクスチャーを作成
 			if (FAILED(D3DX11CreateShaderResourceViewFromFile(pDevice, material[i].TextureName.c_str(), NULL, NULL, &m_MeshInfo.m_pMaterial[i].pTexture, NULL)))
 			{
-				MessageBox(NULL, TEXT("テクスチャーの読み込みに失敗しました"), NULL, MB_OK);
+				MessageBoxA(NULL, TEXT("テクスチャーの読み込みに失敗しました"), NULL, MB_OK);
 				return E_FAIL;
 			}
 		}

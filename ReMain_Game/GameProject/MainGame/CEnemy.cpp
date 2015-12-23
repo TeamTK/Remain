@@ -22,7 +22,8 @@ CEnemy::CEnemy(Vector3D pos, Vector3D rot) :
 	m_pCollider = new Collider[BoneCapsule.size()];
 	m_pCapsule = new CapsuleInfo[BoneCapsule.size()];
 
-	for (int i = 0; i < BoneCapsule.size(); i++)
+	unsigned int bornNum = BoneCapsule.size();
+	for (int i = 0; i < bornNum; i++)
 	{
 		m_pCollider[i].Regist_C_vs_S(&m_pCapsule[i].segment.start, &m_pCapsule[i].segment.end, &m_pCapsule[i].radius, REGIST_FUNC(Character::Capsule_vs_LineSegmentCallback));
 		//eHITID0…マップ
@@ -47,7 +48,8 @@ CEnemy::CEnemy(Vector3D pos, Vector3D rot) :
 
 CEnemy::~CEnemy()
 {
-	for (int i = 0; i < BoneCapsule.size(); i++)
+	unsigned int bornNum = BoneCapsule.size();
+	for (unsigned int i = 0; i < bornNum; i++)
 	{
 		m_pCollider[i].Release();
 	}
@@ -116,7 +118,8 @@ void CEnemy::Die()
 void CEnemy::Update()
 {
 	//攻撃される側の当たり判定更新
-	for (int i = 0; i < BoneCapsule.size(); i++)
+	unsigned int bornNum = BoneCapsule.size();
+	for (unsigned int i = 0; i < bornNum; i++)
 	{
 		m_pCapsule[i].radius = BoneCapsule[i].radius;
 		m_pCapsule[i].segment.start = m_Model.GetBornPos(BoneCapsule[i].start);

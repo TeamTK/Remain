@@ -95,7 +95,8 @@ void RenderManager::AllClear()
 {
 	RenderManager *temp = GetInstance();
 	auto it = temp->m_pRenderTaskPimpl->RenderList.begin();
-	for (; it != temp->m_pRenderTaskPimpl->RenderList.end();)
+	auto itEnd = temp->m_pRenderTaskPimpl->RenderList.end();
+	for (; it != itEnd;)
 	{
 		it = temp->m_pRenderTaskPimpl->RenderList.erase(it);
 	}
@@ -107,7 +108,8 @@ void RenderManager::DebugDraw()
 {
 	RenderManager *temp = GetInstance();
 	auto it = temp->m_pRenderTaskPimpl->RenderList.begin();
-	for (; it != temp->m_pRenderTaskPimpl->RenderList.end(); it++)
+	auto itEnd = temp->m_pRenderTaskPimpl->RenderList.end();
+	for (; it != itEnd; it++)
 	{
 		(*it)->DebugDraw();
 	}
@@ -117,7 +119,8 @@ void RenderManager::Render()
 {
 	RenderManager *temp = GetInstance();
 	auto it = temp->m_pRenderTaskPimpl->RenderList.begin();
-	for (; it != temp->m_pRenderTaskPimpl->RenderList.end(); it++)
+	auto itEnd = temp->m_pRenderTaskPimpl->RenderList.end();
+	for (; it != itEnd; it++)
 	{
 		(*it)->Render();
 	}
@@ -137,7 +140,7 @@ bool less(const RenderTask *data1, const RenderTask *data2)
 void RenderManager::Regist(RenderTask *renderTask)
 {
 	RenderManager *temp = GetInstance();
-	temp->m_pRenderTaskPimpl->RenderList.push_back(renderTask);
+	temp->m_pRenderTaskPimpl->RenderList.emplace_back(renderTask);
 	temp->m_pRenderTaskPimpl->RenderList.sort(&less);
 }
 

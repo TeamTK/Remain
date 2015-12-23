@@ -46,8 +46,8 @@ private:
 	int m_SizeW;	//画像の幅
 	int m_SizeH;	//画像の高さ
 	int m_Angle;    //画像の角度（度数）
-	int m_CentrX;	//画像の中心X
-	int m_CentrY;	//画像の中心Y
+	int m_CenterX;	//画像の中心X
+	int m_CenterY;	//画像の中心Y
 };
 
 #endif

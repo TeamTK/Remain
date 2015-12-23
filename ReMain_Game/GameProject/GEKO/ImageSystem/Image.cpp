@@ -6,7 +6,9 @@
 Image::Image() :
 	m_SizeW(0),
 	m_SizeH(0),
-	m_Angle(0)
+	m_Angle(0),
+	m_CenterX(0),
+	m_CenterY(0)
 {
 }
 
@@ -82,6 +84,9 @@ void Image::SetAsset(const char *name)
 	m_SizeW = data->Width;
 	m_SizeH = data->Height;
 
+	m_CenterX = 0;
+	m_CenterY = 0;
+
 	InitModel(0, 0);
 }
 
@@ -110,8 +115,8 @@ void Image::SetSize(int w, int h)
 
 void Image::SetCenter(int x, int y)
 {
-	m_CentrX = x;
-	m_CentrY = y;
+	m_CenterX = x;
+	m_CenterY = y;
 }
 
 void Image::SetDrawPos(int x, int y, int width, int height)
@@ -124,7 +129,7 @@ void Image::SetDrawPos(int x, int y, int width, int height)
 
 void Image::Draw(int x, int y)
 {
-	InitModel(m_CentrX, m_CentrY);
+	InitModel(m_CenterX, m_CenterY);
 
 	ID3D11DeviceContext *pDeviceContext;
 	pDeviceContext = Direct3D11::Get().GetID3D11DeviceContext();
