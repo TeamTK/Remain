@@ -89,6 +89,7 @@
     <ClCompile Include="GameSystem\Effect.cpp" />
     <ClCompile Include="GameSystem\GUI\BaseGui.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_SelectWeapon.cpp" />
+    <ClCompile Include="GameSystem\GUI\UI_Reticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -245,6 +246,7 @@
     <ClInclude Include="GameSystem\GUI\BaseGui.h" />
     <ClInclude Include="GameSystem\GUI\SelectWeapon.h" />
     <ClInclude Include="GameSystem\GUI\UI_SelectWeapon.h" />
+    <ClInclude Include="GameSystem\GUI\UI_Reticle.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

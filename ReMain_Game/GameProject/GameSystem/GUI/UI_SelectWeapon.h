@@ -1,26 +1,25 @@
-#ifndef SELECT_WEAPON_H
-#define SELECT_WEAPON_H
+#ifndef UI_SELECT_WEAPON_H
+#define UI_SELECT_WEAPON_H
 
 #include "../../MainGame/enums.h"
 #include "../../GEKO/GEKO.h"
 
-class SelectWeapon
+class UI_SelectWeapon : public Task
 {
 public:
-	SelectWeapon();
-	~SelectWeapon();
+	UI_SelectWeapon();
+	~UI_SelectWeapon();
 	void Update();
 	void Draw();
 	bool GetisSelected();
 	EWeapons Select();
 
-
 private:
 	Image m_Image;
-	Image m_SelectedCircle;
-	EWeapons m_Weapon;
-	Vector2D m_Pos;
-	Vector2D m_ScPos;
+	Image m_SelectedCursor;
+	EWeapons m_Weapon;	//武器の種類
+	Vector2D m_ScPos;	//カーソルの座標	
+	RenderTask m_RenderTask;
 	int m_Size;
 	int m_Selected;
 	bool m_isSelected;

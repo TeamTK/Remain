@@ -77,7 +77,7 @@ void StageObjectManager::LoadObject(char* filepath)
 		if (str == "number")
 		{
 			ifs >> str;
-			m_number = std::stof(str);
+			m_number = std::stoi(str);
 			m_num += m_number;
 		}
 		ifs >> str;

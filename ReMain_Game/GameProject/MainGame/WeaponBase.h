@@ -12,7 +12,7 @@ public:
 	void Update();
 	void Render();
 	void Shot();
-	void SetPlayerData(int anim, int frame, Vector3D start, Vector3D end);
+	void SetPlayerData(int anim, float frame, Vector3D start, Vector3D end);
 	void SetPlayerBomeMtx(Matrix* m);
 
 protected:
@@ -22,7 +22,7 @@ protected:
 	Matrix m_Matrix;	//銃の行列
 
 	int m_PlayerAnim;		//プレイヤーの再生中アニメーション
-	int m_PlayerAnimFrame;	//プレイヤーのアニメーションフレーム
+	float m_PlayerAnimFrame;	//プレイヤーのアニメーションフレーム
 	Matrix* m_BoneMtx;		//プレイヤーのボーン行列
 	Vector3D m_Start;	//線分の当たり判定用 始点
 	Vector3D m_End;		//線分の当たり判定用 終点

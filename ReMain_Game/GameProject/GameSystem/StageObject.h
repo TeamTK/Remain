@@ -52,7 +52,7 @@ public:
 private:
 	int m_cnt;
 	int m_num;	//合計オブジェクト数
-	float m_number;	//各オブジェクトの数
+	int m_number;	//各オブジェクトの数
 	std::vector<std::string> m_ClsName;	//クラス名
 	std::vector<std::string> m_MdlName;	//モデル名
 	std::vector<XYZ> m_Position;
