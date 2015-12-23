@@ -73,7 +73,6 @@ void UI_SelectWeapon::Update()
 				//各武器UIのサイズ適応
 				m_WeaponUI[i].SetSize(m_WeponUISize, m_WeponUISize);
 				m_WeaponUI[i].SetCenter(m_WeponUISize / 2, m_WeponUISize / 2);
-
 			}
 			break;
 		case eSelect:
@@ -82,7 +81,6 @@ void UI_SelectWeapon::Update()
 			if (Input::KeyUp.Clicked() || Input::XInputPad1.UpClicked())		m_Selected = 1;
 			if (Input::KeyLeft.Clicked() || Input::XInputPad1.LeftClicked())	m_Selected = 2;
 			if (Input::KeyRight.Clicked() || Input::XInputPad1.RightClicked())	m_Selected = 3;
-
 			//カーソル移動
 			m_ScPos.x = Vector3D::Lerp(Vector3D(m_ScPos.x, 0.0f, 0.0f), Vector3D(WeaponData[m_Selected].x, 0.0f, 0.0f), 0.6f).x;
 			m_ScPos.y = Vector3D::Lerp(Vector3D(0.0f, m_ScPos.y, 0.0f), Vector3D(0.0f, WeaponData[m_Selected].y, 0.0f), 0.6f).y;
@@ -105,18 +103,19 @@ void UI_SelectWeapon::Update()
 		{
 			if (m_Selected == i)
 			{
+				//選択している各武器UIの移動
+				m_WeaponUI[i].SetSize(100, 100);
 				m_UIPos[i].x = Vector3D::Lerp(Vector3D(m_UIPos[i].x, 0.0f, 0.0f), Vector3D(100.0f, 100.0f, 0.0f), 0.6f).x;
 				m_UIPos[i].y = Vector3D::Lerp(Vector3D(0.0f, m_UIPos[i].y, 0.0f), Vector3D(100.0f, 100.0f, 0.0f), 0.6f).y;
 			}
 			else
 			{
-				//各武器UIの移動
+				//選択していない各武器UIの移動
 				m_UIPos[i].x = Vector3D::Lerp(Vector3D(m_UIPos[i].x, 0.0f, 0.0f), Vector3D(400.0f, 300.0f, 0.0f), 0.6f).x;
 				m_UIPos[i].y = Vector3D::Lerp(Vector3D(0.0f, m_UIPos[i].y, 0.0f), Vector3D(400.0f, 300.0f, 0.0f), 0.6f).y;
 				m_WeaponUI[i].SetSize(m_WeponUISize, m_WeponUISize);
 				m_WeaponUI[i].SetCenter(m_WeponUISize / 2, m_WeponUISize / 2);
 			}
-
 		}
 		State = eOpen;
 	}
@@ -136,7 +135,7 @@ void UI_SelectWeapon::Draw()
 
 	//各武器UI
 	for (int i = 0; i < 4; i++)	{
-		m_WeaponUI[i].Draw(m_UIPos[i].x, m_UIPos[i].y);
+		m_WeaponUI[i].Draw((int)m_UIPos[i].x, (int)m_UIPos[i].y);
 	}
 
 	//円
