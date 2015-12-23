@@ -229,7 +229,7 @@ MapObject::MapObject(XYZ &pos, XYZ &rot, XYZ &sca, std::string name)
 	}
 	else if (name == className[5])
 	{
-		mp_StageObject = new Cabin_Collision(pos, rot, sca, name);
+		//mp_StageObject = new Cabin_Collision(pos, rot, sca, name);
 	}
 	else if (name == className[6])
 	{

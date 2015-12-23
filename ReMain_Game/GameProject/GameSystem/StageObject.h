@@ -111,6 +111,7 @@ private:
 	Collider m_BulletHit;
 };
 
+//ëê1
 class Grass_1 : public StageObject
 {
 public:
@@ -119,6 +120,7 @@ public:
 	~Grass_1(){}
 };
 
+//ëê2
 class Grass_2 : public StageObject
 {
 public:
@@ -127,6 +129,7 @@ public:
 	~Grass_2(){}
 };
 
+//â∆
 class Cabin : public StageObject
 {
 public:
@@ -153,14 +156,7 @@ private:
 	Collider m_BulletHit;
 };
 
-class Cabin_Collision : public StageObject
-{
-public:
-	Cabin_Collision(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name) {}
-	~Cabin_Collision() {}
-};
-
+//ínñ 
 class Ground : public StageObject
 {
 public:
@@ -183,6 +179,7 @@ private:
 	Collider m_BulletHit;
 };
 
+//ï«
 class RockWall : public StageObject
 {
 public:
@@ -205,6 +202,7 @@ private:
 	Collider m_BulletHit;
 };
 
+//ãÛ
 class SkyDome : public StageObject
 {
 public:
@@ -213,6 +211,7 @@ public:
 	~SkyDome() {}
 };
 
+//ñŒÇ›
 class Bush : public StageObject
 {
 public:
@@ -221,6 +220,7 @@ public:
 	~Bush() {}
 };
 
+//ÉVÉ_
 class Fern : public StageObject
 {
 public:
