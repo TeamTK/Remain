@@ -1,5 +1,7 @@
 #include "Task.h"
 #include <iostream>
+#include <map>
+#include <list>
 
 #ifdef _DEBUG
 #ifndef DBG_NEW
@@ -9,11 +11,10 @@
 #endif  // _DEBUG
 
 Task::Task(const char* name, unsigned int priority) :
-	m_Next(nullptr), 
-	m_Prev(nullptr),
 	m_Name(name),
 	m_Priority(priority),
-	m_IsKill(false)
+	m_IsKill(false),
+	m_IsSleep(false)
 {
 	TaskManager::Add(this);
 }
@@ -27,12 +28,33 @@ void Task::SetKill()
 	m_IsKill = true;
 }
 
-bool Task::GetKill()
+void Task::SetPriority(unsigned int priority)
+{
+	m_Priority = priority;
+	TaskManager::Sort();
+}
+
+void Task::Sleep()
+{
+	m_IsSleep = true;
+}
+
+void Task::Awake()
+{
+	m_IsSleep = false;
+}
+
+bool Task::GetKill() const
 {
 	return m_IsKill;
 }
 
-const char *Task::GetName()
+unsigned int Task::GetPriority() const
+{
+	return m_Priority;
+}
+
+const char *Task::GetName() const
 {
 	return m_Name;
 }
@@ -42,7 +64,7 @@ void Task::Update()
 	std::cout << m_Name << "基底タスクUpdateが呼ばれました" << "\n";
 }
 
-void Task::DrawName()
+void Task::DrawName() const
 {
 	std::cout << "Task_Name : " << m_Name << "\n";
 }
@@ -51,43 +73,34 @@ Task::~Task()
 {
 }
 
-void Task::SetPriority(unsigned int priority)
+bool less(const Task *data1, const Task *data2)
 {
-	m_Priority = priority;
-}
+	return data1->GetPriority() < data2->GetPriority();
+};
 
-unsigned int Task::GetPriority()
+class TaskManager::TaskPimpl
 {
-	return m_Priority;
-}
+public:
+	std::list<Task *> taskList;
+};
 
-void Task::SetPrev(Task *prevPointer)
+TaskManager::TaskManager()
 {
-	m_Prev = prevPointer;
-}
-
-void Task::SetNext(Task *nextPointer)
-{
-	m_Next = nextPointer;
-}
-
-Task* Task::GetPrev()
-{
-	return m_Prev;
-}
-
-Task* Task::GetNext()
-{
-	return m_Next;
-}
-
-TaskManager::TaskManager() :
-	m_Begin(nullptr)
-{
+	m_pTaskPimpl = new TaskPimpl;
 }
 
 TaskManager::~TaskManager()
 {
+	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
+	auto it = pList->begin();
+	auto itEnd = pList->end();
+	for (; it != itEnd; )
+	{
+		delete *it;
+		it = pList->erase(it);
+	}
+	pList->clear();
+	delete m_pTaskPimpl;
 }
 
 inline TaskManager* TaskManager::GetInstance()
@@ -96,157 +109,158 @@ inline TaskManager* TaskManager::GetInstance()
 	return &taskManager;
 }
 
-void TaskManager::Add(Task* taskPointer)
+void TaskManager::Kill(const char* taskName)
 {
-	//先頭にタスクがなかったらそのまま追加
-	if (GetInstance()->m_Begin == nullptr)
+	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
+	auto it = pList->begin();
+	auto itEnd = pList->end();
+	for (; it != itEnd; it++)
 	{
-		GetInstance()->m_Begin = taskPointer;
+		if ((*it)->m_Name == taskName)
+		{
+			(*it)->SetKill();
+		}
 	}
-	else
+}
+
+void TaskManager::AllKill()
+{
+	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
+	auto it = pList->begin();
+	auto itEnd = pList->end();
+	for (; it != itEnd; it++)
 	{
-		Task* task = GetInstance()->m_Begin;
-		Task* prev = nullptr;
-
-		//タスクリストが終わるまで
-		while (task != nullptr)
-		{
-			//追加するタスクの優先順位が上ならタスクリストの先頭に追加
-			if (taskPointer->GetPriority() < task->GetPriority())
-			{
-				//タスクリストの最初ならそのまま追加
-				if (task == GetInstance()->m_Begin) GetInstance()->m_Begin = taskPointer;
-
-				//タスクリストの入れ替え、追加するタスクを前へ
-				taskPointer->SetNext(task);
-				task->SetPrev(taskPointer);
-				break;
-			}
-
-			//追加するタスクの優先順位が下なら次のタスクに進む
-			prev = task;
-			task = task->GetNext();
-		}
-
-		//追加するタスクが最後まで行ったらタスクを最後に追加
-		if (prev != nullptr)
-		{
-			//最後のタスクに追加処理
-			prev->SetNext(taskPointer);
-			taskPointer->SetPrev(prev);
-		}
+		(*it)->SetKill();
 	}
 }
 
 void TaskManager::PartClear(const char* taskName)
 {
-	Task *task = GetInstance()->m_Begin;
-
-	while (task != nullptr)
+	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
+	auto it = pList->begin();
+	auto itEnd = pList->end();
+	for (; it != itEnd;)
 	{
-		//指定したタスクを消去
-		if (task->GetName() == taskName)
+		//名前が一致したらリストから外す
+		if ((*it)->m_Name == taskName)
 		{
-			Task *next = task->GetNext(); //次のタスクを格納
-			Task *prev = task->GetPrev(); //後ろのタスクを格納
-
-			//後ろにあるタスクと前にあるタスクを格納
-			if (next != nullptr) next->SetPrev(prev);
-			if (prev != nullptr) prev->SetNext(next);
-			else GetInstance()->m_Begin = next;
-
-			//現在のタスクを削除
-			delete task;
-
-			//次のタスクに移動
-			task = next;
+			delete *it;
+			it = pList->erase(it);
 		}
 		else
 		{
-			task = task->GetNext();
+			it++;
 		}
 	}
 }
 
 void TaskManager::AllClear()
 {
-	Task *task = GetInstance()->m_Begin;
-
-	//タスクリストが終わるまでループ
-	while (task != nullptr)
+	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
+	auto it = pList->begin();
+	auto itEnd = pList->end();
+	for (; it != itEnd;)
 	{
-		Task *next = task->GetNext(); //次のタスクを格納
-		Task *prev = task->GetPrev(); //後ろのタスクを格納
-
-		//後ろにあるタスクと前にあるタスクを格納
-		if (next != nullptr) next->SetPrev(prev);
-		if (prev != nullptr) prev->SetNext(next);
-		else GetInstance()->m_Begin = next;
-
-		//現在のタスクを削除
-		delete task;
-
-		//次のタスクに移動
-		task = next;
+		delete *it;
+		it = pList->erase(it);
 	}
+	pList->clear();
 }
 
 void TaskManager::Update()
 {
-	Task *task = GetInstance()->m_Begin;
-	
-	while (task != nullptr)
+	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
+	auto it = pList->begin();
+	auto itEnd = pList->end();
+	for (; it != itEnd; )
 	{
-		if (task->GetKill())
+		//タスクを削除
+		if ((*it)->m_IsKill == true)
 		{
-			Task *next = task->GetNext(); //次のタスクを格納
-			Task *prev = task->GetPrev(); //後ろのタスクを格納
-
-			//後ろにあるタスクと前にあるタスクを格納
-			if (next != nullptr) next->SetPrev(prev);
-			if (prev != nullptr) prev->SetNext(next);
-			else GetInstance()->m_Begin = next;
-
-			//現在のタスクを削除
-			delete task;
-
-			//次のタスクに移動
-			task = next;
+			delete *it;
+			it = pList->erase(it);
+			continue;
 		}
-		else
-		{
-			task->Update();
-			task = task->GetNext();
-		}
+
+		if ((*it)->m_IsSleep == true) continue;
+
+		(*it)->Update();
+		it++;
 	}
 }
 
 void TaskManager::DrawName()
 {
-	Task *task = GetInstance()->m_Begin;
-
-	while (task != nullptr)
+	static unsigned int cnt = 0;
+	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
+	auto it = pList->begin();
+	auto itEnd = pList->end();
+	for (; it != itEnd; it++)
 	{
-		if (task->GetKill())
+		std::cout << cnt << " : ";
+		cnt++;
+		(*it)->DrawName();
+	}
+	cnt = 0;
+}
+
+void TaskManager::Sleep(const char* taskName)
+{
+	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
+	auto it = pList->begin();
+	auto itEnd = pList->end();
+	for (; it != itEnd; it++)
+	{
+		if ((*it)->m_Name == taskName)
 		{
-			Task *next = task->GetNext(); //次のタスクを格納
-			Task *prev = task->GetPrev(); //後ろのタスクを格納
-
-			//後ろにあるタスクと前にあるタスクを格納
-			if (next != nullptr) next->SetPrev(prev);
-			if (prev != nullptr) prev->SetNext(next);
-			else GetInstance()->m_Begin = next;
-
-			//現在のタスクを削除
-			delete task;
-
-			//次のタスクに移動
-			task = next;
-		}
-		else
-		{
-			task->DrawName();
-			task = task->GetNext();
+			(*it)->m_IsSleep = true;
 		}
 	}
+}
+
+void TaskManager::AllSleep()
+{
+	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
+	auto it = pList->begin();
+	auto itEnd = pList->end();
+	for (; it != itEnd; it++)
+	{
+		(*it)->m_IsSleep = true;
+	}
+}
+
+void TaskManager::Awake(const char* taskName)
+{
+	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
+	auto it = pList->begin();
+	auto itEnd = pList->end();
+	for (; it != itEnd; it++)
+	{
+		if ((*it)->m_Name == taskName)
+		{
+			(*it)->m_IsSleep = false;
+		}
+	}
+}
+
+void TaskManager::AllAwake()
+{
+	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
+	auto it = pList->begin();
+	auto itEnd = pList->end();
+	for (; it != itEnd; it++)
+	{
+		(*it)->m_IsSleep = false;
+	}
+}
+
+void TaskManager::Add(Task* taskPointer)
+{
+	GetInstance()->m_pTaskPimpl->taskList.push_back(taskPointer);
+	GetInstance()->m_pTaskPimpl->taskList.sort(&less);
+}
+
+void TaskManager::Sort()
+{
+	GetInstance()->m_pTaskPimpl->taskList.sort(&less);
 }

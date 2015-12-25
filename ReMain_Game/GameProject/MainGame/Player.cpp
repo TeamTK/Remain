@@ -20,6 +20,8 @@
 #define TAKEWEAPON_ANIM_SPEED 40	//ïêäÌÇÇ∆ÇÈ
 #define SETUPWEAPON_ANIM_SPEED 60	//ïêäÌÇç\Ç¶ÇÈ
 
+Vector3D *g_pPlayerPos;
+
 Player::Player() :
 	Character(100.0f, "Player", 0), m_CamDir(0.0f, 0.0f, 0.0f), m_CameraPos(-50.0f, 2.0f, -12.0f),
 	m_KeyDir(0.0f, 0.0f, 0.0f), m_Horizontal(0.134f), m_Phase(0), m_AnimSpeed(30.0f),
@@ -40,6 +42,8 @@ Player::Player() :
 	m_SphereMap.radius = 0.2f;
 	
 	m_PlayerSightInfo.SetPos(&m_pos);
+
+	g_pPlayerPos = &m_pos;
 }
 
 Player::~Player()
@@ -222,7 +226,7 @@ void Player::Attack()
 		effectData.speed = 0.05f;
 		effectData.time = 60;
 		EffectGeneration::Add(effectData);
-		new Bullet(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f, 100.0f);
+		new Bullet(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f, 100.0f, 0.01f);
 	}
 }
 
@@ -231,7 +235,6 @@ void Player::Camera()
 	Vector3D newCameraPos;
 	Vector3D newLookPos;
 	Point mouseValue = Input::Mouse.GetRelativeValue();
-	Vector3D look(0.6f, 1.8f, 0.0f);
 	static float lenge = CAMERA_LENGE;
 	
 	if (m_SelectWeapon.GetisSelected()) return;

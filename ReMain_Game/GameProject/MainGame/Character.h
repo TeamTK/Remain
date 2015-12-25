@@ -7,10 +7,10 @@ class Character : public Task
 {
 public:
 	Character() {}
-	Character(float hp, char *taskName, unsigned int priority);
+	Character(float hp, const char *taskName, unsigned int priority);
 	virtual ~Character();
 	virtual void Update();
-	virtual void Render();
+	void Render();
 	void HitMap(Result_Porygon_Group& r);
 	void PushBody(Result_Sphere &data);
 

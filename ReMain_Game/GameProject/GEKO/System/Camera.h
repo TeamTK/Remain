@@ -85,7 +85,7 @@ public:
 	static void SetDrawArea(float width, float height, float x, float y);
 
 	/**
-	* @brief カメラの更新（ライブラリを使う側は呼ばなくてよい内部で使っています）
+	* @brief カメラの更新（ライブラリ内部で使っています）
 	*/
 	static void Update();
 

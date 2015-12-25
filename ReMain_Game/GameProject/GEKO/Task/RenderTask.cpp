@@ -47,6 +47,7 @@ void RenderTask::Unregist()
 void RenderTask::SetPriority(unsigned int priority)
 {
 	m_Priority = priority;
+	RenderManager::Sort();
 }
 
 void RenderTask::Sleep()
@@ -59,12 +60,12 @@ void RenderTask::Awake()
 	m_IsSeep = false;
 }
 
-void RenderTask::Render()
+void RenderTask::Render() const
 {
 	m_Func();
 }
 
-void RenderTask::DebugDraw()
+void RenderTask::DebugDraw() const
 {
 	std::cout << "Priority : " << m_Priority << '\n';
 }
@@ -106,13 +107,17 @@ void RenderManager::AllClear()
 
 void RenderManager::DebugDraw()
 {
+	static unsigned int cnt = 0;
 	RenderManager *temp = GetInstance();
 	auto it = temp->m_pRenderTaskPimpl->RenderList.begin();
 	auto itEnd = temp->m_pRenderTaskPimpl->RenderList.end();
 	for (; it != itEnd; it++)
 	{
+		std::cout << "RenderTask " << cnt << " : ";
+		cnt++;
 		(*it)->DebugDraw();
 	}
+	cnt = 0;
 }
 
 void RenderManager::Render()
@@ -148,7 +153,8 @@ void RenderManager::Unregist(RenderTask *pRenderTask)
 {
 	RenderManager *temp = GetInstance();
 	auto it = temp->m_pRenderTaskPimpl->RenderList.begin();
-	for (; it != temp->m_pRenderTaskPimpl->RenderList.end(); it++)
+	auto itEnd = temp->m_pRenderTaskPimpl->RenderList.end();
+	for (; it != itEnd; it++)
 	{
 		if (*it == pRenderTask)
 		{
@@ -156,4 +162,9 @@ void RenderManager::Unregist(RenderTask *pRenderTask)
 			break;
 		}
 	}
+}
+
+void RenderManager::Sort()
+{
+	GetInstance()->m_pRenderTaskPimpl->RenderList.sort(&less);
 }
