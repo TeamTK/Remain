@@ -36,4 +36,20 @@ void WeaponBase::SetPlayerData(int anim, float frame, Vector3D start, Vector3D e
 	m_PlayerAnimFrame = frame;
 	m_Start = start;
 	m_End = end;
+
+}
+
+int WeaponBase::GetAmmo()
+{
+	return m_Ammo;
+}
+
+bool WeaponBase::CanShot()
+{
+	return m_Ammo > 0 ? true : false;
+}
+
+void WeaponBase::ReduceBullet()
+{
+	if (m_Ammo > 0)	m_Ammo--;
 }
