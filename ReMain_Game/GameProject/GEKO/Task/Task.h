@@ -11,44 +11,53 @@ public:
 	Task(const char* name, unsigned int priority);
 	Task();
 	void SetKill();
-	bool GetKill();
-	const char *GetName();
+	void SetPriority(unsigned int priority);
+	void Sleep();
+	void Awake();
+	bool GetKill() const;
+	unsigned int GetPriority() const;
+	const char *GetName() const;
 	virtual void Update();
-	void DrawName();
+	void DrawName() const;
 
 protected:
 	virtual ~Task();
-	void SetPriority(unsigned int priority);
-	unsigned int GetPriority();
 
 private:
-	void SetPrev(Task *prevPointer);
-	void SetNext(Task *nextPointer);
-	Task* GetPrev();
-	Task* GetNext();
-
-private:
-	Task *m_Prev;
-	Task *m_Next;
 	const char* m_Name;
 	unsigned int m_Priority;
 	bool m_IsKill;
+	bool m_IsSleep;
 };
 
 class TaskManager
 {
+	friend Task;
+
 public:
-	static void Add(Task* taskPointer);
+	static void Kill(const char* taskName);
+	static void AllKill();
 	static void PartClear(const char* taskName);
 	static void AllClear();
 	static void Update();
 	static void DrawName();
+	static void Sleep(const char* taskName);
+	static void AllSleep();
+	static void Awake(const char* taskName);
+	static void AllAwake();
+
+protected:
+	static void Add(Task* taskPointer);
+	static void Sort();
 
 private:
 	inline static TaskManager* GetInstance();
 	TaskManager();
 	~TaskManager();
-	Task* m_Begin;
+
+private:
+	class TaskPimpl;
+	TaskPimpl *m_pTaskPimpl;
 };
 
 #endif

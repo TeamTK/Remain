@@ -22,8 +22,8 @@ public:
 	void SetPriority(unsigned int priority);
 	void Sleep();
 	void Awake();
-	void Render();
-	void DebugDraw();
+	void Render() const;
+	void DebugDraw() const;
 
 private:
 	unsigned int m_Priority;
@@ -46,6 +46,7 @@ private:
 	static RenderManager *GetInstance();
 	static void Regist(RenderTask *renderTask);
 	static void Unregist(RenderTask *renderTask);
+	static void Sort();
 
 private:
 	class RenderTaskPimpl;

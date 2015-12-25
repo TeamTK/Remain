@@ -90,6 +90,7 @@
     <ClCompile Include="MainGame\Enemy.cpp" />
     <ClCompile Include="MainGame\Character.cpp" />
     <ClCompile Include="MainGame\Bullet.cpp" />
+    <ClCompile Include="MainGame\Monster_A.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -247,6 +248,7 @@
     <ClInclude Include="MainGame\Enemy.h" />
     <ClInclude Include="MainGame\Character.h" />
     <ClInclude Include="MainGame\Bullet.h" />
+    <ClInclude Include="MainGame\Monster_A.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

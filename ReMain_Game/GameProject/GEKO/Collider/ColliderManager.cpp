@@ -400,10 +400,12 @@ void ColliderManager::CheckSphere_vs_Capsule()
 	for (; it != itEnd; it++)
 	{
 		if ((*it)->m_IsSeep) continue;
+
 		auto it2 = m_pColliderListPimpl->Capsule_vs_SphereList.begin();
 		auto it2End = m_pColliderListPimpl->Capsule_vs_SphereList.end();
 		for (; it2 != it2End; it2++)
 		{
+			//if ((*it) == nullptr) continue;
 			if ((*it2)->m_IsSeep) continue;
 
 			//ID‚ªˆê’v‚µ‚½‚ç“–‚½‚è”»’èŒvZŠJn

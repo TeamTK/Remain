@@ -10,6 +10,8 @@
 #include "../GameSystem/SightSystem.h"
 #include"../GameSystem/GUI/UI_SelectWeapon.h"
 
+extern Vector3D *g_pPlayerPos;
+
 class Player : public Character
 {
 public:

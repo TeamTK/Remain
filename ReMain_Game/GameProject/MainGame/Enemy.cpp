@@ -1,38 +1,20 @@
 #include "Enemy.h"
 #include "..\GameSystem\Effect.h"
+#include "Player.h"
 
-Enemy::Enemy(Vector3D pos, Vector3D rot) :
-	Character(10, "Enemy", 1),
-	m_isChase(false),
+#define ENEMY_ANIM_END 29
+
+Enemy::Enemy(Vector3D pos, Vector3D rot, const char* name) :
+	Character(10, name, 1),
 	m_FlinchNum(0),
 	m_state(eState_Idle)
 {
-	m_SphereMap.radius = 0.2f;
-
-	//各部位のカプセルの情報
-	BoneCapsule.emplace_back(0.4f, 25, 4);	  //頭
-	BoneCapsule.emplace_back(0.4f, 2, 4);   //胴体
-	BoneCapsule.emplace_back(0.4f, 6, 8);   //左腕
-	BoneCapsule.emplace_back(0.4f, 16, 18); //右腕
-	BoneCapsule.emplace_back(0.4f, 26, 28); //左足
-	BoneCapsule.emplace_back(0.4f, 30, 32); //右足
-
-	m_Model.SetAsset("Monster_A");
-
-	//球（弾）との判定用
-	m_pCollider = new Collider[BoneCapsule.size()];
-	m_pCapsule = new CapsuleInfo[BoneCapsule.size()];
-
-	unsigned int bornNum = BoneCapsule.size();
-	for (unsigned int i = 0; i < bornNum; i++)
-	{
-		m_pCollider[i].Regist_C_vs_S(&m_pCapsule[i].segment.start, &m_pCapsule[i].segment.end, 
-									  &m_pCapsule[i].radius, REGIST_FUNC(Enemy::HitBullet));
-		m_pCollider[i].SetID(eHITID0, eHITID1);
-	}
+	m_SphereMap.radius = 0.2f; //マップとの半径
+	m_BodyRadius = 0.2f; //敵の体の半径
 
 	m_pos = pos;
 	m_rot = rot;
+	m_Model.SetAsset(name);
 
 	//視界システム
 	m_SightData.angle = 60.0f;
@@ -40,8 +22,6 @@ Enemy::Enemy(Vector3D pos, Vector3D rot) :
 	m_SightData.pSightPos = &m_pos;
 	m_SightData.pSightVec = &m_SightVec;
 	m_Sight.Regist(&m_SightData, REGIST_FUNC(Enemy::HitSight));
-
-	m_BodyRadius = 0.5f; //敵の体の半径
 }
 
 Enemy::~Enemy()
@@ -61,7 +41,7 @@ Enemy::~Enemy()
 void Enemy::Attack()
 {
 	m_Model.ChangeAnimation(eAnimationAttack);
-	if (m_Model.GetPlayTime() == 29)
+	if (m_Model.GetPlayTime() == ENEMY_ANIM_END)
 	{
 		m_state = eState_Chase;
 	}
@@ -100,17 +80,17 @@ void Enemy::Chase()
 
 void Enemy::HitDamage()
 {
-	if (m_Model.GetPlayTime() == 29)
+	if (m_Model.GetPlayTime() == ENEMY_ANIM_END)
 	{
-		if (!m_isChase) m_state = eState_Idle;
-		else m_state = eState_Chase;
+		m_state = eState_Chase;
 	}
 }
 
 void Enemy::Die()
 {
 	m_Model.ChangeAnimation(eAnimationDie);
-	if (m_Model.GetPlayTime() == 29) Task::SetKill();
+	m_Sight.Sleep();
+	if (m_Model.GetPlayTime() == ENEMY_ANIM_END) Task::SetKill();
 }
 
 void Enemy::Update()
@@ -124,7 +104,6 @@ void Enemy::Update()
 		m_pCapsule[i].segment.end = m_Model.GetBornPos(BoneCapsule[i].end);
 
 	}
-	//m_SphereMap.radius = m_pCharaData->collitionMapRad;
 	m_SphereMap.pos = m_pos + Vector3D(0, m_SphereMap.radius, 0);
 
 	m_SightVec = m_Model.GetAxisZ(1.0f);
@@ -135,26 +114,21 @@ void Enemy::Update()
 	{
 	case eState_Attack:
 		Attack();
-		//std::cout << "ATTACK" << "\n";
 		break;
 
 	case eState_Idle:
 		Idle();
-		//std::cout << "IDLE" << "\n";
 		break;
 
 	case eState_Chase:
 		Chase();
-		//std::cout << "CHASE" << "\n";
 		break;
 
 	case eState_HitDamage:
 		HitDamage();
-		//std::cout << "HIT_DAMEGE" << "\n";
 		break;
 
 	case eState_Die:
-		//std::cout << "DIE" << "\n";
 		Die();
 
 	default:
@@ -195,8 +169,14 @@ void Enemy::HitBullet(Result_Sphere& r)
 			m_Model.ChangeAnimation(eAnimationHitDamage);
 			m_Model.SetTime(0);
 		}
-		//m_isChase = true;
 		//m_Sight.Sleep();
+	}
+
+	if (!m_Sight.GetSleep())
+	{
+		m_pPlayerPos = g_pPlayerPos;
+		m_state = eState_Chase;
+		m_Sight.Sleep();
 	}
 }
 
@@ -204,6 +184,6 @@ void Enemy::HitSight(const Vector3D *pPos)
 {
 	m_pPlayerPos = pPos;
 	m_state = eState_Chase;
-	m_isChase = true;
+	//m_isChase = true;
 	m_Sight.Sleep();
 }

@@ -28,7 +28,6 @@ public:
 		eAnimationHitDamage,
 		eAnimationIdle,
 		eAnimationTrot,
-
 	};
 	enum
 	{
@@ -39,18 +38,19 @@ public:
 		eState_Die
 	};
 
-	Enemy(Vector3D pos, Vector3D rot);
-	~Enemy();
+	Enemy(Vector3D pos, Vector3D rot, const char* name);
+	virtual ~Enemy();
+	virtual void Update();
+	void HitBullet(Result_Sphere& r);
+
+protected:
 	void Attack();
 	void Idle();
 	void Chase();
 	void HitDamage();
 	void Die();
-	void Update();
-	void HitBullet(Result_Sphere& r);
 
-private:
-	bool m_isChase;
+protected:
 	int m_FlinchNum;
 	int m_state;
 

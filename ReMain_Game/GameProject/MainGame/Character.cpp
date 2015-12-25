@@ -1,6 +1,6 @@
 #include "Character.h"
 
-Character::Character(float hp, char *taskName, unsigned int priority) :
+Character::Character(float hp, const char *taskName, unsigned int priority) :
 	Task(taskName, priority),
 	m_Hp(hp)
 {
