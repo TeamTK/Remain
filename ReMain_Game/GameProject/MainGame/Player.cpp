@@ -226,7 +226,17 @@ void Player::Attack()
 		effectData.speed = 0.05f;
 		effectData.time = 60;
 		EffectGeneration::Add(effectData);
-		new Bullet(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f, 100.0f, 0.01f);
+
+		if (m_SelectedWeapon == eShotgun && m_pShotgun.CanShot())
+		{
+			new Bullet(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f, 100.0f, 0.01f);
+			m_pShotgun.ReduceBullet();
+		}
+		else if (m_SelectedWeapon == eHandgun && m_pHandgun.CanShot())
+		{
+			new Bullet(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f, 100.0f, 0.01f);
+			m_pHandgun.ReduceBullet();
+		}
 	}
 }
 
@@ -274,7 +284,7 @@ void Player::Camera()
 
 		Matrix mat = m_Model.GetBornMatrix(6, true);
 		Vector4D eye;
-		eye = Vector4D(-0.25f, 0.15f, -0.3f, 1.0f) * mat;
+		eye = Vector4D(-0.25f, 0.15f, -0.1f, 1.0f) * mat;
 		Vector4D at;
 		at = Vector4D(-0.25f, 0.15f, 0.5f, 1.0f) *  mat;
 		newCameraPos = Vector3D(eye.x, eye.y, eye.z);

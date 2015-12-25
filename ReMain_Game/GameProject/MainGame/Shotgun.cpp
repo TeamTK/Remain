@@ -5,6 +5,7 @@ Shotgun::Shotgun()
 {
 	m_Model.SetAsset("Shotgun");
 
+	m_Ammo = 7;
 	m_Collider.Regist_L_vs_C(&m_Start, &m_End, REGIST_FUNC(Shotgun::Hit));
 	m_Collider.SetID(eHITID3, eHITID2);
 	m_Collider.Sleep();

@@ -14,13 +14,16 @@ public:
 	void Shot();
 	void SetPlayerData(int anim, float frame, Vector3D start, Vector3D end);
 	void SetPlayerBomeMtx(Matrix* m);
+	int GetAmmo();	//残弾数を取得
+	bool CanShot();	//弾を撃てるか
+	void ReduceBullet();	//弾を減らす
 
 protected:
-	int m_Ammo;		//弾数
 	StaticMesh m_Model;
 	Collider m_Collider;
 	Matrix m_Matrix;	//銃の行列
 
+	int m_Ammo;		//弾数
 	int m_PlayerAnim;		//プレイヤーの再生中アニメーション
 	float m_PlayerAnimFrame;	//プレイヤーのアニメーションフレーム
 	Matrix* m_BoneMtx;		//プレイヤーのボーン行列
