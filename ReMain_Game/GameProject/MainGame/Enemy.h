@@ -57,6 +57,7 @@ protected:
 	//“G‚ÌŽ‹ŠE
 	EnemySight m_Sight;
 	SightData m_SightData;
+	Vector3D m_SightPos;
 	Vector3D m_SightVec;
 
 	Vector3D m_Distance;

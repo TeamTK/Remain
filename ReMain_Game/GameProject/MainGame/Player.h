@@ -51,12 +51,13 @@ private:
 	Vector3D m_LookPos;		//カメラの注視点
 	Vector3D m_Start;		//線分の当たり判定用 始点
 	Vector3D m_End;			//線分の当たり判定用 終点
+	Vector3D m_SightPos;	//視線判定の位置
 	Matrix m_Matrix;		//ショットガンの行列
 	EPlayerState m_State;	//プレイヤーの状態	
 	EWeapons m_SelectedWeapon;	//選択している銃
 	Collider m_HitCamera;	//カメラの当たり判定
 	Collider m_Bullet;		//弾の当たり判定
-	PlayerSightInfo m_PlayerSightInfo;
+	PlayerSightInfo m_PlayerSightInfo; //プレイヤーの視界情報
 	float m_Vertical;		//垂直方向のマウス入力量
 	float m_Horizontal;		//水平方向のマウス入力量
 	float m_MoveSpeed;		//移動速度

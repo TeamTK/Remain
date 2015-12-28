@@ -3,6 +3,7 @@
 #include "Player.h"
 
 #define ENEMY_ANIM_END 29
+#define ENEMY_
 
 Enemy::Enemy(Vector3D pos, Vector3D rot, const char* name) :
 	Character(10, name, 1),
@@ -19,7 +20,7 @@ Enemy::Enemy(Vector3D pos, Vector3D rot, const char* name) :
 	//視界システム
 	m_SightData.angle = 60.0f;
 	m_SightData.distance = 10.0f;
-	m_SightData.pSightPos = &m_pos;
+	m_SightData.pSightPos = &m_SightPos;
 	m_SightData.pSightVec = &m_SightVec;
 	m_Sight.Regist(&m_SightData, REGIST_FUNC(Enemy::HitSight));
 }
@@ -102,9 +103,12 @@ void Enemy::Update()
 		m_pCapsule[i].radius = BoneCapsule[i].radius;
 		m_pCapsule[i].segment.start = m_Model.GetBornPos(BoneCapsule[i].start);
 		m_pCapsule[i].segment.end = m_Model.GetBornPos(BoneCapsule[i].end);
-
 	}
-	m_SphereMap.pos = m_pos + Vector3D(0, m_SphereMap.radius, 0);
+	m_SphereMap.pos = m_pos;
+	m_SphereMap.pos.y += m_SphereMap.radius;
+
+	m_SightPos = m_pos;
+	m_SightPos.y += 2.0f;
 
 	m_SightVec = m_Model.GetAxisZ(1.0f);
 	m_Model.SetPlayTime(30);
@@ -169,9 +173,9 @@ void Enemy::HitBullet(Result_Sphere& r)
 			m_Model.ChangeAnimation(eAnimationHitDamage);
 			m_Model.SetTime(0);
 		}
-		//m_Sight.Sleep();
 	}
 
+	//プレイヤーを発見していなくて攻撃を受けたら
 	if (!m_Sight.GetSleep())
 	{
 		m_pPlayerPos = g_pPlayerPos;
@@ -182,7 +186,7 @@ void Enemy::HitBullet(Result_Sphere& r)
 
 void Enemy::HitSight(const Vector3D *pPos)
 {
-	m_pPlayerPos = pPos;
+	m_pPlayerPos = g_pPlayerPos;
 	m_state = eState_Chase;
 	m_Sight.Sleep();
 }

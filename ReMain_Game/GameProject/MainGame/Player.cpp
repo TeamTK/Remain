@@ -41,7 +41,7 @@ Player::Player() :
 
 	m_SphereMap.radius = 0.2f;
 	
-	m_PlayerSightInfo.SetPos(&m_pos);
+	m_PlayerSightInfo.SetPos(&m_SightPos);
 
 	g_pPlayerPos = &m_pos;
 }
@@ -59,6 +59,8 @@ void Player::Update()
 	Animation();
 	Character::Update();
 	m_SelectWeapon.Update();
+
+	m_SightPos = m_Model.GetBornPos(6); //頭のボーン位置
 
 	//当たり判定用 始点終点
 	m_Start = m_CameraPos;
@@ -478,7 +480,6 @@ void Player::Crouch()
 		{
 			m_Model.ChangeAnimation(EPlayerAnim::eAnim_Crouch);
 			m_AnimSpeed = CROUCH_ANIM_SPEED;
-
 		}
 
 		//しゃがみ待機
