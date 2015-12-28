@@ -18,12 +18,12 @@ public:
 
 private:
 	HRESULT LoadXMesh(std::string fileName);
-	void LoadAnimation(std::string fileName, SkinVertexInfo* pVB);
-	void LoadMat(Born *pBorn, std::ifstream *pIfs);
+	void LoadAnimation(FILE *fp, SkinVertexInfo* pVB);
+	void LoadMat(Born *pBorn, FILE *fp);
 	void BornMatUpdate(CopyBorn *pCopyBorn, Born *pBorn, D3DXMATRIX &bornMat);
 	void AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn, float ainmFrame, unsigned int ainmNum, std::vector<int> *pFrameNum);
 	void DeleteHierarchy(Born *pBorn);
-	bool AddBoneHierarchy(Born *pBorn, std::ifstream *pIfs, int hierarchy);
+	bool AddBoneHierarchy(Born *pBorn, FILE *fp, int hierarchy);
 
 private:
 	std::string m_buffer; //äKëwñﬂÇËéûÇ…É{Å[Éìñºäiî[

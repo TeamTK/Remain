@@ -188,7 +188,13 @@ void DynamicMesh::RenderMatrix(Matrix &matrix)
 
 void DynamicMesh::BornDebug(eBornDebug eBornDebug)
 {
-	m_pSkinMeshData->BornDebug(eBornDebug);
+	//m_pSkinMeshData->BornDebug(eBornDebug);
+	auto it = m_CopyBornArray.begin();
+	auto itEnd = m_CopyBornArray.end();
+	for (; it != itEnd; it++)
+	{
+		//(*it)->
+	}
 }
 
 void DynamicMesh::AnimationDebug(int animNum)

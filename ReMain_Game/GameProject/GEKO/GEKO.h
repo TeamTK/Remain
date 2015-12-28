@@ -9,12 +9,12 @@
 #include "System\DirectionalLight.h"
 #include "System\Input.h"
 #include "System\Debug.h"
-#include "System\Math.h"
 #include "System\Change.h"
 #include "System\Collision.h"
 #include "Figure\Fiqure.h"
 #include "Collider\Collider.h"
 #include "Task\RenderTask.h"
+#include "Task\FunctionTask.h"
 
 namespace GEKO
 {

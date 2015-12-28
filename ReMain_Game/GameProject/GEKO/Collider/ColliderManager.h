@@ -23,6 +23,8 @@ class StaticMesh_vs_LineSegmentCollider;
 class StaticMesh_vs_SphereCollider;
 class StaticMesh;
 
+class Vector3D;
+
 struct SphereHitData;
 struct CapsuleHitData;
 struct LineSegmentHitData;
@@ -31,9 +33,37 @@ struct Result_Porygon_Group;
 
 class ColliderManager
 {
+	//ãÖ
+	friend SphereCollider;
+	friend Sphere_vs_CapsuleCollider;
+	friend Sphere_vs_LineSegmentCollider;
+	friend Sphere_vs_StaticMeshCollider;
+
+	//ÉJÉvÉZÉã
+	friend CapsuleCollider;
+	friend Capsule_vs_SphereCollider;
+	friend Capsule_vs_LineSegmentCollider;
+
+	//ê¸ï™
+	friend LineSegmentCollider;
+	friend LineSegment_vs_SphereCollider;
+	friend LineSegment_vs_CapsuleCollider;
+	friend LineSegment_vs_StaticMeshCollider;
+
+	//StaticMesh
+	friend StaticMesh_vs_LineSegmentCollider;
+	friend StaticMesh_vs_SphereCollider;
+	friend StaticMesh;
+
 public:
 	~ColliderManager();
 	static ColliderManager *GetInstance();
+	void Update();
+	void AllClear();
+	bool HitCheckStaticMesh_Line(Result_Porygon *resultPorygon, Vector3D *start, Vector3D *end, unsigned int targetId);
+
+private:
+	ColliderManager();
 	void Add(SphereCollider *pSphere);
 	void Add(Sphere_vs_CapsuleCollider *pSphere);
 	void Add(Sphere_vs_LineSegmentCollider *pSphere);
@@ -47,7 +77,6 @@ public:
 	void Add(LineSegment_vs_StaticMeshCollider *pLineSegment);
 	void Add(StaticMesh_vs_LineSegmentCollider *pStaticMesh);
 	void Add(StaticMesh_vs_SphereCollider *pStaticMesh);
-	void Update();
 	void Clear(SphereCollider *pSphere);
 	void Clear(Sphere_vs_CapsuleCollider *pSphere);
 	void Clear(Sphere_vs_LineSegmentCollider *pSphere);
@@ -61,10 +90,6 @@ public:
 	void Clear(LineSegment_vs_StaticMeshCollider *pLineSegment);
 	void Clear(StaticMesh_vs_LineSegmentCollider *pStaticMesh);
 	void Clear(StaticMesh_vs_SphereCollider *pStaticMesh);
-	void AllClear();
-
-private:
-	ColliderManager();
 	void CheckSphere();
 	void CheckSphere_vs_Capsule();
 	void CheckSphere_vs_LineSegment();

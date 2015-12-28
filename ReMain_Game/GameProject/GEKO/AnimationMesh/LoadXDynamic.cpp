@@ -306,8 +306,6 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	assert(normal.size() != 0 && "Xファイルの法線がありません");
 	assert(material.size() != 0 && "Xファイルのマテリアルがありません");
 
-	fclose(fp);
-
 	//マテリアルとインデックスバッファー動的作成
 	m_MeshInfo.m_pMaterial = new SkinMaterialInfo[m_MeshInfo.materialNumAll];
 	m_MeshInfo.m_ppIndexBuffer = new ID3D11Buffer*[m_MeshInfo.materialNumAll];
@@ -395,16 +393,11 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 		}
 	}
 
-	//ボーン読み込み
-	std::ifstream ifs(fileName);
-	if (ifs.fail())
-	{
-		std::cerr << "失敗" << std::endl;
-	}
+	fseek(fp, 0, SEEK_SET);
+	AddBoneHierarchy(&m_BornInfo.sBorn, fp, 0); //ボーン階層構造読み込み
 
-	AddBoneHierarchy(&m_BornInfo.sBorn, &ifs, 0); //ボーン階層構造読み込み
-
-	LoadAnimation(fileName, m_MeshInfo.pvVertex); //アニメーションとスキンウェイト読み込み
+	fseek(fp, 0, SEEK_SET);
+	LoadAnimation(fp, m_MeshInfo.pvVertex); //アニメーションとスキンウェイト読み込み
 
 	//バーテックスバッファーを作成
 	bd.Usage = D3D11_USAGE_DEFAULT;
@@ -431,6 +424,8 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	material.shrink_to_fit();
 	materialList.clear();
 	materialList.shrink_to_fit();
+
+	fclose(fp);
 
 	return S_OK;
 }
@@ -569,38 +564,37 @@ void LoadXDynamic::AnimationDebug(int animNum)
 	*/
 }
 
-void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
+void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 {
 	std::map<std::string, SkinWeightInfo> SkinWeightInfo; //各ボーンのスキンウェイト値とリスト
 	std::map<int, std::map<std::string, AnimationInfo>> AnimationSet;
 	int AnimSetNumAll = 0;
 
-	std::ifstream ifs(fileName);
-	std::string str;
-	if (ifs.fail()) std::cerr << "失敗" << std::endl;
+	char key[256];
 
-	while (!ifs.eof())
+	while (!feof(fp))
 	{
-		ifs >> str;
 
-		if (str == "//") for (int i = 0; i < 4; i++) ifs >> str;
+		fscanf_s(fp, "%s", key, sizeof(key));
+
+		if (strcmp(key, "//") == 0) for (int i = 0; i < 4; i++) fscanf_s(fp, "%s", key, sizeof(key));
 
 		//テンプレートでの間違い防止	
-		if (str == "template")
+		if (strcmp(key, "template") == 0)
 		{
-			while (str != "}") ifs >> str;
+			while (strcmp(key, "}") != 0) fscanf_s(fp, "%s", key, sizeof(key));
 			continue;
 		}
 
 		//ウェイト値とリスト読み込み
-		if (str == "SkinWeights")
+		if (strcmp(key, "SkinWeights") == 0)
 		{
 			//ボーン名取得
-			ifs >> str;
-			ifs >> str;
+			fscanf_s(fp, "%s", key, sizeof(key));
+			fscanf_s(fp, "%s", key, sizeof(key));
 
 			//余分な文字削除
-			std::string bornName = str;
+			std::string bornName = key;
 			for (int nameCnt = 0; nameCnt < (int)bornName.size(); nameCnt++)
 			{
 				if (bornName[nameCnt] == '"') bornName.erase(bornName.begin() + nameCnt);
@@ -608,36 +602,34 @@ void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
 			}
 
 			//重みリスト数
-			int num; ifs >> num;
+			int num;
+			fscanf_s(fp, "%d;", &num);
 			SkinWeightInfo[bornName].listNumAll = num;
-
-			//getline(ifs, str);
-			ifs >> str;
 
 			//重みリスト読み込み		
 			for (int index = 0, i = 0; i < num; i++)
 			{
-				ifs >> index;
-				ifs >> str;
+				fscanf_s(fp, "%d,", &index);
+				//fscanf_s(fp, "%s", key, sizeof(key));
 				SkinWeightInfo[bornName].weightList.emplace_back(index);
 			}
+			fscanf_s(fp, "%s", key, sizeof(key));
 
 			//重み値読み込み
 			for (float weight = 0.0f, i = 0; i < num; i++)
 			{
-				ifs >> weight;
-				ifs >> str;
+				fscanf_s(fp, "%f,", &weight);
 				SkinWeightInfo[bornName].weight.emplace_back(weight);
 			}
 
-			getline(ifs, str);
+			fgets(key, sizeof(key), fp);
 
 			//ボーンオフセット行列読み込み
 			float x, y, z, w;
 			for (int matCnt = 0; matCnt < 4; matCnt++)
 			{
-				getline(ifs, str);
-				sscanf_s(str.data(), "%f, %f, %f, %f,", &x, &y, &z, &w);
+				fgets(key, sizeof(key), fp);
+				sscanf_s(key, "%f, %f, %f, %f,", &x, &y, &z, &w);
 
 				SkinWeightInfo[bornName].offsetMat.m[matCnt][0] = x;
 				SkinWeightInfo[bornName].offsetMat.m[matCnt][1] = y;
@@ -647,20 +639,22 @@ void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
 		}
 
 		//アニメーションセットを読み込み
-		if (str == "AnimationSet")
+		if (strcmp(key, "AnimationSet") == 0)
 		{
 			int count = 1;
 			int frameNum = 0;
+
 			float x, y, z, w;
 			x = y = z = w = 0;
+
 			bool is = true;
 			bool isFrameLoad = false;
 
-			while (!ifs.eof())
+			while (!feof(fp))
 			{
-				ifs >> str;
-				if (str == "{") count++;
-				if (str == "}") count--;
+				fscanf_s(fp, "%s", key, sizeof(key));
+				if (strcmp(key, "{") == 0) count++;
+				if (strcmp(key, "}") == 0) count--;
 
 				if (count == 0) break; //アニメーションセット終了
 				if (is)
@@ -670,15 +664,14 @@ void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
 				}
 
 				//アニメーション読み込み
-				if (str == "Animation")
+				if (strcmp(key, "Animation") == 0)
 				{
-					ifs >> str;
+					fscanf_s(fp, "%s", key, sizeof(key));
 					count++;
-
-					ifs >> str;
+					fscanf_s(fp, "%s", key, sizeof(key));
 
 					//瓜括弧排除
-					std::string bornName = str;
+					std::string bornName = key;
 					for (int j = 0; j < (int)bornName.size(); j++)
 					{
 						if (bornName[j] == '{') bornName.erase(bornName.begin() + j);
@@ -686,20 +679,20 @@ void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
 					}
 
 					//改行
-					getline(ifs, str);
-					getline(ifs, str);
-					getline(ifs, str);
-					getline(ifs, str);
+					fgets(key, sizeof(key), fp);
+					fgets(key, sizeof(key), fp);
+					fgets(key, sizeof(key), fp);
+					fgets(key, sizeof(key), fp);
 
-					int t = std::stoi(str); //コマ数
-					getline(ifs, str);
+					int t = std::stoi(key); //コマ数
+					fgets(key, sizeof(key), fp);
 					
 					int temp;
 					//回転値取得
 					for (int r = 0; r < t; r++)
 					{
-						sscanf_s(str.data(), "%d;%d; %f, %f, %f, %f;;,", &frameNum, &temp, &w, &x, &y, &z);
-						getline(ifs, str);
+						sscanf_s(key, "%d;%d; %f, %f, %f, %f;;,", &frameNum, &temp, &w, &x, &y, &z);
+						fgets(key, sizeof(key), fp);
 
 						AnimationSet[AnimSetNumAll][bornName].rotation.emplace_back(x, y, z, w);
 
@@ -710,33 +703,33 @@ void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
 						}
 					}
 					isFrameLoad = true;
-					getline(ifs, str);
-					getline(ifs, str);
-					getline(ifs, str);
+					fgets(key, sizeof(key), fp);
+					fgets(key, sizeof(key), fp);
+					fgets(key, sizeof(key), fp);
 
-					t = std::stoi(str); //コマ数
-					getline(ifs, str);
+					t = std::stoi(key); //コマ数
+					fgets(key, sizeof(key), fp);
 
 					//スケール値取得
 					for (int s = 0; s < t; s++)
 					{
-						sscanf_s(str.data(), "%d;%d; %f, %f, %f;;,", &frameNum, &temp, &x, &y, &z);
-						getline(ifs, str);
+						sscanf_s(key, "%d;%d; %f, %f, %f;;,", &frameNum, &temp, &x, &y, &z);
+						fgets(key, sizeof(key), fp);
 
 						AnimationSet[AnimSetNumAll][bornName].scale.emplace_back(x, y, z);
 					}
-					getline(ifs, str);
-					getline(ifs, str);
-					getline(ifs, str);
+					fgets(key, sizeof(key), fp);
+					fgets(key, sizeof(key), fp);
+					fgets(key, sizeof(key), fp);
 
-					t = std::stoi(str); //コマ数
-					getline(ifs, str);
+					t = std::stoi(key); //コマ数
+					fgets(key, sizeof(key), fp);
 
 					//位置取得
 					for (int p = 0; p < t; p++)
 					{
-						sscanf_s(str.data(), "%d;%d; %f, %f, %f;;,", &frameNum, &temp, &x, &y, &z);
-						getline(ifs, str);
+						sscanf_s(key, "%d;%d; %f, %f, %f;;,", &frameNum, &temp, &x, &y, &z);
+						fgets(key, sizeof(key), fp);
 
 						AnimationSet[AnimSetNumAll][bornName].position.emplace_back(x, y, z);
 					}
@@ -750,6 +743,7 @@ void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
 	//アニメーションセットをマトリックスに変換
 	D3DXMATRIX m;
 	D3DXMATRIX S;
+
 	auto it = AnimationSet.begin();
 	auto itEnd = AnimationSet.end();
 	for (int i = 0; it != itEnd; it++, i++)
@@ -860,21 +854,21 @@ void LoadXDynamic::LoadAnimation(std::string fileName, SkinVertexInfo* pVB)
 	SkinWeightInfo.clear();
 }
 
-void LoadXDynamic::LoadMat(Born *pBorn, std::ifstream *pIfs)
+void LoadXDynamic::LoadMat(Born *pBorn, FILE *fp)
 {
-	std::string str;
-	getline(*pIfs, str);
-	getline(*pIfs, str);
-	getline(*pIfs, str);
+	char key[256];
+	fgets(key, sizeof(key), fp);
+	fgets(key, sizeof(key), fp);
+	fgets(key, sizeof(key), fp);
 
 	D3DXMATRIX m;
 
 	float x, y, z, w;
 	for (int matCnt = 0; matCnt < 4; matCnt++)
 	{
-		sscanf_s(str.data(), "%f, %f, %f, %f,", &x, &y, &z, &w);
+		sscanf_s(key, "%f, %f, %f, %f,", &x, &y, &z, &w);
 		m.m[matCnt][0] = x; m.m[matCnt][1] = y; m.m[matCnt][2] = z; m.m[matCnt][3] = w;
-		getline(*pIfs, str);
+		fgets(key, sizeof(key), fp);
 	}
 
 	pBorn->initMat = m;
@@ -938,47 +932,47 @@ void LoadXDynamic::DeleteHierarchy(Born *pBorn)
 	delete pBorn;
 }
 
-bool LoadXDynamic::AddBoneHierarchy(Born *pBorn, std::ifstream *pIfs, int hierarchy)
+bool LoadXDynamic::AddBoneHierarchy(Born *pBorn, FILE *fp, int hierarchy)
 {
 	int begin = 0, end = 0;
 	int current = hierarchy; //現在の階層
-	std::string str;
-	std::ifstream::pos_type beg;
+	int filePos = 0;
+	char key[256];
 
-	while (!pIfs->eof())
+	while (!feof(fp))
 	{
-		*pIfs >> str;
-		if (str == "Mesh") break;
+		fscanf_s(fp, "%s", key, sizeof(key));
+		if (strcmp(key, "Mesh") == 0) break;
 
 		//テンプレートでの間違い防止	
-		if (str == "template")
+		if (strcmp(key, "template") == 0)
 		{
-			while (str != "}") *pIfs >> str;
+			while (strcmp(key, "}") != 0) fscanf_s(fp, "%s", key, sizeof(key));
 			continue;
 		}
 
-		if (str == "{") begin++;
-		if (str == "}") end++;
+		if (strcmp(key, "{") == 0) begin++;
+		if (strcmp(key, "}") == 0) end++;
 
-		if (str == "Frame")
+		if (strcmp(key, "Frame") == 0)
 		{
-			*pIfs >> str;
+			fscanf_s(fp, "%s", key, sizeof(key));
 
 			//子を追加
 			if ((begin == 0) && (end == 0) || (end - begin == -1))
 			{
 				pBorn->child = new Born;
-				pBorn->child->BornName = str;
+				pBorn->child->BornName = key;
 				pBorn->child->indexId = m_BornIndex++;
 				m_BornInfo.BornList.emplace_back(pBorn->child);
 
 				//行列読み込み
-				beg = pIfs->tellg();
-				LoadMat(pBorn->child, pIfs);
-				pIfs->seekg(beg);
+				filePos = ftell(fp);
+				LoadMat(pBorn->child, fp);
+				int e = fseek(fp, filePos, SEEK_SET);
 
 				hierarchy++;
-				AddBoneHierarchy(pBorn->child, pIfs, hierarchy);
+				AddBoneHierarchy(pBorn->child, fp, hierarchy);
 			}
 
 			//階層戻り先にきた場合、同一階層追加
@@ -991,16 +985,16 @@ bool LoadXDynamic::AddBoneHierarchy(Born *pBorn, std::ifstream *pIfs, int hierar
 				m_BornInfo.BornList.emplace_back(pBorn->brother);
 
 				//行列読み込み
-				beg = pIfs->tellg();
-				LoadMat(pBorn->brother, pIfs);
-				pIfs->seekg(beg);
+				filePos = ftell(fp);
+				LoadMat(pBorn->brother, fp);
+				fseek(fp, filePos, SEEK_SET);
 
-				AddBoneHierarchy(pBorn->brother, pIfs, current);
+				AddBoneHierarchy(pBorn->brother, fp, current);
 			}
 
 			//"}"が"{"より多い時は階層を戻る
 			if (end - begin > 0){
-				m_buffer = str;
+				m_buffer = key;
 				m_Back = current - (end - begin);
 				return true;
 			}
@@ -1009,16 +1003,16 @@ bool LoadXDynamic::AddBoneHierarchy(Born *pBorn, std::ifstream *pIfs, int hierar
 			if ((end - begin == 0) && ((begin != 0) && (end != 0)))
 			{
 				pBorn->brother = new Born;
-				pBorn->brother->BornName = str;
+				pBorn->brother->BornName = key;
 				pBorn->brother->indexId = m_BornIndex++;
 				m_BornInfo.BornList.emplace_back(pBorn->brother);
 
 				//行列読み込み
-				beg = pIfs->tellg();
-				LoadMat(pBorn->brother, pIfs);
-				pIfs->seekg(beg);
+				filePos = ftell(fp);
+				LoadMat(pBorn->brother, fp);
+				fseek(fp, filePos, SEEK_SET);
 
-				AddBoneHierarchy(pBorn->brother, pIfs, current);
+				AddBoneHierarchy(pBorn->brother, fp, current);
 			}
 
 			//階層を戻る

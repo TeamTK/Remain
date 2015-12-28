@@ -37,7 +37,7 @@ HRESULT MeshData::InitShader()
 	//ブロブからバーテックスシェーダー作成
 	if (m_MeshInfo.m_IsTexture)
 	{
-		if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\MESH.hlsl"), NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+		if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\Mesh.hlsl"), NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 		{
 			MessageBox(0, TEXT("hlsl読み込み失敗"), NULL, MB_OK);
 			return E_FAIL;
@@ -45,7 +45,7 @@ HRESULT MeshData::InitShader()
 	}
 	else
 	{
-		if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\MESH.hlsl"), NULL, NULL, "VS_NoTeX", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+		if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\Mesh.hlsl"), NULL, NULL, "VS_NoTeX", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 		{
 			MessageBox(0, TEXT("hlsl読み込み失敗"), NULL, MB_OK);
 			return E_FAIL;
@@ -96,7 +96,7 @@ HRESULT MeshData::InitShader()
 	//ブロブからピクセルシェーダー作成
 	if (m_MeshInfo.m_IsTexture)
 	{
-		if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\MESH.hlsl"), NULL, NULL, "PS", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+		if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\Mesh.hlsl"), NULL, NULL, "PS", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 		{
 			MessageBox(0, TEXT("hlsl読み込み失敗"), NULL, MB_OK);
 			return E_FAIL;
@@ -104,7 +104,7 @@ HRESULT MeshData::InitShader()
 	}
 	else
 	{
-		if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\MESH.hlsl"), NULL, NULL, "PS_NoTex", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+		if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\Mesh.hlsl"), NULL, NULL, "PS_NoTex", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 		{
 			MessageBox(0, TEXT("hlsl読み込み失敗"), NULL, MB_OK);
 			return E_FAIL;
