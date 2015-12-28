@@ -6,6 +6,7 @@
 #include "../MainGame/Bullet.h"
 #include "../MainGame/Enemy.h"
 #include "../MainGame/Monster_A.h"
+#include "../MainGame/AmmoBox/AmmoBoxBase.h"
 
 MainGame::MainGame()
 {
@@ -16,6 +17,7 @@ MainGame::MainGame()
 	StageObjectManager::GetInstance()->LoadObject("TextData\\StageObject.txt");
 
 	new Monster_A(Vector3D(-9.0f, 0.0f, 7.7f), Vector3D(0.0f, 0.0f, 0.0f));
+	new AmmoBoxBase(Vector3D(-8.0f, 0.0f, -1.0f), Vector3D(0.0f, 0.0f, 0.0f));	//‚Æ‚è‚ ‚¦‚¸‰¼
 	new Player();
 	new UI_Reticle();
 }

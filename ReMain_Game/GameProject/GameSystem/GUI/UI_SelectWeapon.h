@@ -18,8 +18,8 @@ private:
 	Image m_Circle;
 	Image m_SelectedCursor;
 	Image m_WeaponUI[4];
-	Vector2D m_ScPos;	//カーソルの座標
-	Vector2D m_UIPos[4];
+	Vector3D m_ScPos;	//カーソルの座標 XYのみ使用
+	Vector3D m_UIPos[4];	//各武器UI座標 XYのみ使用
 	RenderTask m_RenderTask;
 	int m_CircleSize;
 	int m_WeponUISize;

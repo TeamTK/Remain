@@ -24,7 +24,7 @@ Vector3D *g_pPlayerPos;
 
 Player::Player() :
 	Character(100.0f, "Player", 0), m_CamDir(0.0f, 0.0f, 0.0f), m_CameraPos(-50.0f, 2.0f, -12.0f),
-	m_KeyDir(0.0f, 0.0f, 0.0f), m_Horizontal(0.134f), m_Phase(0), m_AnimSpeed(30.0f),
+	m_KeyDir(0.0f, 0.0f, 0.0f), m_Horizontal(0.134f), m_Phase(0), m_AnimSpeed(30.0f), m_Radius(0.12f),
 	m_Vertical(-1.5f), m_MoveSpeed(0.0f), m_CameraPosY(1.8f), m_CamSpeed(0.000002f),
 	m_isCrouch(false), m_isAttack(false), m_isTakeWeapon(false), m_isMove(false),
 	m_ChangeTakeWeapon(false), m_isRun(false), m_SetupWeapon(false), m_ToggleCrouch(false),
@@ -38,6 +38,9 @@ Player::Player() :
 	//ÉJÉÅÉâÇÃìñÇΩÇËîªíË
 	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_LookPos, REGIST_FUNC(Player::HitCamera));
 	m_HitCamera.SetID(eHITID0, eHITID1);
+	//íeñÚî†ÇÃìñÇΩÇËîªíË
+	m_HitAmmoBox.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::HitAmmoBox));
+	m_HitAmmoBox.SetID(eHITID1, eHITID2);
 
 	m_SphereMap.radius = 0.2f;
 	
@@ -645,4 +648,9 @@ void Player::HitCamera(Result_Porygon &hitData)
 	Vector3D vec = m_LookPos - m_CameraPos;
 	float dist = (hitData.contactPos - m_CameraPos).Length();
 	m_CameraPos += vec.GetNormalize() * dist;
+}
+
+void Player::HitAmmoBox(Result_Sphere& r)
+{
+	printf("Player Hit to Ammo Box!\n");
 }

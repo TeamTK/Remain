@@ -58,6 +58,8 @@
     <ClCompile Include="GEKO\Task\Task.cpp" />
     <ClCompile Include="GEKO\System\Window.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MainGame\AmmoBox\AmmoBoxBase.cpp" />
+    <ClCompile Include="MainGame\AmmoBox\AmmoBox_Shotgun.cpp" />
     <ClCompile Include="MainGame\Bullet.cpp" />
     <ClCompile Include="MainGame\Character.cpp" />
     <ClCompile Include="MainGame\Enemy.cpp" />
@@ -197,6 +199,9 @@
     <ClInclude Include="GEKO\ImageSystem\Image.h" />
     <ClInclude Include="GEKO\Task\Task.h" />
     <ClInclude Include="GEKO\System\Window.h" />
+    <ClInclude Include="MainGame\AmmoBox.h" />
+    <ClInclude Include="MainGame\AmmoBox\AmmoBoxBase.h" />
+    <ClInclude Include="MainGame\AmmoBox\AmmoBox_Shotgun.h" />
     <ClInclude Include="MainGame\Bullet.h" />
     <ClInclude Include="MainGame\Character.h" />
     <ClInclude Include="MainGame\Enemy.h" />

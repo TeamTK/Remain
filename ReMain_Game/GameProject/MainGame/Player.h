@@ -38,6 +38,7 @@ private:
 	void Hit();
 
 	void HitCamera(Result_Porygon &hitData);
+	void HitAmmoBox(Result_Sphere& r);
 
 private:
 	Shotgun m_pShotgun;
@@ -57,6 +58,7 @@ private:
 	EWeapons m_SelectedWeapon;	//選択している銃
 	Collider m_HitCamera;	//カメラの当たり判定
 	Collider m_Bullet;		//弾の当たり判定
+	Collider m_HitAmmoBox;	//弾薬箱の当たり判定
 	PlayerSightInfo m_PlayerSightInfo; //プレイヤーの視界情報
 	float m_Vertical;		//垂直方向のマウス入力量
 	float m_Horizontal;		//水平方向のマウス入力量
@@ -64,6 +66,7 @@ private:
 	float m_CameraPosY;		//カメラのY座標
 	float m_CamSpeed;		//カメラの回転速度
 	float m_AnimSpeed;		//アニメーションスピード
+	float m_Radius;
 	int m_Phase;
 	bool m_ChangeTakeWeapon;	//銃を持つ
 	bool m_ToggleCrouch;
