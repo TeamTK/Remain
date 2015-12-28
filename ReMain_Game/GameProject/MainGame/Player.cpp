@@ -218,24 +218,32 @@ void Player::Attack()
 	//発砲　(マウス左クリック, 右ショルダボタン)
 	if ((Input::Mouse.LClicked() || Input::XInputPad1.ShoulderRightClicked()) && m_SetupWeapon)
 	{
-		EffectInfo effectData;
-		effectData.imageName = "GunEffect";
-		effectData.num = 30;
-		effectData.pos = m_Model.GetBornPos(24) + m_Model.GetAxisZ(0.9f);
-		effectData.scale = Vector3D(0.05f, 0.05f, 0.1f);
-		effectData.speed = 0.05f;
-		effectData.time = 60;
-		EffectGeneration::Add(effectData);
+		bool isCanShot = false;
 
 		if (m_SelectedWeapon == eShotgun && m_pShotgun.CanShot())
 		{
 			new Bullet(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f, 100.0f, 0.01f);
 			m_pShotgun.ReduceBullet();
+			isCanShot = true;
 		}
 		else if (m_SelectedWeapon == eHandgun && m_pHandgun.CanShot())
 		{
 			new Bullet(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f, 100.0f, 0.01f);
 			m_pHandgun.ReduceBullet();
+			isCanShot = true;
+		}
+
+		//発砲エフェクト生成
+		if (isCanShot)
+		{
+			EffectInfo effectData;
+			effectData.imageName = "GunEffect";
+			effectData.num = 30;
+			effectData.pos = m_Model.GetBornPos(24) + m_Model.GetAxisZ(0.9f);
+			effectData.scale = Vector3D(0.05f, 0.05f, 0.1f);
+			effectData.speed = 0.05f;
+			effectData.time = 60;
+			EffectGeneration::Add(effectData);
 		}
 	}
 }

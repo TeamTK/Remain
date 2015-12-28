@@ -10,7 +10,7 @@ Enemy::Enemy(Vector3D pos, Vector3D rot, const char* name) :
 	m_state(eState_Idle)
 {
 	m_SphereMap.radius = 0.2f; //ƒ}ƒbƒv‚Æ‚Ì”¼Œa
-	m_BodyRadius = 0.2f; //“G‚Ì‘Ì‚Ì”¼Œa
+	m_BodyRadius = 0.5f; //“G‚Ì‘Ì‚Ì”¼Œa
 
 	m_pos = pos;
 	m_rot = rot;
@@ -184,6 +184,5 @@ void Enemy::HitSight(const Vector3D *pPos)
 {
 	m_pPlayerPos = pPos;
 	m_state = eState_Chase;
-	//m_isChase = true;
 	m_Sight.Sleep();
 }

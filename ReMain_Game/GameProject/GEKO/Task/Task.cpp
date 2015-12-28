@@ -81,6 +81,7 @@ bool less(const Task *data1, const Task *data2)
 class TaskManager::TaskPimpl
 {
 public:
+	std::map<const char*, bool> stopList;
 	std::list<Task *> taskList;
 };
 

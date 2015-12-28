@@ -75,6 +75,67 @@ ColliderManager *ColliderManager::GetInstance()
 	return &ColliderManager;
 }
 
+void ColliderManager::Update()
+{
+	CheckSphere(); //‹…“¯Žm‚Ì“–‚½‚è”»’è’²¸
+	CheckCapsule(); //ƒJƒvƒZƒ‹“¯Žm‚Ì“–‚½‚è”»’è’²¸
+	CheckSphere_vs_Capsule(); //‹…‚ÆƒJƒvƒZƒ‹‚Ì“–‚½‚è”»’è’²¸
+	CheckLineSegment(); //ü•ª“¯Žm‚Ì“–‚½‚è”»’è’²¸
+	CheckStaitcMesh_vs_LineSegment(); //staticMesh‚Æü•ª‚Ì“–‚½‚è”»’è’²¸
+	CheckStaitcMesh_vs_Sphere(); //StaticMesh‚Æ‰~‚Ì“–‚½‚è”»’è’²¸
+}
+
+void ColliderManager::AllClear()
+{
+	//‹…
+	m_pColliderListPimpl->SphereList.clear();
+	m_pColliderListPimpl->Sphere_vs_CapsuleList.clear();
+	m_pColliderListPimpl->Sphere_vs_LineSegmentList.clear();
+	m_pColliderListPimpl->Sphere_vs_StaticMeshList.clear();
+
+	//ƒJƒvƒZƒ‹
+	m_pColliderListPimpl->CapsuleList.clear();
+	m_pColliderListPimpl->Capsule_vs_SphereList.clear();
+	m_pColliderListPimpl->Capsule_vs_LineSegmentList.clear();
+
+	//ü•ª
+	m_pColliderListPimpl->LineSegmentList.clear();
+	m_pColliderListPimpl->LineSegment_vs_SphereList.clear();
+	m_pColliderListPimpl->LineSegment_vs_CapsuleList.clear();
+	m_pColliderListPimpl->LineSegment_vs_StaticMeshList.clear();
+
+	//StaticMesh
+	m_pColliderListPimpl->StaticMesh_vs_LineSegmentList.clear();
+	m_pColliderListPimpl->StaticMesh_vs_SphereList.clear();
+}
+
+bool ColliderManager::HitCheckStaticMesh_Line(Result_Porygon *resultPorygon, Vector3D *start, Vector3D *end, unsigned int targetId)
+{
+	auto it2 = m_pColliderListPimpl->StaticMesh_vs_LineSegmentList.begin();
+	auto it2End = m_pColliderListPimpl->StaticMesh_vs_LineSegmentList.end();
+	for (; it2 != it2End; it2++)
+	{
+		if ((*it2)->m_IsSeep) continue;
+
+		//ID‚ªˆê’v‚µ‚½‚ç“–‚½‚è”»’èŒvŽZŠJŽn
+		if (targetId & (*it2)->m_MyId)
+		{
+			LineSegmentHitData lineInfo;
+			lineInfo.pStart = start;
+			lineInfo.pEnd = end;
+
+			static Result_Porygon pory;
+			if (HitCheckStaticMesh_vs_LineSegment(*(*it2)->m_pStaticMeshInfo, lineInfo, &pory))
+			{
+				pory.targetID = (*it2)->m_MyId;
+				*resultPorygon = pory;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void ColliderManager::Add(SphereCollider *pSphere)
 {
 	m_pColliderListPimpl->SphereList.push_back(pSphere);
@@ -138,16 +199,6 @@ void ColliderManager::Add(StaticMesh_vs_LineSegmentCollider *pStaticMesh)
 void ColliderManager::Add(StaticMesh_vs_SphereCollider *pStaticMesh)
 {
 	m_pColliderListPimpl->StaticMesh_vs_SphereList.push_back(pStaticMesh);
-}
-
-void ColliderManager::Update()
-{
-	CheckSphere(); //‹…“¯Žm‚Ì“–‚½‚è”»’è’²¸
-	CheckCapsule(); //ƒJƒvƒZƒ‹“¯Žm‚Ì“–‚½‚è”»’è’²¸
-	CheckSphere_vs_Capsule(); //‹…‚ÆƒJƒvƒZƒ‹‚Ì“–‚½‚è”»’è’²¸
-	CheckLineSegment(); //ü•ª“¯Žm‚Ì“–‚½‚è”»’è’²¸
-	CheckStaitcMesh_vs_LineSegment(); //staticMesh‚Æü•ª‚Ì“–‚½‚è”»’è’²¸
-	CheckStaitcMesh_vs_Sphere(); //StaticMesh‚Æ‰~‚Ì“–‚½‚è”»’è’²¸
 }
 
 void ColliderManager::Clear(SphereCollider *pSphere)
@@ -332,30 +383,6 @@ void ColliderManager::Clear(StaticMesh_vs_SphereCollider *pStaticMesh)
 	}
 }
 
-void ColliderManager::AllClear()
-{
-	//‹…
-	m_pColliderListPimpl->SphereList.clear();
-	m_pColliderListPimpl->Sphere_vs_CapsuleList.clear();
-	m_pColliderListPimpl->Sphere_vs_LineSegmentList.clear();
-	m_pColliderListPimpl->Sphere_vs_StaticMeshList.clear();
-
-	//ƒJƒvƒZƒ‹
-	m_pColliderListPimpl->CapsuleList.clear();
-	m_pColliderListPimpl->Capsule_vs_SphereList.clear();
-	m_pColliderListPimpl->Capsule_vs_LineSegmentList.clear();
-
-	//ü•ª
-	m_pColliderListPimpl->LineSegmentList.clear();
-	m_pColliderListPimpl->LineSegment_vs_SphereList.clear();
-	m_pColliderListPimpl->LineSegment_vs_CapsuleList.clear();
-	m_pColliderListPimpl->LineSegment_vs_StaticMeshList.clear();
-
-	//StaticMesh
-	m_pColliderListPimpl->StaticMesh_vs_LineSegmentList.clear();
-	m_pColliderListPimpl->StaticMesh_vs_SphereList.clear();
-}
-
 void ColliderManager::CheckSphere()
 {
 	auto it = m_pColliderListPimpl->SphereList.begin();
@@ -400,12 +427,10 @@ void ColliderManager::CheckSphere_vs_Capsule()
 	for (; it != itEnd; it++)
 	{
 		if ((*it)->m_IsSeep) continue;
-
 		auto it2 = m_pColliderListPimpl->Capsule_vs_SphereList.begin();
 		auto it2End = m_pColliderListPimpl->Capsule_vs_SphereList.end();
 		for (; it2 != it2End; it2++)
 		{
-			//if ((*it) == nullptr) continue;
 			if ((*it2)->m_IsSeep) continue;
 
 			//ID‚ªˆê’v‚µ‚½‚ç“–‚½‚è”»’èŒvŽZŠJŽn
@@ -608,7 +633,6 @@ void ColliderManager::CheckStaitcMesh_vs_LineSegment()
 				{
 					pory.targetID = (*it2)->m_MyId;
 					(*it)->m_Func(pory);
-					//(*it2)->m_Func(&(*it)->m_HitData);
 				}
 			}
 		}
