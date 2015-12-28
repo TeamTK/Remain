@@ -11,3 +11,4 @@ StaticMesh media\RockWall.x RockWall
 StaticMesh media\SkyDome.x SkyDome
 StaticMesh media\Shotgun.x Shotgun
 StaticMesh media\Handgun.x Handgun
+StaticMesh media\AmmoBox.x AmmoBox

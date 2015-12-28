@@ -8,17 +8,16 @@ enum EState
 
 struct SData
 {
-	float x;
-	float y;
+	Vector3D pos;
 	EWeapons weapons;
 };
 
 static SData WeaponData[] =
 {
-	{ 400.0f, 445.0f, eHand		},	//Down
-	{ 400.0f, 155.0f, eShotgun	},	//Up
-	{ 255.0f, 300.0f, eHandgun	},	//Left
-	{ 545.0f, 300.0f, eNone		},	//Right
+	{ Vector3D(400.0f, 445.0f, 0.0f), eHand		},	//Down
+	{ Vector3D(400.0f, 155.0f, 0.0f), eShotgun	},	//Up
+	{ Vector3D(255.0f, 300.0f, 0.0f), eHandgun	},	//Left
+	{ Vector3D(545.0f, 300.0f, 0.0f), eNone		},	//Right
 };
 
 #define CIRCLE_SIZE 260
@@ -26,7 +25,7 @@ static SData WeaponData[] =
 
 UI_SelectWeapon::UI_SelectWeapon() :
 	m_isSelected(false), m_CircleSize(0), m_WeponUISize(0),
-	m_Selected(1), m_ScPos(400.0f, 155.0f)
+	m_Selected(1), m_ScPos(400.0f, 155.0f, 0.0f)
 {
 	m_RenderTask.Regist(1, REGIST_RENDER_FUNC(UI_SelectWeapon::Draw));
 	State = eOpen;
@@ -41,7 +40,7 @@ UI_SelectWeapon::UI_SelectWeapon() :
 	m_WeaponUI[3].SetAsset("UI_None");
 	for (int i = 0; i < 4; i++) {
 		m_WeaponUI[i].SetCenter(96, 96);
-		m_UIPos[i] = Vector2D(400.0f, 300.0f);
+		m_UIPos[i] = Vector3D(400.0f, 300.0f, 0.0f);
 	}
 }
 
@@ -68,8 +67,7 @@ void UI_SelectWeapon::Update()
 
 			for (int i = 0; i < 4; i++)
 			{
-				m_UIPos[i].x = Vector3D::Lerp(Vector3D(m_UIPos[i].x, 0.0f, 0.0f), Vector3D(WeaponData[i].x, 0.0f, 0.0f), 0.6f).x;
-				m_UIPos[i].y = Vector3D::Lerp(Vector3D(0.0f, m_UIPos[i].y, 0.0f), Vector3D(0.0f, WeaponData[i].y, 0.0f), 0.6f).y;
+				m_UIPos[i] = Vector3D::Lerp(m_UIPos[i], WeaponData[i].pos, 0.6f);
 				//各武器UIのサイズ適応
 				m_WeaponUI[i].SetSize(m_WeponUISize, m_WeponUISize);
 				m_WeaponUI[i].SetCenter(m_WeponUISize / 2, m_WeponUISize / 2);
@@ -82,8 +80,7 @@ void UI_SelectWeapon::Update()
 			if (Input::KeyLeft.Clicked() || Input::XInputPad1.LeftClicked())	m_Selected = 2;
 			if (Input::KeyRight.Clicked() || Input::XInputPad1.RightClicked())	m_Selected = 3;
 			//カーソル移動
-			m_ScPos.x = Vector3D::Lerp(Vector3D(m_ScPos.x, 0.0f, 0.0f), Vector3D(WeaponData[m_Selected].x, 0.0f, 0.0f), 0.6f).x;
-			m_ScPos.y = Vector3D::Lerp(Vector3D(0.0f, m_ScPos.y, 0.0f), Vector3D(0.0f, WeaponData[m_Selected].y, 0.0f), 0.6f).y;
+			m_ScPos = Vector3D::Lerp(m_ScPos, WeaponData[m_Selected].pos, 0.6f);
 
 			break;
 		default:
@@ -105,14 +102,12 @@ void UI_SelectWeapon::Update()
 			{
 				//選択している各武器UIの移動
 				m_WeaponUI[i].SetSize(100, 100);
-				m_UIPos[i].x = Vector3D::Lerp(Vector3D(m_UIPos[i].x, 0.0f, 0.0f), Vector3D(100.0f, 100.0f, 0.0f), 0.6f).x;
-				m_UIPos[i].y = Vector3D::Lerp(Vector3D(0.0f, m_UIPos[i].y, 0.0f), Vector3D(100.0f, 100.0f, 0.0f), 0.6f).y;
+				m_UIPos[i] = Vector3D::Lerp(m_UIPos[i], Vector3D(100.0f, 100.0f, 0.0f), 0.6f);
 			}
 			else
 			{
 				//選択していない各武器UIの移動
-				m_UIPos[i].x = Vector3D::Lerp(Vector3D(m_UIPos[i].x, 0.0f, 0.0f), Vector3D(400.0f, 300.0f, 0.0f), 0.6f).x;
-				m_UIPos[i].y = Vector3D::Lerp(Vector3D(0.0f, m_UIPos[i].y, 0.0f), Vector3D(400.0f, 300.0f, 0.0f), 0.6f).y;
+				m_UIPos[i] = Vector3D::Lerp(m_UIPos[i], Vector3D(400.0f, 300.0f, 0.0f), 0.6f);
 				m_WeaponUI[i].SetSize(m_WeponUISize, m_WeponUISize);
 				m_WeaponUI[i].SetCenter(m_WeponUISize / 2, m_WeponUISize / 2);
 			}
