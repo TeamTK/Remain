@@ -1,14 +1,13 @@
 #include "SightSystem.h"
 #include <list>
 #include <assert.h>
+#include "..\GEKO\Collider\ColliderManager.h"
 
 EnemySight::EnemySight() :
 	m_isSleep(false),
 	m_isObstacle(true),
 	m_pSightData(nullptr)
 {
-	//m_HitSight.SetID(eHITID2, eHITID0);
-	//m_HitSight.Sleep();	
 }
 
 EnemySight::~EnemySight()
@@ -56,7 +55,6 @@ void EnemySight::HitSight(Result_Porygon &data)
 	std::cout << "HITSIGHT" << "\n";
 
 	m_isObstacle = true;
-	m_HitSight.Sleep();
 }
 
 PlayerSightInfo::PlayerSightInfo() :
@@ -169,10 +167,23 @@ void SightManager::Update()
 		//Ž‹ŠEŠp“x
 		if (angle < (*it)->m_pSightData->angle)
 		{
+			std::cout << angle << "\n";
+
 			//‹——£
 			if (plyaerVec.LengthSq() < (*it)->m_pSightData->distance * (*it)->m_pSightData->distance)
 			{
-				(*it)->m_Func(m_pPlayerSightInfo->m_pPos);
+				Result_Porygon pory;
+				if (ColliderManager::GetInstance()->HitCheckStaticMesh_Line(
+					&pory, (*it)->m_pSightData->pSightPos, 
+					m_pPlayerSightInfo->m_pPos, eHITID3 | eHITID4 | eHITID5 | eHITID7))
+				{
+					std::cout << "HIT" << "\n";
+				}
+				else
+				{
+					std::cout << "EYE" << "\n";
+					(*it)->m_Func(m_pPlayerSightInfo->m_pPos);
+				}
 
 				/*
 				if (!(*it)->m_isObstacle)
@@ -188,14 +199,6 @@ void SightManager::Update()
 				}
 				*/
 			}
-			else
-			{
-				//(*it)->Sleep();
-			}
-		}
-		else
-		{
-			//(*it)->Sleep();
 		}
 	}
 }

@@ -15,7 +15,7 @@ MainGame::MainGame()
 	ImageAsset::LoadFile("TextData\\Image.txt");
 	StageObjectManager::GetInstance()->LoadObject("TextData\\StageObject.txt");
 
-	new Monster_A(Vector3D(-7.0f, 0.0f, 7.7f), Vector3D(0.0f, -2.8f, 0.0f));
+	new Monster_A(Vector3D(-9.0f, 0.0f, 7.7f), Vector3D(0.0f, 0.0f, 0.0f));
 	new Player();
 	new UI_Reticle();
 }

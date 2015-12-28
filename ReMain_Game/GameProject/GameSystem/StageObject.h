@@ -140,20 +140,22 @@ public:
 		m_HitMesh.SetAsset("Cabin_Collision");
 		m_HitMesh.SetTranselate(-7.5f, -0.08f, 12.6f);
 		m_HitMesh.SetRotationDegree(0, 90, 0);
-
-		//キャラクタの当たり判定
 		m_CharacterHit.Regist_SMesh_vs_S(&m_HitMesh);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
 
 		//弾の当たり判定
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
 		m_BulletHit.SetID(eHITID5, eHITID2);
+
+		//m_CameraHIt.Regist_SMesh_vs_L(&m_HitMesh);
+		//m_CameraHIt.SetID(eHITID1, eHITID0);
 	}
 	~Cabin(){}
 
 private:
 	StaticMesh m_HitMesh;
 	Collider m_BulletHit;
+	//Collider m_CameraHIt;
 };
 
 //地面

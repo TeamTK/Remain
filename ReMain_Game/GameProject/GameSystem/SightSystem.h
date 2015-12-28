@@ -14,22 +14,6 @@ struct SightData
 	float distance;
 };
 
-/*
-enum SignID
-{
-	eSIGHID1 = (1 << 0),
-	eSIGHID2 = (1 << 1),
-	eSIGHID3 = (1 << 2),
-	eSIGHID4 = (1 << 3),
-	eSIGHID5 = (1 << 4),
-	eSIGHID6 = (1 << 5),
-	eSIGHID7 = (1 << 6),
-	eSIGHID8 = (1 << 7),
-	eSIGHID9 = (1 << 8),
-	eSIGHID10 = (1 << 9)
-};
-*/
-
 //“G‚Ì‹ŠE
 class EnemySight
 {
@@ -53,7 +37,6 @@ private:
 	bool m_isObstacle;
 	std::function<void(const Vector3D *)> m_Func;
 	SightData *m_pSightData;
-	Collider m_HitSight;
 };
 
 //ƒvƒŒƒCƒ„[‘¤‚Ì‹ŠEî•ñ
