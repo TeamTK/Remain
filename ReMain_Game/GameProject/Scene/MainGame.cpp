@@ -6,7 +6,8 @@
 #include "../MainGame/Bullet.h"
 #include "../MainGame/Enemy.h"
 #include "../MainGame/Monster_A.h"
-#include "../MainGame/AmmoBox/AmmoBoxBase.h"
+#include "../MainGame/AmmoBox/AmmoBox_Shotgun.h"
+#include "../MainGame/AmmoBox/AmmoBox_Handgun.h"
 
 MainGame::MainGame()
 {
@@ -17,7 +18,8 @@ MainGame::MainGame()
 	StageObjectManager::GetInstance()->LoadObject("TextData\\StageObject.txt");
 
 	new Monster_A(Vector3D(-9.0f, 0.0f, 7.7f), Vector3D(0.0f, 0.0f, 0.0f));
-	new AmmoBoxBase(Vector3D(-8.0f, 0.0f, -1.0f), Vector3D(0.0f, 0.0f, 0.0f));	//‚Æ‚è‚ ‚¦‚¸‰¼
+	new AmmoBox_Shotgun(Vector3D(-8.0f, 0.0f, -1.0f), Vector3D(0.0f, 0.0f, 0.0f), 7);	//‚Æ‚è‚ ‚¦‚¸‰¼
+	new AmmoBox_Handgun(Vector3D(-16.0f, 0.0f, -1.0f), Vector3D(0.0f, 0.0f, 0.0f), 6);	//‚Æ‚è‚ ‚¦‚¸‰¼
 	new Player();
 	new UI_Reticle();
 }

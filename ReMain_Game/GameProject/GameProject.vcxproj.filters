@@ -93,6 +93,7 @@
     <ClCompile Include="MainGame\Monster_A.cpp" />
     <ClCompile Include="MainGame\AmmoBox\AmmoBoxBase.cpp" />
     <ClCompile Include="MainGame\AmmoBox\AmmoBox_Shotgun.cpp" />
+    <ClCompile Include="MainGame\AmmoBox\AmmoBox_Handgun.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -254,6 +255,7 @@
     <ClInclude Include="MainGame\AmmoBox.h" />
     <ClInclude Include="MainGame\AmmoBox\AmmoBoxBase.h" />
     <ClInclude Include="MainGame\AmmoBox\AmmoBox_Shotgun.h" />
+    <ClInclude Include="MainGame\AmmoBox\AmmoBox_Handgun.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

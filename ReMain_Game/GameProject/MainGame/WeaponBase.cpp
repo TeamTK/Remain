@@ -2,6 +2,7 @@
 
 WeaponBase::WeaponBase()
 {
+
 }
 
 WeaponBase::~WeaponBase()
@@ -52,4 +53,9 @@ bool WeaponBase::CanShot()
 void WeaponBase::ReduceBullet()
 {
 	if (m_Ammo > 0)	m_Ammo--;
+}
+
+void WeaponBase::AddAmmo(int addnum)
+{
+	m_Ammo += addnum;
 }
