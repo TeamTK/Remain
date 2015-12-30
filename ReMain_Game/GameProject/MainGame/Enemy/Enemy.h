@@ -1,8 +1,9 @@
 #ifndef _ENEMY_H_
 #define _ENEMY_H_
 
-#include "Character.h"
-#include "..\GameSystem\SightSystem.h"
+#include "..\Character.h"
+#include "..\..\GameSystem\SightSystem.h"
+#include "..\..\GEKO\Task\FunctionTask.h"
 
 struct BoneCalpule
 {
@@ -22,15 +23,6 @@ class Enemy : public Character
 public:
 	enum
 	{
-		eAnimationWalk,
-		eAnimationAttack,
-		eAnimationDie,
-		eAnimationHitDamage,
-		eAnimationIdle,
-		eAnimationTrot,
-	};
-	enum
-	{
 		eState_Attack,
 		eState_Idle,
 		eState_Chase,
@@ -45,15 +37,14 @@ public:
 	void HitAttack(Result_Capsule &hitData);
 
 protected:
-	void Attack();
-	void Idle();
-	void Chase();
-	void HitDamage();
-	void Die();
+	void Attack(unsigned int animNum);
+	void Idle(unsigned int animNum);
+	void Chase(unsigned int animNum);
+	void HitDamage(unsigned int animNum);
+	void Die(unsigned int animNum);
 
 protected:
 	int m_FlinchNum;
-	int m_state;
 
 	//“G‚Ì‹ŠE
 	EnemySight m_Sight;
@@ -69,8 +60,10 @@ protected:
 	CapsuleInfo *m_pCapsule;
 	std::vector<BoneCalpule> m_BoneCapsule;
 
-	//ƒvƒŒƒCƒ„[‚Ö‚ÌUŒ‚‚Ì“–‚½‚è”»’è
-	Collider *m_pHitAttack; 
+	
+	Collider *m_pHitAttack; //ƒvƒŒƒCƒ„[‚Ö‚ÌUŒ‚‚Ì“–‚½‚è”»’è
+
+	FunctionTask m_FuncTask; //AIŠÇ—
 
 private:
 	void HitSight(const Vector3D *pPos);

@@ -4,8 +4,8 @@
 #include "../GameSystem/StageObject.h"
 #include "../MainGame/Player.h"
 #include "../MainGame/Bullet.h"
-#include "../MainGame/Enemy.h"
-#include "../MainGame/Monster_A.h"
+#include "../MainGame/Enemy/Enemy.h"
+#include "../MainGame/Enemy/Monster_A.h"
 #include "../MainGame/AmmoBox/AmmoBox_Shotgun.h"
 #include "../MainGame/AmmoBox/AmmoBox_Handgun.h"
 
@@ -29,13 +29,11 @@ MainGame::~MainGame()
 	SightManager::GetInstance()->AllClear();
 	StageObjectManager::GetInstance()->ClearList();
 	StageObjectManager::GetInstance()->ClearInstance();
-	EffectGeneration::AllClear();
 }
 
 void MainGame::Update()
 {
 	SightManager::GetInstance()->Update();
-	EffectGeneration::Update();
 
 	//TaskManager::DrawName();
 
@@ -49,6 +47,5 @@ void MainGame::Update()
 void MainGame::Render()
 {
 	StageObjectManager::GetInstance()->Render();
-	EffectGeneration::Render();
 	//std::cout << "MainGame" << '\n';
 }

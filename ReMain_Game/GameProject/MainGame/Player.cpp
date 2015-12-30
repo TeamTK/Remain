@@ -5,12 +5,14 @@
 
 #define CAMERA_NO_CROUCH_POS_Y 1.8f;//しゃがみ姿勢じゃないときのカメラのY座標の高さ
 #define CAMERA_CROUCH_POS_Y 0.95f;	//しゃがみ姿勢のときのカメラのY座標の高さ
+#define CAMERA_HIT_HIGHT 1.5f;		//カメラの当たり判定の高さ
 #define WALK_SPEED 0.07f			//歩くスピード
 #define RUN_SPEED 0.16f				//走るスピード
 #define CROUCH_WALK_SPPED 0.02f		//しゃがみ歩きスピード
 #define	SETUPWEAPON_MOVE_SPEED 0.03f;//武器を構えた時の移動速度
 #define CAMERA_LENGE	2.0f		//プレイヤーとカメラの距離
 #define PI 3.14159265359f
+#define MAP_HIT_RADIUS 0.2f //マップとの当たり判定の半径
 
 //アニメーションスピード
 #define IDLE_ANIM_SPEED 15	//待ち
@@ -36,7 +38,7 @@ Player::Player() :
 	m_pos = Vector3D(-48.0f, 0.0f, -11.0f);
 	
 	//カメラの当たり判定
-	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_LookPos, REGIST_FUNC(Player::HitCamera));
+	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_HitCameraPos, REGIST_FUNC(Player::HitCamera));
 	m_HitCamera.SetID(eHITID0, eHITID1);
 	//弾薬箱の当たり判定
 	m_HitAmmoBox.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::HitAmmoBox));
@@ -46,7 +48,7 @@ Player::Player() :
 	m_HitEnemyAttack.Regist_C_vs_C(&m_pos, &m_SightPos, &m_Radius, REGIST_FUNC(Player::HitEnemyAttack));
 	m_HitEnemyAttack.SetID(eHITID0, eHITID1);
 
-	m_SphereMap.radius = 0.2f;
+	m_SphereMap.radius = MAP_HIT_RADIUS;
 	
 	m_PlayerSightInfo.SetPos(&m_SightPos);
 
@@ -69,6 +71,10 @@ void Player::Update()
 
 	m_SightPos = m_Model.GetBornPos(6); //頭のボーン位置
 
+	//カメラの当たり判定位置
+	m_HitCameraPos = m_pos;
+	m_HitCameraPos.y += CAMERA_HIT_HIGHT;
+
 	//当たり判定用 始点終点
 	m_Start = m_CameraPos;
 	m_End = ((m_LookPos - m_CameraPos) + m_LookPos).GetNormalize();
@@ -87,10 +93,10 @@ void Player::Update()
 	{
 		m_Matrix = m_Model.GetBornMatrix(21, true);
 	}
-	m_Shotgun.SetPlayerBomeMtx(&m_Matrix);
-	m_Shotgun.SetPlayerData(m_Model.GetPlayAnimation(), m_Model.GetPlayTime(), m_Start, m_End);
-	m_Shotgun.Update();
-	m_Shotgun.Render();
+	m_pShotgun.SetPlayerBomeMtx(&m_Matrix);
+	m_pShotgun.SetPlayerData(m_Model.GetPlayAnimation(), m_Model.GetPlayTime(), m_Start, m_End);
+	m_pShotgun.Update();
+	m_pShotgun.Render();
 
 	if ((ainmState == EPlayerAnim::eAnim_TakeHandgun && m_Model.GetPlayTime() >= 15) ||
 		ainmState == EPlayerAnim::eAnim_SetupHandgun ||
@@ -104,10 +110,10 @@ void Player::Update()
 	{
 		m_Matrix = m_Model.GetBornMatrix(3, true);
 	}
-	m_Handgun.SetPlayerBomeMtx(&m_Matrix);
-	m_Handgun.SetPlayerData(m_Model.GetPlayAnimation(), m_Model.GetPlayTime(), m_Start, m_End);
-	m_Handgun.Update();
-	m_Handgun.Render();
+	m_pHandgun.SetPlayerBomeMtx(&m_Matrix);
+	m_pHandgun.SetPlayerData(m_Model.GetPlayAnimation(), m_Model.GetPlayTime(), m_Start, m_End);
+	m_pHandgun.Update();
+	m_pHandgun.Render();
 }
 
 void Player::Move()
@@ -229,16 +235,16 @@ void Player::Attack()
 	{
 		bool isCanShot = false;
 
-		if (m_SelectedWeapon == eShotgun && m_Shotgun.CanShot())
+		if (m_SelectedWeapon == eShotgun && m_pShotgun.CanShot())
 		{
 			new Bullet(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f, 100.0f, 0.01f);
-			m_Shotgun.ReduceBullet();
+			m_pShotgun.ReduceBullet();
 			isCanShot = true;
 		}
-		else if (m_SelectedWeapon == eHandgun && m_Handgun.CanShot())
+		else if (m_SelectedWeapon == eHandgun && m_pHandgun.CanShot())
 		{
 			new Bullet(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f, 100.0f, 0.01f);
-			m_Handgun.ReduceBullet();
+			m_pHandgun.ReduceBullet();
 			isCanShot = true;
 		}
 
@@ -252,7 +258,7 @@ void Player::Attack()
 			effectData.scale = Vector3D(0.05f, 0.05f, 0.1f);
 			effectData.speed = 0.05f;
 			effectData.time = 60;
-			EffectGeneration::Add(effectData);
+			new Effect(effectData, "GunEffect");
 		}
 	}
 }
@@ -658,13 +664,11 @@ void Player::HitAmmoBox(Result_Sphere& r)
 {
 	if (r.targetID & eHITID2)
 	{
-		printf("Player Get to Shotgun Ammo!\n");
-		m_Shotgun.AddAmmo(14);
+		printf("Player Hit to Shotgun Ammo Box!\n");
 	}
 	if (r.targetID & eHITID3)
 	{
-		printf("Player Get to Handgun Ammo!\n");
-		m_Handgun.AddAmmo(12);
+		printf("Player Hit to Handgun Ammo Box!\n");
 	}
 }
 
@@ -678,7 +682,7 @@ void Player::HitEnemyAttack(Result_Capsule &hitData)
 	effectData.scale = Vector3D(1.0f, 1.0f, 1.0f);
 	effectData.speed = 0.1f;
 	effectData.time = 120;
-	EffectGeneration::Add(effectData);
+	new Effect(effectData, "Blood");
 
 	printf("ATTACK_HIT\n");
 }
