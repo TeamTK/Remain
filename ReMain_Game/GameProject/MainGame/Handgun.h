@@ -9,8 +9,7 @@ public:
 	Handgun();
 	~Handgun();
 	void Update();
-	void Shot();
-	void Hit(Result_Capsule &r);
+
 private:
 
 };

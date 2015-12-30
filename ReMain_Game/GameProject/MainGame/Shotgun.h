@@ -9,8 +9,6 @@ public:
 	Shotgun();
 	~Shotgun();
 	void Update();
-	void Shot();
-	void Hit(Result_Capsule &r);
 
 private:
 

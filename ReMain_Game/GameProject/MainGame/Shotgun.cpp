@@ -6,9 +6,6 @@ Shotgun::Shotgun()
 	m_Model.SetAsset("Shotgun");
 
 	m_Ammo = 14;
-	m_Collider.Regist_L_vs_C(&m_Start, &m_End, REGIST_FUNC(Shotgun::Hit));
-	m_Collider.SetID(eHITID3, eHITID2);
-	m_Collider.Sleep();
 }
 
 Shotgun::~Shotgun()
@@ -42,14 +39,4 @@ void Shotgun::Update()
 		m_Model.SetRotationDegree(65, 0, 12);
 	}
 	m_Matrix = *m_Model.GetMatrix();
-}
-
-void Shotgun::Hit(Result_Capsule &r)
-{
-	m_Collider.Sleep();
-}
-
-void Shotgun::Shot()
-{
-	m_Collider.Awake();
 }

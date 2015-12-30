@@ -3,11 +3,12 @@
 
 #include "AmmoBoxBase.h"
 
-class AmmoBox_Shotgun :public AmmoBoxBase
+class AmmoBox_Shotgun : public AmmoBoxBase
 {
 public:
-	AmmoBox_Shotgun();
+	AmmoBox_Shotgun(Vector3D pos, Vector3D rot, int addnum);
 	~AmmoBox_Shotgun();
+	void Update();
 
 private:
 
