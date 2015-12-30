@@ -42,7 +42,7 @@ Player::Player() :
 	m_HitCamera.SetID(eHITID0, eHITID1);
 	//íeñÚî†ÇÃìñÇΩÇËîªíË
 	m_HitAmmoBox.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::HitAmmoBox));
-	m_HitAmmoBox.SetID(eHITID1, eHITID2);
+	m_HitAmmoBox.SetID(eHITID1, eHITID2 | eHITID3);
 
 	//ìGÇÃçUåÇÇÃìñÇΩÇËîªíË
 	m_HitEnemyAttack.Regist_C_vs_C(&m_pos, &m_SightPos, &m_Radius, REGIST_FUNC(Player::HitEnemyAttack));
@@ -664,11 +664,13 @@ void Player::HitAmmoBox(Result_Sphere& r)
 {
 	if (r.targetID & eHITID2)
 	{
-		printf("Player Hit to Shotgun Ammo Box!\n");
+		printf("Player Get to Shotgun Ammo Box!\n");
+		m_pShotgun.AddAmmo(14);
 	}
 	if (r.targetID & eHITID3)
 	{
-		printf("Player Hit to Handgun Ammo Box!\n");
+		printf("Player Get to Handgun Ammo Box!\n");
+		m_pHandgun.AddAmmo(12);
 	}
 }
 
