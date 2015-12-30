@@ -42,8 +42,8 @@ private:
 	void HitEnemyAttack(Result_Capsule &hitData);
 
 private:
-	Shotgun m_pShotgun;
-	Handgun m_pHandgun;
+	Shotgun m_Shotgun;
+	Handgun m_Handgun;
 	UI_SelectWeapon m_SelectWeapon;
 
 	Vector3D m_KeyDir;		//ƒL[“ü—Í²
