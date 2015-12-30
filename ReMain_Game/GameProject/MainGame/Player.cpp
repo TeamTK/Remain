@@ -42,6 +42,10 @@ Player::Player() :
 	m_HitAmmoBox.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::HitAmmoBox));
 	m_HitAmmoBox.SetID(eHITID1, eHITID2);
 
+	//敵の攻撃の当たり判定
+	m_HitEnemyAttack.Regist_C_vs_C(&m_pos, &m_SightPos, &m_Radius, REGIST_FUNC(Player::HitEnemyAttack));
+	m_HitEnemyAttack.SetID(eHITID0, eHITID1);
+
 	m_SphereMap.radius = 0.2f;
 	
 	m_PlayerSightInfo.SetPos(&m_SightPos);
@@ -653,4 +657,19 @@ void Player::HitCamera(Result_Porygon &hitData)
 void Player::HitAmmoBox(Result_Sphere& r)
 {
 	printf("Player Hit to Ammo Box!\n");
+}
+
+void Player::HitEnemyAttack(Result_Capsule &hitData)
+{
+	//血しぶきのエフェクト
+	EffectInfo effectData;
+	effectData.imageName = "Blood";
+	effectData.num = 60;
+	effectData.pos = hitData.end;
+	effectData.scale = Vector3D(1.0f, 1.0f, 1.0f);
+	effectData.speed = 0.1f;
+	effectData.time = 120;
+	EffectGeneration::Add(effectData);
+
+	printf("ATTACK_HIT\n");
 }
