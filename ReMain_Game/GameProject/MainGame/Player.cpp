@@ -656,7 +656,14 @@ void Player::HitCamera(Result_Porygon &hitData)
 
 void Player::HitAmmoBox(Result_Sphere& r)
 {
-	printf("Player Hit to Ammo Box!\n");
+	if (r.targetID & eHITID2)
+	{
+		printf("Player Hit to Shotgun Ammo Box!\n");
+	}
+	if (r.targetID & eHITID3)
+	{
+		printf("Player Hit to Handgun Ammo Box!\n");
+	}
 }
 
 void Player::HitEnemyAttack(Result_Capsule &hitData)
