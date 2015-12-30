@@ -94,6 +94,9 @@
     <ClCompile Include="MainGame\AmmoBox\AmmoBoxBase.cpp" />
     <ClCompile Include="MainGame\AmmoBox\AmmoBox_Shotgun.cpp" />
     <ClCompile Include="MainGame\AmmoBox\AmmoBox_Handgun.cpp" />
+    <ClCompile Include="MainGame\Enemy\Enemy.cpp" />
+    <ClCompile Include="MainGame\Enemy\Monster_A.cpp" />
+    <ClCompile Include="GEKO\Task\FunctionTask.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -256,6 +259,9 @@
     <ClInclude Include="MainGame\AmmoBox\AmmoBoxBase.h" />
     <ClInclude Include="MainGame\AmmoBox\AmmoBox_Shotgun.h" />
     <ClInclude Include="MainGame\AmmoBox\AmmoBox_Handgun.h" />
+    <ClInclude Include="MainGame\Enemy\Enemy.h" />
+    <ClInclude Include="MainGame\Enemy\Monster_A.h" />
+    <ClInclude Include="GEKO\Task\FunctionTask.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">
