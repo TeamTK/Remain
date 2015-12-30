@@ -87,13 +87,14 @@
     <ClCompile Include="GameSystem\GUI\BaseGui.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_SelectWeapon.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_Reticle.cpp" />
-    <ClCompile Include="MainGame\Enemy.cpp" />
     <ClCompile Include="MainGame\Character.cpp" />
     <ClCompile Include="MainGame\Bullet.cpp" />
-    <ClCompile Include="MainGame\Monster_A.cpp" />
     <ClCompile Include="MainGame\AmmoBox\AmmoBoxBase.cpp" />
     <ClCompile Include="MainGame\AmmoBox\AmmoBox_Shotgun.cpp" />
     <ClCompile Include="MainGame\AmmoBox\AmmoBox_Handgun.cpp" />
+    <ClCompile Include="MainGame\Enemy\Enemy.cpp" />
+    <ClCompile Include="MainGame\Enemy\Monster_A.cpp" />
+    <ClCompile Include="GEKO\Task\FunctionTask.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -248,14 +249,15 @@
     <ClInclude Include="GameSystem\GUI\SelectWeapon.h" />
     <ClInclude Include="GameSystem\GUI\UI_SelectWeapon.h" />
     <ClInclude Include="GameSystem\GUI\UI_Reticle.h" />
-    <ClInclude Include="MainGame\Enemy.h" />
     <ClInclude Include="MainGame\Character.h" />
     <ClInclude Include="MainGame\Bullet.h" />
-    <ClInclude Include="MainGame\Monster_A.h" />
     <ClInclude Include="MainGame\AmmoBox.h" />
     <ClInclude Include="MainGame\AmmoBox\AmmoBoxBase.h" />
     <ClInclude Include="MainGame\AmmoBox\AmmoBox_Shotgun.h" />
     <ClInclude Include="MainGame\AmmoBox\AmmoBox_Handgun.h" />
+    <ClInclude Include="MainGame\Enemy\Enemy.h" />
+    <ClInclude Include="MainGame\Enemy\Monster_A.h" />
+    <ClInclude Include="GEKO\Task\FunctionTask.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

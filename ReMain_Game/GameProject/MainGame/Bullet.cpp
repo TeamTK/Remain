@@ -49,7 +49,7 @@ void Bullet::HitMap(Result_Porygon& r)
 	effectData.scale = Vector3D(1.0f, 1.0f, 1.0f);
 	effectData.speed = 0.1f;
 	effectData.time = 120;
-	EffectGeneration::Add(effectData);
+	new Effect(effectData, "Map");
 
 	if (r.targetID & eHITID4)
 	{

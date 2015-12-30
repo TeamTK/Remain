@@ -1,4 +1,5 @@
 #include "Effect.h"
+#include <random>
 
 EffectPart::EffectPart(float x, float y, float z, const Vector3D &pos)
 {
@@ -21,15 +22,16 @@ void EffectPart::SetDirection(const Vector3D &direction)
 void EffectPart::Render(const Vector3D &sclae, float speed, int time, const std::string &name)
 {
 	m_Pos += (m_Direction * speed);
-	Fiqure::RenderBillboard(m_Pos, sclae / time, name);
+	Fiqure::RenderBillboard(m_Pos, sclae / (float)time, name);
 };
 
-Effect::Effect(const EffectInfo &info) :
+Effect::Effect(const EffectInfo &info, const char* effectName) :
 	m_TimeCnt(0),
 	m_AllTime(0),
 	m_Speed(1.0f),
 	m_Scale(1.0f, 1.0f, 1.0f),
-	m_ImageName("NULL")
+	m_ImageName("NULL"),
+	Task(effectName, 0)
 {
 	m_Speed = info.speed;
 	m_ImageName = info.imageName;
@@ -39,17 +41,19 @@ Effect::Effect(const EffectInfo &info) :
 
 	std::random_device rnd;     // 非決定的な乱数生成器を生成
 	std::mt19937 mt(rnd());     //  メルセンヌ・ツイスタの32ビット版、引数は初期シード値
-	std::uniform_int_distribution<> rand(0.0, 6.28);        // [0, 99] 範囲の一様乱数
+	std::uniform_real_distribution<> rand(0.0, 6.28);        // [0, 99] 範囲の一様乱数
 
 	for (int i = 0; i < info.num; i++)
 	{
-		dir.x = cosf(rand(mt));
-		dir.y = sinf(rand(mt));
-		dir.z = sinf(rand(mt));
+		dir.x = cosf((float)rand(mt));
+		dir.y = sinf((float)rand(mt));
+		dir.z = sinf((float)rand(mt));
 		dir.SetNormalize();
 
 		m_list.emplace_back(dir.x, dir.y, dir.z, info.pos);
 	}
+
+	m_RenderTask.Regist(0, REGIST_RENDER_FUNC(Effect::Render));
 };
 
 Effect::~Effect()
@@ -86,6 +90,8 @@ void Effect::Update()
 			it = m_list.erase(it);
 		}
 		m_list.clear();
+
+		Task::SetKill();
 	}
 	else
 	{
@@ -102,78 +108,3 @@ void Effect::Render()
 		it->Render(m_Scale, m_Speed, m_TimeCnt, m_ImageName);
 	}
 };
-
-bool Effect::IsEnd()
-{
-	return (m_TimeCnt >= m_AllTime);
-}
-
-EffectGeneration::EffectGeneration()
-{
-}
-
-EffectGeneration::~EffectGeneration()
-{
-	EffectGeneration* pInstance = EffectGeneration::GetInstance();
-	auto it = pInstance->m_list.begin();
-	auto itEnd = pInstance->m_list.end();
-	for (; it != itEnd;)
-	{
-		it = pInstance->m_list.erase(it);
-	}
-	pInstance->m_list.clear();
-}
-
-EffectGeneration* EffectGeneration::GetInstance()
-{
-	static EffectGeneration effectGeneration;
-	return &effectGeneration;
-}
-
-void EffectGeneration::Add(const EffectInfo &info)
-{
-	EffectGeneration* pInstance = EffectGeneration::GetInstance();
-	pInstance->m_list.emplace_back(info);
-}
-
-void EffectGeneration::AllClear()
-{
-	EffectGeneration* pInstance = EffectGeneration::GetInstance();
-	auto it = pInstance->m_list.begin();
-	auto itEnd = pInstance->m_list.end();
-	for (; it != itEnd;)
-	{
-		it = pInstance->m_list.erase(it);
-	}
-	pInstance->m_list.clear();
-}
-
-void EffectGeneration::Update()
-{
-	EffectGeneration* pInstance = EffectGeneration::GetInstance();
-	auto it = pInstance->m_list.begin();
-	auto itEnd = pInstance->m_list.end();
-	for (; it != itEnd;)
-	{
-		if (it->IsEnd())
-		{
-			it = pInstance->m_list.erase(it);
-		}
-		else
-		{
-			it->Update();
-			it++;
-		}
-	}
-}
-
-void EffectGeneration::Render()
-{
-	EffectGeneration* pInstance = EffectGeneration::GetInstance();
-	auto it = pInstance->m_list.begin();
-	auto itEnd = pInstance->m_list.end();
-	for (; it != itEnd; it++)
-	{
-		it->Render();
-	}
-}

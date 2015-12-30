@@ -53,6 +53,7 @@
     <ClCompile Include="GEKO\Mesh\StaticMesh.cpp" />
     <ClCompile Include="GEKO\Mesh\LoadXStatic.cpp" />
     <ClCompile Include="GEKO\Mesh\MeshData.cpp" />
+    <ClCompile Include="GEKO\Task\FunctionTask.cpp" />
     <ClCompile Include="GEKO\Task\RenderTask.cpp" />
     <ClCompile Include="GEKO\SoundSystem\Sound.cpp" />
     <ClCompile Include="GEKO\Task\Task.cpp" />
@@ -63,9 +64,9 @@
     <ClCompile Include="MainGame\AmmoBox\AmmoBox_Shotgun.cpp" />
     <ClCompile Include="MainGame\Bullet.cpp" />
     <ClCompile Include="MainGame\Character.cpp" />
-    <ClCompile Include="MainGame\Enemy.cpp" />
+    <ClCompile Include="MainGame\Enemy\Enemy.cpp" />
     <ClCompile Include="MainGame\Handgun.cpp" />
-    <ClCompile Include="MainGame\Monster_A.cpp" />
+    <ClCompile Include="MainGame\Enemy\Monster_A.cpp" />
     <ClCompile Include="MainGame\Player.cpp" />
     <ClCompile Include="MainGame\Shotgun.cpp" />
     <ClCompile Include="MainGame\WeaponBase.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
     <ClInclude Include="GEKO\Mesh\LoadXStatic.h" />
     <ClInclude Include="GEKO\Mesh\MeshData.h" />
+    <ClInclude Include="GEKO\Task\FunctionTask.h" />
     <ClInclude Include="GEKO\Task\RenderTask.h" />
     <ClInclude Include="GEKO\SoundSystem\Sound.h" />
     <ClInclude Include="GEKO\ImageSystem\Image.h" />
@@ -206,10 +208,10 @@
     <ClInclude Include="MainGame\AmmoBox\AmmoBox_Shotgun.h" />
     <ClInclude Include="MainGame\Bullet.h" />
     <ClInclude Include="MainGame\Character.h" />
-    <ClInclude Include="MainGame\Enemy.h" />
+    <ClInclude Include="MainGame\Enemy\Enemy.h" />
     <ClInclude Include="MainGame\enums.h" />
     <ClInclude Include="MainGame\Handgun.h" />
-    <ClInclude Include="MainGame\Monster_A.h" />
+    <ClInclude Include="MainGame\Enemy\Monster_A.h" />
     <ClInclude Include="MainGame\Player.h" />
     <ClInclude Include="MainGame\Shotgun.h" />
     <ClInclude Include="MainGame\WeaponBase.h" />
