@@ -27,16 +27,18 @@ Enemy::Enemy(Vector3D pos, Vector3D rot, const char* name) :
 
 Enemy::~Enemy()
 {
-	unsigned int bornNum = BoneCapsule.size();
+	unsigned int bornNum = m_BoneCapsule.size();
 	for (unsigned int i = 0; i < bornNum; i++)
 	{
 		m_pCollider[i].Release();
 	}
-	BoneCapsule.clear();
-	BoneCapsule.shrink_to_fit();
+	m_BoneCapsule.clear();
+	m_BoneCapsule.shrink_to_fit();
 
 	delete[] m_pCollider;
 	delete[] m_pCapsule;
+
+	delete[] m_pHitAttack;
 }
 
 void Enemy::Attack()
@@ -71,6 +73,7 @@ void Enemy::Chase()
 		{
 			m_state = eState_Attack;
 			m_Model.SetTime(0);
+			m_pHitAttack[3].Awake();
 		}
 	}
 	else
@@ -97,12 +100,12 @@ void Enemy::Die()
 void Enemy::Update()
 {
 	//UŒ‚‚³‚ê‚é‘¤‚Ì“–‚½‚è”»’èXV
-	unsigned int bornNum = BoneCapsule.size();
+	unsigned int bornNum = m_BoneCapsule.size();
 	for (unsigned int i = 0; i < bornNum; i++)
 	{
-		m_pCapsule[i].radius = BoneCapsule[i].radius;
-		m_pCapsule[i].segment.start = m_Model.GetBornPos(BoneCapsule[i].start);
-		m_pCapsule[i].segment.end = m_Model.GetBornPos(BoneCapsule[i].end);
+		m_pCapsule[i].radius = m_BoneCapsule[i].radius;
+		m_pCapsule[i].segment.start = m_Model.GetBornPos(m_BoneCapsule[i].start);
+		m_pCapsule[i].segment.end = m_Model.GetBornPos(m_BoneCapsule[i].end);
 	}
 	m_SphereMap.pos = m_pos;
 	m_SphereMap.pos.y += m_SphereMap.radius;
@@ -161,7 +164,7 @@ void Enemy::HitBullet(Result_Sphere& r)
 		m_state = eState_Die;
 
 		//“GŽ©g‚ÌUŒ‚‚Ì“–‚½‚è”»’è’âŽ~
-		int colliderNum = BoneCapsule.size();
+		int colliderNum = m_BoneCapsule.size();
 		for (int i = 0; i < colliderNum; i++) m_pCollider[i].Sleep();
 	}
 	else
@@ -181,6 +184,15 @@ void Enemy::HitBullet(Result_Sphere& r)
 		m_pPlayerPos = g_pPlayerPos;
 		m_state = eState_Chase;
 		m_Sight.Sleep();
+	}
+}
+
+void Enemy::HitAttack(Result_Capsule &hitData)
+{
+	unsigned int bornNum = m_BoneCapsule.size();
+	for (unsigned int i = 0; i < bornNum; i++)
+	{
+		m_pHitAttack[i].Sleep();
 	}
 }
 

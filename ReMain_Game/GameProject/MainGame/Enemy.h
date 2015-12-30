@@ -42,6 +42,7 @@ public:
 	virtual ~Enemy();
 	virtual void Update();
 	void HitBullet(Result_Sphere& r);
+	void HitAttack(Result_Capsule &hitData);
 
 protected:
 	void Attack();
@@ -63,10 +64,13 @@ protected:
 	Vector3D m_Distance;
 	const Vector3D *m_pPlayerPos;
 
-	//キャラクタ同士の攻撃された時の当たり判定
+	//プレイヤーからの攻撃された時の当たり判定
 	Collider *m_pCollider;
 	CapsuleInfo *m_pCapsule;
-	std::vector<BoneCalpule> BoneCapsule;
+	std::vector<BoneCalpule> m_BoneCapsule;
+
+	//プレイヤーへの攻撃の当たり判定
+	Collider *m_pHitAttack; 
 
 private:
 	void HitSight(const Vector3D *pPos);
