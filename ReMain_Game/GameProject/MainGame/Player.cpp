@@ -87,10 +87,10 @@ void Player::Update()
 	{
 		m_Matrix = m_Model.GetBornMatrix(21, true);
 	}
-	m_pShotgun.SetPlayerBomeMtx(&m_Matrix);
-	m_pShotgun.SetPlayerData(m_Model.GetPlayAnimation(), m_Model.GetPlayTime(), m_Start, m_End);
-	m_pShotgun.Update();
-	m_pShotgun.Render();
+	m_Shotgun.SetPlayerBomeMtx(&m_Matrix);
+	m_Shotgun.SetPlayerData(m_Model.GetPlayAnimation(), m_Model.GetPlayTime(), m_Start, m_End);
+	m_Shotgun.Update();
+	m_Shotgun.Render();
 
 	if ((ainmState == EPlayerAnim::eAnim_TakeHandgun && m_Model.GetPlayTime() >= 15) ||
 		ainmState == EPlayerAnim::eAnim_SetupHandgun ||
@@ -104,10 +104,10 @@ void Player::Update()
 	{
 		m_Matrix = m_Model.GetBornMatrix(3, true);
 	}
-	m_pHandgun.SetPlayerBomeMtx(&m_Matrix);
-	m_pHandgun.SetPlayerData(m_Model.GetPlayAnimation(), m_Model.GetPlayTime(), m_Start, m_End);
-	m_pHandgun.Update();
-	m_pHandgun.Render();
+	m_Handgun.SetPlayerBomeMtx(&m_Matrix);
+	m_Handgun.SetPlayerData(m_Model.GetPlayAnimation(), m_Model.GetPlayTime(), m_Start, m_End);
+	m_Handgun.Update();
+	m_Handgun.Render();
 }
 
 void Player::Move()
@@ -229,16 +229,16 @@ void Player::Attack()
 	{
 		bool isCanShot = false;
 
-		if (m_SelectedWeapon == eShotgun && m_pShotgun.CanShot())
+		if (m_SelectedWeapon == eShotgun && m_Shotgun.CanShot())
 		{
 			new Bullet(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f, 100.0f, 0.01f);
-			m_pShotgun.ReduceBullet();
+			m_Shotgun.ReduceBullet();
 			isCanShot = true;
 		}
-		else if (m_SelectedWeapon == eHandgun && m_pHandgun.CanShot())
+		else if (m_SelectedWeapon == eHandgun && m_Handgun.CanShot())
 		{
 			new Bullet(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f, 100.0f, 0.01f);
-			m_pHandgun.ReduceBullet();
+			m_Handgun.ReduceBullet();
 			isCanShot = true;
 		}
 
@@ -658,11 +658,13 @@ void Player::HitAmmoBox(Result_Sphere& r)
 {
 	if (r.targetID & eHITID2)
 	{
-		printf("Player Hit to Shotgun Ammo Box!\n");
+		printf("Player Get to Shotgun Ammo!\n");
+		m_Shotgun.AddAmmo(14);
 	}
 	if (r.targetID & eHITID3)
 	{
-		printf("Player Hit to Handgun Ammo Box!\n");
+		printf("Player Get to Handgun Ammo!\n");
+		m_Handgun.AddAmmo(12);
 	}
 }
 

@@ -29,6 +29,5 @@ void AmmoBoxBase::Render()
 
 void AmmoBoxBase::HitPlayer(Result_Sphere& r)
 {
-	printf("Getting Ammo Box!\n");
 	Task::SetKill();
 }
