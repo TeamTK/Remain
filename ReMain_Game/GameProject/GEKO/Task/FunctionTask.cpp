@@ -36,16 +36,6 @@ void FunctionTask::Sleep(const char *name)
 	}
 }
 
-void FunctionTask::AllSleep()
-{
-	auto it = m_funcMap.begin();
-	auto itEnd = m_funcMap.end();
-	for (; it != itEnd; it++)
-	{
-		it->second.m_IsSleep = true;
-	}
-}
-
 void FunctionTask::Awake(const char *name)
 {
 	auto it = m_funcMap.begin();
@@ -57,16 +47,6 @@ void FunctionTask::Awake(const char *name)
 			it->second.m_IsSleep = false;
 			break;
 		}
-	}
-}
-
-void FunctionTask::AllAwake()
-{
-	auto it = m_funcMap.begin();
-	auto itEnd = m_funcMap.end();
-	for (; it != itEnd; it++)
-	{
-		it->second.m_IsSleep = false;
 	}
 }
 

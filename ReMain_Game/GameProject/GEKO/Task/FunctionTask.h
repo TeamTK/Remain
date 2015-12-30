@@ -25,9 +25,7 @@ public:
 	~FunctionTask();
 	void Regist(const char *name, std::function<void()> func);
 	void Sleep(const char *name);
-	void AllSleep();
 	void Awake(const char *name);
-	void AllAwake();
 	void Update();
 	void OperationDraw();
 	void RegistDraw();

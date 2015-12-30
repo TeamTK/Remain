@@ -42,8 +42,8 @@ private:
 	void HitEnemyAttack(Result_Capsule &hitData);
 
 private:
-	Shotgun m_pShotgun;
-	Handgun m_pHandgun;
+	Shotgun m_Shotgun;
+	Handgun m_Handgun;
 	UI_SelectWeapon m_SelectWeapon;
 
 	Vector3D m_KeyDir;		//キー入力軸
@@ -54,7 +54,6 @@ private:
 	Vector3D m_Start;		//線分の当たり判定用 始点
 	Vector3D m_End;			//線分の当たり判定用 終点
 	Vector3D m_SightPos;	//視線判定の位置
-	Vector3D m_HitCameraPos; //カメラの当たり判定位置
 	Matrix m_Matrix;		//ショットガンの行列
 	EPlayerState m_State;	//プレイヤーの状態	
 	EWeapons m_SelectedWeapon;	//選択している銃

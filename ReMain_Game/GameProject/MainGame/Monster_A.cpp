@@ -30,48 +30,10 @@ Monster_A::Monster_A(Vector3D pos, Vector3D rot) :
 		m_pHitAttack[i].SetID(eHITID1, eHITID0);
 		m_pHitAttack[i].Sleep();
 	}
-
-	//ä÷êîÇìoò^
-	m_FuncTask.Regist("Attack", REGIST_FUNC_TASK(Monster_A::Attack));
-	m_FuncTask.Regist("Idle", REGIST_FUNC_TASK(Monster_A::Idle));
-	m_FuncTask.Regist("Chase", REGIST_FUNC_TASK(Monster_A::Chase));
-	m_FuncTask.Regist("HitDamage", REGIST_FUNC_TASK(Monster_A::HitDamage));
-	m_FuncTask.Regist("Die", REGIST_FUNC_TASK(Monster_A::Die));
-
-	//çXêVí‚é~
-	m_FuncTask.Sleep("Attack");
-	m_FuncTask.Sleep("Chase");
-	m_FuncTask.Sleep("HitDamage");
-	m_FuncTask.Sleep("Die");
 }
 
 Monster_A::~Monster_A()
 {
-}
-
-void Monster_A::Attack()
-{
-	Enemy::Attack(eAnimationAttack);
-}
-
-void Monster_A::Idle()
-{
-	Enemy::Idle(eAnimationIdle);
-}
-
-void Monster_A::Chase()
-{
-	Enemy::Chase(eAnimationTrot);
-}
-
-void Monster_A::HitDamage()
-{
-	Enemy::HitDamage(eAnimationHitDamage);
-}
-
-void Monster_A::Die()
-{
-	Enemy::Die(eAnimationDie);
 }
 
 void Monster_A::Update()

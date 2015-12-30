@@ -1,13 +1,14 @@
 #include "Enemy.h"
-#include "..\..\GameSystem\Effect.h"
-#include "..\Player.h"
+#include "..\GameSystem\Effect.h"
+#include "Player.h"
 
 #define ENEMY_ANIM_END 29
 #define ENEMY_
 
 Enemy::Enemy(Vector3D pos, Vector3D rot, const char* name) :
 	Character(10, name, 1),
-	m_FlinchNum(0)
+	m_FlinchNum(0),
+	m_state(eState_Idle)
 {
 	m_SphereMap.radius = 0.2f; //ƒ}ƒbƒv‚Æ‚Ì”¼Œa
 	m_BodyRadius = 0.5f; //“G‚Ì‘Ì‚Ì”¼Œa
@@ -40,27 +41,26 @@ Enemy::~Enemy()
 	delete[] m_pHitAttack;
 }
 
-void Enemy::Attack(unsigned int animNum)
+void Enemy::Attack()
 {
-	m_Model.ChangeAnimation(animNum);
+	m_Model.ChangeAnimation(eAnimationAttack);
 	if (m_Model.GetPlayTime() == ENEMY_ANIM_END)
 	{
-		m_FuncTask.Sleep("Attack");
-		m_FuncTask.Awake("Chase");
+		m_state = eState_Chase;
 	}
 }
 
-void Enemy::Idle(unsigned int animNum)
+void Enemy::Idle()
 {
-	m_Model.ChangeAnimation(animNum);
+	m_Model.ChangeAnimation(eAnimationIdle);
 }
 
-void Enemy::Chase(unsigned int animNum)
+void Enemy::Chase()
 {
 	//ƒvƒŒƒCƒ„[‚ğ’ÇÕ
 	m_Distance = (*m_pPlayerPos - m_pos);
-	m_Model.ChangeAnimation(animNum);
-	m_rot = Vector3D(0.0f, atan2f(m_Distance.x, m_Distance.z), 0.0);
+	m_Model.ChangeAnimation(eAnimationTrot);
+	m_rot = Vector3D::Lerp(m_rot, Vector3D(0.0f, atan2f(m_Distance.x, m_Distance.z), 0.0), 0.5f);
 
 	float leng = m_Distance.LengthSq();
 
@@ -71,10 +71,9 @@ void Enemy::Chase(unsigned int animNum)
 
 		if (leng < 2)
 		{
+			m_state = eState_Attack;
 			m_Model.SetTime(0);
 			m_pHitAttack[3].Awake();
-			m_FuncTask.Sleep("Chase");
-			m_FuncTask.Awake("Attack");
 		}
 	}
 	else
@@ -83,26 +82,19 @@ void Enemy::Chase(unsigned int animNum)
 	}
 }
 
-void Enemy::HitDamage(unsigned int animNum)
+void Enemy::HitDamage()
 {
-	m_Model.ChangeAnimation(animNum);
-
 	if (m_Model.GetPlayTime() == ENEMY_ANIM_END)
 	{
-		m_FuncTask.Sleep("HitDamage");
-		m_FuncTask.Awake("Chase");
+		m_state = eState_Chase;
 	}
 }
 
-void Enemy::Die(unsigned int animNum)
+void Enemy::Die()
 {
-	m_Model.ChangeAnimation(animNum);
+	m_Model.ChangeAnimation(eAnimationDie);
 	m_Sight.Sleep();
-	if (m_Model.GetPlayTime() == ENEMY_ANIM_END)
-	{
-		m_FuncTask.Sleep("Die");
-		Task::SetKill();
-	}
+	if (m_Model.GetPlayTime() == ENEMY_ANIM_END) Task::SetKill();
 }
 
 void Enemy::Update()
@@ -124,8 +116,31 @@ void Enemy::Update()
 	m_SightVec = m_Model.GetAxisZ(1.0f);
 	m_Model.SetPlayTime(30);
 
-	m_FuncTask.Update();
+	//ó‘Ô‘JˆÚ
+	switch (m_state)
+	{
+	case eState_Attack:
+		Attack();
+		break;
 
+	case eState_Idle:
+		Idle();
+		break;
+
+	case eState_Chase:
+		Chase();
+		break;
+
+	case eState_HitDamage:
+		HitDamage();
+		break;
+
+	case eState_Die:
+		Die();
+
+	default:
+		break;
+	}
 	Character::Update();
 }
 
@@ -139,15 +154,14 @@ void Enemy::HitBullet(Result_Sphere& r)
 	effectData.scale = Vector3D(1.0f, 1.0f, 1.0f);
 	effectData.speed = 0.1f;
 	effectData.time = 120;
-	new Effect(effectData, "Blood");
+	EffectGeneration::Add(effectData);
 
 	m_Hp--;
 	m_FlinchNum++;
 	if (m_Hp <= 0)
 	{
 		m_Model.SetTime(0);
-		m_FuncTask.AllSleep();
-		m_FuncTask.Awake("Die");
+		m_state = eState_Die;
 
 		//“G©g‚ÌUŒ‚‚Ì“–‚½‚è”»’è’â~
 		int colliderNum = m_BoneCapsule.size();
@@ -155,25 +169,21 @@ void Enemy::HitBullet(Result_Sphere& r)
 	}
 	else
 	{
-		m_FuncTask.AllSleep();
-		m_Model.SetTime(0);
-
 		if (m_FlinchNum >= 2)
 		{
 			m_FlinchNum = 0;
-			m_FuncTask.Awake("HitDamage");
+			m_state = eState_HitDamage;
+			m_Model.ChangeAnimation(eAnimationHitDamage);
+			m_Model.SetTime(0);
 		}
-		else
-		{
-			m_FuncTask.Awake("Chase");
-		}
+	}
 
-		//ƒvƒŒƒCƒ„[‚ğ”­Œ©‚µ‚Ä‚¢‚È‚­‚ÄUŒ‚‚ğó‚¯‚½‚ç
-		if (!m_Sight.GetSleep())
-		{
-			m_pPlayerPos = g_pPlayerPos;
-			m_Sight.Sleep();
-		}
+	//ƒvƒŒƒCƒ„[‚ğ”­Œ©‚µ‚Ä‚¢‚È‚­‚ÄUŒ‚‚ğó‚¯‚½‚ç
+	if (!m_Sight.GetSleep())
+	{
+		m_pPlayerPos = g_pPlayerPos;
+		m_state = eState_Chase;
+		m_Sight.Sleep();
 	}
 }
 
@@ -189,7 +199,6 @@ void Enemy::HitAttack(Result_Capsule &hitData)
 void Enemy::HitSight(const Vector3D *pPos)
 {
 	m_pPlayerPos = g_pPlayerPos;
-	m_FuncTask.AllSleep();
-	m_FuncTask.Awake("Chase");
+	m_state = eState_Chase;
 	m_Sight.Sleep();
 }
