@@ -2,21 +2,24 @@
 #include "..\..\GameSystem\Effect.h"
 #include "..\Player.h"
 
-Enemy::Enemy(Vector3D pos, Vector3D rot, const char* name, int flinchNum) :
+Enemy::Enemy(const char* name, EnemyState &enemyState) :
 	Character(10, name, 1),
-	m_FlinchNum(flinchNum),
 	m_FlinchCnt(0)
 {
-	m_SphereMap.radius = 0.2f; //ƒ}ƒbƒv‚Æ‚Ì”¼Œa
-	m_BodyRadius = 0.5f; //“G‚Ì‘Ì‚Ì”¼Œa
+	m_SphereMap.radius = enemyState.mapHitRadius; //ƒ}ƒbƒv‚Æ‚Ì”¼Œa
+	m_BodyRadius = enemyState.bodyRadius; //“G‚Ì‘Ì‚Ì”¼Œa
 
-	m_pos = pos;
-	m_rot = rot;
+	m_Hp = enemyState.hp;
+	m_RunSpeed = enemyState.runSpeed;
+	m_WalkSpeed = enemyState.walkSpeed;
+	m_FlinchNum = enemyState.flinch;
+	m_pos = enemyState.posSpawn;
+	m_rot = enemyState.rotation;
 	m_Model.SetAsset(name);
 
 	//‹ŠEƒVƒXƒeƒ€
-	m_SightData.angle = 60.0f;
-	m_SightData.distance = 10.0f;
+	m_SightData.angle = enemyState.sightAngle;
+	m_SightData.distance = enemyState.sightDistance;
 	m_SightData.pSightPos = &m_SightPos;
 	m_SightData.pSightVec = &m_SightVec;
 	m_Sight.Regist(&m_SightData, REGIST_FUNC(Enemy::HitSight));
@@ -65,7 +68,7 @@ void Enemy::Chase(unsigned int animNum)
 	//UŒ‚”»’f
 	if (leng < 25)
 	{
-		m_pos += m_Distance.GetNormalize() * 0.07f;
+		m_pos += m_Distance.GetNormalize() * m_RunSpeed;
 
 		if (leng < 2)
 		{
@@ -77,7 +80,7 @@ void Enemy::Chase(unsigned int animNum)
 	}
 	else
 	{
-		m_pos += m_Distance.GetNormalize() * 0.03f;
+		m_pos += m_Distance.GetNormalize() * m_WalkSpeed;
 	}
 }
 

@@ -4,8 +4,8 @@
 #define MONSTER_A_HITDAMAGE_ENDTIME 29
 #define MONSTER_A_DIE_ENDTIME 29
 
-Monster_A::Monster_A(Vector3D pos, Vector3D rot) :
-	Enemy(pos, rot, "Monster_A", 2)
+Monster_A::Monster_A(EnemyState &enemyState) :
+	Enemy("Monster_A", enemyState)
 {
 	//各部位のカプセルの情報
 	m_BoneCapsule.emplace_back(0.4f, 25, 4);	//頭

@@ -86,6 +86,7 @@ public:
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
 		m_BulletHit.SetID(eHITID3, eHITID2);
+		m_BulletHit.SetName("Tree_1");
 	}
 	~Tree_1(){}
 
@@ -104,6 +105,7 @@ public:
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
 		m_BulletHit.SetID(eHITID4, eHITID2);
+		m_BulletHit.SetName("Tree_2");
 	}
 	~Tree_2(){}
 
@@ -146,6 +148,7 @@ public:
 		//’e‚Ì“–‚½‚è”»’è
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
 		m_BulletHit.SetID(eHITID5, eHITID2);
+		m_BulletHit.SetName("Cabin");
 
 		//m_CameraHIt.Regist_SMesh_vs_L(&m_HitMesh);
 		//m_CameraHIt.SetID(eHITID1, eHITID0);
@@ -173,6 +176,8 @@ public:
 
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
 		m_BulletHit.SetID(eHITID6, eHITID2);
+		m_BulletHit.SetName("Ground");
+
 	}
 	~Ground() {}
 
@@ -196,6 +201,7 @@ public:
 
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
 		m_BulletHit.SetID(eHITID7, eHITID2);
+		m_BulletHit.SetName("RockWall");
 	}
 	~RockWall() {}
 

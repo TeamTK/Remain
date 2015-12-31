@@ -5,6 +5,22 @@
 #include "..\..\GameSystem\SightSystem.h"
 #include "..\..\GEKO\Task\FunctionTask.h"
 
+struct EnemyState
+{
+	const char *enemyName;
+	int maxSpawn;
+	int flinch;
+	float hp;
+	float walkSpeed;
+	float runSpeed;
+	float mapHitRadius;
+	float bodyRadius;
+	float sightAngle;
+	float sightDistance;
+	Vector3D posSpawn;
+	Vector3D rotation;
+};
+
 struct BoneCalpule
 {
 	float radius;
@@ -30,7 +46,7 @@ public:
 		eState_Die
 	};
 
-	Enemy(Vector3D pos, Vector3D rot, const char* name, int flinchNum);
+	Enemy(const char* name, EnemyState &enemyState);
 	virtual ~Enemy();
 	virtual void Update();
 	void HitBullet(Result_Sphere& r);
@@ -49,6 +65,8 @@ private:
 protected:
 	int m_FlinchNum;
 	int m_FlinchCnt;
+	float m_WalkSpeed;
+	float m_RunSpeed;
 
 	//“G‚ÌŽ‹ŠE
 	EnemySight m_Sight;

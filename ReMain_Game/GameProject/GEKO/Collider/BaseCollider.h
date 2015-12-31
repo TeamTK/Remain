@@ -51,11 +51,14 @@ struct Result_Sphere
 	Vector3D position;
 	float radius;
 	unsigned int targetID;
-	Result_Sphere() {};
-	Result_Sphere(Vector3D &position, float radius, unsigned int targetID) :
+	const char *name;
+	Result_Sphere() :
+		name("NoName") {};
+	Result_Sphere(Vector3D &position, float radius, unsigned int targetID, const char *name) :
 		position(position),
 		radius(radius),
-		targetID(targetID) {};
+		targetID(targetID),
+		name(name) {};
 	~Result_Sphere() {};
 };
 
@@ -66,12 +69,15 @@ struct Result_Capsule
 	Vector3D end;
 	float radius;
 	unsigned int targetID;
-	Result_Capsule() {};
-	Result_Capsule(Vector3D &start, Vector3D &end, float radius, unsigned int targetID) :
+	const char *name;
+	Result_Capsule() :
+		name("NoName") {};
+	Result_Capsule(Vector3D &start, Vector3D &end, float radius, unsigned int targetID, const char *name) :
 		start(start),
 		end(end),
 		radius(radius),
-		targetID(targetID) {};
+		targetID(targetID),
+		name(name) {};
 	~Result_Capsule() {};
 };
 
@@ -81,11 +87,14 @@ struct Result_LineSegment
 	Vector3D start;
 	Vector3D end;
 	unsigned int targetID;
-	Result_LineSegment() {};
-	Result_LineSegment(Vector3D &start, Vector3D &end, unsigned int targetID) :
+	const char *name;
+	Result_LineSegment() :
+		name("NoName") {};
+	Result_LineSegment(Vector3D &start, Vector3D &end, unsigned int targetID, const char *name) :
 		start(start),
 		end(end),
-		targetID(targetID) {};
+		targetID(targetID), 
+		name(name) {};
 };
 
 //ƒ|ƒŠƒSƒ“‚É“–‚½‚Á‚½Œ‹‰Ê
@@ -96,6 +105,7 @@ struct Result_Porygon
 	Vector3D normal;
 	int materialIndex;
 	unsigned int targetID;
+	const char *name;
 	Result_Porygon() {};
 	~Result_Porygon() {};
 };
@@ -116,10 +126,13 @@ struct Result_Porygon_Group
 {
 	int hitNum;
 	float dist;
+	const char *name;
 	Result_Porygon_Sphere *pArray;
 	Result_Porygon_Group() :
 		hitNum(0),
-		pArray(nullptr) {};
+		dist(0.0f),
+		name("NoName"),
+		pArray(nullptr){};
 	~Result_Porygon_Group() {};
 };
 
@@ -133,6 +146,7 @@ public:
 	unsigned int GetMyID() const;
 	unsigned int GetTargetID() const;
 	void SetID(unsigned int myId, unsigned int targetId);
+	void SetName(const char *name);
 	void Sleep();
 	void Awake();
 
@@ -140,6 +154,7 @@ protected:
 	unsigned int m_MyId;
 	unsigned int m_TargetId;
 	bool		 m_IsSeep;
+	const char* m_Name;
 };
 
 #endif

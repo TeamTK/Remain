@@ -97,6 +97,7 @@
     <ClCompile Include="GEKO\Task\FunctionTask.cpp" />
     <ClCompile Include="MainGame\Enemy\Monster_B.cpp" />
     <ClCompile Include="GameSystem\GUI\Number.cpp" />
+    <ClCompile Include="MainGame\Enemy\EnemyStateManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -264,6 +265,7 @@
     <ClInclude Include="GEKO\Task\FunctionTask.h" />
     <ClInclude Include="MainGame\Enemy\Monster_B.h" />
     <ClInclude Include="GameSystem\GUI\Number.h" />
+    <ClInclude Include="MainGame\Enemy\EnemyStateManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

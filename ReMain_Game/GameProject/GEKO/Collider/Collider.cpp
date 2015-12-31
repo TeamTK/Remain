@@ -130,6 +130,12 @@ void Collider::SetID(unsigned int myId, unsigned int targetId)
 	m_pBaseCollider->SetID(myId, targetId);
 }
 
+void Collider::SetName(const char *name)
+{
+	assert((m_pBaseCollider != nullptr) && "Collider‚Í–¢“o˜^‚Å‚·");
+	m_pBaseCollider->SetName(name);
+}
+
 void Collider::Awake()
 {
 	assert((m_pBaseCollider != nullptr) && "Collider‚Í–¢“o˜^‚Å‚·");
