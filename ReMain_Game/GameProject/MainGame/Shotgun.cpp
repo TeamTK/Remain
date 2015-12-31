@@ -39,4 +39,6 @@ void Shotgun::Update()
 		m_Model.SetRotationDegree(65, 0, 12);
 	}
 	m_Matrix = *m_Model.GetMatrix();
+
+	m_Num.NumDraw(0, 0, m_Ammo);
 }
