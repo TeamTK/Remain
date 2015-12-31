@@ -25,7 +25,7 @@ StageObject::StageObject(XYZ pos, XYZ rot, XYZ sca, std::string name)
 {
 	m_Object.SetAsset(name);
 	m_Object.SetTranselate(pos.x, pos.y, pos.z);
-	m_Object.SetRotationDegree(rot.x, rot.y, rot.z);
+	m_Object.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
 	m_Object.SetScale(sca.x, sca.y, sca.z);
 }
 

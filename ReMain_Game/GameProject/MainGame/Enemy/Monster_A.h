@@ -16,7 +16,7 @@ class Monster_A : public Enemy
 	};
 
 public:
-	Monster_A(Vector3D pos, Vector3D rot);
+	Monster_A(EnemyState &enemyState);
 	~Monster_A();
 	void Attack();
 	void Idle();

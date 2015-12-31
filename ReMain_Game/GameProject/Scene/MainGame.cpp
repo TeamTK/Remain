@@ -7,6 +7,7 @@
 #include "../MainGame/Enemy/Enemy.h"
 #include "../MainGame/Enemy/Monster_A.h"
 #include "../MainGame/Enemy/Monster_B.h"
+#include "../MainGame/Enemy/EnemyStateManager.h"
 #include "../MainGame/AmmoBox/AmmoBox_Shotgun.h"
 #include "../MainGame/AmmoBox/AmmoBox_Handgun.h"
 
@@ -19,7 +20,8 @@ MainGame::MainGame()
 	StageObjectManager::GetInstance()->LoadObject("TextData\\StageObject.txt");
 
 	//new Monster_A(Vector3D(-9.0f, 0.0f, 7.7f), Vector3D(0.0f, 0.0f, 0.0f));
-	new Monster_B(Vector3D(-5.0f, 0.0f, 7.7f), Vector3D(0.0f, 90.0f, 0.0f));
+	//new Monster_B(Vector3D(-5.0f, 0.0f, 7.7f), Vector3D(0.0f, 90.0f, 0.0f));
+	EnemyStateManager::Generation("test");
 	new AmmoBox_Shotgun(Vector3D(-8.0f, 0.0f, -1.0f), Vector3D(0.0f, 0.0f, 0.0f), 7);	//‚Æ‚è‚ ‚¦‚¸‰¼
 	new AmmoBox_Handgun(Vector3D(-16.0f, 0.0f, -1.0f), Vector3D(0.0f, 0.0f, 0.0f), 6);	//‚Æ‚è‚ ‚¦‚¸‰¼
 	new Player();
@@ -42,7 +44,7 @@ void MainGame::Update()
 	//“G’Ç‰Á(‰¼)
 	if (Input::KeyP.Clicked())
 	{
-		new Monster_A(Vector3D(-7.0f, 0.0f, 7.7f), Vector3D(0.0f, -2.8f, 0.0f));
+		EnemyStateManager::Generation("test");
 	}
 }
 

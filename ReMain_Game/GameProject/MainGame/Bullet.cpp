@@ -51,29 +51,33 @@ void Bullet::HitMap(Result_Porygon& r)
 	effectData.time = 120;
 	new Effect(effectData, "Map");
 
-	if (r.targetID & eHITID4)
+	if (r.name == "Tree_1")
 	{
 		std::cout << "–Ø" << "\n";
 	}
 
-	if (r.targetID & eHITID5)
+	if (r.name == "Tree_2")
+	{
+		std::cout << "–Ø2" << "\n";
+	}
+
+	if (r.name == "Cabin")
 	{
 		std::cout << "‰Æ" << "\n";
 	}
 
-	if (r.targetID & eHITID6)
+	if (r.name == "Ground")
 	{
 		std::cout << "’n–Ê" << "\n";
 	}
 
-	if (r.targetID & eHITID7)
+	if (r.name == "RockWall")
 	{
 		std::cout << "•Ç" << "\n";
 	}
 
 	m_ColliderMap.Sleep();
 	m_Collider.Sleep();
-	//m_Collider.Release();
 
 	Task::SetKill();
 }

@@ -66,6 +66,7 @@
     <ClCompile Include="MainGame\Bullet.cpp" />
     <ClCompile Include="MainGame\Character.cpp" />
     <ClCompile Include="MainGame\Enemy\Enemy.cpp" />
+    <ClCompile Include="MainGame\Enemy\EnemyStateManager.cpp" />
     <ClCompile Include="MainGame\Enemy\Monster_A.cpp" />
     <ClCompile Include="MainGame\Enemy\Monster_B.cpp" />
     <ClCompile Include="MainGame\Handgun.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="MainGame\Character.h" />
     <ClInclude Include="MainGame\Enemy.h" />
     <ClInclude Include="MainGame\Enemy\Enemy.h" />
+    <ClInclude Include="MainGame\Enemy\EnemyStateManager.h" />
     <ClInclude Include="MainGame\Enemy\Monster_A.h" />
     <ClInclude Include="MainGame\Enemy\Monster_B.h" />
     <ClInclude Include="MainGame\enums.h" />

@@ -3,7 +3,8 @@
 BaseCollider::BaseCollider() :
 	m_MyId(NULL),
 	m_TargetId(NULL),
-	m_IsSeep(false)
+	m_IsSeep(false),
+	m_Name("NoName")
 {
 }
 
@@ -30,6 +31,11 @@ void BaseCollider::SetID(unsigned int myId, unsigned int targetId)
 {
 	m_MyId = myId;
 	m_TargetId = targetId;
+}
+
+void BaseCollider::SetName(const char *name)
+{
+	m_Name = name;
 }
 
 void BaseCollider::Sleep()

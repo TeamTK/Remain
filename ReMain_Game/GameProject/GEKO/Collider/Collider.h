@@ -25,6 +25,7 @@ public:
 	void Regist_SMesh_vs_L(StaticMesh *pStaticMesh);
 	void Regist_SMesh_vs_S(StaticMesh *pStaticMesh);
 	void SetID(unsigned int myId, unsigned int targetId);
+	void SetName(const char *name);
 	void Sleep();
 	void Awake();
 	void Release();
