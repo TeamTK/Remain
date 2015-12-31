@@ -66,6 +66,7 @@
     <ClCompile Include="MainGame\Character.cpp" />
     <ClCompile Include="MainGame\Enemy\Enemy.cpp" />
     <ClCompile Include="MainGame\Enemy\Monster_A.cpp" />
+    <ClCompile Include="MainGame\Enemy\Monster_B.cpp" />
     <ClCompile Include="MainGame\Handgun.cpp" />
     <ClCompile Include="MainGame\Player.cpp" />
     <ClCompile Include="MainGame\Shotgun.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="MainGame\Enemy.h" />
     <ClInclude Include="MainGame\Enemy\Enemy.h" />
     <ClInclude Include="MainGame\Enemy\Monster_A.h" />
+    <ClInclude Include="MainGame\Enemy\Monster_B.h" />
     <ClInclude Include="MainGame\enums.h" />
     <ClInclude Include="MainGame\Handgun.h" />
     <ClInclude Include="MainGame\Monster_A.h" />
