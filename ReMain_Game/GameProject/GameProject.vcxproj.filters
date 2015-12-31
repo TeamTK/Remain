@@ -261,7 +261,6 @@
     <ClInclude Include="MainGame\Enemy\Enemy.h" />
     <ClInclude Include="MainGame\Enemy\Monster_A.h" />
     <ClInclude Include="GEKO\Task\FunctionTask.h" />
-    <ClInclude Include="GameSystem\GUI\Number.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">
