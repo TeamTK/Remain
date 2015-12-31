@@ -30,21 +30,25 @@ public:
 		eState_Die
 	};
 
-	Enemy(Vector3D pos, Vector3D rot, const char* name);
+	Enemy(Vector3D pos, Vector3D rot, const char* name, int flinchNum);
 	virtual ~Enemy();
 	virtual void Update();
 	void HitBullet(Result_Sphere& r);
 	void HitAttack(Result_Capsule &hitData);
 
 protected:
-	void Attack(unsigned int animNum);
+	void Attack(unsigned int animNum, int animEndTime);
 	void Idle(unsigned int animNum);
 	void Chase(unsigned int animNum);
-	void HitDamage(unsigned int animNum);
-	void Die(unsigned int animNum);
+	void HitDamage(unsigned int animNum, int animEndTime);
+	void Die(unsigned int animNum, int animEndTime);
+
+private:
+	void HitSight(const Vector3D *pPos);
 
 protected:
 	int m_FlinchNum;
+	int m_FlinchCnt;
 
 	//“G‚Ì‹ŠE
 	EnemySight m_Sight;
@@ -52,6 +56,7 @@ protected:
 	Vector3D m_SightPos;
 	Vector3D m_SightVec;
 
+	//’ÇÕ—p
 	Vector3D m_Distance;
 	const Vector3D *m_pPlayerPos;
 
@@ -60,13 +65,8 @@ protected:
 	CapsuleInfo *m_pCapsule;
 	std::vector<BoneCalpule> m_BoneCapsule;
 
-	
 	Collider *m_pHitAttack; //ƒvƒŒƒCƒ„[‚Ö‚ÌUŒ‚‚Ì“–‚½‚è”»’è
-
 	FunctionTask m_FuncTask; //AIŠÇ—
-
-private:
-	void HitSight(const Vector3D *pPos);
 };
 
 #endif

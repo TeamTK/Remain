@@ -2,12 +2,10 @@
 #include "..\..\GameSystem\Effect.h"
 #include "..\Player.h"
 
-#define ENEMY_ANIM_END 29
-#define ENEMY_
-
-Enemy::Enemy(Vector3D pos, Vector3D rot, const char* name) :
+Enemy::Enemy(Vector3D pos, Vector3D rot, const char* name, int flinchNum) :
 	Character(10, name, 1),
-	m_FlinchNum(0)
+	m_FlinchNum(flinchNum),
+	m_FlinchCnt(0)
 {
 	m_SphereMap.radius = 0.2f; //ƒ}ƒbƒv‚Æ‚Ì”¼Œa
 	m_BodyRadius = 0.5f; //“G‚Ì‘Ì‚Ì”¼Œa
@@ -40,10 +38,10 @@ Enemy::~Enemy()
 	delete[] m_pHitAttack;
 }
 
-void Enemy::Attack(unsigned int animNum)
+void Enemy::Attack(unsigned int animNum, int animEndTime)
 {
 	m_Model.ChangeAnimation(animNum);
-	if (m_Model.GetPlayTime() == ENEMY_ANIM_END)
+	if (m_Model.GetPlayTime() == animEndTime)
 	{
 		m_FuncTask.Sleep("Attack");
 		m_FuncTask.Awake("Chase");
@@ -83,22 +81,22 @@ void Enemy::Chase(unsigned int animNum)
 	}
 }
 
-void Enemy::HitDamage(unsigned int animNum)
+void Enemy::HitDamage(unsigned int animNum, int animEndTime)
 {
 	m_Model.ChangeAnimation(animNum);
 
-	if (m_Model.GetPlayTime() == ENEMY_ANIM_END)
+	if (m_Model.GetPlayTime() == animEndTime)
 	{
 		m_FuncTask.Sleep("HitDamage");
 		m_FuncTask.Awake("Chase");
 	}
 }
 
-void Enemy::Die(unsigned int animNum)
+void Enemy::Die(unsigned int animNum, int animEndTime)
 {
 	m_Model.ChangeAnimation(animNum);
 	m_Sight.Sleep();
-	if (m_Model.GetPlayTime() == ENEMY_ANIM_END)
+	if (m_Model.GetPlayTime() == animEndTime)
 	{
 		m_FuncTask.Sleep("Die");
 		Task::SetKill();
@@ -142,7 +140,8 @@ void Enemy::HitBullet(Result_Sphere& r)
 	new Effect(effectData, "Blood");
 
 	m_Hp--;
-	m_FlinchNum++;
+	m_FlinchCnt++;
+
 	if (m_Hp <= 0)
 	{
 		m_Model.SetTime(0);
@@ -158,9 +157,10 @@ void Enemy::HitBullet(Result_Sphere& r)
 		m_FuncTask.AllSleep();
 		m_Model.SetTime(0);
 
-		if (m_FlinchNum >= 2)
+		//‹¯‚Ý“®ì
+		if (m_FlinchCnt >= m_FlinchNum)
 		{
-			m_FlinchNum = 0;
+			m_FlinchCnt = 0;
 			m_FuncTask.Awake("HitDamage");
 		}
 		else

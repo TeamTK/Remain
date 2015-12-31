@@ -1,7 +1,11 @@
 #include "Monster_A.h"
 
+#define MONSTER_A_ATTACK_ENDTIME 29
+#define MONSTER_A_HITDAMAGE_ENDTIME 29
+#define MONSTER_A_DIE_ENDTIME 29
+
 Monster_A::Monster_A(Vector3D pos, Vector3D rot) :
-	Enemy(pos, rot, "Monster_A")
+	Enemy(pos, rot, "Monster_A", 2)
 {
 	//各部位のカプセルの情報
 	m_BoneCapsule.emplace_back(0.4f, 25, 4);	//頭
@@ -51,7 +55,7 @@ Monster_A::~Monster_A()
 
 void Monster_A::Attack()
 {
-	Enemy::Attack(eAnimationAttack);
+	Enemy::Attack(eAnimationAttack, MONSTER_A_ATTACK_ENDTIME);
 }
 
 void Monster_A::Idle()
@@ -66,12 +70,12 @@ void Monster_A::Chase()
 
 void Monster_A::HitDamage()
 {
-	Enemy::HitDamage(eAnimationHitDamage);
+	Enemy::HitDamage(eAnimationHitDamage, MONSTER_A_HITDAMAGE_ENDTIME);
 }
 
 void Monster_A::Die()
 {
-	Enemy::Die(eAnimationDie);
+	Enemy::Die(eAnimationDie, MONSTER_A_DIE_ENDTIME);
 }
 
 void Monster_A::Update()
