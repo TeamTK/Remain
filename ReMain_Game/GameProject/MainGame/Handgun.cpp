@@ -1,11 +1,15 @@
 #include "Handgun.h"
 #include "enums.h"
 
-Handgun::Handgun()
+Handgun* g_pHandgun;
+
+Handgun::Handgun(int* anim, float* frame, Matrix* m) :
+	WeaponBase(anim, frame, m, "Handgun", 0)
 {
 	m_Model.SetAsset("Handgun");
 
 	m_Ammo = 6;
+	m_LoadedAmmo = AMMO_LOADED_HANDGUN;
 }
 
 Handgun::~Handgun()
@@ -15,28 +19,39 @@ Handgun::~Handgun()
 
 void Handgun::Update()
 {
-	if (m_PlayerAnim == EPlayerAnim::eAnim_SetupHandgun)
+	//e‚ÌˆÊ’u
+	if (*m_PlayerAnim == EPlayerAnim::eAnim_SetupHandgun)
 	{
 		//\‚¦ó‘Ô
 		//SetTranselate(ã, ‘O, ¶)
 		m_Model.SetTranselate(0.03f, 0.1f, 0.05f);
 		m_Model.SetRotationDegree(180, -90, 0);
 	}
-	else if ((m_PlayerAnim == EPlayerAnim::eAnim_TakeHandgun  && m_PlayerAnimFrame >= 15) ||
-			 m_PlayerAnim == EPlayerAnim::eAnim_IdleTakeHandgun ||
-			 m_PlayerAnim == EPlayerAnim::eAnim_WalkTakeHandgun ||
-			 m_PlayerAnim == EPlayerAnim::eAnim_RunTakeHandgun)
+	else if ((*m_PlayerAnim == EPlayerAnim::eAnim_TakeHandgun  && *m_PlayerAnimFrame >= 15) ||
+		*m_PlayerAnim == EPlayerAnim::eAnim_IdleTakeHandgun ||
+		*m_PlayerAnim == EPlayerAnim::eAnim_WalkTakeHandgun ||
+		*m_PlayerAnim == EPlayerAnim::eAnim_RunTakeHandgun)
 	{
-		//\‚¦ó‘Ô
+		//Žè‚ÉŽ‚Á‚Ä‚¢‚éó‘Ô
 		//SetTranselate(ã, ‘O, ¶)
 		m_Model.SetTranselate(0.03f, 0.1f, 0.05f);
 		m_Model.SetRotationDegree(180, -90, 0);
 	}
 	else
 	{
-
+		//˜‚É‚Â‚¯‚Ä‚¢‚éó‘Ô
 		m_Model.SetTranselate(-0.15f, 0.0f, -0.15f);
 		m_Model.SetRotationDegree(10, 100, 0);
 	}
-	m_Matrix = *m_Model.GetMatrix();
+}
+
+void Handgun::Reload()
+{
+	//ŽèŽ‚¿’e”‚ª0‚æ‚è‘å‚«‚¢•e‚É“ü‚Á‚Ä‚¢‚é’e”‚ªÅ‘å‘•’e”‚æ‚è¬‚³‚¢
+	if (m_Ammo > 0 && m_LoadedAmmo < AMMO_LOADED_HANDGUN)
+	{
+		int temp = AMMO_LOADED_HANDGUN - m_LoadedAmmo;
+		m_LoadedAmmo += temp;
+		m_Ammo -= temp;
+	}
 }

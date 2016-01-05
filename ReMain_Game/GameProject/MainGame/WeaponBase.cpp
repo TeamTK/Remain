@@ -5,6 +5,15 @@ WeaponBase::WeaponBase()
 
 }
 
+WeaponBase::WeaponBase(int* anim, float* frame, Matrix* m, const char *taskName, unsigned int priority) :
+	Task(taskName, priority)
+{
+	m_BoneMtx = m;
+	m_PlayerAnim = anim;
+	m_PlayerAnimFrame = frame;
+	m_RenderTask.Regist(0, REGIST_RENDER_FUNC(WeaponBase::Render));
+}
+
 WeaponBase::~WeaponBase()
 {
 
@@ -12,7 +21,6 @@ WeaponBase::~WeaponBase()
 
 void WeaponBase::Update()
 {
-
 }
 
 void WeaponBase::Render()
@@ -26,36 +34,27 @@ void WeaponBase::Shot()
 
 }
 
-void WeaponBase::SetPlayerBomeMtx(Matrix* m)
-{
-	m_BoneMtx = m;
-}
-
-void WeaponBase::SetPlayerData(int anim, float frame, Vector3D start, Vector3D end)
-{
-	m_PlayerAnim = anim;
-	m_PlayerAnimFrame = frame;
-	m_Start = start;
-	m_End = end;
-
-}
-
 int WeaponBase::GetAmmo()
 {
-	return m_Ammo;
+	return m_LoadedAmmo + m_Ammo;
 }
 
 bool WeaponBase::CanShot()
 {
-	return m_Ammo > 0 ? true : false;
+	return m_LoadedAmmo > 0 ? true : false;
 }
 
 void WeaponBase::ReduceBullet()
 {
-	if (m_Ammo > 0)	m_Ammo--;
+	if (m_LoadedAmmo > 0)	m_LoadedAmmo--;
 }
 
 void WeaponBase::AddAmmo(int addnum)
 {
 	m_Ammo += addnum;
+}
+
+void WeaponBase::Reload()
+{
+
 }

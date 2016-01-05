@@ -4,15 +4,18 @@
 #include "WeaponBase.h"
 #include "../GameSystem/GUI/Number.h"
 
-class Shotgun :public WeaponBase
+class Shotgun : public WeaponBase
 {
 public:
-	Shotgun();
+	Shotgun(int* anim, float* frame, Matrix* m);
 	~Shotgun();
 	void Update();
+	void Reload();		//’e‚ğƒŠƒ[ƒh
 
 private:
 	Number m_Num;
 };
+
+extern Shotgun* g_pShotgun;
 
 #endif

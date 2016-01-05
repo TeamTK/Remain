@@ -24,13 +24,6 @@ public:
 	/// <param name="y">
 	/// •`‰æ‚µ‚½‚¢”š
 	/// </param>
-	/*
-	/// <param name="scroll">
-	/// Œ…‚ª‘‚¦‚½A1Œ…–Ú‚ğŠî€‚É¶‰E‚Ç‚¿‚ç‚ÉŒ…‚ğ‘‚â‚·‚©
-	/// true = ‰E‘¤‚ÉŒ…‚ğ‘‚â‚·
-	/// false = ¶‘¤‚ÉŒ…‚ğ‘‚â‚·
-	/// </param>
-	*/
 	void NumDraw(int x, int y, int num);
 
 private:
