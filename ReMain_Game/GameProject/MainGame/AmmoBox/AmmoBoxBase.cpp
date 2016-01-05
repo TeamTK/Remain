@@ -29,5 +29,6 @@ void AmmoBoxBase::Render()
 
 void AmmoBoxBase::HitPlayer(Result_Sphere& r)
 {
-	Task::SetKill();
+	if (Input::KeyQ.Clicked() || Input::XInputPad1.AClicked())
+		Task::SetKill();
 }

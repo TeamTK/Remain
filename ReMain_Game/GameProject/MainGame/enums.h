@@ -34,6 +34,7 @@ enum EPlayerState
 	eState_TakeWeapon,
 	eState_PutBackWeapon,
 	eState_SetupWeapon,
+	eState_Reload,
 	eState_Hit,
 	eState_Die,
 };

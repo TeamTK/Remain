@@ -4,30 +4,32 @@
 #include "../GEKO/GEKO.h"
 #include "enums.h"
 
-class WeaponBase
+#define AMMO_LOADED_SHOTGUN 6	//最大装弾数ショットガン
+#define AMMO_LOADED_HANDGUN 6	//最大装弾数ハンドガン
+
+class WeaponBase : public Task
 {
 public:
 	WeaponBase();
+	WeaponBase(int* anim, float* frame, Matrix* m, const char *taskName, unsigned int priority);
 	virtual ~WeaponBase();
 	void Update();
 	void Render();
 	void Shot();
-	void SetPlayerData(int anim, float frame, Vector3D start, Vector3D end);
-	void SetPlayerBomeMtx(Matrix* m);
-	int GetAmmo();	//残弾数を取得
+	int GetAmmo();	//合計残弾数を取得
 	bool CanShot();	//弾を撃てるか
 	void ReduceBullet();	//弾を減らす
 	void AddAmmo(int addnum);	//弾を増やす
+	void Reload();		//弾をリロード
 
 protected:
-	int m_Ammo;		//弾数
-	int m_PlayerAnim;		//プレイヤーの再生中アニメーション
-	float m_PlayerAnimFrame;	//プレイヤーのアニメーションフレーム
+	int m_Ammo;		//手持ち弾数
+	int m_LoadedAmmo;	//銃に入っている弾数
+	int* m_PlayerAnim;		//プレイヤーの再生中アニメーション
+	float* m_PlayerAnimFrame;	//プレイヤーのアニメーションフレーム
 	StaticMesh m_Model;
 	Matrix* m_BoneMtx;		//プレイヤーのボーン行列
-	Matrix m_Matrix;	//銃の行列
-	Vector3D m_Start;	//線分の当たり判定用 始点
-	Vector3D m_End;		//線分の当たり判定用 終点
+	RenderTask m_RenderTask;
 };
 
 #endif
