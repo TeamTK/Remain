@@ -6,7 +6,8 @@ class EnemyStateManager
 public:
 	~EnemyStateManager();
 	static void LoadFileState(const char *fileName);
-	static void Generation(const char *name);
+	static void LoadFileSpawn(const char *fileName);
+	static void Generation(const char *stateName, const char *spawnName);
 
 private:
 	EnemyStateManager();

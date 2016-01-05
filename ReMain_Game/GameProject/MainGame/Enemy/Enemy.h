@@ -7,8 +7,6 @@
 
 struct EnemyState
 {
-	const char *enemyName;
-	int maxSpawn;
 	int flinch;
 	float hp;
 	float walkSpeed;
