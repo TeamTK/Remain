@@ -19,9 +19,10 @@ MainGame::MainGame()
 	ImageAsset::LoadFile("TextData\\Image.txt");
 	StageObjectManager::GetInstance()->LoadObject("TextData\\StageObject.txt");
 
-	//new Monster_A(Vector3D(-9.0f, 0.0f, 7.7f), Vector3D(0.0f, 0.0f, 0.0f));
-	//new Monster_B(Vector3D(-5.0f, 0.0f, 7.7f), Vector3D(0.0f, 90.0f, 0.0f));
-	EnemyStateManager::Generation("test");
+	EnemyStateManager::LoadFileState("TextData\\EnemyState.txt");
+	EnemyStateManager::LoadFileSpawn("TextData\\EnemySpawn.txt");
+	EnemyStateManager::Generation("Test", "Test");
+
 	new AmmoBox_Shotgun(Vector3D(-8.0f, 0.0f, -1.0f), Vector3D(0.0f, 0.0f, 0.0f), 7);	//‚Æ‚è‚ ‚¦‚¸‰¼
 	new AmmoBox_Handgun(Vector3D(-16.0f, 0.0f, -1.0f), Vector3D(0.0f, 0.0f, 0.0f), 6);	//‚Æ‚è‚ ‚¦‚¸‰¼
 	new Player();
@@ -44,7 +45,7 @@ void MainGame::Update()
 	//“G’Ç‰Á(‰¼)
 	if (Input::KeyP.Clicked())
 	{
-		EnemyStateManager::Generation("test");
+		EnemyStateManager::Generation("Test", "Test");
 	}
 }
 
