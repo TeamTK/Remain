@@ -12,6 +12,8 @@ enum EPlayerAnim
 	eAnim_Idle,				//待機状態
 	eAnim_IdleTakeGun,		//ショットガン持ち待機状態
 	eAnim_IdleTakeHandgun,	//ハンドガン持ち待機状態
+	eAnim_ReloadGun,
+	eAnim_ReloadHandgun,
 	eAnim_Run,				//走り
 	eAnim_RunTakeGun,		//ショットガンを持って走る
 	eAnim_RunTakeHandgun,	//ハンドガンを持って走る

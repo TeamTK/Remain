@@ -4,6 +4,8 @@
 #include "../../GEKO/GEKO.h"
 #include "../../GEKO/Collider/Collider.h"
 
+#define BOX_RADIUS 0.5f
+
 class AmmoBoxBase : public Task
 {
 public:

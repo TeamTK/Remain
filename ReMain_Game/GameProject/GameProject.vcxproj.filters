@@ -78,9 +78,6 @@
     <ClCompile Include="GEKO\Collider\BaseCollider.cpp" />
     <ClCompile Include="GEKO\Collider\CapsuleCollider.cpp" />
     <ClCompile Include="GEKO\Figure\Sphere3D.cpp" />
-    <ClCompile Include="MainGame\WeaponBase.cpp" />
-    <ClCompile Include="MainGame\Shotgun.cpp" />
-    <ClCompile Include="MainGame\Handgun.cpp" />
     <ClCompile Include="GameSystem\SightSystem.cpp" />
     <ClCompile Include="GEKO\Figure\Billboard.cpp" />
     <ClCompile Include="GameSystem\Effect.cpp" />
@@ -98,6 +95,9 @@
     <ClCompile Include="GameSystem\GUI\Number.cpp" />
     <ClCompile Include="MainGame\Enemy\EnemyStateManager.cpp" />
     <ClCompile Include="MainGame\Bullet\Bullet.cpp" />
+    <ClCompile Include="MainGame\Weapon\WeaponBase.cpp" />
+    <ClCompile Include="MainGame\Weapon\Handgun.cpp" />
+    <ClCompile Include="MainGame\Weapon\Shotgun.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -241,9 +241,6 @@
     <ClInclude Include="GEKO\Collider\BaseCollider.h" />
     <ClInclude Include="GEKO\Collider\CapsuleCollider.h" />
     <ClInclude Include="GEKO\Figure\Sphere3D.h" />
-    <ClInclude Include="MainGame\WeaponBase.h" />
-    <ClInclude Include="MainGame\Shotgun.h" />
-    <ClInclude Include="MainGame\Handgun.h" />
     <ClInclude Include="GameSystem\SightSystem.h" />
     <ClInclude Include="MainGame\enums.h" />
     <ClInclude Include="GEKO\Figure\Billboard.h" />
@@ -266,6 +263,9 @@
     <ClInclude Include="GameSystem\GUI\Number.h" />
     <ClInclude Include="MainGame\Enemy\EnemyStateManager.h" />
     <ClInclude Include="MainGame\Bullet\Bullet.h" />
+    <ClInclude Include="MainGame\Weapon\WeaponBase.h" />
+    <ClInclude Include="MainGame\Weapon\Handgun.h" />
+    <ClInclude Include="MainGame\Weapon\Shotgun.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">
