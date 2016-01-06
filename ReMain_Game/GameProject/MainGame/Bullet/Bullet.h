@@ -1,8 +1,9 @@
 #ifndef _BULLET_H_
 #define _BULLET_H_
 
-#include "../GEKO/GEKO.h"
-#include "../GEKO/Collider/Collider.h"
+//#include "../../GEKO/GEKO.h"
+#include "../../GEKO/Collider/Collider.h"
+#include "../../GEKO/Task/Task.h"
 
 class Bullet : public Task
 {

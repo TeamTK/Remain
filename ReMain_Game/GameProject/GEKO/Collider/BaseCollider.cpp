@@ -27,6 +27,11 @@ unsigned int BaseCollider::GetTargetID() const
 	return m_TargetId;
 }
 
+const char* BaseCollider::GetName() const
+{
+	return m_Name;
+}
+
 void BaseCollider::SetID(unsigned int myId, unsigned int targetId)
 {
 	m_MyId = myId;

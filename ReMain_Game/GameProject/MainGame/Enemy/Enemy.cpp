@@ -4,7 +4,8 @@
 
 Enemy::Enemy(const char* name, EnemyState &enemyState) :
 	Character(10, name, 1),
-	m_FlinchCnt(0)
+	m_FlinchCnt(0),
+	m_IsAttack(false)
 {
 	m_SphereMap.radius = enemyState.mapHitRadius; //ƒ}ƒbƒv‚Æ‚Ì”¼Œa
 	m_BodyRadius = enemyState.bodyRadius; //“G‚Ì‘Ì‚Ì”¼Œa
@@ -46,6 +47,13 @@ void Enemy::Attack(unsigned int animNum, int animEndTime)
 	m_Model.ChangeAnimation(animNum);
 	if (m_Model.GetPlayTime() == animEndTime)
 	{
+		unsigned int bornNum = m_BoneCapsule.size();
+		for (unsigned int i = 0; i < bornNum; i++)
+		{
+			m_pHitAttack[i].Sleep();
+		}
+
+		m_IsAttack = false;
 		m_FuncTask.Sleep("Attack");
 		m_FuncTask.Awake("Chase");
 	}
@@ -73,7 +81,6 @@ void Enemy::Chase(unsigned int animNum)
 		if (leng < 2)
 		{
 			m_Model.SetTime(0);
-			m_pHitAttack[3].Awake();
 			m_FuncTask.Sleep("Chase");
 			m_FuncTask.Awake("Attack");
 		}
@@ -115,14 +122,17 @@ void Enemy::Update()
 		m_pCapsule[i].radius = m_BoneCapsule[i].radius;
 		m_pCapsule[i].segment.start = m_Model.GetBornPos(m_BoneCapsule[i].start);
 		m_pCapsule[i].segment.end = m_Model.GetBornPos(m_BoneCapsule[i].end);
+
+		m_pCollider[i].Awake();
 	}
 	m_SphereMap.pos = m_pos;
 	m_SphereMap.pos.y += m_SphereMap.radius;
 
+	//Ž‹ŠE‚ÌXV
 	m_SightPos = m_pos;
 	m_SightPos.y += 2.0f;
-
 	m_SightVec = m_Model.GetAxisZ(1.0f);
+
 	m_Model.SetPlayTime(30);
 
 	m_FuncTask.Update();
@@ -142,27 +152,31 @@ void Enemy::HitBullet(Result_Sphere& r)
 	effectData.time = 120;
 	new Effect(effectData, "Blood");
 
-	m_Hp--;
-	m_FlinchCnt++;
-
-	if (m_Hp <= 0)
+	//“–‚½‚è”»’è’âŽ~i’e‚©‚ç‚Ìj
+	unsigned int bornNum = m_BoneCapsule.size();
+	for (unsigned int i = 0; i < bornNum; i++)
 	{
-		m_Model.SetTime(0);
-		m_FuncTask.AllSleep();
-		m_FuncTask.Awake("Die");
+		m_pCollider[i].Sleep();
 
-		//“GŽ©g‚ÌUŒ‚‚Ì“–‚½‚è”»’è’âŽ~
-		int colliderNum = m_BoneCapsule.size();
-		for (int i = 0; i < colliderNum; i++) m_pCollider[i].Sleep();
+		//•”ˆÊ‚²‚Æ‚Ìƒ_ƒ[ƒWŒvŽZ
+		if (r.name == m_pCollider[i].GetName())
+		{
+			float damegeNum = m_DamageMagnification[i] * 1.0f;
+			m_Hp -= damegeNum;
+			m_FlinchCnt += damegeNum;
+			std::cout << r.name << "\n";
+		}
 	}
-	else
+
+	//HPƒ[ƒ‚É‚È‚ê‚ÎŽ€–S
+	if (m_Hp >= 0)
 	{
 		m_FuncTask.AllSleep();
-		m_Model.SetTime(0);
 
 		//‹¯‚Ý“®ì
 		if (m_FlinchCnt >= m_FlinchNum)
 		{
+			m_Model.SetTime(0);
 			m_FlinchCnt = 0;
 			m_FuncTask.Awake("HitDamage");
 		}
@@ -177,6 +191,12 @@ void Enemy::HitBullet(Result_Sphere& r)
 			m_pPlayerPos = g_pPlayerPos;
 			m_Sight.Sleep();
 		}
+	}
+	else
+	{
+		m_Model.SetTime(0);
+		m_FuncTask.AllSleep();
+		m_FuncTask.Awake("Die");
 	}
 }
 

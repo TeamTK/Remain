@@ -1,5 +1,5 @@
 #include "Bullet.h"
-#include "..\GameSystem\Effect.h"
+#include "..\..\GameSystem\Effect.h"
 
 Bullet::Bullet(const Vector3D &start, const Vector3D &dir, float speed, float time, float radius) :
 	Task("Bullet", 1),
@@ -28,7 +28,7 @@ Bullet::~Bullet()
 void Bullet::Update()
 {
 	m_Oldpos = m_Pos;
-	m_Pos += m_Dir * m_Speed;			//ˆÚ“®
+	m_Pos += m_Dir * m_Speed;	//ˆÚ“®
 
 	//Žõ–½
 	if (m_Cnt++ > m_Time) Task::SetKill();
@@ -51,27 +51,27 @@ void Bullet::HitMap(Result_Porygon& r)
 	effectData.time = 120;
 	new Effect(effectData, "Map");
 
-	if (r.name == "Tree_1")
+	if (r.targetName == "Tree_1")
 	{
 		std::cout << "–Ø" << "\n";
 	}
 
-	if (r.name == "Tree_2")
+	if (r.targetName == "Tree_2")
 	{
 		std::cout << "–Ø2" << "\n";
 	}
 
-	if (r.name == "Cabin")
+	if (r.targetName == "Cabin")
 	{
 		std::cout << "‰Æ" << "\n";
 	}
 
-	if (r.name == "Ground")
+	if (r.targetName == "Ground")
 	{
 		std::cout << "’n–Ê" << "\n";
 	}
 
-	if (r.name == "RockWall")
+	if (r.targetName == "RockWall")
 	{
 		std::cout << "•Ç" << "\n";
 	}

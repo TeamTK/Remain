@@ -52,13 +52,9 @@ struct Result_Sphere
 	float radius;
 	unsigned int targetID;
 	const char *name;
+	const char *targetName;
 	Result_Sphere() :
 		name("NoName") {};
-	Result_Sphere(Vector3D &position, float radius, unsigned int targetID, const char *name) :
-		position(position),
-		radius(radius),
-		targetID(targetID),
-		name(name) {};
 	~Result_Sphere() {};
 };
 
@@ -70,14 +66,9 @@ struct Result_Capsule
 	float radius;
 	unsigned int targetID;
 	const char *name;
+	const char *targetName;
 	Result_Capsule() :
 		name("NoName") {};
-	Result_Capsule(Vector3D &start, Vector3D &end, float radius, unsigned int targetID, const char *name) :
-		start(start),
-		end(end),
-		radius(radius),
-		targetID(targetID),
-		name(name) {};
 	~Result_Capsule() {};
 };
 
@@ -88,13 +79,9 @@ struct Result_LineSegment
 	Vector3D end;
 	unsigned int targetID;
 	const char *name;
+	const char *targetName;
 	Result_LineSegment() :
 		name("NoName") {};
-	Result_LineSegment(Vector3D &start, Vector3D &end, unsigned int targetID, const char *name) :
-		start(start),
-		end(end),
-		targetID(targetID), 
-		name(name) {};
 };
 
 //ƒ|ƒŠƒSƒ“‚É“–‚½‚Á‚½Œ‹‰Ê
@@ -106,6 +93,7 @@ struct Result_Porygon
 	int materialIndex;
 	unsigned int targetID;
 	const char *name;
+	const char *targetName;
 	Result_Porygon() {};
 	~Result_Porygon() {};
 };
@@ -127,6 +115,7 @@ struct Result_Porygon_Group
 	int hitNum;
 	float dist;
 	const char *name;
+	const char *targetName;
 	Result_Porygon_Sphere *pArray;
 	Result_Porygon_Group() :
 		hitNum(0),
@@ -145,6 +134,7 @@ public:
 	bool GetSleep() const;
 	unsigned int GetMyID() const;
 	unsigned int GetTargetID() const;
+	const char* GetName() const;
 	void SetID(unsigned int myId, unsigned int targetId);
 	void SetName(const char *name);
 	void Sleep();

@@ -11,6 +11,7 @@ public:
 	bool GetSleep() const;
 	unsigned int GetMyID() const;
 	unsigned int GetTargetID() const;
+	const char* GetName() const;
 	void Regist_S_vs_S(Vector3D *pPos, float *pRadius, std::function<void(Result_Sphere &)> func);
 	void Regist_S_vs_C(Vector3D *pPos, float *pRadius, std::function<void(Result_Capsule &)> func);
 	void Regist_S_vs_L(Vector3D *pPos, float *pRadius, std::function<void(Result_LineSegment &)> func);

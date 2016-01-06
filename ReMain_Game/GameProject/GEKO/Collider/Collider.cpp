@@ -36,6 +36,12 @@ unsigned int Collider::GetTargetID() const
 	return m_pBaseCollider->GetTargetID();
 }
 
+const char* Collider::GetName() const
+{
+	assert((m_pBaseCollider != nullptr) && "Collider‚Í–¢“o˜^‚Å‚·");
+	return m_pBaseCollider->GetName();
+}
+
 //‹…‘Î‹…‚Ì“–‚½‚è”»’è
 void Collider::Regist_S_vs_S(Vector3D *pPos, float *pRadius, std::function<void(Result_Sphere &)> func)
 {

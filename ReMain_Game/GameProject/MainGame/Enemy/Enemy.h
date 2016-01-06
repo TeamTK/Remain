@@ -5,6 +5,7 @@
 #include "..\..\GameSystem\SightSystem.h"
 #include "..\..\GEKO\Task\FunctionTask.h"
 
+//敵のステータス
 struct EnemyState
 {
 	int flinch;
@@ -19,31 +20,24 @@ struct EnemyState
 	Vector3D rotation;
 };
 
+//ボーンのカプセル情報
 struct BoneCalpule
 {
 	float radius;
 	int start;
 	int end;
-	BoneCalpule(float r, int s, int e)
-	{
-		radius = r;
-		start = s;
-		end = e;
-	}
+	const char *name;
+	BoneCalpule(float r, int s, int e, const char* name) :
+		radius(r),
+		start(s),
+		end(e),
+		name(name) {}
 };
 
+//基底の敵
 class Enemy : public Character
 {
 public:
-	enum
-	{
-		eState_Attack,
-		eState_Idle,
-		eState_Chase,
-		eState_HitDamage,
-		eState_Die
-	};
-
 	Enemy(const char* name, EnemyState &enemyState);
 	virtual ~Enemy();
 	virtual void Update();
@@ -61,6 +55,7 @@ private:
 	void HitSight(const Vector3D *pPos);
 
 protected:
+	bool m_IsAttack;
 	int m_FlinchNum;
 	int m_FlinchCnt;
 	float m_WalkSpeed;
@@ -80,6 +75,8 @@ protected:
 	Collider *m_pCollider;
 	CapsuleInfo *m_pCapsule;
 	std::vector<BoneCalpule> m_BoneCapsule;
+
+	std::vector<float> m_DamageMagnification;
 
 	Collider *m_pHitAttack; //プレイヤーへの攻撃の当たり判定
 	FunctionTask m_FuncTask; //AI管理

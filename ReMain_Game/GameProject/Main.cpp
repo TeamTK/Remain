@@ -6,8 +6,8 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 {
 	Debug::Start();
 	Debug::SearchMemoryLeak();
-	//GEKO::WindowFixing();
 	GEKO::Init("GEKO3DX", 800, 600);
+	GEKO::MouseErasure();
 
 	DirectionalLight::SetIntensity(0.8f);
 	DirectionalLight::SetDirection(0.0f, 0.5f);
