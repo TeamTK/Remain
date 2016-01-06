@@ -3,7 +3,7 @@
 #include "..\GameSystem\GUI\UI_Reticle.h"
 #include "../GameSystem/StageObject.h"
 #include "../MainGame/Player.h"
-#include "../MainGame/Bullet.h"
+#include "../MainGame/Bullet/Bullet.h"
 #include "../MainGame/Enemy/Enemy.h"
 #include "../MainGame/Enemy/Monster_A.h"
 #include "../MainGame/Enemy/Monster_B.h"
@@ -19,9 +19,10 @@ MainGame::MainGame()
 	ImageAsset::LoadFile("TextData\\Image.txt");
 	StageObjectManager::GetInstance()->LoadObject("TextData\\StageObject.txt");
 
+	//ìGê∂ê¨
 	EnemyStateManager::LoadFileState("TextData\\EnemyState.txt");
 	EnemyStateManager::LoadFileSpawn("TextData\\EnemySpawn.txt");
-	EnemyStateManager::Generation("Test", "Test");
+	EnemyStateManager::Generation("Normal_Monster_A", "Chapter1-1");
 
 	new AmmoBox_Shotgun(Vector3D(-8.0f, 0.0f, -1.0f), Vector3D(0.0f, 0.0f, 0.0f), 7);	//Ç∆ÇËÇ†Ç¶Ç∏âº
 	new AmmoBox_Handgun(Vector3D(-16.0f, 0.0f, -1.0f), Vector3D(0.0f, 0.0f, 0.0f), 6);	//Ç∆ÇËÇ†Ç¶Ç∏âº
@@ -45,7 +46,7 @@ void MainGame::Update()
 	//ìGí«â¡(âº)
 	if (Input::KeyP.Clicked())
 	{
-		EnemyStateManager::Generation("Test", "Test");
+		EnemyStateManager::Generation("Normal_Monster_A", "Chapter1-1");
 	}
 }
 

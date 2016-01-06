@@ -250,6 +250,7 @@ void EnemyStateManager::Generation(const char *stateName, const char *spawnName)
 	state.sightAngle = stateinfo.sightAngle;
 	state.sightDistance = stateinfo.sightDistance;
 
+	//指定数の敵を生成してパラメーターを割り当て
 	auto it = GetInstance()->m_pEnemyStatePimpl->mapSpawn[spawnName].begin();
 	auto itEnd = GetInstance()->m_pEnemyStatePimpl->mapSpawn[spawnName].end();
 	for (; it != itEnd; it++)

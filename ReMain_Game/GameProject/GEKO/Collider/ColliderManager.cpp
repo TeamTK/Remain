@@ -42,18 +42,18 @@ public:
 	std::list<Sphere_vs_LineSegmentCollider*> Sphere_vs_LineSegmentList; //球対線分
 	std::list<Sphere_vs_StaticMeshCollider*> Sphere_vs_StaticMeshList; //球対StaticMesh
 
-	//カプセル
+																	   //カプセル
 	std::list<CapsuleCollider*> CapsuleList; //カプセル対カプセル
 	std::list<Capsule_vs_SphereCollider*> Capsule_vs_SphereList; //カプセル対球
 	std::list<Capsule_vs_LineSegmentCollider*> Capsule_vs_LineSegmentList; //カプセル対線分
 
-	//線分
+																		   //線分
 	std::list<LineSegmentCollider*> LineSegmentList; //線分対線分
 	std::list<LineSegment_vs_SphereCollider*> LineSegment_vs_SphereList; //線分球
 	std::list<LineSegment_vs_CapsuleCollider*> LineSegment_vs_CapsuleList; //線分対カプセル
 	std::list<LineSegment_vs_StaticMeshCollider*> LineSegment_vs_StaticMeshList; //線分対staticMesh
 
-	//StaticMesh
+																				 //StaticMesh
 	std::list<StaticMesh_vs_LineSegmentCollider*> StaticMesh_vs_LineSegmentList; //メッシュ対線分
 	std::list<StaticMesh_vs_SphereCollider*> StaticMesh_vs_SphereList; //メッシュ対球
 };
@@ -407,12 +407,14 @@ void ColliderManager::CheckSphere()
 					hitData1.position = *(*it)->m_HitData.pPosition;
 					hitData1.radius = *(*it)->m_HitData.pRadius;
 					hitData1.targetID = (*it)->m_MyId;
-					hitData1.name = (*it)->m_Name;
+					hitData1.targetName = (*it)->m_Name;
+					hitData1.name = (*it2)->m_Name;
 
 					hitData2.position = *(*it2)->m_HitData.pPosition;
 					hitData2.radius = *(*it2)->m_HitData.pRadius;
 					hitData2.targetID = (*it2)->m_MyId;
-					hitData2.name = (*it2)->m_Name;
+					hitData2.targetName = (*it2)->m_Name;
+					hitData2.name = (*it)->m_Name;
 
 					(*it)->m_Func(hitData2);
 					(*it2)->m_Func(hitData1);
@@ -448,12 +450,14 @@ void ColliderManager::CheckSphere_vs_Capsule()
 					hitData1.end = *(*it2)->m_HitData.pEnd;
 					hitData1.radius = *(*it2)->m_HitData.pRadius;
 					hitData1.targetID = (*it2)->m_MyId;
-					hitData1.name = (*it2)->m_Name;
+					hitData1.targetName = (*it2)->m_Name;
+					hitData1.name = (*it)->m_Name;
 
 					hitData2.position = *(*it)->m_HitData.pPosition;
 					hitData2.radius = *(*it)->m_HitData.pRadius;
 					hitData2.targetID = (*it)->m_MyId;
-					hitData2.name = (*it)->m_Name;
+					hitData2.targetName = (*it)->m_Name;
+					hitData2.name = (*it2)->m_Name;
 
 					(*it)->m_Func(hitData1);  //カプセル側の情報
 					(*it2)->m_Func(hitData2); //球側の情報
@@ -488,12 +492,14 @@ void ColliderManager::CheckSphere_vs_LineSegment()
 					hitData1.start = *(*it2)->m_HitData.pStart;
 					hitData1.end = *(*it2)->m_HitData.pEnd;
 					hitData1.targetID = (*it2)->m_MyId;
-					hitData1.name = (*it2)->m_Name;
+					hitData1.targetName = (*it2)->m_Name;
+					hitData1.name = (*it)->m_Name;
 
 					hitData2.position = *(*it)->m_HitData.pPosition;
 					hitData2.radius = *(*it)->m_HitData.pRadius;
 					hitData2.targetID = (*it)->m_MyId;
-					hitData2.name = (*it)->m_Name;
+					hitData2.targetName = (*it)->m_Name;
+					hitData2.name = (*it2)->m_Name;
 
 					(*it)->m_Func(hitData1);  //線分側の情報
 					(*it2)->m_Func(hitData2); //球側の情報
@@ -528,13 +534,15 @@ void ColliderManager::CheckCapsule()
 					hitData1.end = *(*it)->m_HitData.pEnd;
 					hitData1.radius = *(*it)->m_HitData.pRadius;
 					hitData1.targetID = (*it)->m_MyId;
-					hitData1.name = (*it)->m_Name;
+					hitData1.targetName = (*it)->m_Name;
+					hitData1.name = (*it2)->m_Name;
 
 					hitData2.start = *(*it2)->m_HitData.pStart;
 					hitData2.end = *(*it2)->m_HitData.pEnd;
 					hitData2.radius = *(*it2)->m_HitData.pRadius;
 					hitData2.targetID = (*it2)->m_MyId;
-					hitData2.name = (*it2)->m_Name;
+					hitData2.targetName = (*it2)->m_Name;
+					hitData2.name = (*it)->m_Name;
 
 					(*it)->m_Func(hitData2);
 					(*it2)->m_Func(hitData1);
@@ -569,13 +577,16 @@ void ColliderManager::CheckCapsule_vs_LineSegment()
 					hitData1.start = *(*it2)->m_HitData.pStart;
 					hitData1.end = *(*it2)->m_HitData.pEnd;
 					hitData1.targetID = (*it2)->m_MyId;
-					hitData1.name = (*it2)->m_Name;
+					hitData1.targetName = (*it2)->m_Name;
+					hitData1.name = (*it)->m_Name;
 
 					hitData2.start = *(*it)->m_HitData.pStart;
 					hitData2.end = *(*it)->m_HitData.pEnd;
 					hitData2.radius = *(*it)->m_HitData.pRadius;
 					hitData2.targetID = (*it)->m_MyId;
-					hitData2.name = (*it)->m_Name;
+					hitData2.targetName = (*it)->m_Name;
+					hitData2.name = (*it2)->m_Name;
+
 
 					(*it)->m_Func(hitData1);  //線分側の情報
 					(*it2)->m_Func(hitData2); //カプセル側の情報
@@ -609,12 +620,14 @@ void ColliderManager::CheckLineSegment()
 					hitData1.start = *(*it)->m_HitData.pStart;
 					hitData1.end = *(*it)->m_HitData.pEnd;
 					hitData1.targetID = (*it)->m_MyId;
-					hitData1.name = (*it)->m_Name;
+					hitData1.targetName = (*it)->m_Name;
+					hitData1.name = (*it2)->m_Name;
 
 					hitData2.start = *(*it2)->m_HitData.pStart;
 					hitData2.end = *(*it2)->m_HitData.pEnd;
 					hitData2.targetID = (*it2)->m_MyId;
-					hitData2.name = (*it2)->m_Name;
+					hitData2.targetName = (*it2)->m_Name;
+					hitData2.name = (*it)->m_Name;
 
 					(*it)->m_Func(hitData2);
 					(*it2)->m_Func(hitData1);
@@ -644,7 +657,8 @@ void ColliderManager::CheckStaitcMesh_vs_LineSegment()
 				if (HitCheckStaticMesh_vs_LineSegment(*(*it2)->m_pStaticMeshInfo, (*it)->m_HitData, &pory))
 				{
 					pory.targetID = (*it2)->m_MyId;
-					pory.name = (*it2)->m_Name;
+					pory.targetName = (*it2)->m_Name;
+					pory.name = (*it)->m_Name;
 					(*it)->m_Func(pory);
 				}
 			}
@@ -671,7 +685,8 @@ void ColliderManager::CheckStaitcMesh_vs_Sphere()
 				Result_Porygon_Group pory;
 				if (HitCheckStaticMesh_vs_Sphere(*(*it2)->m_pStaticMeshInfo, (*it)->m_HitData, &pory))
 				{
-					pory.name = (*it2)->m_Name;
+					pory.targetName = (*it2)->m_Name;
+					pory.name = (*it)->m_Name;
 					(*it)->m_Func(pory);
 					delete[] pory.pArray;
 				}

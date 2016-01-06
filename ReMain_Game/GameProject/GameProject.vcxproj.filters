@@ -88,7 +88,6 @@
     <ClCompile Include="GameSystem\GUI\UI_SelectWeapon.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_Reticle.cpp" />
     <ClCompile Include="MainGame\Character.cpp" />
-    <ClCompile Include="MainGame\Bullet.cpp" />
     <ClCompile Include="MainGame\AmmoBox\AmmoBoxBase.cpp" />
     <ClCompile Include="MainGame\AmmoBox\AmmoBox_Shotgun.cpp" />
     <ClCompile Include="MainGame\AmmoBox\AmmoBox_Handgun.cpp" />
@@ -98,6 +97,7 @@
     <ClCompile Include="MainGame\Enemy\Monster_B.cpp" />
     <ClCompile Include="GameSystem\GUI\Number.cpp" />
     <ClCompile Include="MainGame\Enemy\EnemyStateManager.cpp" />
+    <ClCompile Include="MainGame\Bullet\Bullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -254,7 +254,6 @@
     <ClInclude Include="GameSystem\GUI\UI_Reticle.h" />
     <ClInclude Include="MainGame\Enemy.h" />
     <ClInclude Include="MainGame\Character.h" />
-    <ClInclude Include="MainGame\Bullet.h" />
     <ClInclude Include="MainGame\Monster_A.h" />
     <ClInclude Include="MainGame\AmmoBox.h" />
     <ClInclude Include="MainGame\AmmoBox\AmmoBoxBase.h" />
@@ -266,6 +265,7 @@
     <ClInclude Include="MainGame\Enemy\Monster_B.h" />
     <ClInclude Include="GameSystem\GUI\Number.h" />
     <ClInclude Include="MainGame\Enemy\EnemyStateManager.h" />
+    <ClInclude Include="MainGame\Bullet\Bullet.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">
