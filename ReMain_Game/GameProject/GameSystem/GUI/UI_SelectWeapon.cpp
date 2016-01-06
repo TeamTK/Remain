@@ -75,10 +75,16 @@ void UI_SelectWeapon::Update()
 			break;
 		case eSelect:
 			//武器選択(方向キー、十字キー)
+			/*
 			if (Input::KeyDown.Clicked() || Input::XInputPad1.DownClicked())	m_Selected = 0;
 			if (Input::KeyUp.Clicked() || Input::XInputPad1.UpClicked())		m_Selected = 1;
 			if (Input::KeyLeft.Clicked() || Input::XInputPad1.LeftClicked())	m_Selected = 2;
 			if (Input::KeyRight.Clicked() || Input::XInputPad1.RightClicked())	m_Selected = 3;
+			*/
+			if (Input::KeyS.Clicked() || Input::XInputPad1.DownClicked())	m_Selected = 0;
+			if (Input::KeyW.Clicked() || Input::XInputPad1.UpClicked())		m_Selected = 1;
+			if (Input::KeyA.Clicked() || Input::XInputPad1.LeftClicked())	m_Selected = 2;
+			if (Input::KeyD.Clicked() || Input::XInputPad1.RightClicked())	m_Selected = 3;
 			//カーソル移動
 			m_ScPos = Vector3D::Lerp(m_ScPos, WeaponData[m_Selected].pos, 0.6f);
 

@@ -4,8 +4,8 @@
 #include "../GEKO/GEKO.h"
 #include "Character.h"
 #include "enums.h"
-#include "../MainGame/Shotgun.h"
-#include "../MainGame/Handgun.h"
+#include "../MainGame/Weapon/Shotgun.h"
+#include "../MainGame/Weapon/Handgun.h"
 #include "../GameSystem/SightSystem.h"
 #include"../GameSystem/GUI/UI_SelectWeapon.h"
 
@@ -18,7 +18,7 @@ public:
 	~Player();
 	void Update();
 	void Move();
-	void Attack();
+	void Weapon();
 	void Camera();
 	void Animation();
 	Matrix GetBomeMat(int bornIndex);
@@ -33,6 +33,7 @@ private:
 	void TakeWeapon();
 	void PutBackWeapon();
 	void SetupWeapon();
+	void Reload();
 	void Die();
 	void Hit();
 
@@ -79,5 +80,7 @@ private:
 	bool m_isRun;		//ëñÇ¡ÇƒÇ¢ÇÈÇ©
 	bool m_isMove;		//à⁄ìÆíÜÇ©
 	bool m_isAttack;	//çUåÇíÜÇ©
+	bool m_isTakeAnim;
+	bool m_isReload;
 };
 #endif
