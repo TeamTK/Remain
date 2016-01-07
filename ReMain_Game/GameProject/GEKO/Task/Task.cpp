@@ -34,14 +34,19 @@ void Task::SetPriority(unsigned int priority)
 	TaskManager::Sort();
 }
 
-void Task::Sleep()
+void Task::Stop()
 {
 	m_IsSleep = true;
 }
 
-void Task::Awake()
+void Task::Start()
 {
 	m_IsSleep = false;
+}
+
+bool Task::Running() const
+{
+	return m_IsSleep;
 }
 
 bool Task::GetKill() const
@@ -113,26 +118,16 @@ inline TaskManager* TaskManager::GetInstance()
 void TaskManager::Kill(const char* taskName)
 {
 	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
-	auto it = pList->begin();
-	auto itEnd = pList->end();
-	for (; it != itEnd; it++)
+	for (auto& i : *pList)
 	{
-		if ((*it)->m_Name == taskName)
-		{
-			(*it)->SetKill();
-		}
+		if (i->m_Name == taskName) i->SetKill();
 	}
 }
 
 void TaskManager::AllKill()
 {
 	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
-	auto it = pList->begin();
-	auto itEnd = pList->end();
-	for (; it != itEnd; it++)
-	{
-		(*it)->SetKill();
-	}
+	for (auto& i : *pList) i->SetKill();
 }
 
 void TaskManager::PartClear(const char* taskName)
@@ -183,7 +178,11 @@ void TaskManager::Update()
 			continue;
 		}
 
-		if ((*it)->m_IsSleep == true) continue;
+		if ((*it)->m_IsSleep == true)
+		{
+			it++;
+			continue;
+		}
 
 		(*it)->Update();
 		it++;
@@ -192,67 +191,43 @@ void TaskManager::Update()
 
 void TaskManager::DrawName()
 {
-	static unsigned int cnt = 0;
 	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
-	auto it = pList->begin();
-	auto itEnd = pList->end();
-	for (; it != itEnd; it++)
+	for (auto& i : *pList)
 	{
-		std::cout << cnt << " : ";
-		cnt++;
-		(*it)->DrawName();
-	}
-	cnt = 0;
-}
-
-void TaskManager::Sleep(const char* taskName)
-{
-	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
-	auto it = pList->begin();
-	auto itEnd = pList->end();
-	for (; it != itEnd; it++)
-	{
-		if ((*it)->m_Name == taskName)
-		{
-			(*it)->m_IsSleep = true;
-		}
+		std::cout << i->m_Priority << " : ";
+		i->DrawName();
 	}
 }
 
-void TaskManager::AllSleep()
+void TaskManager::Stop(const char* taskName)
 {
 	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
-	auto it = pList->begin();
-	auto itEnd = pList->end();
-	for (; it != itEnd; it++)
+
+	for (auto& i : *pList)
 	{
-		(*it)->m_IsSleep = true;
+		if (i->m_Name == taskName) i->Stop();
 	}
 }
 
-void TaskManager::Awake(const char* taskName)
+void TaskManager::AllStop()
 {
 	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
-	auto it = pList->begin();
-	auto itEnd = pList->end();
-	for (; it != itEnd; it++)
+	for (auto& i : *pList) i->Stop();
+}
+
+void TaskManager::Start(const char* taskName)
+{
+	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
+	for (auto& i : *pList)
 	{
-		if ((*it)->m_Name == taskName)
-		{
-			(*it)->m_IsSleep = false;
-		}
+		if (i->m_Name == taskName) i->Start();
 	}
 }
 
-void TaskManager::AllAwake()
+void TaskManager::AllStart()
 {
 	std::list<Task*> *pList = &GetInstance()->m_pTaskPimpl->taskList;
-	auto it = pList->begin();
-	auto itEnd = pList->end();
-	for (; it != itEnd; it++)
-	{
-		(*it)->m_IsSleep = false;
-	}
+	for (auto& i : *pList) i->Start();
 }
 
 void TaskManager::Add(Task* taskPointer)

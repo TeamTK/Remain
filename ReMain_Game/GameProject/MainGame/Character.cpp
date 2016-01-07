@@ -27,18 +27,6 @@ void Character::Update()
 
 void Character::Render()
 {
-	/*
-	for (int i = 0; i < m_pCharaData->BoneCapsule.size(); i++)
-	{
-		Matrix matS, matTS, matTE;
-		matS.Scale(m_pCapsule[i].radius, m_pCapsule[i].radius, m_pCapsule[i].radius);
-		matTS.Transelate(m_pCapsule[i].segment.start.x, m_pCapsule[i].segment.start.y, m_pCapsule[i].segment.start.z);
-		matTE.Transelate(m_pCapsule[i].segment.end.x, m_pCapsule[i].segment.end.y, m_pCapsule[i].segment.end.z);
-
-		Fiqure::RenderLine3D(m_pCapsule[i].segment.start, m_pCapsule[i].segment.end, Vector3D(1.0f, 0.0f, 0.0f));
-	}
-	*/
-
 	m_Model.SetTranselate(m_pos);
 	m_Model.SetRotationRadian(m_rot.x, m_rot.y, m_rot.z);
 	m_Model.Render();

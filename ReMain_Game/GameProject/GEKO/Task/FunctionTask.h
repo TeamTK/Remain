@@ -8,12 +8,12 @@
 
 struct FuncTaskInfo
 {
-	bool m_IsSleep;
+	bool m_IsRunning;
 	std::function<void()> func;
 
 	FuncTaskInfo() {};
 	FuncTaskInfo(std::function<void()> func) :
-		m_IsSleep(false),
+		m_IsRunning(true),
 		func(func) {}
 	~FuncTaskInfo() {};
 };
@@ -23,13 +23,14 @@ class FunctionTask
 public:
 	FunctionTask();
 	~FunctionTask();
+	bool Running(const char *name);
 	void Regist(const char *name, std::function<void()> func);
-	void Sleep(const char *name);
-	void AllSleep();
-	void Awake(const char *name);
-	void AllAwake();
+	void Stop(const char *name);
+	void AllStop();
+	void Start(const char *name);
+	void AllStart();
 	void Update();
-	void OperationDraw();
+	void RunningDraw();
 	void RegistDraw();
 
 private:

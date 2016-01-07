@@ -4,6 +4,8 @@
 #define MONSTER_A_HITDAMAGE_ENDTIME 29
 #define MONSTER_A_DIE_ENDTIME 29
 
+#define MONSTER_A_ATTACK_SPEED 20.0f
+
 Monster_A::Monster_A(EnemyState &enemyState) :
 	Enemy("Monster_A", enemyState)
 {
@@ -51,11 +53,8 @@ Monster_A::Monster_A(EnemyState &enemyState) :
 	m_FuncTask.Regist("HitDamage", REGIST_FUNC_TASK(Monster_A::HitDamage));
 	m_FuncTask.Regist("Die", REGIST_FUNC_TASK(Monster_A::Die));
 
-	//更新停止
-	m_FuncTask.Sleep("Attack");
-	m_FuncTask.Sleep("Chase");
-	m_FuncTask.Sleep("HitDamage");
-	m_FuncTask.Sleep("Die");
+	m_FuncTask.AllStop();
+	m_FuncTask.Start("Idle");
 }
 
 Monster_A::~Monster_A()
@@ -66,28 +65,38 @@ void Monster_A::Attack()
 {
 	if(m_Model.GetPlayTime() == 10) m_pHitAttack[3].Awake(); //右腕の当たり判定起動
 	if (m_Model.GetPlayTime() == 20) m_pHitAttack[3].Sleep(); //右腕の当たり判定終了
+	m_AnimSpeed = MONSTER_A_ATTACK_SPEED;
 
-	Enemy::Attack(eAnimationAttack, MONSTER_A_ATTACK_ENDTIME);
+	m_AnimType = eAnimationAttack;
+	m_AnimEndTime = MONSTER_A_ATTACK_ENDTIME;
+	Enemy::Attack();
 }
 
 void Monster_A::Idle()
 {
-	Enemy::Idle(eAnimationIdle);
+	m_AnimType = eAnimationIdle;
+	Enemy::Idle();
 }
 
 void Monster_A::Chase()
 {
-	Enemy::Chase(eAnimationTrot);
+	m_AnimType = eAnimationTrot;
+	Enemy::Chase();
 }
 
 void Monster_A::HitDamage()
 {
-	Enemy::HitDamage(eAnimationHitDamage, MONSTER_A_HITDAMAGE_ENDTIME);
+	m_AnimType = eAnimationHitDamage;
+	m_AnimEndTime = MONSTER_A_HITDAMAGE_ENDTIME;
+	Enemy::HitDamage();
 }
 
 void Monster_A::Die()
 {
-	Enemy::Die(eAnimationDie, MONSTER_A_DIE_ENDTIME);
+	m_AnimType = eAnimationDie;
+	m_AnimEndTime = MONSTER_A_DIE_ENDTIME;
+	m_AnimSpeed = ENEMY_NORMAL_SPEED;
+	Enemy::Die();
 }
 
 void Monster_A::Update()

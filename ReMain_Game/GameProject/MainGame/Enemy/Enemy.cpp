@@ -4,11 +4,12 @@
 
 Enemy::Enemy(const char* name, EnemyState &enemyState) :
 	Character(10, name, 1),
-	m_FlinchCnt(0.0f)
+	m_FlinchCnt(0.0f),
+	m_AnimSpeed(ENEMY_NORMAL_SPEED)
 {
+	//各種設定値割り当て
 	m_SphereMap.radius = enemyState.mapHitRadius; //マップとの半径
 	m_BodyRadius = enemyState.bodyRadius; //敵の体の半径
-
 	m_Hp = enemyState.hp;
 	m_RunSpeed = enemyState.runSpeed;
 	m_WalkSpeed = enemyState.walkSpeed;
@@ -41,32 +42,30 @@ Enemy::~Enemy()
 	delete[] m_pHitAttack;
 }
 
-void Enemy::Attack(unsigned int animNum, int animEndTime)
+void Enemy::Attack()
 {
-	m_Model.ChangeAnimation(animNum);
-	if (m_Model.GetPlayTime() == animEndTime)
+	if (m_Model.GetPlayTime() == m_AnimEndTime)
 	{
 		unsigned int bornNum = m_BoneCapsule.size();
 		for (unsigned int i = 0; i < bornNum; i++)
 		{
 			m_pHitAttack[i].Sleep();
 		}
-
-		m_FuncTask.Sleep("Attack");
-		m_FuncTask.Awake("Chase");
+		m_AnimSpeed = ENEMY_NORMAL_SPEED;
+		m_FuncTask.Stop("Attack");
+		m_FuncTask.Start("Chase");
 	}
 }
 
-void Enemy::Idle(unsigned int animNum)
+void Enemy::Idle()
 {
-	m_Model.ChangeAnimation(animNum);
+
 }
 
-void Enemy::Chase(unsigned int animNum)
+void Enemy::Chase()
 {
 	//プレイヤーを追跡
 	m_Distance = (*m_pPlayerPos - m_pos);
-	m_Model.ChangeAnimation(animNum);
 	m_rot = Vector3D(0.0f, atan2f(m_Distance.x, m_Distance.z), 0.0);
 
 	float leng = m_Distance.LengthSq();
@@ -79,8 +78,8 @@ void Enemy::Chase(unsigned int animNum)
 		if (leng < 2)
 		{
 			m_Model.SetTime(0);
-			m_FuncTask.Sleep("Chase");
-			m_FuncTask.Awake("Attack");
+			m_FuncTask.Stop("Chase");
+			m_FuncTask.Start("Attack");
 		}
 	}
 	else
@@ -89,24 +88,20 @@ void Enemy::Chase(unsigned int animNum)
 	}
 }
 
-void Enemy::HitDamage(unsigned int animNum, int animEndTime)
+void Enemy::HitDamage()
 {
-	m_Model.ChangeAnimation(animNum);
-
-	if (m_Model.GetPlayTime() == animEndTime)
+	if (m_Model.GetPlayTime() == m_AnimEndTime)
 	{
-		m_FuncTask.Sleep("HitDamage");
-		m_FuncTask.Awake("Chase");
+		m_FuncTask.Stop("HitDamage");
+		m_FuncTask.Start("Chase");
 	}
 }
 
-void Enemy::Die(unsigned int animNum, int animEndTime)
+void Enemy::Die()
 {
-	m_Model.ChangeAnimation(animNum);
-	m_Sight.Sleep();
-	if (m_Model.GetPlayTime() == animEndTime)
+	if (m_Model.GetPlayTime() == m_AnimEndTime)
 	{
-		m_FuncTask.Sleep("Die");
+		m_FuncTask.AllStop();
 		Task::SetKill();
 	}
 }
@@ -121,7 +116,7 @@ void Enemy::Update()
 		m_pCapsule[i].segment.start = m_Model.GetBornPos(m_BoneCapsule[i].start);
 		m_pCapsule[i].segment.end = m_Model.GetBornPos(m_BoneCapsule[i].end);
 
-		m_pCollider[i].Awake();
+		if (!m_FuncTask.Running("Die")) m_pCollider[i].Awake();
 	}
 	m_SphereMap.pos = m_pos;
 	m_SphereMap.pos.y += m_SphereMap.radius;
@@ -131,10 +126,11 @@ void Enemy::Update()
 	m_SightPos.y += 2.0f;
 	m_SightVec = m_Model.GetAxisZ(1.0f);
 
-	m_Model.SetPlayTime(30);
+	m_Model.SetPlayTime(m_AnimSpeed);
+	m_Model.ChangeAnimation(m_AnimType);
 
 	m_FuncTask.Update();
-
+	m_FuncTask.RunningDraw();
 	Character::Update();
 }
 
@@ -166,21 +162,22 @@ void Enemy::HitBullet(Result_Sphere& r)
 		}
 	}
 
+	m_FuncTask.AllStop();
+
 	//HPゼロになれば死亡
 	if (m_Hp >= 0)
 	{
-		m_FuncTask.AllSleep();
-
 		//怯み動作
 		if (m_FlinchCnt >= (float)m_FlinchNum)
 		{
-			m_Model.SetTime(0);
 			m_FlinchCnt = 0;
-			m_FuncTask.Awake("HitDamage");
+			m_Model.SetTime(0);
+			m_FuncTask.Start("HitDamage");
+			for (unsigned int i = 0; i < bornNum; i++) m_pHitAttack[i].Sleep();
 		}
 		else
 		{
-			m_FuncTask.Awake("Chase");
+			m_FuncTask.Start("Chase");
 		}
 
 		//プレイヤーを発見していなくて攻撃を受けたら
@@ -192,9 +189,10 @@ void Enemy::HitBullet(Result_Sphere& r)
 	}
 	else
 	{
+		for (unsigned int i = 0; i < bornNum; i++) m_pHitAttack[i].Sleep();
 		m_Model.SetTime(0);
-		m_FuncTask.AllSleep();
-		m_FuncTask.Awake("Die");
+		m_FuncTask.Start("Die");
+		m_Sight.Sleep();
 	}
 }
 
@@ -210,7 +208,7 @@ void Enemy::HitAttack(Result_Capsule &hitData)
 void Enemy::HitSight(const Vector3D *pPos)
 {
 	m_pPlayerPos = g_pPlayerPos;
-	m_FuncTask.AllSleep();
-	m_FuncTask.Awake("Chase");
+	m_FuncTask.AllStop();
+	m_FuncTask.Start("Chase");
 	m_Sight.Sleep();
 }

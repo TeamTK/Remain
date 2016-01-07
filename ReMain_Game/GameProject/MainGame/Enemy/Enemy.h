@@ -5,6 +5,8 @@
 #include "..\..\GameSystem\SightSystem.h"
 #include "..\..\GEKO\Task\FunctionTask.h"
 
+#define ENEMY_NORMAL_SPEED 30.0f
+
 //敵のステータス
 struct EnemyState
 {
@@ -45,20 +47,23 @@ public:
 	void HitAttack(Result_Capsule &hitData);
 
 protected:
-	void Attack(unsigned int animNum, int animEndTime);
-	void Idle(unsigned int animNum);
-	void Chase(unsigned int animNum);
-	void HitDamage(unsigned int animNum, int animEndTime);
-	void Die(unsigned int animNum, int animEndTime);
+	void Attack();
+	void Idle();
+	void Chase();
+	void HitDamage();
+	void Die();
 
 private:
 	void HitSight(const Vector3D *pPos);
 
 protected:
+	unsigned int m_AnimType; //アニメーションの種類
 	int m_FlinchNum; //耐久値
 	float m_FlinchCnt; //耐久蓄積値
 	float m_WalkSpeed; //歩く速度
 	float m_RunSpeed; //走る速度
+	float m_AnimSpeed; //アニメーションの速度
+	float m_AnimEndTime; //アニメーションの終わり時間
 
 	//敵の視界
 	EnemySight m_Sight; //視界システム

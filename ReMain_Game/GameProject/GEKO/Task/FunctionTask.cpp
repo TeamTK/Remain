@@ -8,13 +8,12 @@ FunctionTask::FunctionTask()
 
 FunctionTask::~FunctionTask()
 {
-	auto it = m_funcMap.begin();
-	auto itEnd = m_funcMap.end();
-	for (; it != itEnd; )
-	{
-		it = m_funcMap.erase(it);
-	}
 	m_funcMap.clear();
+}
+
+bool FunctionTask::Running(const char *name)
+{
+	return m_funcMap[name].m_IsRunning;
 }
 
 void FunctionTask::Regist(const char *name, std::function<void()> func)
@@ -22,85 +21,45 @@ void FunctionTask::Regist(const char *name, std::function<void()> func)
 	m_funcMap[name] = FuncTaskInfo(func);
 }
 
-void FunctionTask::Sleep(const char *name)
+void FunctionTask::Stop(const char *name)
 {
-	auto it = m_funcMap.begin();
-	auto itEnd = m_funcMap.end();
-	for (; it != itEnd; it++)
-	{
-		if (it->first == name)
-		{
-			it->second.m_IsSleep = true;
-			break;
-		}
-	}
+	m_funcMap[name].m_IsRunning = false;
 }
 
-void FunctionTask::AllSleep()
+void FunctionTask::AllStop()
 {
-	auto it = m_funcMap.begin();
-	auto itEnd = m_funcMap.end();
-	for (; it != itEnd; it++)
-	{
-		it->second.m_IsSleep = true;
-	}
+	for (auto& i : m_funcMap) i.second.m_IsRunning = false;
 }
 
-void FunctionTask::Awake(const char *name)
+void FunctionTask::Start(const char *name)
 {
-	auto it = m_funcMap.begin();
-	auto itEnd = m_funcMap.end();
-	for (; it != itEnd; it++)
-	{
-		if (it->first == name)
-		{
-			it->second.m_IsSleep = false;
-			break;
-		}
-	}
+	m_funcMap[name].m_IsRunning = true;
 }
 
-void FunctionTask::AllAwake()
+void FunctionTask::AllStart()
 {
-	auto it = m_funcMap.begin();
-	auto itEnd = m_funcMap.end();
-	for (; it != itEnd; it++)
-	{
-		it->second.m_IsSleep = false;
-	}
+	for (auto& i : m_funcMap) i.second.m_IsRunning = true;
 }
 
 void FunctionTask::Update()
 {
-	auto it = m_funcMap.begin();
-	auto itEnd = m_funcMap.end();
-
-	for (; it != itEnd; it++)
+	for (auto& i : m_funcMap)
 	{
-		if (it->second.m_IsSleep) continue;
-		it->second.func();
+		if (!i.second.m_IsRunning) continue;
+		i.second.func();
 	}
 }
 
-void FunctionTask::OperationDraw()
+void FunctionTask::RunningDraw()
 {
-	auto it = m_funcMap.begin();
-	auto itEnd = m_funcMap.end();
-
-	for (; it != itEnd; it++)
+	for (auto& i : m_funcMap)
 	{
-		if (it->second.m_IsSleep) continue;
-		std::cout << it->first << "\n";
+		if (!i.second.m_IsRunning) continue;
+		std::cout << i.first << "\n";
 	}
 }
 
 void FunctionTask::RegistDraw()
 {
-	auto it = m_funcMap.begin();
-	auto itEnd = m_funcMap.end();
-
-	for (; it != itEnd; it++)
-	{
-		std::cout << it->first << "\n";
-	}
+	for (auto& i : m_funcMap) std::cout << i.first << "\n";
 }
