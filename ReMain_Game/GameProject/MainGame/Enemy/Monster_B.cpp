@@ -51,11 +51,8 @@ Monster_B::Monster_B(EnemyState &enemyState) :
 	m_FuncTask.Regist("HitDamage", REGIST_FUNC_TASK(Monster_B::HitDamage));
 	m_FuncTask.Regist("Die", REGIST_FUNC_TASK(Monster_B::Die));
 
-	//更新停止
-	m_FuncTask.Sleep("Attack");
-	m_FuncTask.Sleep("Chase");
-	m_FuncTask.Sleep("HitDamage");
-	m_FuncTask.Sleep("Die");
+	m_FuncTask.AllStop();
+	m_FuncTask.Start("Idle");
 }
 
 Monster_B::~Monster_B()
@@ -78,27 +75,37 @@ void Monster_B::Attack()
 		m_pHitAttack[3].Sleep(); //右腕の当たり判定起動
 	}
 
-	Enemy::Attack(eAnimationAttack, MONSTER_B_ATTACK_ENDTIME);
+	m_AnimType = eAnimationAttack;
+	m_AnimEndTime = MONSTER_B_ATTACK_ENDTIME;
+	Enemy::Attack();
 }
 
 void Monster_B::Idle()
 {
-	Enemy::Idle(eAnimationIdle);
+	m_AnimType = eAnimationIdle;
+	Enemy::Idle();
 }
 
 void Monster_B::Chase()
 {
-	Enemy::Chase(eAnimationTrot);
+	m_AnimType = eAnimationTrot;
+	Enemy::Chase();
 }
 
 void Monster_B::HitDamage()
 {
-	Enemy::HitDamage(eAnimationHitDamage, MONSTER_B_HITDAMAGE_ENDTIME);
+	m_AnimType = eAnimationHitDamage;
+	m_AnimEndTime = MONSTER_B_HITDAMAGE_ENDTIME;
+
+	Enemy::HitDamage();
 }
 
 void Monster_B::Die()
 {
-	Enemy::Die(eAnimationDie, MONSTER_B_DIE_ENDTIME);
+	m_AnimType = eAnimationDie;
+	m_AnimEndTime = MONSTER_B_DIE_ENDTIME;
+	m_AnimSpeed = ENEMY_NORMAL_SPEED;
+	Enemy::Die();
 }
 
 void Monster_B::Update()

@@ -12,8 +12,9 @@ public:
 	Task();
 	void SetKill();
 	void SetPriority(unsigned int priority);
-	void Sleep();
-	void Awake();
+	void Stop();
+	void Start();
+	bool Running() const;
 	bool GetKill() const;
 	unsigned int GetPriority() const;
 	const char *GetName() const;
@@ -41,10 +42,10 @@ public:
 	static void AllClear();
 	static void Update();
 	static void DrawName();
-	static void Sleep(const char* taskName);
-	static void AllSleep();
-	static void Awake(const char* taskName);
-	static void AllAwake();
+	static void Stop(const char* taskName);
+	static void AllStop();
+	static void Start(const char* taskName);
+	static void AllStart();
 
 protected:
 	static void Add(Task* taskPointer);
