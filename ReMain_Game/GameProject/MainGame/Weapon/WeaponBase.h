@@ -16,8 +16,9 @@ public:
 	void Update();
 	void Render();
 	void Shot();
-	int GetAmmo();	//‡Œvc’e”‚ğæ“¾
-	int GetLoadedAmmo();
+	int GetAmmo();	//Œg‘Ñ’e”‚ğæ“¾
+	int GetLoadedAmmo();	//•Ší‚Éƒ[ƒh‚µ‚Ä‚¢‚é’e”‚ğæ“¾
+	int GetAllAmmo();	//Š‚µ‚Ä‚¢‚é‚·‚×‚Ä‚Ì’e–ò”‚ğæ“¾
 	bool CanShot();	//’e‚ğŒ‚‚Ä‚é‚©
 	void ReduceBullet();	//’e‚ğŒ¸‚ç‚·
 	void AddAmmo(int addnum);	//’e‚ğ‘‚â‚·

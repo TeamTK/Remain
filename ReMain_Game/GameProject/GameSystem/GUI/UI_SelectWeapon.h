@@ -11,7 +11,7 @@ public:
 	~UI_SelectWeapon();
 	void Update();
 	void Draw();
-	bool GetisSelected();
+	bool isSelected();
 	EWeapons Select();
 
 private:

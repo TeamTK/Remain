@@ -143,7 +143,7 @@ void UI_SelectWeapon::Draw()
 	m_Circle.Draw(400, 300);
 }
 
-bool UI_SelectWeapon::GetisSelected()
+bool UI_SelectWeapon::isSelected()
 {
 	return m_isSelected;
 }
