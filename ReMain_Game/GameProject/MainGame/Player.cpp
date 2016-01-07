@@ -26,12 +26,18 @@
 Vector3D *g_pPlayerPos;
 
 Player::Player() :
-	Character(100.0f, "Player", 0), m_CamDir(0.0f, 0.0f, 0.0f), m_CameraPos(-50.0f, 2.0f, -12.0f),
-	m_KeyDir(0.0f, 0.0f, 0.0f), m_Horizontal(0.134f), m_Phase(0), m_AnimSpeed(30.0f), m_Radius(0.4f),
-	m_Vertical(-1.5f), m_MoveSpeed(0.0f), m_CameraPosY(1.8f), m_CamSpeed(0.000002f),
-	m_isCrouch(false), m_isAttack(false), m_isTakeWeapon(false), m_isMove(false),
-	m_isTakeAnim(false), m_ChangeTakeWeapon(false), m_isRun(false), m_SetupWeapon(false),
-	m_ToggleCrouch(false), m_isReload(false),
+	Character(100.0f, "Player", 0),		m_CamDir(0.0f, 0.0f, 0.0f),
+	m_CameraPos(-50.0f, 2.0f, -12.0f),	m_KeyDir(0.0f, 0.0f, 0.0f),
+	m_Horizontal(0.134f),	m_Vertical(-1.5f),
+	m_MoveSpeed(0.0f),		m_AnimSpeed(30.0f),
+	m_CameraPosY(1.8f),		m_CamSpeed(0.000002f),
+	m_Radius(0.5f),			m_Phase(0),
+	m_isCrouch(false),		m_isAttack(false),
+	m_isTakeWeapon(false),	m_isMove(false),
+	m_isTakeAnim(false),	m_ChangeTakeWeapon(false),
+	m_isRun(false),			m_SetupWeapon(false),
+	m_ToggleCrouch(false), 	m_isReload(false),
+	m_ChangePutBackWeapon(false),
 	m_State(EPlayerState::eState_Idle), m_SelectedWeapon(EWeapons::eShotgun)
 {
 	m_Model.SetAsset("Player");
@@ -216,11 +222,6 @@ void Player::Weapon()
 	else
 		m_isTakeWeapon = false;
 
-	if ((Input::KeyF.Clicked() || Input::XInputPad1.BClicked()) && m_isTakeWeapon)
-	{
-		m_State = EPlayerState::eState_PutBackWeapon;
-	}
-
 	//銃を持っているときに銃を構える(マウス右クリック, 左ショルダー)
 	if ((Input::Mouse.RPressed() || Input::XInputPad1.ShoulderLeftPressed()) && m_isTakeWeapon)
 	{
@@ -244,16 +245,17 @@ void Player::Weapon()
 	if ((Input::Mouse.LClicked() || Input::XInputPad1.ShoulderRightClicked()) && m_SetupWeapon)
 	{
 		bool isCanShot = false;
+		Vector3D dir = (m_LookPos - Camera::GetEyePosition()).GetNormalize();
 
 		if (m_SelectedWeapon == eShotgun && g_pShotgun->CanShot())
 		{
-			new Bullet(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f, 100.0f, 0.01f);
+			new Bullet(m_LookPos, dir, 1.0f, 100.0f, 0.01f);
 			g_pShotgun->ReduceBullet();
 			isCanShot = true;
 		}
 		else if (m_SelectedWeapon == eHandgun && g_pHandgun->CanShot())
 		{
-			new Bullet(m_LookPos, (m_LookPos - Camera::GetEyePosition()).GetNormalize(), 1.0f, 100.0f, 0.01f);
+			new Bullet(m_LookPos, dir, 1.0f, 100.0f, 0.01f);
 			g_pHandgun->ReduceBullet();
 			isCanShot = true;
 		}
@@ -632,6 +634,11 @@ void Player::PutBackWeapon()
 			m_isTakeWeapon = false;
 			m_ChangeTakeWeapon = false;
 		}
+	}
+	if (m_Model.GetPlayTime() >= 29)
+	{
+		m_isTakeWeapon = false;
+		m_ChangePutBackWeapon = false;
 	}
 }
 

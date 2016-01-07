@@ -73,6 +73,7 @@ private:
 	float m_PlayAnimTime;	//•Ší‚É“n‚·—p
 	float m_Radius;			//’e–ò” ‚Æ‚Ì“–‚½‚è”»’è‚Ì”¼Œa
 	bool m_ChangeTakeWeapon;	//e‚ğ‚Â
+	bool m_ChangePutBackWeapon;	//e‚ğ‚µ‚Ü‚¤
 	bool m_ToggleCrouch;	//‚µ‚á‚ª‚İƒgƒOƒ‹
 	bool m_isTakeWeapon;	//e‚ğ‚Á‚Ä‚¢‚é‚©
 	bool m_SetupWeapon;	//e‚ğ\‚¦‚Ä‚¢‚é‚©
