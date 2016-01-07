@@ -36,12 +36,17 @@ void WeaponBase::Shot()
 
 int WeaponBase::GetAmmo()
 {
-	return m_LoadedAmmo + m_Ammo;
+	return m_Ammo;
 }
 
 int WeaponBase::GetLoadedAmmo()
 {
 	return m_LoadedAmmo;
+}
+
+int WeaponBase::GetAllAmmo()
+{
+	return	m_Ammo + m_LoadedAmmo;
 }
 
 bool WeaponBase::CanShot()

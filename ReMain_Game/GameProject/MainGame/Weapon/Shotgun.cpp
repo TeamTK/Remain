@@ -3,7 +3,7 @@
 
 Shotgun* g_pShotgun;
 
-Shotgun::Shotgun(int* anim, float* frame, Matrix* m):
+Shotgun::Shotgun(int* anim, float* frame, Matrix* m) :
 	WeaponBase(anim, frame, m, "Shotgun", 0)
 {
 	m_Model.SetAsset("Shotgun");
@@ -44,8 +44,6 @@ void Shotgun::Update()
 		m_Model.SetTranselate(0.2f, 0.14f, 0.0f);
 		m_Model.SetRotationDegree(65, 0, 12);
 	}
-	m_Num.NumDraw(0, 90, m_Ammo);
-	m_Num.NumDraw(44, 90, m_LoadedAmmo);
 }
 
 

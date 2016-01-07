@@ -2,7 +2,6 @@
 #define SHOTGUN_H
 
 #include "WeaponBase.h"
-#include "../../GameSystem/GUI/Number.h"
 
 class Shotgun : public WeaponBase
 {
@@ -13,7 +12,6 @@ public:
 	void Reload();		//’e‚ğƒŠƒ[ƒh
 
 private:
-	Number m_Num;
 };
 
 extern Shotgun* g_pShotgun;

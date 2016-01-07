@@ -8,6 +8,7 @@
 #include "../MainGame/Weapon/Handgun.h"
 #include "../GameSystem/SightSystem.h"
 #include"../GameSystem/GUI/UI_SelectWeapon.h"
+#include "../GameSystem/GUI/Number.h"
 
 extern Vector3D *g_pPlayerPos;
 
@@ -42,7 +43,7 @@ private:
 	void HitEnemyAttack(Result_Capsule &hitData);
 
 private:
-	Shotgun* m_pShotgun;
+	Number m_Num;
 	UI_SelectWeapon m_SelectWeapon;
 	Vector3D m_KeyDir;		//キー入力軸
 	Vector3D m_PadDir;		//コントローラー入力値
