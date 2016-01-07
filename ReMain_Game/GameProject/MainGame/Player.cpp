@@ -12,7 +12,7 @@
 #define	SETUPWEAPON_MOVE_SPEED 0.03f;//武器を構えた時の移動速度
 #define CAMERA_LENGE	2.0f		//プレイヤーとカメラの距離
 #define PI 3.14159265359f
-#define MAP_HIT_RADIUS 0.2f //マップとの当たり判定の半径
+#define MAP_HIT_RADIUS 0.5f //マップとの当たり判定の半径
 
 //アニメーションスピード
 #define IDLE_ANIM_SPEED 15	//待ち

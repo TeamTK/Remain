@@ -3,7 +3,7 @@ Flinch: 4
 HitPoint: 10
 WalkSpeed: 0.03
 RunSpeed: 0.07
-MapHitRadius: 0.2
+MapHitRadius: 0.5
 BodyRadius: 0.5
 SightAngle: 60
 SightDistance: 10

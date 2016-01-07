@@ -98,6 +98,8 @@
     <ClCompile Include="MainGame\Weapon\WeaponBase.cpp" />
     <ClCompile Include="MainGame\Weapon\Handgun.cpp" />
     <ClCompile Include="MainGame\Weapon\Shotgun.cpp" />
+    <ClCompile Include="MainGame\Bullet\ShotGunBullet.cpp" />
+    <ClCompile Include="MainGame\Bullet\HandGunBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -266,6 +268,8 @@
     <ClInclude Include="MainGame\Weapon\WeaponBase.h" />
     <ClInclude Include="MainGame\Weapon\Handgun.h" />
     <ClInclude Include="MainGame\Weapon\Shotgun.h" />
+    <ClInclude Include="MainGame\Bullet\ShotGunBullet.h" />
+    <ClInclude Include="MainGame\Bullet\HandGunBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

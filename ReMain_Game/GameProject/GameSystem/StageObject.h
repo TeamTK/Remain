@@ -146,19 +146,19 @@ public:
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
 
 		//’e‚Ì“–‚½‚è”»’è
-		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
+		m_BulletHit.Regist_SMesh_vs_L(&m_HitMesh);
 		m_BulletHit.SetID(eHITID5, eHITID2);
 		m_BulletHit.SetName("Cabin");
 
-		//m_CameraHIt.Regist_SMesh_vs_L(&m_HitMesh);
-		//m_CameraHIt.SetID(eHITID1, eHITID0);
+		m_CameraHIt.Regist_SMesh_vs_L(&m_HitMesh);
+		m_CameraHIt.SetID(eHITID1, eHITID0);
 	}
 	~Cabin(){}
 
 private:
 	StaticMesh m_HitMesh;
 	Collider m_BulletHit;
-	//Collider m_CameraHIt;
+	Collider m_CameraHIt;
 };
 
 //’n–Ê
