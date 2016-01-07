@@ -41,8 +41,6 @@ void MainGame::Update()
 {
 	SightManager::GetInstance()->Update();
 
-	TaskManager::DrawName();
-
 	//“G’Ç‰Á(‰¼)
 	if (Input::KeyP.Clicked())
 	{
