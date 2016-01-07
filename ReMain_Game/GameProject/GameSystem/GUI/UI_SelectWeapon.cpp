@@ -53,6 +53,10 @@ void UI_SelectWeapon::Update()
 {
 	if (m_isSelected)
 	{
+		//武器選択中はモンスターの動き停止
+		TaskManager::Stop("Monster_A");
+		TaskManager::Stop("Monster_B");
+
 		switch (State)
 		{
 		case eOpen:
@@ -95,6 +99,10 @@ void UI_SelectWeapon::Update()
 	}
 	else
 	{
+		//武器選択外はモンスターの動き起動
+		TaskManager::Start("Monster_A");
+		TaskManager::Start("Monster_B");
+
 		//円のサイズ縮小
 		if (m_CircleSize > 0) m_CircleSize -= 32;
 		m_Circle.SetCenter(m_CircleSize / 2, m_CircleSize / 2);

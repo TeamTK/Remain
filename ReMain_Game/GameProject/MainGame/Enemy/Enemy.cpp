@@ -130,7 +130,6 @@ void Enemy::Update()
 	m_Model.ChangeAnimation(m_AnimType);
 
 	m_FuncTask.Update();
-	m_FuncTask.RunningDraw();
 	Character::Update();
 }
 
