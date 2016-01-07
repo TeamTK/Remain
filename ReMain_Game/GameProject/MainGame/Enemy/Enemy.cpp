@@ -4,8 +4,7 @@
 
 Enemy::Enemy(const char* name, EnemyState &enemyState) :
 	Character(10, name, 1),
-	m_FlinchCnt(0),
-	m_IsAttack(false)
+	m_FlinchCnt(0.0f)
 {
 	m_SphereMap.radius = enemyState.mapHitRadius; //ƒ}ƒbƒv‚Æ‚Ì”¼Œa
 	m_BodyRadius = enemyState.bodyRadius; //“G‚Ì‘Ì‚Ì”¼Œa
@@ -53,7 +52,6 @@ void Enemy::Attack(unsigned int animNum, int animEndTime)
 			m_pHitAttack[i].Sleep();
 		}
 
-		m_IsAttack = false;
 		m_FuncTask.Sleep("Attack");
 		m_FuncTask.Awake("Chase");
 	}
@@ -174,7 +172,7 @@ void Enemy::HitBullet(Result_Sphere& r)
 		m_FuncTask.AllSleep();
 
 		//‹¯‚Ý“®ì
-		if (m_FlinchCnt >= m_FlinchNum)
+		if (m_FlinchCnt >= (float)m_FlinchNum)
 		{
 			m_Model.SetTime(0);
 			m_FlinchCnt = 0;

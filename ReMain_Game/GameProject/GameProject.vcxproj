@@ -64,6 +64,8 @@
     <ClCompile Include="MainGame\AmmoBox\AmmoBox_Handgun.cpp" />
     <ClCompile Include="MainGame\AmmoBox\AmmoBox_Shotgun.cpp" />
     <ClCompile Include="MainGame\Bullet\Bullet.cpp" />
+    <ClCompile Include="MainGame\Bullet\HandGunBullet.cpp" />
+    <ClCompile Include="MainGame\Bullet\ShotGunBullet.cpp" />
     <ClCompile Include="MainGame\Character.cpp" />
     <ClCompile Include="MainGame\Enemy\Enemy.cpp" />
     <ClCompile Include="MainGame\Enemy\EnemyStateManager.cpp" />
@@ -211,6 +213,8 @@
     <ClInclude Include="MainGame\AmmoBox\AmmoBox_Handgun.h" />
     <ClInclude Include="MainGame\AmmoBox\AmmoBox_Shotgun.h" />
     <ClInclude Include="MainGame\Bullet\Bullet.h" />
+    <ClInclude Include="MainGame\Bullet\HandGunBullet.h" />
+    <ClInclude Include="MainGame\Bullet\ShotGunBullet.h" />
     <ClInclude Include="MainGame\Character.h" />
     <ClInclude Include="MainGame\Enemy.h" />
     <ClInclude Include="MainGame\Enemy\Enemy.h" />

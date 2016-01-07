@@ -10,7 +10,7 @@ Bullet::Bullet(const Vector3D &start, const Vector3D &dir, float speed, float ti
 	m_Cnt(0.0f), 
 	m_Radius(radius)
 {
-	//ƒLƒƒƒ‰ƒNƒ^‚Æ‚Ì“–‚½‚è”»’è
+	//“G‚Æ‚Ì“–‚½‚è”»’è
 	m_Collider.Regist_S_vs_C(&m_Pos, &m_Radius, REGIST_FUNC(Bullet::HitCharacter));
 	m_Collider.SetID(eHITID1, eHITID0);
 

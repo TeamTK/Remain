@@ -55,28 +55,27 @@ private:
 	void HitSight(const Vector3D *pPos);
 
 protected:
-	bool m_IsAttack;
-	int m_FlinchNum;
-	int m_FlinchCnt;
-	float m_WalkSpeed;
-	float m_RunSpeed;
+	int m_FlinchNum; //耐久値
+	float m_FlinchCnt; //耐久蓄積値
+	float m_WalkSpeed; //歩く速度
+	float m_RunSpeed; //走る速度
 
 	//敵の視界
-	EnemySight m_Sight;
-	SightData m_SightData;
-	Vector3D m_SightPos;
-	Vector3D m_SightVec;
+	EnemySight m_Sight; //視界システム
+	SightData m_SightData; //視界のデータ
+	Vector3D m_SightPos; //視界の位置
+	Vector3D m_SightVec; //視界の方向
 
 	//追跡用
-	Vector3D m_Distance;
-	const Vector3D *m_pPlayerPos;
+	Vector3D m_Distance; //敵とプレイヤーとの距離
+	const Vector3D *m_pPlayerPos; //プレイヤーの位置のポインタ
 
 	//プレイヤーからの攻撃された時の当たり判定
 	Collider *m_pCollider;
 	CapsuleInfo *m_pCapsule;
-	std::vector<BoneCalpule> m_BoneCapsule;
+	std::vector<BoneCalpule> m_BoneCapsule; //ボーン情報（カプセル）
 
-	std::vector<float> m_DamageMagnification;
+	std::vector<float> m_DamageMagnification; //ダメージ倍率
 
 	Collider *m_pHitAttack; //プレイヤーへの攻撃の当たり判定
 	FunctionTask m_FuncTask; //AI管理
