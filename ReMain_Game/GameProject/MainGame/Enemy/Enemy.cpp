@@ -31,12 +31,12 @@ Enemy::~Enemy()
 	unsigned int bornNum = m_BoneCapsule.size();
 	for (unsigned int i = 0; i < bornNum; i++)
 	{
-		m_pCollider[i].Release();
+		m_pHitAttackBody[i].Release();
 	}
 	m_BoneCapsule.clear();
 	m_BoneCapsule.shrink_to_fit();
 
-	delete[] m_pCollider;
+	delete[] m_pHitAttackBody;
 	delete[] m_pCapsule;
 
 	delete[] m_pHitAttack;
@@ -44,14 +44,10 @@ Enemy::~Enemy()
 
 void Enemy::Attack()
 {
-	if (m_Model.GetPlayTime() == m_AnimEndTime)
+	if (m_Model.GetPlayTime() >= m_AnimEndTime)
 	{
-		unsigned int bornNum = m_BoneCapsule.size();
-		for (unsigned int i = 0; i < bornNum; i++)
-		{
-			m_pHitAttack[i].Sleep();
-		}
-		m_AnimSpeed = ENEMY_NORMAL_SPEED;
+		auto bornNum = m_BoneCapsule.size();
+		for (unsigned int i = 0; i < bornNum; i++) m_pHitAttack[i].Sleep();
 		m_FuncTask.Stop("Attack");
 		m_FuncTask.Start("Chase");
 	}
@@ -90,7 +86,7 @@ void Enemy::Chase()
 
 void Enemy::HitDamage()
 {
-	if (m_Model.GetPlayTime() == m_AnimEndTime)
+	if (m_Model.GetPlayTime() >= m_AnimEndTime)
 	{
 		m_FuncTask.Stop("HitDamage");
 		m_FuncTask.Start("Chase");
@@ -99,7 +95,7 @@ void Enemy::HitDamage()
 
 void Enemy::Die()
 {
-	if (m_Model.GetPlayTime() == m_AnimEndTime)
+	if (m_Model.GetPlayTime() >= m_AnimEndTime)
 	{
 		m_FuncTask.AllStop();
 		Task::SetKill();
@@ -108,29 +104,37 @@ void Enemy::Die()
 
 void Enemy::Update()
 {
-	//攻撃される側の当たり判定更新
-	unsigned int bornNum = m_BoneCapsule.size();
-	for (unsigned int i = 0; i < bornNum; i++)
+	//デバック用停止機能
+	static bool isStop = false;	
+	if (Input::KeyI.Pressed()) isStop = true; //敵停止
+	if (Input::KeyU.Pressed()) isStop = false; //敵停止
+
+	if (!isStop)
 	{
-		m_pCapsule[i].radius = m_BoneCapsule[i].radius;
-		m_pCapsule[i].segment.start = m_Model.GetBornPos(m_BoneCapsule[i].start);
-		m_pCapsule[i].segment.end = m_Model.GetBornPos(m_BoneCapsule[i].end);
+		//攻撃される側の当たり判定更新
+		unsigned int bornNum = m_BoneCapsule.size();
+		for (unsigned int i = 0; i < bornNum; i++)
+		{
+			m_pCapsule[i].radius = m_BoneCapsule[i].radius;
+			m_pCapsule[i].segment.start = m_Model.GetBornPos(m_BoneCapsule[i].start);
+			m_pCapsule[i].segment.end = m_Model.GetBornPos(m_BoneCapsule[i].end);
 
-		if (!m_FuncTask.Running("Die")) m_pCollider[i].Awake();
+			if (!m_FuncTask.Running("Die")) m_pHitAttackBody[i].Awake();
+		}
+		m_SphereMap.pos = m_pos;
+		m_SphereMap.pos.y += m_SphereMap.radius;
+
+		//視界の更新
+		m_SightPos = m_pos;
+		m_SightPos.y += 2.0f;
+		m_SightVec = m_Model.GetAxisZ(1.0f);
+
+		m_Model.SetPlayTime(m_AnimSpeed);
+		m_Model.ChangeAnimation(m_AnimType);
+
+		m_FuncTask.Update();
+		Character::Update();
 	}
-	m_SphereMap.pos = m_pos;
-	m_SphereMap.pos.y += m_SphereMap.radius;
-
-	//視界の更新
-	m_SightPos = m_pos;
-	m_SightPos.y += 2.0f;
-	m_SightVec = m_Model.GetAxisZ(1.0f);
-
-	m_Model.SetPlayTime(m_AnimSpeed);
-	m_Model.ChangeAnimation(m_AnimType);
-
-	m_FuncTask.Update();
-	Character::Update();
 }
 
 void Enemy::HitBullet(Result_Sphere& r)
@@ -146,13 +150,13 @@ void Enemy::HitBullet(Result_Sphere& r)
 	new Effect(effectData, "Blood");
 
 	//当たり判定停止（弾からの）
-	unsigned int bornNum = m_BoneCapsule.size();
+	auto bornNum = m_BoneCapsule.size();
 	for (unsigned int i = 0; i < bornNum; i++)
 	{
-		m_pCollider[i].Sleep();
+		m_pHitAttackBody[i].Sleep();
 
 		//部位ごとのダメージ計算
-		if (r.name == m_pCollider[i].GetName())
+		if (r.name == m_pHitAttackBody[i].GetName())
 		{
 			float damegeNum = m_DamageMagnification[i] * 1.0f;
 			m_Hp -= damegeNum;
@@ -197,11 +201,8 @@ void Enemy::HitBullet(Result_Sphere& r)
 
 void Enemy::HitAttack(Result_Capsule &hitData)
 {
-	unsigned int bornNum = m_BoneCapsule.size();
-	for (unsigned int i = 0; i < bornNum; i++)
-	{
-		m_pHitAttack[i].Sleep();
-	}
+	auto bornNum = m_BoneCapsule.size();
+	for (unsigned int i = 0; i < bornNum; i++) m_pHitAttack[i].Sleep();
 }
 
 void Enemy::HitSight(const Vector3D *pPos)

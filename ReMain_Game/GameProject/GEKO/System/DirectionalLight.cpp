@@ -38,9 +38,9 @@ void DirectionalLight::SetDirection(float x, float y)
 
 	Matrix RX, RY;
 	RX.RotationDegreeX(x);
-	RY.RotationDegreeY(y);
+	RY.RotationDegreeZ(y);
 
-	Vector3D vec = Vector3D(0.0f, -1.0f, 0.0f) * (RX * RY);
+	Vector3D vec = Vector3D(0.0f, 1.0f, 0.0f) * (RX * RY);
 	vec.SetNormalize();
 
 	GetInstance()->m_Direction.x = vec.x;

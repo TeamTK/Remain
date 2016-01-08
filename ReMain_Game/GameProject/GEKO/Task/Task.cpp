@@ -205,7 +205,10 @@ void TaskManager::Stop(const char* taskName)
 
 	for (auto& i : *pList)
 	{
-		if (i->m_Name == taskName) i->Stop();
+		if (i->m_Name == taskName)
+		{
+			i->Stop();
+		}
 	}
 }
 

@@ -76,7 +76,7 @@ protected:
 	const Vector3D *m_pPlayerPos; //プレイヤーの位置のポインタ
 
 	//プレイヤーからの攻撃された時の当たり判定
-	Collider *m_pCollider;
+	Collider *m_pHitAttackBody;
 	CapsuleInfo *m_pCapsule;
 	std::vector<BoneCalpule> m_BoneCapsule; //ボーン情報（カプセル）
 
