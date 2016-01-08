@@ -1,6 +1,5 @@
 #include "GEKO\\GEKO.h"
 #include "Scene\Scene.h"
-#include "MainGame\Player.h"
 
 INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 {

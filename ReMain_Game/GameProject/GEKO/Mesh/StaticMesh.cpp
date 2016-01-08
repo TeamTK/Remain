@@ -99,7 +99,7 @@ void StaticMesh::RenderFunc(Matrix &matrix)
 
 	MeshInfo *data = m_pMeshData->GetMeshInfo();
 
-	D3DXMATRIX World = matrix; //ƒ[ƒ‹ƒhs—ñŠi”[
+	D3DXMATRIX World = m_LocalMatrix * matrix; //ƒ[ƒ‹ƒhs—ñŠi”[
 
 	//Žg—p‚·‚éƒVƒF[ƒ_[‚Ì“o˜^
 	pDeviceContext->VSSetShader(data->m_pVertexShader, NULL, 0);

@@ -1,10 +1,10 @@
-#pragma warning(disable : 3206)
+//#pragma warning(disable : 3206)
 
-//グローバル
+//テクスチャー
 Texture2D g_texColor: register(t0);
 SamplerState g_samLinear : register(s0);
 
-//グローバル
+//変換行列やライト
 cbuffer global_0:register(b0)
 {
 	matrix g_mW;		//ワールド行列
@@ -14,6 +14,7 @@ cbuffer global_0:register(b0)
 	float4 g_vEye;		//カメラ位置
 };
 
+//マテリアル
 cbuffer global_1:register(b1)
 {
 	float4 g_Ambient; //アンビエント光
@@ -32,7 +33,7 @@ struct VS_OUTPUT
 };
 
 //バーテックスシェーダー
-VS_OUTPUT VS( float4 Pos : POSITION , float4 Normal : NORMAL, float2 Tex : TEXCOORD)
+VS_OUTPUT VS(float4 Pos : POSITION , float4 Normal : NORMAL, float2 Tex : TEXCOORD)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 
@@ -43,11 +44,11 @@ VS_OUTPUT VS( float4 Pos : POSITION , float4 Normal : NORMAL, float2 Tex : TEXCO
 	output.Normal = mul(Normal, (float3x3)g_mW);
 
 	//ディレクショナルライト
-	output.Light = g_vLightDir;
+	output.Light = g_vLightDir.xyz;
 
 	//視線ベクトル　ワールド空間上での頂点から視点へ向かうベクトル
-	float3 PosWorld = mul(Pos, g_mW);
-	output.EyeVector = normalize(g_vEye - PosWorld);
+	float4 PosWorld = mul(Pos, g_mW);
+	output.EyeVector = normalize(g_vEye - PosWorld).xyz;
 	output.Tex = Tex;
 	return output;
 }
@@ -64,11 +65,11 @@ VS_OUTPUT VS_NoTeX(float4 Pos : POSITION, float4 Normal : NORMAL)
 	output.Normal = mul(Normal, (float3x3)g_mW);
 
 	//ディレクショナルライト
-	output.Light = g_vLightDir;
+	output.Light = g_vLightDir.xyz;
 
 	//視線ベクトル　ワールド空間上での頂点から視点へ向かうベクトル
-	float3 PosWorld = mul(Pos, g_mW);
-	output.EyeVector = normalize(g_vEye - PosWorld);
+	float4 PosWorld = mul(Pos, g_mW);
+	output.EyeVector = normalize(g_vEye - PosWorld).xyz;
 
 	return output;
 }
