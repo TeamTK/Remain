@@ -367,7 +367,7 @@ void Player::Camera()
 
 		m_rot.x = 0.0f;
 		newLookPos = m_pos + mat.GetAxisX() * 0.4f;
-		newLookPos.y = m_CameraPosY;
+		newLookPos.y = m_CameraPosY + m_pos.y;
 
 		//ÉJÉÅÉâÇÃç¿ïW
 		newCameraPos = newLookPos;

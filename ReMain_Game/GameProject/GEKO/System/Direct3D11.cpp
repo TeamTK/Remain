@@ -55,7 +55,7 @@ HRESULT Direct3D11::InitD3D11(INT Width, INT Height)
 
 	//各種テクスチャーと、それに付帯する各種ビューを作成
 
-	//バックバッファーテクスチャーを取得（既にあるので作成ではない）
+	//バックバッファーテクスチャーを取得
 	ID3D11Texture2D *pBackBuffer_Tex;
 	m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer_Tex);
 	//そのテクスチャーに対しレンダーターゲットビュー(RTV)を作成
@@ -101,6 +101,8 @@ HRESULT Direct3D11::InitD3D11(INT Width, INT Height)
 	//rdc.FillMode = D3D11_FILL_WIREFRAME;
 	rdc.FrontCounterClockwise = false;
 	rdc.MultisampleEnable = true;
+	rdc.AntialiasedLineEnable = false;
+
 	ID3D11RasterizerState* pIr = NULL;
 	m_pDevice->CreateRasterizerState(&rdc, &pIr);
 	m_pDeviceContext->RSSetState(pIr);
@@ -123,7 +125,7 @@ HRESULT Direct3D11::InitD3D11(INT Width, INT Height)
 
 	if (FAILED(m_pDevice->CreateBlendState(&bd, &m_pBlendState)))
 	{
-		MessageBoxA(0, "ブレンドステート失敗", "", MB_OK);
+		return FALSE;
 	}
 
 	UINT mask = 0xffffffff;
