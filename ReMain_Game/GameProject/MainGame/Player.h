@@ -56,7 +56,9 @@ private:
 	Vector3D m_HitCameraPos; //カメラの当たり判定位置
 	Matrix m_MatrixS;		//ショットガンの行列
 	Matrix m_MatrixH;		//ハンドガンの行列
-	EPlayerState m_State;	//プレイヤーの状態	
+	EPlayerState m_State;	//プレイヤーの状態
+	EPlayerState m_OldState;	//プレイヤーの状態
+	EPlayerAnim m_Anim;		//プレイヤーのアニメーション
 	EWeapons m_SelectedWeapon;	//選択している銃
 	Collider m_HitCamera;	//カメラの当たり判定
 	Collider m_Bullet;		//弾の当たり判定
@@ -82,7 +84,7 @@ private:
 	bool m_isRun;		//走っているか
 	bool m_isMove;		//移動中か
 	bool m_isAttack;	//攻撃中か
-	bool m_isTakeAnim;
-	bool m_isReload;
+	bool m_isReload;	//リロード中か
+	bool m_isHit;		//敵の攻撃が当たったか
 };
 #endif
