@@ -8,12 +8,12 @@ Monster_B::Monster_B(EnemyState &enemyState) :
 	Enemy("Monster_B", enemyState)
 {
 	//各部位のカプセルの情報
-	m_BoneCapsule.emplace_back(0.4f, 13, 14, "Head");		 //頭
-	m_BoneCapsule.emplace_back(0.6f, 2, 13, "Body");	     //胴体
+	m_BoneCapsule.emplace_back(0.4f, 15, 16, "Head");		 //頭
+	m_BoneCapsule.emplace_back(0.6f, 2, 5, "Body");	     //胴体
 	m_BoneCapsule.emplace_back(0.5f, 6, 8, "Left arm");    //左腕
-	m_BoneCapsule.emplace_back(0.5f, 10, 12, "Right arm"); //右腕
-	m_BoneCapsule.emplace_back(0.5f, 15, 18, "Left leg");  //左足
-	m_BoneCapsule.emplace_back(0.5f, 19, 22, "Rgiht leg"); //右足
+	m_BoneCapsule.emplace_back(0.5f, 10, 13, "Right arm"); //右腕
+	m_BoneCapsule.emplace_back(0.5f, 17, 19, "Left leg");  //左足
+	m_BoneCapsule.emplace_back(0.5f, 21, 23, "Rgiht leg"); //右足
 
 	//ダメージ倍率部位ごと
 	m_DamageMagnification.push_back(2.0f); //頭
@@ -24,19 +24,19 @@ Monster_B::Monster_B(EnemyState &enemyState) :
 	m_DamageMagnification.push_back(0.5f); //右足
 
 	//球（弾）との判定用
-	m_pCollider = new Collider[m_BoneCapsule.size()];
+	m_pHitAttackBody = new Collider[m_BoneCapsule.size()];
 	m_pCapsule = new CapsuleInfo[m_BoneCapsule.size()];
 
-	//攻撃の判定
+	//攻撃の当たり判定
 	m_pHitAttack = new Collider[m_BoneCapsule.size()];
 
 	unsigned int bornNum = m_BoneCapsule.size();
 	for (unsigned int i = 0; i < bornNum; i++)
 	{
-		m_pCollider[i].Regist_C_vs_S(&m_pCapsule[i].segment.start, &m_pCapsule[i].segment.end,
+		m_pHitAttackBody[i].Regist_C_vs_S(&m_pCapsule[i].segment.start, &m_pCapsule[i].segment.end,
 			&m_pCapsule[i].radius, REGIST_FUNC(Enemy::HitBullet));
-		m_pCollider[i].SetID(eHITID0, eHITID1);
-		m_pCollider[i].SetName(m_BoneCapsule[i].name);
+		m_pHitAttackBody[i].SetID(eHITID0, eHITID1);
+		m_pHitAttackBody[i].SetName(m_BoneCapsule[i].name);
 
 		m_pHitAttack[i].Regist_C_vs_C(&m_pCapsule[i].segment.start, &m_pCapsule[i].segment.end,
 			&m_pCapsule[i].radius, REGIST_FUNC(Enemy::HitAttack));

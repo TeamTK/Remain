@@ -41,28 +41,15 @@ void MainGame::Update()
 {
 	SightManager::GetInstance()->Update();
 
-	//“G’Ç‰Á(‰¼)
-	if (Input::KeyP.Clicked())
+	if (Input::KeyP.Clicked()) //“G’Ç‰Á(‰¼)
 	{
 		EnemyStateManager::Generation("Normal_Monster_A", "Chapter1-1");
 	}
 
-	//“Gíœ
-	if (Input::KeyO.Clicked())
+	if (Input::KeyO.Clicked()) //“Gíœ
 	{
 		TaskManager::Kill("Monster_A");
-	}
-
-	//“G’â~
-	if (Input::KeyI.Clicked())
-	{
-		TaskManager::Stop("Monster_A");
-	}
-
-	//“G‹N“®
-	if (Input::KeyU.Clicked())
-	{
-		TaskManager::Start("Monster_A");
+		TaskManager::Kill("Monster_B");
 	}
 }
 

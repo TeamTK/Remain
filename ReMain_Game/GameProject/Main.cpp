@@ -9,8 +9,8 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 	GEKO::Init("GEKO3DX", 800, 600);
 	GEKO::MouseErasure();
 
-	DirectionalLight::SetIntensity(0.8f);
-	DirectionalLight::SetDirection(0.0f, 0.5f);
+	DirectionalLight::SetIntensity(0.6f);
+	DirectionalLight::SetDirection(0.0f, 45.0f);
 
 	SceneManager::Quit(0, EScene::E_MAIN);
 
