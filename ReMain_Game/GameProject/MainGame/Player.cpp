@@ -20,7 +20,7 @@
 #define HALF_ANIM_SPEED 15	//0.5倍速
 #define RUN_ANIM_SPEED 50	//走り
 #define TAKEWEAPON_ANIM_SPEED 40	//武器をとる
-#define RELOAD_ANIM_SPEED 10	//リロード
+#define RELOAD_ANIM_SPEED 15	//リロード
 
 Vector3D *g_pPlayerPos;
 
