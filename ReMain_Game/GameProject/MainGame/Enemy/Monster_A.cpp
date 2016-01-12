@@ -2,7 +2,7 @@
 
 #define MONSTER_A_ATTACK_ENDTIME 29
 #define MONSTER_A_HITDAMAGE_ENDTIME 29
-#define MONSTER_A_DIE_ENDTIME 29
+#define MONSTER_A_DIE_ENDTIME 28
 
 #define MONSTER_A_ATTACK_SPEED 20.0f
 
@@ -55,6 +55,8 @@ Monster_A::Monster_A(EnemyState &enemyState) :
 
 	m_FuncTask.AllStop();
 	m_FuncTask.Start("Idle");
+
+	m_JudgementAnim = 20;
 }
 
 Monster_A::~Monster_A()
@@ -63,7 +65,7 @@ Monster_A::~Monster_A()
 
 void Monster_A::Attack()
 {
-	float animNum = m_Model.GetPlayTime();
+	float animNum = m_Model.GetPlayTime(m_JudgementAnim);
 	if(animNum >= 10 && animNum <= 11) m_pHitAttack[3].Awake(); //右腕の当たり判定起動
 	if (animNum >= 20) m_pHitAttack[3].Sleep(); //右腕の当たり判定終了
 

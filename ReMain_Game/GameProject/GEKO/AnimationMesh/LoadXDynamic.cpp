@@ -474,39 +474,12 @@ void LoadXDynamic::CopyBornTree(CopyBorn *pBornCopy, std::vector<CopyBorn*> *pCo
 	}
 }
 
-int LoadXDynamic::GetBornAllNum()
+void LoadXDynamic::Update(CopyBorn *pCopyBorn)
 {
-	return m_BornInfo.BornList.size();
-}
-
-std::string LoadXDynamic::GetBornName(int bornIndex)
-{
-	return m_BornInfo.BornList[bornIndex]->BornName;
-}
-
-void LoadXDynamic::Update(CopyBorn *pCopyBorn, float *pAinmFrame, int *pAinmNum)
-{
-	//アニメーションセットの範囲外アクセス防止
-	int AnimSetAllNum = m_BornInfo.AnimationSetFrameNum.size();
-	if ((*pAinmNum) >= AnimSetAllNum) *pAinmNum = AnimSetAllNum - 1;
-	else if ((*pAinmNum) <= 0) *pAinmNum = 0;
-
-	std::vector<int> *pFrameNum = &m_BornInfo.AnimationSetFrameNum[*pAinmNum];
-
-	//指定のアニメーションフレームを超えたら戻す
-	if (*pAinmFrame > pFrameNum->size() - 1)
-	{
-		*pAinmFrame = 0.0f;
-	}
-	else if (*pAinmFrame < 0.0f)
-	{
-		*pAinmFrame = (float)pFrameNum->size() - 1;
-	}
-
-	AnimUpdate(pCopyBorn, m_BornInfo.sBorn.child, *pAinmFrame, *pAinmNum, pFrameNum);
+	AnimUpdate(pCopyBorn, m_BornInfo.sBorn.child);
 
 	//ボーン更新
-	D3DXMATRIX m;;
+	D3DXMATRIX m;
 	D3DXMatrixIdentity(&m);
 	BornMatUpdate(pCopyBorn, m_BornInfo.sBorn.child, m);
 }
@@ -883,29 +856,41 @@ void LoadXDynamic::BornMatUpdate(CopyBorn *pCopyBorn, Born *pBorn, D3DXMATRIX &b
 	if (pBorn->brother != nullptr) BornMatUpdate(pCopyBorn->brother, pBorn->brother, bornMat);
 }
 
-void LoadXDynamic::AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn, float ainmFrame, unsigned int ainmNum, std::vector<int> *pFrameNum)
+void LoadXDynamic::AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn)
 {
 	D3DXMATRIX m;
 	D3DXMatrixIdentity(&m);
 
-	//アニメーションセットのフレーム時間
-	auto itFrame = pFrameNum->begin();
+	auto frameAnimNum = m_BornInfo.AnimationSetFrameNum[pCopyBorn->animNum].size() - 1;
 
-	std::vector<D3DXMATRIX> *pAnimMat = &m_BornInfo.AnimationSetMat[ainmNum][pBorn->BornName];
+	//アニメーションセットのフレーム時間
+	auto itFrame = m_BornInfo.AnimationSetFrameNum[pCopyBorn->animNum].begin();
+
+	std::vector<D3DXMATRIX> *pAnimMat = &m_BornInfo.AnimationSetMat[pCopyBorn->animNum][pBorn->BornName];
 	auto itAnimMat = pAnimMat->begin();
+
+	//指定のアニメーションフレームを超えたら戻す
+	if (pCopyBorn->animFrame > frameAnimNum)
+	{
+		pCopyBorn->animFrame = 0.0f;
+	}
+	else if (pCopyBorn->animFrame < 0.0f)
+	{
+		pCopyBorn->animFrame = (float)frameAnimNum;
+	}
 
 	//アニメーション補間
 	if (pAnimMat->size() != 0)
 	{
-		unsigned int frameNum = pFrameNum->size() - 1;
+		unsigned int frameNum = frameAnimNum;
 		for (unsigned int i = 0; i < frameNum; i++)
 		{
 			float frameBefore = (float)itFrame[i];
 			float frameAfter = (float)itFrame[i + 1];
-			if ((ainmFrame >= frameBefore) && (ainmFrame <= frameAfter))
+			if ((pCopyBorn->animFrame >= frameBefore) && (pCopyBorn->animFrame <= frameAfter))
 			{
 				//フレーム時間
-				float lengeTime = ainmFrame - frameBefore;
+				float lengeTime = pCopyBorn->animFrame - frameBefore;
 
 				float lenge = frameAfter - frameBefore;
 				float t = lengeTime / lenge;
@@ -921,8 +906,8 @@ void LoadXDynamic::AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn, float ainmFrame,
 
 	pCopyBorn->worldMat = m;
 
-	if (pCopyBorn->child != nullptr) AnimUpdate(pCopyBorn->child, pBorn->child, ainmFrame, ainmNum, pFrameNum);
-	if (pCopyBorn->brother != nullptr) AnimUpdate(pCopyBorn->brother, pBorn->brother, ainmFrame, ainmNum, pFrameNum);
+	if (pCopyBorn->child != nullptr) AnimUpdate(pCopyBorn->child, pBorn->child);
+	if (pCopyBorn->brother != nullptr) AnimUpdate(pCopyBorn->brother, pBorn->brother);
 }
 
 void LoadXDynamic::DeleteHierarchy(Born *pBorn)

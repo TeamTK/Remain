@@ -10,9 +10,7 @@ public:
 	~LoadXDynamic();
 	void Relese();
 	void CopyBornTree(CopyBorn *pBornCopy, std::vector<CopyBorn*> *pCopyBornArray, Born *pBornOriginal);
-	int GetBornAllNum();
-	std::string GetBornName(int bornIndex);
-	void Update(CopyBorn *pCopyBorn, float *pAinmFrame, int *pAinmNum);
+	void Update(CopyBorn *pCopyBorn);
 	void BornDebug(eBornDebug eBornDebug);
 	void AnimationDebug(int animNum);
 
@@ -21,7 +19,7 @@ private:
 	void LoadAnimation(FILE *fp, SkinVertexInfo* pVB);
 	void LoadMat(Born *pBorn, FILE *fp);
 	void BornMatUpdate(CopyBorn *pCopyBorn, Born *pBorn, D3DXMATRIX &bornMat);
-	void AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn, float ainmFrame, unsigned int ainmNum, std::vector<int> *pFrameNum);
+	void AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn);
 	void DeleteHierarchy(Born *pBorn);
 	bool AddBoneHierarchy(Born *pBorn, FILE *fp, int hierarchy);
 

@@ -1,9 +1,9 @@
 #ifndef _OPENING_H_
 #define _OPENING_H_
 
-#include "Scene.h"
+#include "..\GEKO\Task\Task.h"
 
-class Opening : public Scene
+class Opening : public Task
 {
 public:
 	Opening();

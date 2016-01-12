@@ -140,8 +140,11 @@ public:
 	{
 		//当たり判定用メッシュ
 		m_HitMesh.SetAsset("Cabin_Collision");
-		m_HitMesh.SetTranselate(-7.5f, -0.08f, 12.6f);
-		m_HitMesh.SetRotationDegree(0, 90, 0);
+		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
+		m_HitMesh.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
+		m_HitMesh.SetScale(sca.x, sca.y, sca.z);
+
+		//キャラクタと家の当たり判定
 		m_CharacterHit.Regist_SMesh_vs_S(&m_HitMesh);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
 
@@ -193,19 +196,29 @@ public:
 	RockWall(XYZ pos, XYZ rot, XYZ sca, std::string name) :
 		StageObject(pos, rot, sca, name) 
 	{
-		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
+		//当たり判定用のメッシュ初期化
+		m_HitMesh.SetAsset("Wall_Collision");
+		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
+		m_HitMesh.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
+		m_HitMesh.SetScale(sca.x, sca.y, sca.z);
+
+		//キャラクタと壁の当たり判定
+		m_CharacterHit.Regist_SMesh_vs_S(&m_HitMesh);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2 | eHITID3);
 
-		m_CamraHit.Regist_SMesh_vs_L(&m_Object);
+		//カメラと壁の当たり判定
+		m_CamraHit.Regist_SMesh_vs_L(&m_HitMesh);
 		m_CamraHit.SetID(eHITID1, eHITID0);
 
-		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
+		//弾と壁の当たり判定
+		m_BulletHit.Regist_SMesh_vs_L(&m_HitMesh);
 		m_BulletHit.SetID(eHITID7, eHITID2);
 		m_BulletHit.SetName("RockWall");
 	}
 	~RockWall() {}
 
 private:
+	StaticMesh m_HitMesh;
 	Collider m_CamraHit;
 	Collider m_BulletHit;
 };

@@ -53,11 +53,8 @@
     </ClCompile>
     <ClCompile Include="GEKO\SoundSystem\SoundAsset.cpp" />
     <ClCompile Include="GEKO\System\Collision.cpp" />
-    <ClCompile Include="Scene\BaseCamp.cpp" />
-    <ClCompile Include="Scene\GameEnd.cpp" />
     <ClCompile Include="Scene\MainGame.cpp" />
     <ClCompile Include="Scene\Opening.cpp" />
-    <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\Title.cpp" />
     <ClCompile Include="GEKO\ImageSystem\Image.cpp" />
     <ClCompile Include="GEKO\ImageSystem\ImageAsset.cpp" />
@@ -98,8 +95,9 @@
     <ClCompile Include="MainGame\Weapon\WeaponBase.cpp" />
     <ClCompile Include="MainGame\Weapon\Handgun.cpp" />
     <ClCompile Include="MainGame\Weapon\Shotgun.cpp" />
-    <ClCompile Include="MainGame\Bullet\ShotGunBullet.cpp" />
-    <ClCompile Include="MainGame\Bullet\HandGunBullet.cpp" />
+    <ClCompile Include="GEKO\Mesh\Shader.cpp" />
+    <ClCompile Include="Scene\GameOvar.cpp" />
+    <ClCompile Include="Chapter\Chapter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -142,11 +140,8 @@
     </ClInclude>
     <ClInclude Include="GEKO\SoundSystem\SoundAsset.h" />
     <ClInclude Include="GEKO\System\Collision.h" />
-    <ClInclude Include="Scene\BaseCamp.h" />
-    <ClInclude Include="Scene\GameEnd.h" />
     <ClInclude Include="Scene\MainGame.h" />
     <ClInclude Include="Scene\Opening.h" />
-    <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\Title.h" />
     <ClInclude Include="GEKO\ImageSystem\Image.h">
       <Filter>GEKO3DX</Filter>
@@ -268,8 +263,9 @@
     <ClInclude Include="MainGame\Weapon\WeaponBase.h" />
     <ClInclude Include="MainGame\Weapon\Handgun.h" />
     <ClInclude Include="MainGame\Weapon\Shotgun.h" />
-    <ClInclude Include="MainGame\Bullet\ShotGunBullet.h" />
-    <ClInclude Include="MainGame\Bullet\HandGunBullet.h" />
+    <ClInclude Include="GEKO\Mesh\Shader.h" />
+    <ClInclude Include="Scene\GameOvar.h" />
+    <ClInclude Include="Chapter\Chapter.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

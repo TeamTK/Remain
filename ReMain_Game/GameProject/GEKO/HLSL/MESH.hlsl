@@ -1,4 +1,4 @@
-//#pragma warning(disable : 3206)
+#pragma warning(disable : 3206)
 
 //テクスチャー
 Texture2D g_texColor: register(t0);

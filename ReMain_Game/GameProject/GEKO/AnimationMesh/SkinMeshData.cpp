@@ -210,12 +210,7 @@ void SkinMeshData::Relese()
 	}
 }
 
-int SkinMeshData::GetBornAllNum()
-{
-	return 0;
-}
-
-void SkinMeshData::Update(CopyBorn *pCopyBorn, float *pAinmFrame, int *pAinmNum)
+void SkinMeshData::Update(CopyBorn *pCopyBorn)
 {
 }
 

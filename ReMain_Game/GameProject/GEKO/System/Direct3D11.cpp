@@ -97,6 +97,7 @@ HRESULT Direct3D11::InitD3D11(INT Width, INT Height)
 	ZeroMemory(&rdc, sizeof(rdc));
 	//rdc.CullMode = D3D11_CULL_NONE;
 	rdc.CullMode = D3D11_CULL_BACK;
+	//rdc.CullMode = D3D11_CULL_FRONT;
 	rdc.FillMode = D3D11_FILL_SOLID;
 	//rdc.FillMode = D3D11_FILL_WIREFRAME;
 	rdc.FrontCounterClockwise = false;
@@ -132,6 +133,23 @@ HRESULT Direct3D11::InitD3D11(INT Width, INT Height)
 	Direct3D11::Get().GetID3D11DeviceContext()->OMSetBlendState(m_pBlendState, NULL, mask);
 
 	return S_OK;
+}
+
+void Direct3D11::SetRasterizer(D3D11_CULL_MODE cullMode, D3D11_FILL_MODE fillMode)
+{
+	//ラスタライズ設定
+	D3D11_RASTERIZER_DESC rdc;
+	ZeroMemory(&rdc, sizeof(rdc));
+	rdc.CullMode = cullMode;
+	rdc.FillMode = fillMode;
+	rdc.FrontCounterClockwise = false;
+	rdc.MultisampleEnable = true;
+	rdc.AntialiasedLineEnable = false;
+
+	ID3D11RasterizerState* pIr = NULL;
+	m_pDevice->CreateRasterizerState(&rdc, &pIr);
+	m_pDeviceContext->RSSetState(pIr);
+	SAFE_RELEASE(pIr);
 }
 
 ID3D11Device* Direct3D11::GetID3D11Device() const

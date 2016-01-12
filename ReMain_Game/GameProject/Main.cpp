@@ -1,5 +1,6 @@
 #include "GEKO\\GEKO.h"
-#include "Scene\Scene.h"
+#include "GameSystem\StageObject.h"
+#include "Scene\MainGame.h"
 
 INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 {
@@ -11,19 +12,17 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 	DirectionalLight::SetIntensity(0.6f);
 	DirectionalLight::SetDirection(0.0f, 45.0f);
 
-	SceneManager::Quit(0, EScene::E_MAIN);
+	new MainGame();
 
 	while (GEKO::Loop())
 	{
 		GEKO::BackgroundColor(0, 0, 0);
 		GEKO::DrawFps();
-		SceneManager::Update();
-		SceneManager::Render();
+		StageObjectManager::GetInstance()->Render();
 		TaskManager::Update();
 		RenderManager::Render();
 	}
 	
-	SceneManager::Clear();
 	GEKO::End();
 	Debug::End();
 
