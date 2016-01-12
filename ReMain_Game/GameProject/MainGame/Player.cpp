@@ -48,14 +48,14 @@ Player::Player() :
 	m_Model.SetScale(1.0f, 1.0f, 1.0f);
 	m_pos = Vector3D(-48.0f, 0.0f, -11.0f);
 
-	//ã‚«ãƒ¡ãƒ©ã®å½“ãŸã‚Šåˆ¤å®E
+	//ƒJƒƒ‰‚Ì“–‚½‚è”»’è
 	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_HitCameraPos, REGIST_FUNC(Player::HitCamera));
 	m_HitCamera.SetID(eHITID0, eHITID1);
-	//å¼¾è–¬ç®±ã®å½“ãŸã‚Šåˆ¤å®E
+	//’e–ò” ‚Ì“–‚½‚è”»’è
 	m_HitAmmoBox.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::HitAmmoBox));
 	m_HitAmmoBox.SetID(eHITID1, eHITID2 | eHITID3);
 
-	//æ•µã®æ”»æ’EEå½“ãŸã‚Šåˆ¤å®E
+	//“G‚ÌUŒ‚‚Ì“–‚½‚è”»’è
 	m_HitEnemyAttack.Regist_C_vs_C(&m_pos, &m_SightPos, &m_Radius, REGIST_FUNC(Player::HitEnemyAttack));
 	m_HitEnemyAttack.SetID(eHITID0, eHITID1);
 
@@ -85,21 +85,22 @@ void Player::Update()
 	Character::Update();
 	m_SelectWeapon.Update();
 
-	m_SightPos = m_Model.GetBornPos(6); //é ­ã®ãƒœãEãƒ³ä½ç½®
+	m_SightPos = m_Model.GetBornPos(6); //“ª‚Ìƒ{[ƒ“ˆÊ’u
 
-	//ã‚«ãƒ¡ãƒ©ã®å½“ãŸã‚Šåˆ¤å®šä½ç½®
+										//ƒJƒƒ‰‚Ì“–‚½‚è”»’èˆÊ’u
 	m_HitCameraPos = m_pos;
 	m_HitCameraPos.y += CAMERA_HIT_HIGHT;
 
-	//å½“ãŸã‚Šåˆ¤å®šç”¨ å§‹ç‚¹çµ‚ç‚¹
+	//“–‚½‚è”»’è—p n“_I“_
 	m_Start = m_CameraPos;
 	m_End = ((m_LookPos - m_CameraPos) + m_LookPos).GetNormalize();
 
 	//ƒvƒŒƒCƒ„[‚Ìƒ{[ƒ“s—ñ‚ÌØ‚è‘Ö‚¦
-	if ((m_Anim == EPlayerAnim::eAnim_TakeGun && m_Model.GetPlayTime(m_JudgementAnim) >= 15) ||
-		m_Anim == EPlayerAnim::eAnim_SetupGun || m_Anim == EPlayerAnim::eAnim_IdleTakeGun ||
-		m_Anim == EPlayerAnim::eAnim_WalkTakeGun || m_Anim == EPlayerAnim::eAnim_RunTakeGun ||
-		m_Anim == EPlayerAnim::eAnim_ReloadGun)
+	int ainmState = m_Anim;
+	if ((ainmState == EPlayerAnim::eAnim_TakeGun && m_Model.GetPlayTime(m_JudgementAnim) >= 15) ||
+		ainmState == EPlayerAnim::eAnim_SetupGun || ainmState == EPlayerAnim::eAnim_IdleTakeGun ||
+		ainmState == EPlayerAnim::eAnim_WalkTakeGun || ainmState == EPlayerAnim::eAnim_RunTakeGun ||
+		ainmState == EPlayerAnim::eAnim_ReloadGun)
 	{
 		m_MatrixS = m_Model.GetBornMatrix(24, true);
 	}
@@ -108,10 +109,10 @@ void Player::Update()
 		m_MatrixS = m_Model.GetBornMatrix(21, true);
 	}
 
-	if ((m_Anim == EPlayerAnim::eAnim_TakeHandgun && m_Model.GetPlayTime(m_JudgementAnim) >= 15) ||
-		m_Anim == EPlayerAnim::eAnim_SetupHandgun || m_Anim == EPlayerAnim::eAnim_IdleTakeHandgun ||
-		m_Anim == EPlayerAnim::eAnim_WalkTakeHandgun || m_Anim == EPlayerAnim::eAnim_RunTakeHandgun ||
-		m_Anim == EPlayerAnim::eAnim_ReloadHandgun)
+	if ((ainmState == EPlayerAnim::eAnim_TakeHandgun && m_Model.GetPlayTime(m_JudgementAnim) >= 15) ||
+		ainmState == EPlayerAnim::eAnim_SetupHandgun || ainmState == EPlayerAnim::eAnim_IdleTakeHandgun ||
+		ainmState == EPlayerAnim::eAnim_WalkTakeHandgun || ainmState == EPlayerAnim::eAnim_RunTakeHandgun ||
+		ainmState == EPlayerAnim::eAnim_ReloadHandgun)
 	{
 		m_MatrixH = m_Model.GetBornMatrix(24, true);
 	}
@@ -120,7 +121,7 @@ void Player::Update()
 		m_MatrixH = m_Model.GetBornMatrix(3, true);
 	}
 
-	//å¼¾è–¬æ•°ã‚’è¡¨ç¤º
+	//’e–ò”‚ğ•\¦
 	if (m_SelectedWeapon == EWeapons::eShotgun)
 	{
 		m_Num.NumDraw(Vector2D(0, 90), g_pShotgun->GetAmmo());
@@ -148,34 +149,34 @@ void Player::Move()
 
 	if (Input::XInputPad1.GetIsConnection())
 	{
-		//ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼å…¥åŠE
+		//ƒRƒ“ƒgƒ[ƒ‰[“ü—Í
 		m_PadDir = Vector3D((float)Input::XInputPad1.ThumbLeftX(), 0.0f, (float)Input::XInputPad1.ThumbLeftY());
 		m_KeyDir = (m_PadDir - Vector3D(128, 128, 128)) / 32767;
 	}
 	else
 	{
-		//å‰å¾Œå·¦å³ç§»å‹E
+		//‘OŒã¶‰EˆÚ“®
 		if (Input::KeyW.Pressed())	m_KeyDir.z = 1;
 		if (Input::KeyS.Pressed())	m_KeyDir.z = -1;
 		if (Input::KeyD.Pressed())	m_KeyDir.x = 1;
 		if (Input::KeyA.Pressed())	m_KeyDir.x = -1;
 	}
 
-	//æ­©ãEWASD, å·¦ã‚¹ãƒE‚£ãƒE‚¯)
+	//•à‚­(WASD, ¶ƒXƒeƒBƒbƒN)
 	if (m_KeyDir.x != 0 || m_KeyDir.z != 0)
 	{
 		m_State = EPlayerState::eState_Walk;
 		m_isMove = true;
 	}
 
-	//èµ°ã‚Eå·¦ã‚·ãƒ•ãƒˆã‚­ãƒ¼, å·¦ã‚¹ãƒE‚£ãƒE‚¯æŠ¼ãE
+	//‘–‚é(¶ƒVƒtƒgƒL[, ¶ƒXƒeƒBƒbƒN‰Ÿ‚µ)
 	if ((Input::KeyLShift.Pressed() || Input::XInputPad1.ThumbLeftPressed()) && m_isMove)
 	{
 		m_State = EPlayerState::eState_Run;
 		m_isRun = true;
 	}
 
-	//ã—ã‚ƒãŒãE(å·¦ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã‚­ãƒ¼, å³ãƒˆãƒªã‚¬ãƒ¼) 
+	//‚µ‚á‚ª‚Ş(¶ƒRƒ“ƒgƒ[ƒ‹ƒL[, ‰EƒgƒŠƒK[) 
 	if ((Input::KeyLControl.Clicked() || Input::XInputPad1.TriggerRight()))
 	{
 		m_ToggleCrouch = !m_ToggleCrouch;
@@ -200,15 +201,15 @@ void Player::Move()
 		if (m_SetupWeapon)
 		{
 			m_Phase++;
-			//æ­¦å™¨ã‚’æ§‹ãˆãŸçŠ¶æ…‹ãEç§»å‹E
+			//•Ší‚ğ\‚¦‚½ó‘Ô‚ÌˆÚ“®
 			m_pos += m_Model.GetAxisX(1.0f) * m_KeyDir.x * m_MoveSpeed;
 			m_pos += m_Model.GetAxisZ(1.0f) * m_KeyDir.z * m_MoveSpeed;
-			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä¸Šä¸‹ç§»å‹E
+			//ƒvƒŒƒCƒ„[‚Ìã‰ºˆÚ“®
 			m_pos.y += sinf(m_Phase * (PI * 10) / 150.0f) / 120.0f;
 		}
 		else
 		{
-			//é€šå¸¸çŠ¶æ…‹ãEç§»å‹E
+			//’Êíó‘Ô‚ÌˆÚ“®
 			Vector3D pos(sinf(m_Model.GetRotation().y), 0.0f, cosf(m_Model.GetRotation().y));
 			m_pos += pos * m_MoveSpeed;
 		}
@@ -217,7 +218,7 @@ void Player::Move()
 
 void Player::Weapon()
 {
-	//æ­¦å™¨ã®åˆE‚Šæ›¿ãEãƒ›ã‚¤ãƒ¼ãƒ«ã‚¯ãƒªãƒE‚¯, æ–¹å‘ã‚­ãƒ¼å·¦å³)
+	//•Ší‚ÌØ‚è‘Ö‚¦(ƒzƒC[ƒ‹ƒNƒŠƒbƒN, •ûŒüƒL[¶‰E)
 	if ((Input::Mouse.WheelClicked() || Input::XInputPad1.ThumbRightClicked()) && !m_isTakeWeapon)
 	{
 		m_SelectedWeapon = m_SelectWeapon.Select();
@@ -225,7 +226,7 @@ void Player::Weapon()
 
 	if (m_SelectWeapon.isSelected()) return;
 
-	//æ­¦å™¨ã‚’ã¨ã‚E
+	//•Ší‚ğ‚Æ‚é
 	if ((Input::KeyF.Clicked() || Input::XInputPad1.BClicked()) && !m_isCrouch)
 	{
 		if (m_isTakeWeapon && !m_ChangePutBackWeapon && !m_ChangeTakeWeapon)
@@ -239,14 +240,14 @@ void Player::Weapon()
 			m_Model.SetTime(0);
 		}
 	}
-	//ã‚¹ãƒEEãƒˆå¤‰æ›´
+	//ƒXƒe[ƒg•ÏX
 	if (m_ChangePutBackWeapon)
 		m_State = EPlayerState::eState_PutBackWeapon;
 	else if (m_ChangeTakeWeapon)
 		m_State = EPlayerState::eState_TakeWeapon;
 
 
-	//éŠE‚’æŒã£ã¦ãE‚‹ã¨ãã«éŠE‚’æ§‹ãˆã‚Eãƒã‚¦ã‚¹å³ã‚¯ãƒªãƒE‚¯, å·¦ã‚·ãƒ§ãƒ«ãƒ€ãƒ¼)
+	//e‚ğ‚Á‚Ä‚¢‚é‚Æ‚«‚Ée‚ğ\‚¦‚é(ƒ}ƒEƒX‰EƒNƒŠƒbƒN, ¶ƒVƒ‡ƒ‹ƒ_[)
 	if ((Input::Mouse.RPressed() || Input::XInputPad1.ShoulderLeftPressed()) && m_isTakeWeapon)
 	{
 		m_AnimSpeed = 60;
@@ -258,7 +259,7 @@ void Player::Weapon()
 		m_SetupWeapon = false;
 	}
 
-	//ãƒªãƒ­ãƒ¼ãƒE
+	//ƒŠƒ[ƒh
 	if (Input::KeyR.Clicked() && m_isTakeWeapon)
 	{
 		if (m_SelectedWeapon == EWeapons::eShotgun && g_pShotgun->GetLoadedAmmo() < AMMO_LOADED_SHOTGUN)
@@ -276,7 +277,7 @@ void Player::Weapon()
 	if (m_isReload)
 		m_State = EPlayerState::eState_Reload;
 
-	//ç™ºç ²ã€€(ãƒã‚¦ã‚¹å·¦ã‚¯ãƒªãƒE‚¯, å³ã‚·ãƒ§ãƒ«ãƒ€ãƒœã‚¿ãƒ³)
+	//”­–C@(ƒ}ƒEƒX¶ƒNƒŠƒbƒN, ‰EƒVƒ‡ƒ‹ƒ_ƒ{ƒ^ƒ“)
 	if ((Input::Mouse.LClicked() || Input::XInputPad1.ShoulderRightClicked()) && m_SetupWeapon)
 	{
 		bool isCanShot = false;
@@ -295,7 +296,7 @@ void Player::Weapon()
 			isCanShot = true;
 		}
 
-		//ç™ºç ²ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”ŸæˆE
+		//”­–CƒGƒtƒFƒNƒg¶¬
 		if (isCanShot)
 		{
 			EffectInfo effectData;
@@ -319,16 +320,16 @@ void Player::Camera()
 
 	if (m_SelectWeapon.isSelected()) return;
 
-	//ã‚«ãƒ¡ãƒ©ç§»å‹E
+	//ƒJƒƒ‰ˆÚ“®
 	if (Input::XInputPad1.GetIsConnection())
 	{
-		//ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼å…¥åŠE
+		//ƒRƒ“ƒgƒ[ƒ‰[“ü—Í
 		m_Horizontal += (Input::XInputPad1.ThumbRightX() - 128) * m_CamSpeed;
 		m_Vertical += (Input::XInputPad1.ThumbRightY() - 128) * m_CamSpeed;
 	}
 	else
 	{
-		//ãƒã‚¦ã‚¹å…¥åŠE
+		//ƒ}ƒEƒX“ü—Í
 		m_Horizontal += mouseValue.x * 0.002f;
 		m_Vertical += -mouseValue.y * 0.002f;
 	}
@@ -339,12 +340,12 @@ void Player::Camera()
 	mat = mRY * mRX;
 	m_CamDir = mat.GetAxisZ();
 
-	//éŠE‚’æ§‹ãˆã¦ãE‚‹ã¨ããEã‚«ãƒ¡ãƒ©ä½ç½®
+	//e‚ğ\‚¦‚Ä‚¢‚é‚Æ‚«‚ÌƒJƒƒ‰ˆÊ’u
 	if (m_SetupWeapon)
 	{
 		m_CamSpeed = 0.0000007f;
-		if (m_Vertical >= 0.55f) m_Vertical = 0.55f;	//ã‚«ãƒ¡ãƒ©è§’åº¦ä¸Šé™
-		if (m_Vertical <= -0.5f) m_Vertical = -0.5f;	//ã‚«ãƒ¡ãƒ©è§’åº¦ä¸‹é™
+		if (m_Vertical >= 0.55f) m_Vertical = 0.55f;	//ƒJƒƒ‰Šp“xãŒÀ
+		if (m_Vertical <= -0.5f) m_Vertical = -0.5f;	//ƒJƒƒ‰Šp“x‰ºŒÀ
 
 		m_rot.x = -m_Vertical;
 		m_rot.y = m_Horizontal;
@@ -360,23 +361,23 @@ void Player::Camera()
 		newCameraPos = Vector3D(eye.x, eye.y, eye.z);
 		newLookPos = Vector3D(at.x, at.y, at.z);
 	}
-	//é€šå¸¸çŠ¶æ…‹ãEã‚«ãƒ¡ãƒ©ä½ç½®
+	//’Êíó‘Ô‚ÌƒJƒƒ‰ˆÊ’u
 	else
 	{
 		m_CamSpeed = 0.000002f;
-		if (m_Vertical >= 0.45f) m_Vertical = 0.45f;	//ã‚«ãƒ¡ãƒ©è§’åº¦ä¸‹é™
-		if (m_Vertical <= -0.9f) m_Vertical = -0.9f;	//ã‚«ãƒ¡ãƒ©è§’åº¦ä¸Šé™
+		if (m_Vertical >= 0.45f) m_Vertical = 0.45f;	//ƒJƒƒ‰Šp“x‰ºŒÀ
+		if (m_Vertical <= -0.9f) m_Vertical = -0.9f;	//ƒJƒƒ‰Šp“xãŒÀ
 
 		m_rot.x = 0.0f;
 		newLookPos = m_pos + mat.GetAxisX() * 0.4f;
 		newLookPos.y = m_CameraPosY + m_pos.y;
 
-		//ã‚«ãƒ¡ãƒ©ã®åº§æ¨E
+		//ƒJƒƒ‰‚ÌÀ•W
 		newCameraPos = newLookPos;
 		newCameraPos -= m_CamDir * lenge;
 	}
 
-	//ã‚«ãƒ¡ãƒ©è£œå®Œç§»å‹E
+	//ƒJƒƒ‰•âŠ®ˆÚ“®
 	if (m_SetupWeapon)
 	{
 		m_CameraPos = Vector3D::Lerp(m_CameraPos, newCameraPos, 0.8f);
@@ -438,7 +439,7 @@ void Player::Animation()
 
 void Player::Idle()
 {
-	//æ­¦å™¨ã‚’æŒã£ã¦å¾E©E
+	//•Ší‚ğ‚Á‚Ä‘Ò‹@
 	if (m_isTakeWeapon)
 	{
 		if (m_SelectedWeapon == EWeapons::eShotgun)
@@ -452,7 +453,7 @@ void Player::Idle()
 			m_AnimSpeed = HALF_ANIM_SPEED;
 		}
 	}
-	//å¾E©E
+	//‘Ò‹@
 	else
 	{
 		m_Anim = EPlayerAnim::eAnim_Idle;
@@ -464,7 +465,7 @@ void Player::Walk()
 {
 	m_MoveSpeed = WALK_SPEED;
 
-	if (m_isTakeWeapon) //æ­¦å™¨ã‚’æŒã£ã¦ãE‚‹ã¨ãE
+	if (m_isTakeWeapon) //•Ší‚ğ‚Á‚Ä‚¢‚é‚Æ‚«
 	{
 		if (m_SelectedWeapon == EWeapons::eShotgun)
 		{
@@ -479,7 +480,7 @@ void Player::Walk()
 	}
 	else
 	{
-		//æ­©ãE
+		//•à‚«
 		m_Anim = EPlayerAnim::eAnim_Walk;
 		m_AnimSpeed = DEFAULT_ANIM_SPEED;
 	}
@@ -489,7 +490,7 @@ void Player::Run()
 {
 	m_MoveSpeed = RUN_SPEED;
 
-	//æ­¦å™¨ã‚’æŒã£ã¦ãE‚‹ã¨ãE
+	//•Ší‚ğ‚Á‚Ä‚¢‚é‚Æ‚«
 	if (m_isTakeWeapon)
 	{
 		if (m_SelectedWeapon == EWeapons::eShotgun)
@@ -503,7 +504,7 @@ void Player::Run()
 			m_AnimSpeed = RUN_ANIM_SPEED;
 		}
 	}
-	else//æ­¦å™¨ã‚’æŒã£ã¦ãEªãE¨ãE
+	else//•Ší‚ğ‚Á‚Ä‚¢‚È‚¢‚Æ‚«
 	{
 		m_Anim = EPlayerAnim::eAnim_Run;
 		m_AnimSpeed = RUN_ANIM_SPEED;
@@ -512,7 +513,7 @@ void Player::Run()
 
 void Player::Crouch()
 {
-	//æ­¦å™¨ã‚’æŒã£ã¦ãE‚‹æ™‚ãEæ­¦å™¨ã‚’ã—ã¾ã£ã¦ã‹ã‚‰ã—ã‚ƒãŒãE
+	//•Ší‚ğ‚Á‚Ä‚¢‚é‚Í•Ší‚ğ‚µ‚Ü‚Á‚Ä‚©‚ç‚µ‚á‚ª‚Ş
 	if (m_isTakeWeapon)
 	{
 		if (m_SelectedWeapon == EWeapons::eShotgun)
@@ -525,7 +526,6 @@ void Player::Crouch()
 			m_Anim = EPlayerAnim::eAnim_TakeHandgun;
 			m_AnimSpeed = -TWICE_ANIM_SPEED;
 		}
-
 		//‚µ‚Ü‚¤ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌI‚í‚è
 		if (m_Model.GetPlayTime(m_JudgementAnim) < 1)
 		{
@@ -534,21 +534,21 @@ void Player::Crouch()
 	}
 	else
 	{
-		//ã—ã‚ƒãŒã¿ç§»è¡E
+		//‚µ‚á‚ª‚İˆÚs
 		if (!m_isCrouch)
 		{
 			m_Anim = EPlayerAnim::eAnim_Crouch;
 			m_AnimSpeed = TWICE_ANIM_SPEED;
 		}
 
-		//ã—ã‚ƒãŒã¿å¾E©E
+		//‚µ‚á‚ª‚İ‘Ò‹@
 		if (m_KeyDir.x == 0 && m_KeyDir.z == 0 && m_isCrouch)
 		{
 			m_CameraPosY = CAMERA_CROUCH_POS_Y;
 			m_Anim = EPlayerAnim::eAnim_CrouchIdle;
 			m_AnimSpeed = HALF_ANIM_SPEED;
 		}
-		//ã—ã‚ƒãŒã¿æ­©ãE
+		//‚µ‚á‚ª‚İ•à‚«
 		else if (m_KeyDir.x != 0 || m_KeyDir.z != 0 && m_isCrouch)
 		{
 			m_CameraPosY = CAMERA_CROUCH_POS_Y;
@@ -569,27 +569,27 @@ void Player::TakeWeapon()
 {
 	if (m_SelectedWeapon == EWeapons::eShotgun)
 	{
-		//ã‚·ãƒ§ãƒEƒˆã‚¬ãƒ³ã‚’æŒã£ã¦æ­©ãE
+		//ƒVƒ‡ƒbƒgƒKƒ“‚ğ‚Á‚Ä•à‚­
 		if (m_isTakeWeapon && m_isMove && !m_isRun)
 		{
 			m_MoveSpeed = WALK_SPEED;
 			m_Anim = EPlayerAnim::eAnim_WalkTakeGun;
 			m_AnimSpeed = DEFAULT_ANIM_SPEED;
 		}
-		//ã‚·ãƒ§ãƒEƒˆã‚¬ãƒ³ã‚’æŒã£ã¦èµ°ã‚E
+		//ƒVƒ‡ƒbƒgƒKƒ“‚ğ‚Á‚Ä‘–‚é
 		else if (m_isTakeWeapon && m_isRun)
 		{
 			m_MoveSpeed = RUN_SPEED;
 			m_Anim = EPlayerAnim::eAnim_RunTakeGun;
 			m_AnimSpeed = RUN_ANIM_SPEED;
 		}
-		//ã‚·ãƒ§ãƒEƒˆã‚¬ãƒ³ã‚’æŒã£ãŸçŠ¶æ…‹ã§å¾E©E
+		//ƒVƒ‡ƒbƒgƒKƒ“‚ğ‚Á‚½ó‘Ô‚Å‘Ò‹@
 		else if (m_isTakeWeapon && !m_isMove)
 		{
 			m_Anim = EPlayerAnim::eAnim_IdleTakeGun;
 			m_AnimSpeed = HALF_ANIM_SPEED;
 		}
-		//ã‚·ãƒ§ãƒEƒˆã‚¬ãƒ³ã‚’å–ã‚E
+		//ƒVƒ‡ƒbƒgƒKƒ“‚ğæ‚é
 		else
 		{
 			m_Anim = EPlayerAnim::eAnim_TakeGun;
@@ -604,27 +604,27 @@ void Player::TakeWeapon()
 	}
 	else if (m_SelectedWeapon == EWeapons::eHandgun)
 	{
-		//ãƒãƒ³ãƒ‰ã‚¬ãƒ³ã‚’æŒã£ã¦æ­©ãE
+		//ƒnƒ“ƒhƒKƒ“‚ğ‚Á‚Ä•à‚­
 		if (m_isTakeWeapon && m_isMove && !m_isRun)
 		{
 			m_MoveSpeed = WALK_SPEED;
 			m_Anim = EPlayerAnim::eAnim_WalkTakeHandgun;
 			m_AnimSpeed = DEFAULT_ANIM_SPEED;
 		}
-		//ãƒãƒ³ãƒ‰ã‚¬ãƒ³ã‚’æŒã£ã¦èµ°ã‚E
+		//ƒnƒ“ƒhƒKƒ“‚ğ‚Á‚Ä‘–‚é
 		else if (m_isTakeWeapon && m_isRun)
 		{
 			m_MoveSpeed = RUN_SPEED;
 			m_Anim = EPlayerAnim::eAnim_RunTakeHandgun;
 			m_AnimSpeed = RUN_ANIM_SPEED;
 		}
-		//ãƒãƒ³ãƒ‰ã‚¬ãƒ³ã‚’æŒã£ãŸçŠ¶æ…‹ã§å¾E©E
+		//ƒnƒ“ƒhƒKƒ“‚ğ‚Á‚½ó‘Ô‚Å‘Ò‹@
 		else if (m_isTakeWeapon && !m_isMove)
 		{
 			m_Anim = EPlayerAnim::eAnim_IdleTakeHandgun;
 			m_AnimSpeed = HALF_ANIM_SPEED;
 		}
-		//ãƒãƒ³ãƒ‰ã‚¬ãƒ³ã‚’å–ã‚E
+		//ƒnƒ“ƒhƒKƒ“‚ğæ‚é
 		else
 		{
 			m_Anim = EPlayerAnim::eAnim_TakeHandgun;
@@ -756,7 +756,7 @@ void Player::HitEnemyAttack(Result_Capsule &hitData)
 {
 	//m_isHit = true;
 	//m_OldState = m_State;
-	//è¡€ã—ãEããEã‚¨ãƒ•ã‚§ã‚¯ãƒE
+	//ŒŒ‚µ‚Ô‚«‚ÌƒGƒtƒFƒNƒg
 	EffectInfo effectData;
 	effectData.imageName = "Blood";
 	effectData.num = 60;
