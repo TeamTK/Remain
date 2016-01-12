@@ -2,6 +2,8 @@
 #include "..\..\GameSystem\Effect.h"
 #include "..\Player.h"
 
+#define COMMON_BORN_ANIM_ENEMY 20
+
 Enemy::Enemy(const char* name, EnemyState &enemyState) :
 	Character(10, name, 1),
 	m_FlinchCnt(0.0f),
@@ -44,7 +46,7 @@ Enemy::~Enemy()
 
 void Enemy::Attack()
 {
-	if (m_Model.GetPlayTime() >= m_AnimEndTime)
+	if (m_Model.GetPlayTime(COMMON_BORN_ANIM_ENEMY) >= m_AnimEndTime)
 	{
 		auto bornNum = m_BoneCapsule.size();
 		for (unsigned int i = 0; i < bornNum; i++) m_pHitAttack[i].Sleep();
@@ -86,7 +88,7 @@ void Enemy::Chase()
 
 void Enemy::HitDamage()
 {
-	if (m_Model.GetPlayTime() >= m_AnimEndTime)
+	if (m_Model.GetPlayTime(m_JudgementAnim) >= m_AnimEndTime)
 	{
 		m_FuncTask.Stop("HitDamage");
 		m_FuncTask.Start("Chase");
@@ -95,7 +97,7 @@ void Enemy::HitDamage()
 
 void Enemy::Die()
 {
-	if (m_Model.GetPlayTime() >= m_AnimEndTime)
+	if (m_Model.GetPlayTime(m_JudgementAnim) >= m_AnimEndTime)
 	{
 		m_FuncTask.AllStop();
 		Task::SetKill();
@@ -149,6 +151,19 @@ void Enemy::HitBullet(Result_Sphere& r)
 	effectData.time = 120;
 	new Effect(effectData, "Blood");
 
+	//e‚Ìí—Ş‚²‚Æ‚ÌˆĞ—Í
+	float GunPower = 1.0f;
+	if (r.name == "HandGun")
+	{
+		GunPower = 2.0f;
+	}
+	else if (r.name == "ShotGun")
+	{
+		GunPower = 3.0f;
+	}
+	
+	std::cout << r.name << "\n";
+
 	//“–‚½‚è”»’è’â~i’e‚©‚ç‚Ìj
 	auto bornNum = m_BoneCapsule.size();
 	for (unsigned int i = 0; i < bornNum; i++)
@@ -158,7 +173,7 @@ void Enemy::HitBullet(Result_Sphere& r)
 		//•”ˆÊ‚²‚Æ‚Ìƒ_ƒ[ƒWŒvZ
 		if (r.name == m_pHitAttackBody[i].GetName())
 		{
-			float damegeNum = m_DamageMagnification[i] * 1.0f;
+			float damegeNum = m_DamageMagnification[i] * GunPower;
 			m_Hp -= damegeNum;
 			m_FlinchCnt += damegeNum;
 			std::cout << r.name << "\n";

@@ -74,18 +74,88 @@ void DynamicMesh::SetAsset(const std::string &MeshName)
 }
 
 void DynamicMesh::ChangeAnimation(unsigned int num)
+{	
+	//アニメーションセットの範囲外アクセス防止
+	BornInfo *pBornData = m_pSkinMeshData->GetBornInfo();
+	unsigned int AnimSetAllNum = pBornData->AnimationSetFrameNum.size();
+	if (num >= AnimSetAllNum) num = AnimSetAllNum - 1;
+	else if (num <= 0) num = 0;
+
+	for (auto& i : m_CopyBornArray) i->animNum = num;
+}
+
+void DynamicMesh::PartChangeAnimation(int bornIndex, unsigned int num)
 {
-	m_AinmNum = num;
+	//アニメーションセットの範囲外アクセス防止
+	BornInfo *pBornData = m_pSkinMeshData->GetBornInfo();
+	unsigned int AnimSetAllNum = pBornData->AnimationSetFrameNum.size();
+	if (num >= AnimSetAllNum) num = AnimSetAllNum - 1;
+	else if (num <= 0) num = 0;
+
+	m_CopyBornArray[bornIndex]->animNum = num;
+}
+
+void DynamicMesh::PartRangeChangeAnimation(int bornStart, int bornEnd, unsigned int num)
+{
+	//アニメーションセットの範囲外アクセス防止
+	BornInfo *pBornData = m_pSkinMeshData->GetBornInfo();
+	unsigned int AnimSetAllNum = pBornData->AnimationSetFrameNum.size();
+	if (num >= AnimSetAllNum) num = AnimSetAllNum - 1;
+	else if (num <= 0) num = 0;
+
+	int cnt = bornStart;
+	for (auto& i : m_CopyBornArray)
+	{
+		if (cnt > bornEnd) break;
+		m_CopyBornArray[cnt]->animNum = num;
+		cnt++;
+	}
 }
 
 void DynamicMesh::SetPlayTime(float animSpeed)
 {
-	m_AinmFrame += Math::VelocityToFrameM(animSpeed);
+	float ainmFrame = Math::VelocityToFrameM(animSpeed);
+	for (auto& i : m_CopyBornArray) i->animFrame += ainmFrame;
+}
+
+void DynamicMesh::SetPartPlayTime(int bornIndex, float animSpeed)
+{
+	float ainmFrame = Math::VelocityToFrameM(animSpeed);
+	m_CopyBornArray[bornIndex]->animFrame += ainmFrame;
+}
+
+void DynamicMesh::SetPartRangePlayTime(int bornStart, int bornEnd, float animSpeed)
+{
+	float ainmFrame = Math::VelocityToFrameM(animSpeed);
+
+	int cnt = bornStart;
+	for (auto& i : m_CopyBornArray)
+	{
+		if (cnt > bornEnd) break;
+		m_CopyBornArray[cnt]->animFrame += ainmFrame;
+		cnt++;
+	}
 }
 
 void DynamicMesh::SetTime(float animTime)
 {
-	m_AinmFrame = animTime;
+	for (auto& i : m_CopyBornArray) i->animFrame = animTime;
+}
+
+void DynamicMesh::SetPartTime(int bornIndex, float animTime)
+{
+	m_CopyBornArray[bornIndex]->animFrame = animTime;
+}
+
+void DynamicMesh::SetPartRangeTime(int bornStart, int bornEnd, float animTime)
+{
+	int cnt = bornStart;
+	for (auto& i : m_CopyBornArray)
+	{
+		if (cnt > bornEnd) break;
+		m_CopyBornArray[cnt]->animFrame = animTime;
+		cnt++;
+	}
 }
 
 const SkinVertexInfo *DynamicMesh::GetVertex() const
@@ -93,14 +163,14 @@ const SkinVertexInfo *DynamicMesh::GetVertex() const
 	return m_pSkinMeshData->GetSkinMeshInfo()->pvVertex;
 }
 
-float DynamicMesh::GetPlayTime() const
+float DynamicMesh::GetPlayTime(int bornIndex) const
 {
-	return m_AinmFrame;
+	return m_CopyBornArray[bornIndex]->animFrame;
 }
 
-int DynamicMesh::GetPlayAnimation() const
+int DynamicMesh::GetPlayAnimation(int bornIndex) const
 {
-	return m_AinmNum;
+	return m_CopyBornArray[bornIndex]->animNum;
 }
 
 int DynamicMesh::GetFaceAllNum() const
@@ -124,7 +194,7 @@ int DynamicMesh::GetBornNum(std::string name) const
 
 int DynamicMesh::GetBornAllNum() const
 {
-	return m_pSkinMeshData->GetBornAllNum();
+	return m_pSkinMeshData->GetBornInfo()->BornList.size();
 }
 
 std::string DynamicMesh::GetBornName(int bornIndex) const
@@ -142,6 +212,7 @@ Matrix DynamicMesh::GetBornMatrix(int bornIndex, bool isWorld) const
 Matrix DynamicMesh::GetBornMatrix(std::string name, bool isWorld) const
 {
 	BornInfo *pBornData = m_pSkinMeshData->GetBornInfo();
+	/*
 	unsigned int bornNum = pBornData->BornList.size();
 	for (unsigned int i = 0; i < bornNum; i++)
 	{
@@ -151,7 +222,18 @@ Matrix DynamicMesh::GetBornMatrix(std::string name, bool isWorld) const
 			return m_CopyBornArray[i]->ParentAndChildMat;
 		}
 	}
-	
+	*/
+	int cnt = 0;
+	for (auto& i : pBornData->BornList)
+	{
+		if (i->BornName == name)
+		{
+			if (isWorld) return m_CopyBornArray[cnt]->ParentAndChildMat * m_LocalMatrix * m_Matrix;
+			return m_CopyBornArray[cnt]->ParentAndChildMat;
+		}
+		cnt++;
+	}
+
 	return Matrix();
 }
 
@@ -164,6 +246,8 @@ Vector3D DynamicMesh::GetBornPos(int bornIndex) const
 Vector3D DynamicMesh::GetBornPos(std::string name) const
 {
 	BornInfo *pBornData = m_pSkinMeshData->GetBornInfo();
+
+	/*
 	unsigned int bornNum = pBornData->BornList.size();
 	for (unsigned int i = 0; i < bornNum; i++)
 	{
@@ -173,12 +257,39 @@ Vector3D DynamicMesh::GetBornPos(std::string name) const
 			return Vector3D(m._41, m._42, m._43) * m_LocalMatrix * m_Matrix;
 		}
 	}
+	*/
+
+	int cnt = 0;
+	for (auto& i : pBornData->BornList)
+	{
+		if (i->BornName == name)
+		{
+			Matrix m = m_CopyBornArray[cnt]->ParentAndChildMat;
+			return Vector3D(m._41, m._42, m._43) * m_LocalMatrix * m_Matrix;
+		}
+		cnt++;
+	}
+
 	return Vector3D();
 }
 
 void DynamicMesh::Render()
 {
 	RenderFunc(m_Matrix);
+}
+
+void DynamicMesh::RenderOutline(float size = 1.0f)
+{
+	RenderFunc(m_Matrix);
+
+	Matrix m = m_Matrix;
+	m._11 *= size;
+	//m._22 *= size;
+	m._33 *= size;
+
+	Direct3D11::Get().SetRasterizer(D3D11_CULL_FRONT, D3D11_FILL_SOLID);
+	RenderFunc(m);
+	Direct3D11::Get().SetRasterizer(D3D11_CULL_BACK, D3D11_FILL_SOLID);
 }
 
 void DynamicMesh::RenderMatrix(Matrix &matrix)
@@ -248,13 +359,13 @@ void DynamicMesh::RenderFunc(Matrix &matrix)
 	pDeviceContext->PSSetConstantBuffers(0, 1, &data->m_pConstantBuffer0);
 
 	//アニメーション更新
-	m_pSkinMeshData->Update(&m_Born, &m_AinmFrame, &m_AinmNum);
+	m_pSkinMeshData->Update(&m_Born);
 
 	//ボーン情報格納
 	if (SUCCEEDED(pDeviceContext->Map(data->m_pConstantBufferBone, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
 		BornConstantBuffer sg;
-		for (int i = 0; i < m_pSkinMeshData->GetBornAllNum(); i++)
+		for (int i = 0; i < GetBornAllNum(); i++)
 		{
 			D3DXMATRIX m = m_CopyBornArray[i]->bornMat;
 			D3DXMatrixTranspose(&m, &m);

@@ -7,7 +7,7 @@
 class Bullet : public Task
 {
 public:
-	Bullet(const Vector3D &start, const Vector3D &dir, float speed, float time, float radius);
+	Bullet(const char *taskName, const Vector3D &start, const Vector3D &dir, float speed, float time, float radius);
 	~Bullet();
 	void Update();
 	void HitCharacter(Result_Capsule& r);

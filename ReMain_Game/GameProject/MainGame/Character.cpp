@@ -2,7 +2,8 @@
 
 Character::Character(float hp, const char *taskName, unsigned int priority) :
 	Task(taskName, priority),
-	m_Hp(hp)
+	m_Hp(hp),
+	m_JudgementAnim(0)
 {
 	//マップとの判定用
 	m_ColliderMap.Regist_S_vs_SMesh(&m_SphereMap.pos, &m_SphereMap.radius, REGIST_FUNC(Character::HitMap));
@@ -22,15 +23,16 @@ Character::~Character()
 
 void Character::Update()
 {
+	m_pos.y -= 0.03f;
+
 	m_SphereMap.pos = m_pos + Vector3D(0, m_SphereMap.radius, 0);
+	m_Model.SetTranselate(m_pos);
+	m_Model.SetRotationRadian(m_rot.x, m_rot.y, m_rot.z);
 }
 
 void Character::Render()
 {
-	m_Model.SetTranselate(m_pos);
-	m_Model.SetRotationRadian(m_rot.x, m_rot.y, m_rot.z);
 	m_Model.Render();
-	m_pos.y -= 0.01f;
 }
 
 void Character::HitMap(Result_Porygon_Group& r)

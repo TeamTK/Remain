@@ -1,9 +1,9 @@
 #ifndef _TITLE_H_
 #define _TITLE_H_
 
-#include "Scene.h"
+#include "..\GEKO\Task\Task.h"
 
-class Title : public Scene
+class Title : public Task
 {
 public:
 	Title();

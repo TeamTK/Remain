@@ -22,7 +22,7 @@ void EffectPart::SetDirection(const Vector3D &direction)
 void EffectPart::Render(const Vector3D &sclae, float speed, int time, const std::string &name)
 {
 	m_Pos += (m_Direction * speed);
-	Fiqure::RenderBillboard(m_Pos, sclae / time, name);
+	Fiqure::RenderBillboard(m_Pos, sclae / (float)time, name);
 };
 
 Effect::Effect(const EffectInfo &info, const char* effectName) :
@@ -41,13 +41,13 @@ Effect::Effect(const EffectInfo &info, const char* effectName) :
 
 	std::random_device rnd;     // 非決定的な乱数生成器を生成
 	std::mt19937 mt(rnd());     //  メルセンヌ・ツイスタの32ビット版、引数は初期シード値
-	std::uniform_int_distribution<> rand(0.0, 6.28);        // [0, 99] 範囲の一様乱数
+	std::uniform_real_distribution<> rand(0.0, 6.28);        // [0, 99] 範囲の一様乱数
 
 	for (int i = 0; i < info.num; i++)
 	{
-		dir.x = cosf(rand(mt));
-		dir.y = sinf(rand(mt));
-		dir.z = sinf(rand(mt));
+		dir.x = cosf((float)rand(mt));
+		dir.y = sinf((float)rand(mt));
+		dir.z = sinf((float)rand(mt));
 		dir.SetNormalize();
 
 		m_list.emplace_back(dir.x, dir.y, dir.z, info.pos);

@@ -43,6 +43,8 @@ public:
 	/// </returns>
 	HRESULT	InitD3D11(INT Width, INT Height);
 
+	void SetRasterizer(D3D11_CULL_MODE cullMode, D3D11_FILL_MODE fillMode);
+
 	/// <summary>
 	/// ダイレクトXのドライバーを渡す
 	/// </summary>

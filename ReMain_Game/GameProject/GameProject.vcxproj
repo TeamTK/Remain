@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Chapter\Chapter.cpp" />
     <ClCompile Include="GameSystem\Effect.cpp" />
     <ClCompile Include="GameSystem\GUI\BaseGui.cpp" />
     <ClCompile Include="GameSystem\GUI\Number.cpp" />
@@ -34,6 +35,7 @@
     <ClCompile Include="GEKO\Figure\Triangle3D.cpp" />
     <ClCompile Include="GEKO\GEKO.cpp" />
     <ClCompile Include="GEKO\ImageSystem\ImageAsset.cpp" />
+    <ClCompile Include="GEKO\Mesh\Shader.cpp" />
     <ClCompile Include="GEKO\Mesh\WorldMatrixManager.cpp" />
     <ClCompile Include="GEKO\SoundSystem\SoundAsset.cpp" />
     <ClCompile Include="GEKO\System\Camera.cpp" />
@@ -64,8 +66,6 @@
     <ClCompile Include="MainGame\AmmoBox\AmmoBox_Handgun.cpp" />
     <ClCompile Include="MainGame\AmmoBox\AmmoBox_Shotgun.cpp" />
     <ClCompile Include="MainGame\Bullet\Bullet.cpp" />
-    <ClCompile Include="MainGame\Bullet\HandGunBullet.cpp" />
-    <ClCompile Include="MainGame\Bullet\ShotGunBullet.cpp" />
     <ClCompile Include="MainGame\Character.cpp" />
     <ClCompile Include="MainGame\Enemy\Enemy.cpp" />
     <ClCompile Include="MainGame\Enemy\EnemyStateManager.cpp" />
@@ -75,14 +75,13 @@
     <ClCompile Include="MainGame\Weapon\Handgun.cpp" />
     <ClCompile Include="MainGame\Weapon\Shotgun.cpp" />
     <ClCompile Include="MainGame\Weapon\WeaponBase.cpp" />
-    <ClCompile Include="Scene\BaseCamp.cpp" />
-    <ClCompile Include="Scene\GameEnd.cpp" />
+    <ClCompile Include="Scene\GameOvar.cpp" />
     <ClCompile Include="Scene\MainGame.cpp" />
     <ClCompile Include="Scene\Opening.cpp" />
-    <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\Title.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Chapter\Chapter.h" />
     <ClInclude Include="GameSystem\Effect.h" />
     <ClInclude Include="GameSystem\GUI\BaseGui.h" />
     <ClInclude Include="GameSystem\GUI\Number.h" />
@@ -181,6 +180,7 @@
     <ClInclude Include="GEKO\Include\XInput.h" />
     <ClInclude Include="GEKO\Include\xma2defs.h" />
     <ClInclude Include="GEKO\Include\xnamath.h" />
+    <ClInclude Include="GEKO\Mesh\Shader.h" />
     <ClInclude Include="GEKO\Mesh\WorldMatrixManager.h" />
     <ClInclude Include="GEKO\SoundSystem\SoundAsset.h" />
     <ClInclude Include="GEKO\System\Camera.h" />
@@ -213,8 +213,6 @@
     <ClInclude Include="MainGame\AmmoBox\AmmoBox_Handgun.h" />
     <ClInclude Include="MainGame\AmmoBox\AmmoBox_Shotgun.h" />
     <ClInclude Include="MainGame\Bullet\Bullet.h" />
-    <ClInclude Include="MainGame\Bullet\HandGunBullet.h" />
-    <ClInclude Include="MainGame\Bullet\ShotGunBullet.h" />
     <ClInclude Include="MainGame\Character.h" />
     <ClInclude Include="MainGame\Enemy.h" />
     <ClInclude Include="MainGame\Enemy\Enemy.h" />
@@ -227,11 +225,9 @@
     <ClInclude Include="MainGame\Weapon\Handgun.h" />
     <ClInclude Include="MainGame\Weapon\Shotgun.h" />
     <ClInclude Include="MainGame\Weapon\WeaponBase.h" />
-    <ClInclude Include="Scene\BaseCamp.h" />
-    <ClInclude Include="Scene\GameEnd.h" />
+    <ClInclude Include="Scene\GameOvar.h" />
     <ClInclude Include="Scene\MainGame.h" />
     <ClInclude Include="Scene\Opening.h" />
-    <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\Title.h" />
   </ItemGroup>
   <ItemGroup>

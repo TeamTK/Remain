@@ -1,15 +1,14 @@
 #ifndef _MAINGAME_H_
 #define _MAINGAME_H_
 
-#include "Scene.h"
+#include "..\GEKO\Task\Task.h"
 
-class MainGame : public Scene
+class MainGame : public Task
 {
 public:
 	MainGame();
 	~MainGame();
 	void Update();
-	void Render();
 
 private:
 

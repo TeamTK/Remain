@@ -15,6 +15,7 @@ public:
 	void PushBody(Result_Sphere &data);
 
 protected:
+	int m_JudgementAnim;
 	float m_Hp;
 	Vector3D m_pos;
 	Vector3D m_rot;

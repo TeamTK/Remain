@@ -22,9 +22,6 @@ public:
 	void Weapon();
 	void Camera();
 	void Animation();
-	Matrix GetBomeMat(int bornIndex);
-	int GetAnim();
-	float GetPlayTime();
 
 private:
 	void Idle();

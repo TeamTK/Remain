@@ -15,6 +15,7 @@
 #include "Collider\Collider.h"
 #include "Task\RenderTask.h"
 #include "Task\FunctionTask.h"
+#include "System\Timer.h"
 
 namespace GEKO
 {

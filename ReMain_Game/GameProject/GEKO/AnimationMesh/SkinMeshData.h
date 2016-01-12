@@ -146,6 +146,8 @@ struct CopyBorn
 	D3DXMATRIX worldMat;
 	D3DXMATRIX bornMat;
 	D3DXMATRIX ParentAndChildMat;
+	unsigned int animNum;
+	float animFrame;
 	CopyBorn()
 	{
 		brother = nullptr;
@@ -170,8 +172,7 @@ public:
 	SkinMeshInfo *GetSkinMeshInfo();
 	BornInfo *GetBornInfo();
 	virtual void Relese();
-	virtual int GetBornAllNum();
-	virtual void Update(CopyBorn *pCopyBorn, float *pAinmFrame, int *pAinmNum);
+	virtual void Update(CopyBorn *pCopyBorn);
 	virtual void BornDebug(eBornDebug eBornDebug);
 	virtual void AnimationDebug(int animNum);
 	virtual void CopyBornTree(CopyBorn *pBornCopy, std::vector<CopyBorn*> *pCopyBornArray, Born *pBornOriginal);

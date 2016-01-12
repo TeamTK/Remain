@@ -53,6 +53,8 @@ Monster_B::Monster_B(EnemyState &enemyState) :
 
 	m_FuncTask.AllStop();
 	m_FuncTask.Start("Idle");
+
+	m_JudgementAnim = 13;
 }
 
 Monster_B::~Monster_B()
@@ -61,15 +63,17 @@ Monster_B::~Monster_B()
 
 void Monster_B::Attack()
 {
+	float animNum = m_Model.GetPlayTime(13);
+
 	//抱きしめ攻撃当たり判定開始
-	if (m_Model.GetPlayTime() == 10)
+	if (animNum == 10)
 	{
 		m_pHitAttack[2].Awake(); //左腕の当たり判定起動
 		m_pHitAttack[3].Awake(); //右腕の当たり判定起動
 	}
 
 	//抱きしめ攻撃当たり判定終了
-	if (m_Model.GetPlayTime() == 20)
+	if (animNum == 20)
 	{
 		m_pHitAttack[2].Sleep(); //左腕の当たり判定起動
 		m_pHitAttack[3].Sleep(); //右腕の当たり判定起動

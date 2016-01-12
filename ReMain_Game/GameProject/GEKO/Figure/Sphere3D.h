@@ -8,13 +8,14 @@ class Sphere3D : public FiqureBase
 public:
 	Sphere3D();
 	~Sphere3D();
-	void Render(const Vector3D &pos, const Vector3D &Color);
+	void Render(const Vector3D &pos, const Vector3D &scale, const Vector3D &color);
 
 private:
+	HRESULT InitShader();
 	HRESULT InitVertex();
 
 private:
-	int m_CornerNum;
+
 };
 
 #endif

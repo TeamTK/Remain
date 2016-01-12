@@ -13,6 +13,7 @@
 #define CAMERA_LENGE	2.0f		//プレイヤーとカメラの距離
 #define PI 3.14159265359f
 #define MAP_HIT_RADIUS 0.3f //マップとの当たり判定の半径
+#define MAP_HIT_RADIUS_SETWEAPON 0.8f //マップとの当たり判定の半径(武器構え時)
 
 //アニメーションスピード
 #define DEFAULT_ANIM_SPEED 30	//デフォルトスピード
@@ -66,6 +67,8 @@ Player::Player() :
 	m_PlayerSightInfo.SetPos(&m_SightPos);
 
 	g_pPlayerPos = &m_pos;
+
+	m_JudgementAnim = 20; //アニメーション判断（ボーン単位）
 }
 
 Player::~Player()
@@ -93,8 +96,8 @@ void Player::Update()
 	m_End = ((m_LookPos - m_CameraPos) + m_LookPos).GetNormalize();
 
 	//プレイヤーのボーン行列の切り替え
-	int ainmState = m_Model.GetPlayAnimation();
-	if ((ainmState == EPlayerAnim::eAnim_TakeGun && m_Model.GetPlayTime() >= 15) ||
+	int ainmState = m_Anim;
+	if ((ainmState == EPlayerAnim::eAnim_TakeGun && m_Model.GetPlayTime(m_JudgementAnim) >= 15) ||
 		ainmState == EPlayerAnim::eAnim_SetupGun || ainmState == EPlayerAnim::eAnim_IdleTakeGun ||
 		ainmState == EPlayerAnim::eAnim_WalkTakeGun || ainmState == EPlayerAnim::eAnim_RunTakeGun ||
 		ainmState == EPlayerAnim::eAnim_ReloadGun)
@@ -106,7 +109,7 @@ void Player::Update()
 		m_MatrixS = m_Model.GetBornMatrix(21, true);
 	}
 
-	if ((ainmState == EPlayerAnim::eAnim_TakeHandgun && m_Model.GetPlayTime() >= 15) ||
+	if ((ainmState == EPlayerAnim::eAnim_TakeHandgun && m_Model.GetPlayTime(m_JudgementAnim) >= 15) ||
 		ainmState == EPlayerAnim::eAnim_SetupHandgun || ainmState == EPlayerAnim::eAnim_IdleTakeHandgun ||
 		ainmState == EPlayerAnim::eAnim_WalkTakeHandgun || ainmState == EPlayerAnim::eAnim_RunTakeHandgun ||
 		ainmState == EPlayerAnim::eAnim_ReloadHandgun)
@@ -130,8 +133,8 @@ void Player::Update()
 		m_Num.NumDraw(Vector2D(44, 90), g_pHandgun->GetLoadedAmmo());
 	}
 
-	m_PlayAnim = m_Model.GetPlayAnimation();
-	m_PlayAnimTime = m_Model.GetPlayTime();
+	m_PlayAnim = m_Model.GetPlayAnimation(m_JudgementAnim);
+	m_PlayAnimTime = m_Model.GetPlayTime(m_JudgementAnim);
 	//printf("%d %d\n", m_ChangePutBackWeapon, m_ChangeTakeWeapon);
 }
 
@@ -189,7 +192,7 @@ void Player::Move()
 	}
 
 	//プレイヤーが歩き状態なら移動処理
-	if (m_isMove && m_Model.GetPlayAnimation() != EPlayerAnim::eAnim_TakeGun && m_Model.GetPlayAnimation() != EPlayerAnim::eAnim_TakeHandgun)
+	if (m_isMove && m_Anim != EPlayerAnim::eAnim_TakeGun && m_Anim != EPlayerAnim::eAnim_TakeHandgun)
 	{
 		const D3DXMATRIX *camDir = Camera::GetView();
 		Vector3D playerRot(0.0f, atan2f(camDir->m[0][2], camDir->m[2][2]) + atan2f(m_KeyDir.x, m_KeyDir.z), 0.0f);
@@ -282,13 +285,13 @@ void Player::Weapon()
 
 		if (m_SelectedWeapon == eShotgun && g_pShotgun->CanShot())
 		{
-			new Bullet(m_LookPos, dir, 1.0f, 100.0f, 0.01f);
+			new Bullet("ShotGun", m_LookPos, dir, 1.0f, 10.0f, 0.01f);
 			g_pShotgun->ReduceBullet();
 			isCanShot = true;
 		}
 		else if (m_SelectedWeapon == eHandgun && g_pHandgun->CanShot())
 		{
-			new Bullet(m_LookPos, dir, 1.0f, 100.0f, 0.01f);
+			new Bullet("HandGun", m_LookPos, dir, 1.0f, 100.0f, 0.01f);
 			g_pHandgun->ReduceBullet();
 			isCanShot = true;
 		}
@@ -393,6 +396,8 @@ void Player::Camera()
 void Player::Animation()
 {
 	m_CameraPosY = CAMERA_NO_CROUCH_POS_Y;
+	m_SphereMap.radius = MAP_HIT_RADIUS;
+
 	switch (m_State)
 	{
 	case EPlayerState::eState_Idle:
@@ -430,21 +435,6 @@ void Player::Animation()
 	}
 	m_Model.SetPlayTime(m_AnimSpeed);
 	m_Model.ChangeAnimation(m_Anim);
-}
-
-Matrix Player::GetBomeMat(int bornIndex)
-{
-	return m_Model.GetBornMatrix(bornIndex, true);
-}
-
-int Player::GetAnim()
-{
-	return m_Model.GetPlayAnimation();
-}
-
-float Player::GetPlayTime()
-{
-	return m_Model.GetPlayTime();
 }
 
 void Player::Idle()
@@ -537,7 +527,7 @@ void Player::Crouch()
 			m_AnimSpeed = -TWICE_ANIM_SPEED;
 		}
 		//しまうアニメーションの終わり
-		if (m_Model.GetPlayTime() < 1)
+		if (m_Model.GetPlayTime(m_JudgementAnim) < 1)
 		{
 			m_isTakeWeapon = false;
 		}
@@ -568,7 +558,7 @@ void Player::Crouch()
 			m_isMove = true;
 		}
 
-		if (m_Model.GetPlayAnimation() == EPlayerAnim::eAnim_Crouch &&m_Model.GetPlayTime() > 28)
+		if (m_Anim == EPlayerAnim::eAnim_Crouch &&m_Model.GetPlayTime(m_JudgementAnim) > 28)
 		{
 			m_isCrouch = true;
 		}
@@ -606,7 +596,7 @@ void Player::TakeWeapon()
 			m_AnimSpeed = TAKEWEAPON_ANIM_SPEED;
 		}
 
-		if (m_Model.GetPlayAnimation() == EPlayerAnim::eAnim_TakeGun && m_Model.GetPlayTime() > 28)
+		if (m_Anim == EPlayerAnim::eAnim_TakeGun && m_Model.GetPlayTime(m_JudgementAnim) > 28)
 		{
 			m_ChangeTakeWeapon = false;
 			m_isTakeWeapon = true;
@@ -641,7 +631,7 @@ void Player::TakeWeapon()
 			m_AnimSpeed = TAKEWEAPON_ANIM_SPEED;
 		}
 
-		if (m_Model.GetPlayAnimation() == eAnim_TakeHandgun && m_Model.GetPlayTime() > 28)
+		if (m_Anim == eAnim_TakeHandgun && m_Model.GetPlayTime(m_JudgementAnim) > 28)
 		{
 			m_ChangeTakeWeapon = false;
 			m_isTakeWeapon = true;
@@ -656,7 +646,7 @@ void Player::PutBackWeapon()
 		m_Anim = EPlayerAnim::eAnim_TakeGun;
 		m_AnimSpeed = -DEFAULT_ANIM_SPEED;
 
-		if (m_Model.GetPlayTime() < 1)
+		if (m_Model.GetPlayTime(m_JudgementAnim) < 1)
 		{
 			m_isTakeWeapon = false;
 			m_ChangePutBackWeapon = false;
@@ -667,7 +657,7 @@ void Player::PutBackWeapon()
 		m_Anim = EPlayerAnim::eAnim_TakeHandgun;
 		m_AnimSpeed = -DEFAULT_ANIM_SPEED;
 
-		if (m_Model.GetPlayTime() < 1)
+		if (m_Model.GetPlayTime(m_JudgementAnim) < 1)
 		{
 			m_isTakeWeapon = false;
 			m_ChangePutBackWeapon = false;
@@ -691,10 +681,11 @@ void Player::SetupWeapon()
 		m_AnimSpeed = TWICE_ANIM_SPEED;
 	}
 	//構え状態で停止
-	if ((m_Model.GetPlayAnimation() == EPlayerAnim::eAnim_SetupGun ||
-		m_Model.GetPlayAnimation() == EPlayerAnim::eAnim_SetupHandgun) &&
-		m_Model.GetPlayTime() > 28)
+	if ((m_Anim == EPlayerAnim::eAnim_SetupGun ||
+		m_Anim == EPlayerAnim::eAnim_SetupHandgun) &&
+		m_Model.GetPlayTime(m_JudgementAnim) > 28)
 	{
+		m_SphereMap.radius = MAP_HIT_RADIUS_SETWEAPON;
 		m_SetupWeapon = true;
 		m_Model.SetTime(28);
 	}
@@ -714,7 +705,7 @@ void Player::Reload()
 	}
 
 	//アニメーション終了
-	if (m_Model.GetPlayTime() > 28)
+	if (m_Model.GetPlayTime(m_JudgementAnim) > 28)
 	{
 		m_isReload = false;
 		m_SelectedWeapon == EWeapons::eShotgun ? g_pShotgun->Reload() : g_pHandgun->Reload();
@@ -733,7 +724,7 @@ void Player::Hit()
 	m_AnimSpeed = DEFAULT_ANIM_SPEED;
 
 	//アニメーション終了
-	if (m_Model.GetPlayTime() > 28)
+	if (m_Model.GetPlayTime(m_JudgementAnim) > 28)
 	{
 		m_isHit = false;
 		m_State = m_OldState;

@@ -1,6 +1,7 @@
 #include "Opening.h"
 
-Opening::Opening()
+Opening::Opening() :
+	Task("Opening", 0)
 {
 }
 

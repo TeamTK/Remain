@@ -1,8 +1,8 @@
 #include "Bullet.h"
 #include "..\..\GameSystem\Effect.h"
 
-Bullet::Bullet(const Vector3D &start, const Vector3D &dir, float speed, float time, float radius) :
-	Task("Bullet", 1),
+Bullet::Bullet(const char *taskName, const Vector3D &start, const Vector3D &dir, float speed, float time, float radius) :
+	Task(taskName, 1),
 	m_Pos(start),
 	m_Dir(dir),
 	m_Speed(speed),
@@ -13,6 +13,7 @@ Bullet::Bullet(const Vector3D &start, const Vector3D &dir, float speed, float ti
 	//“G‚Æ‚Ì“–‚½‚è”»’è
 	m_Collider.Regist_S_vs_C(&m_Pos, &m_Radius, REGIST_FUNC(Bullet::HitCharacter));
 	m_Collider.SetID(eHITID1, eHITID0);
+	m_Collider.SetName(taskName);
 
 	//ƒ}ƒbƒv‚Æ‚Ì“–‚½‚è”»’è
 	m_ColliderMap.Regist_L_vs_SMesh(&m_Oldpos, &m_Pos, REGIST_FUNC(Bullet::HitMap));
