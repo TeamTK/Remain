@@ -15,7 +15,7 @@ extern Vector3D *g_pPlayerPos;
 class Player : public Character
 {
 public:
-	Player();
+	Player(Vector3D pos);
 	~Player();
 	void Update();
 	void Move();

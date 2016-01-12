@@ -26,6 +26,9 @@ Enemy::Enemy(const char* name, EnemyState &enemyState) :
 	m_SightData.pSightPos = &m_SightPos;
 	m_SightData.pSightVec = &m_SightVec;
 	m_Sight.Regist(&m_SightData, REGIST_FUNC(Enemy::HitSight));
+
+	//’®Šo’T’m
+	m_AuditorySense.SetHearNum(2);
 }
 
 Enemy::~Enemy()

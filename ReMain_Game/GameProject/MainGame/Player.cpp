@@ -25,7 +25,7 @@
 
 Vector3D *g_pPlayerPos;
 
-Player::Player() :
+Player::Player(Vector3D pos) :
 	Character(100.0f, "Player", 0), m_CamDir(0.0f, 0.0f, 0.0f),
 	m_CameraPos(-50.0f, 2.0f, -12.0f), m_KeyDir(0.0f, 0.0f, 0.0f),
 	m_Horizontal(0.134f), m_Vertical(-1.5f),
@@ -46,7 +46,7 @@ Player::Player() :
 	m_Model.SetAsset("Player");
 
 	m_Model.SetScale(1.0f, 1.0f, 1.0f);
-	m_pos = Vector3D(-48.0f, 0.0f, -11.0f);
+	m_pos = pos;
 
 	//ÉJÉÅÉâÇÃìñÇΩÇËîªíË
 	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_HitCameraPos, REGIST_FUNC(Player::HitCamera));

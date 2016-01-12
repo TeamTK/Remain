@@ -20,7 +20,7 @@ MainGame::MainGame() :
 
 	new AmmoBox_Shotgun(Vector3D(-8.0f, 0.0f, -1.0f), Vector3D(0.0f, 0.0f, 0.0f), 7);	//‚Æ‚è‚ ‚¦‚¸‰¼
 	new AmmoBox_Handgun(Vector3D(-16.0f, 0.0f, -1.0f), Vector3D(0.0f, 0.0f, 0.0f), 6);	//‚Æ‚è‚ ‚¦‚¸‰¼
-	new Player();
+	new Player(Vector3D(-48.0f, 0.0f, -11.0f));
 	new UI_Reticle();
 }
 

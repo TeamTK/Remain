@@ -71,6 +71,8 @@ protected:
 	Vector3D m_SightPos; //視界の位置
 	Vector3D m_SightVec; //視界の方向
 
+	AuditorySense m_AuditorySense;
+
 	//追跡用
 	Vector3D m_Distance; //敵とプレイヤーとの距離
 	const Vector3D *m_pPlayerPos; //プレイヤーの位置のポインタ
@@ -79,7 +81,6 @@ protected:
 	Collider *m_pHitAttackBody;
 	CapsuleInfo *m_pCapsule;
 	std::vector<BoneCalpule> m_BoneCapsule; //ボーン情報（カプセル）
-
 	std::vector<float> m_DamageMagnification; //ダメージ倍率
 
 	Collider *m_pHitAttack; //プレイヤーへの攻撃の当たり判定
