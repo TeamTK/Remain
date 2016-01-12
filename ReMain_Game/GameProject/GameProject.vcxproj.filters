@@ -98,6 +98,7 @@
     <ClCompile Include="GEKO\Mesh\Shader.cpp" />
     <ClCompile Include="Scene\GameOvar.cpp" />
     <ClCompile Include="Chapter\Chapter.cpp" />
+    <ClCompile Include="GameSystem\Auditory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -266,6 +267,7 @@
     <ClInclude Include="GEKO\Mesh\Shader.h" />
     <ClInclude Include="Scene\GameOvar.h" />
     <ClInclude Include="Chapter\Chapter.h" />
+    <ClInclude Include="GameSystem\Auditory.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

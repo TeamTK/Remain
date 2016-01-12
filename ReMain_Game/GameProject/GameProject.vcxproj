@@ -17,6 +17,7 @@
     <ClCompile Include="GameSystem\GUI\Number.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_Reticle.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_SelectWeapon.cpp" />
+    <ClCompile Include="GameSystem\Auditory.cpp" />
     <ClCompile Include="GameSystem\SightSystem.cpp" />
     <ClCompile Include="GameSystem\StageObject.cpp" />
     <ClCompile Include="GEKO\AnimationMesh\DynamicMesh.cpp" />
@@ -88,6 +89,7 @@
     <ClInclude Include="GameSystem\GUI\SelectWeapon.h" />
     <ClInclude Include="GameSystem\GUI\UI_Reticle.h" />
     <ClInclude Include="GameSystem\GUI\UI_SelectWeapon.h" />
+    <ClInclude Include="GameSystem\Auditory.h" />
     <ClInclude Include="GameSystem\SightSystem.h" />
     <ClInclude Include="GameSystem\StageObject.h" />
     <ClInclude Include="GEKO\AnimationMesh\DynamicMesh.h" />
