@@ -3,24 +3,25 @@
 #include "../GEKO/System/Input.h"
 #include "../GameSystem/Effect.h"
 
-#define CAMERA_NO_CROUCH_POS_Y 1.8f;//しゃがみ姿勢じゃないときのカメラのY座標の高さ
-#define CAMERA_CROUCH_POS_Y 0.95f;	//しゃがみ姿勢のときのカメラのY座標の高さ
-#define CAMERA_HIT_HIGHT 1.5f;		//カメラの当たり判定の高さ
-#define WALK_SPEED 0.07f			//歩くスピード
-#define RUN_SPEED 0.16f				//走るスピード
-#define CROUCH_WALK_SPPED 0.02f		//しゃがみ歩きスピード
-#define	SETUPWEAPON_MOVE_SPEED 0.03f;//武器を構えた時の移動速度
-#define CAMERA_LENGE	2.0f		//プレイヤーとカメラの距離
+#define CAMERA_NO_CROUCH_POS_Y 1.8f;//���Ⴊ�ݎp������Ȃ��Ƃ��̃J������Y���W�̍���
+#define CAMERA_CROUCH_POS_Y 0.95f;	//���Ⴊ�ݎp���̂Ƃ��̃J������Y���W�̍���
+#define CAMERA_HIT_HIGHT 1.5f;		//�J�����̓����蔻��̍���
+#define WALK_SPEED 0.07f			//�����X�s�[�h
+#define RUN_SPEED 0.16f				//����X�s�[�h
+#define CROUCH_WALK_SPPED 0.02f		//���Ⴊ�ݕ����X�s�[�h
+#define	SETUPWEAPON_MOVE_SPEED 0.03f;//������\�������̈ړ����x
+#define CAMERA_LENGE	2.0f		//�v���C���[�ƃJ�����̋���
 #define PI 3.14159265359f
 #define MAP_HIT_RADIUS 0.3f //�}�b�v�Ƃ̓����蔻��̔��a
+#define MAP_HIT_RADIUS_SETWEAPON 0.8f //�}�b�v�Ƃ̓����蔻��̔��a(����\����)
 
-//アニメーションスピード
-#define DEFAULT_ANIM_SPEED 30	//デフォルトスピード
-#define TWICE_ANIM_SPEED 60	//2倍速
-#define HALF_ANIM_SPEED 15	//0.5倍速
-#define RUN_ANIM_SPEED 50	//走り
-#define TAKEWEAPON_ANIM_SPEED 40	//武器をとる
-#define RELOAD_ANIM_SPEED 10	//リロード
+//�A�j���[�V�����X�s�[�h
+#define DEFAULT_ANIM_SPEED 30	//�f�t�H���g�X�s�[�h
+#define TWICE_ANIM_SPEED 60	//2�{��
+#define HALF_ANIM_SPEED 15	//0.5�{��
+#define RUN_ANIM_SPEED 50	//����
+#define TAKEWEAPON_ANIM_SPEED 40	//������Ƃ�
+#define RELOAD_ANIM_SPEED 10	//�����[�h
 
 Vector3D *g_pPlayerPos;
 
@@ -47,14 +48,14 @@ Player::Player() :
 	m_Model.SetScale(1.0f, 1.0f, 1.0f);
 	m_pos = Vector3D(-48.0f, 0.0f, -11.0f);
 
-	//カメラの当たり判定
+	//カメラの当たり判宁E
 	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_HitCameraPos, REGIST_FUNC(Player::HitCamera));
 	m_HitCamera.SetID(eHITID0, eHITID1);
-	//弾薬箱の当たり判定
+	//弾薬箱の当たり判宁E
 	m_HitAmmoBox.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::HitAmmoBox));
 	m_HitAmmoBox.SetID(eHITID1, eHITID2 | eHITID3);
 
-	//敵の攻撃の当たり判定
+	//敵の攻撁E�E当たり判宁E
 	m_HitEnemyAttack.Regist_C_vs_C(&m_pos, &m_SightPos, &m_Radius, REGIST_FUNC(Player::HitEnemyAttack));
 	m_HitEnemyAttack.SetID(eHITID0, eHITID1);
 
@@ -84,7 +85,7 @@ void Player::Update()
 	Character::Update();
 	m_SelectWeapon.Update();
 
-	m_SightPos = m_Model.GetBornPos(6); //頭のボーン位置
+	m_SightPos = m_Model.GetBornPos(6); //頭のボ�Eン位置
 
 	//カメラの当たり判定位置
 	m_HitCameraPos = m_pos;
@@ -94,18 +95,11 @@ void Player::Update()
 	m_Start = m_CameraPos;
 	m_End = ((m_LookPos - m_CameraPos) + m_LookPos).GetNormalize();
 
-<<<<<<< HEAD
 	//�v���C���[�̃{�[���s��̐؂�ւ�
-	int ainmState = m_Anim;
-	if ((ainmState == EPlayerAnim::eAnim_TakeGun && m_Model.GetPlayTime(m_JudgementAnim) >= 15) ||
-=======
-	//プレイヤーのボーン行列の切り替え
-	int ainmState = m_Model.GetPlayAnimation();
-	if ((ainmState == EPlayerAnim::eAnim_TakeGun && m_Model.GetPlayTime() >= 15) ||
->>>>>>> f77d2aed4bcd1f685b2fc0395e3341b05a850882
-		ainmState == EPlayerAnim::eAnim_SetupGun || ainmState == EPlayerAnim::eAnim_IdleTakeGun ||
-		ainmState == EPlayerAnim::eAnim_WalkTakeGun || ainmState == EPlayerAnim::eAnim_RunTakeGun ||
-		ainmState == EPlayerAnim::eAnim_ReloadGun)
+	if ((m_Anim == EPlayerAnim::eAnim_TakeGun && m_Model.GetPlayTime(m_JudgementAnim) >= 15) ||
+		m_Anim == EPlayerAnim::eAnim_SetupGun || m_Anim == EPlayerAnim::eAnim_IdleTakeGun ||
+		m_Anim == EPlayerAnim::eAnim_WalkTakeGun || m_Anim == EPlayerAnim::eAnim_RunTakeGun ||
+		m_Anim == EPlayerAnim::eAnim_ReloadGun)
 	{
 		m_MatrixS = m_Model.GetBornMatrix(24, true);
 	}
@@ -114,10 +108,10 @@ void Player::Update()
 		m_MatrixS = m_Model.GetBornMatrix(21, true);
 	}
 
-	if ((ainmState == EPlayerAnim::eAnim_TakeHandgun && m_Model.GetPlayTime(m_JudgementAnim) >= 15) ||
-		ainmState == EPlayerAnim::eAnim_SetupHandgun || ainmState == EPlayerAnim::eAnim_IdleTakeHandgun ||
-		ainmState == EPlayerAnim::eAnim_WalkTakeHandgun || ainmState == EPlayerAnim::eAnim_RunTakeHandgun ||
-		ainmState == EPlayerAnim::eAnim_ReloadHandgun)
+	if ((m_Anim == EPlayerAnim::eAnim_TakeHandgun && m_Model.GetPlayTime(m_JudgementAnim) >= 15) ||
+		m_Anim == EPlayerAnim::eAnim_SetupHandgun || m_Anim == EPlayerAnim::eAnim_IdleTakeHandgun ||
+		m_Anim == EPlayerAnim::eAnim_WalkTakeHandgun || m_Anim == EPlayerAnim::eAnim_RunTakeHandgun ||
+		m_Anim == EPlayerAnim::eAnim_ReloadHandgun)
 	{
 		m_MatrixH = m_Model.GetBornMatrix(24, true);
 	}
@@ -154,34 +148,34 @@ void Player::Move()
 
 	if (Input::XInputPad1.GetIsConnection())
 	{
-		//コントローラー入力
+		//コントローラー入劁E
 		m_PadDir = Vector3D((float)Input::XInputPad1.ThumbLeftX(), 0.0f, (float)Input::XInputPad1.ThumbLeftY());
 		m_KeyDir = (m_PadDir - Vector3D(128, 128, 128)) / 32767;
 	}
 	else
 	{
-		//前後左右移動
+		//前後左右移勁E
 		if (Input::KeyW.Pressed())	m_KeyDir.z = 1;
 		if (Input::KeyS.Pressed())	m_KeyDir.z = -1;
 		if (Input::KeyD.Pressed())	m_KeyDir.x = 1;
 		if (Input::KeyA.Pressed())	m_KeyDir.x = -1;
 	}
 
-	//歩く(WASD, 左スティック)
+	//歩ぁEWASD, 左スチE��チE��)
 	if (m_KeyDir.x != 0 || m_KeyDir.z != 0)
 	{
 		m_State = EPlayerState::eState_Walk;
 		m_isMove = true;
 	}
 
-	//走る(左シフトキー, 左スティック押し)
+	//走めE左シフトキー, 左スチE��チE��押ぁE
 	if ((Input::KeyLShift.Pressed() || Input::XInputPad1.ThumbLeftPressed()) && m_isMove)
 	{
 		m_State = EPlayerState::eState_Run;
 		m_isRun = true;
 	}
 
-	//しゃがむ(左コントロールキー, 右トリガー) 
+	//しゃが�E(左コントロールキー, 右トリガー) 
 	if ((Input::KeyLControl.Clicked() || Input::XInputPad1.TriggerRight()))
 	{
 		m_ToggleCrouch = !m_ToggleCrouch;
@@ -196,13 +190,8 @@ void Player::Move()
 		m_isCrouch = false;
 	}
 
-<<<<<<< HEAD
 	//�v���C���[��������ԂȂ�ړ�����
 	if (m_isMove && m_Anim != EPlayerAnim::eAnim_TakeGun && m_Anim != EPlayerAnim::eAnim_TakeHandgun)
-=======
-	//プレイヤーが歩き状態なら移動処理
-	if (m_isMove && m_Model.GetPlayAnimation() != EPlayerAnim::eAnim_TakeGun && m_Model.GetPlayAnimation() != EPlayerAnim::eAnim_TakeHandgun)
->>>>>>> f77d2aed4bcd1f685b2fc0395e3341b05a850882
 	{
 		const D3DXMATRIX *camDir = Camera::GetView();
 		Vector3D playerRot(0.0f, atan2f(camDir->m[0][2], camDir->m[2][2]) + atan2f(m_KeyDir.x, m_KeyDir.z), 0.0f);
@@ -211,15 +200,15 @@ void Player::Move()
 		if (m_SetupWeapon)
 		{
 			m_Phase++;
-			//武器を構えた状態の移動
+			//武器を構えた状態�E移勁E
 			m_pos += m_Model.GetAxisX(1.0f) * m_KeyDir.x * m_MoveSpeed;
 			m_pos += m_Model.GetAxisZ(1.0f) * m_KeyDir.z * m_MoveSpeed;
-			//プレイヤーの上下移動
+			//プレイヤーの上下移勁E
 			m_pos.y += sinf(m_Phase * (PI * 10) / 150.0f) / 120.0f;
 		}
 		else
 		{
-			//通常状態の移動
+			//通常状態�E移勁E
 			Vector3D pos(sinf(m_Model.GetRotation().y), 0.0f, cosf(m_Model.GetRotation().y));
 			m_pos += pos * m_MoveSpeed;
 		}
@@ -228,7 +217,7 @@ void Player::Move()
 
 void Player::Weapon()
 {
-	//武器の切り替え(ホイールクリック, 方向キー左右)
+	//武器の刁E��替ぁEホイールクリチE��, 方向キー左右)
 	if ((Input::Mouse.WheelClicked() || Input::XInputPad1.ThumbRightClicked()) && !m_isTakeWeapon)
 	{
 		m_SelectedWeapon = m_SelectWeapon.Select();
@@ -236,7 +225,7 @@ void Player::Weapon()
 
 	if (m_SelectWeapon.isSelected()) return;
 
-	//武器をとる
+	//武器をとめE
 	if ((Input::KeyF.Clicked() || Input::XInputPad1.BClicked()) && !m_isCrouch)
 	{
 		if (m_isTakeWeapon && !m_ChangePutBackWeapon && !m_ChangeTakeWeapon)
@@ -250,14 +239,14 @@ void Player::Weapon()
 			m_Model.SetTime(0);
 		}
 	}
-	//ステート変更
+	//スチE�Eト変更
 	if (m_ChangePutBackWeapon)
 		m_State = EPlayerState::eState_PutBackWeapon;
 	else if (m_ChangeTakeWeapon)
 		m_State = EPlayerState::eState_TakeWeapon;
 
 
-	//銃を持っているときに銃を構える(マウス右クリック, 左ショルダー)
+	//銁E��持ってぁE��ときに銁E��構えめEマウス右クリチE��, 左ショルダー)
 	if ((Input::Mouse.RPressed() || Input::XInputPad1.ShoulderLeftPressed()) && m_isTakeWeapon)
 	{
 		m_AnimSpeed = 60;
@@ -269,7 +258,7 @@ void Player::Weapon()
 		m_SetupWeapon = false;
 	}
 
-	//リロード
+	//リローチE
 	if (Input::KeyR.Clicked() && m_isTakeWeapon)
 	{
 		if (m_SelectedWeapon == EWeapons::eShotgun && g_pShotgun->GetLoadedAmmo() < AMMO_LOADED_SHOTGUN)
@@ -287,7 +276,7 @@ void Player::Weapon()
 	if (m_isReload)
 		m_State = EPlayerState::eState_Reload;
 
-	//発砲　(マウス左クリック, 右ショルダボタン)
+	//発砲　(マウス左クリチE��, 右ショルダボタン)
 	if ((Input::Mouse.LClicked() || Input::XInputPad1.ShoulderRightClicked()) && m_SetupWeapon)
 	{
 		bool isCanShot = false;
@@ -306,7 +295,7 @@ void Player::Weapon()
 			isCanShot = true;
 		}
 
-		//発砲エフェクト生成
+		//発砲エフェクト生戁E
 		if (isCanShot)
 		{
 			EffectInfo effectData;
@@ -330,16 +319,16 @@ void Player::Camera()
 
 	if (m_SelectWeapon.isSelected()) return;
 
-	//カメラ移動
+	//カメラ移勁E
 	if (Input::XInputPad1.GetIsConnection())
 	{
-		//コントローラー入力
+		//コントローラー入劁E
 		m_Horizontal += (Input::XInputPad1.ThumbRightX() - 128) * m_CamSpeed;
 		m_Vertical += (Input::XInputPad1.ThumbRightY() - 128) * m_CamSpeed;
 	}
 	else
 	{
-		//マウス入力
+		//マウス入劁E
 		m_Horizontal += mouseValue.x * 0.002f;
 		m_Vertical += -mouseValue.y * 0.002f;
 	}
@@ -350,7 +339,7 @@ void Player::Camera()
 	mat = mRY * mRX;
 	m_CamDir = mat.GetAxisZ();
 
-	//銃を構えているときのカメラ位置
+	//銁E��構えてぁE��とき�Eカメラ位置
 	if (m_SetupWeapon)
 	{
 		m_CamSpeed = 0.0000007f;
@@ -371,7 +360,7 @@ void Player::Camera()
 		newCameraPos = Vector3D(eye.x, eye.y, eye.z);
 		newLookPos = Vector3D(at.x, at.y, at.z);
 	}
-	//通常状態のカメラ位置
+	//通常状態�Eカメラ位置
 	else
 	{
 		m_CamSpeed = 0.000002f;
@@ -382,12 +371,12 @@ void Player::Camera()
 		newLookPos = m_pos + mat.GetAxisX() * 0.4f;
 		newLookPos.y = m_CameraPosY + m_pos.y;
 
-		//カメラの座標
+		//カメラの座樁E
 		newCameraPos = newLookPos;
 		newCameraPos -= m_CamDir * lenge;
 	}
 
-	//カメラ補完移動
+	//カメラ補完移勁E
 	if (m_SetupWeapon)
 	{
 		m_CameraPos = Vector3D::Lerp(m_CameraPos, newCameraPos, 0.8f);
@@ -449,7 +438,7 @@ void Player::Animation()
 
 void Player::Idle()
 {
-	//武器を持って待機
+	//武器を持って征E��E
 	if (m_isTakeWeapon)
 	{
 		if (m_SelectedWeapon == EWeapons::eShotgun)
@@ -463,7 +452,7 @@ void Player::Idle()
 			m_AnimSpeed = HALF_ANIM_SPEED;
 		}
 	}
-	//待機
+	//征E��E
 	else
 	{
 		m_Anim = EPlayerAnim::eAnim_Idle;
@@ -475,7 +464,7 @@ void Player::Walk()
 {
 	m_MoveSpeed = WALK_SPEED;
 
-	if (m_isTakeWeapon) //武器を持っているとき
+	if (m_isTakeWeapon) //武器を持ってぁE��とぁE
 	{
 		if (m_SelectedWeapon == EWeapons::eShotgun)
 		{
@@ -490,7 +479,7 @@ void Player::Walk()
 	}
 	else
 	{
-		//歩き
+		//歩ぁE
 		m_Anim = EPlayerAnim::eAnim_Walk;
 		m_AnimSpeed = DEFAULT_ANIM_SPEED;
 	}
@@ -500,7 +489,7 @@ void Player::Run()
 {
 	m_MoveSpeed = RUN_SPEED;
 
-	//武器を持っているとき
+	//武器を持ってぁE��とぁE
 	if (m_isTakeWeapon)
 	{
 		if (m_SelectedWeapon == EWeapons::eShotgun)
@@ -514,7 +503,7 @@ void Player::Run()
 			m_AnimSpeed = RUN_ANIM_SPEED;
 		}
 	}
-	else//武器を持っていないとき
+	else//武器を持ってぁE��ぁE��ぁE
 	{
 		m_Anim = EPlayerAnim::eAnim_Run;
 		m_AnimSpeed = RUN_ANIM_SPEED;
@@ -523,7 +512,7 @@ void Player::Run()
 
 void Player::Crouch()
 {
-	//武器を持っている時は武器をしまってからしゃがむ
+	//武器を持ってぁE��時�E武器をしまってからしゃが�E
 	if (m_isTakeWeapon)
 	{
 		if (m_SelectedWeapon == EWeapons::eShotgun)
@@ -536,34 +525,30 @@ void Player::Crouch()
 			m_Anim = EPlayerAnim::eAnim_TakeHandgun;
 			m_AnimSpeed = -TWICE_ANIM_SPEED;
 		}
-<<<<<<< HEAD
+
 		//���܂��A�j���[�V�����̏I���
 		if (m_Model.GetPlayTime(m_JudgementAnim) < 1)
-=======
-		//しまうアニメーションの終わり
-		if (m_Model.GetPlayTime() < 1)
->>>>>>> f77d2aed4bcd1f685b2fc0395e3341b05a850882
 		{
 			m_isTakeWeapon = false;
 		}
 	}
 	else
 	{
-		//しゃがみ移行
+		//しゃがみ移衁E
 		if (!m_isCrouch)
 		{
 			m_Anim = EPlayerAnim::eAnim_Crouch;
 			m_AnimSpeed = TWICE_ANIM_SPEED;
 		}
 
-		//しゃがみ待機
+		//しゃがみ征E��E
 		if (m_KeyDir.x == 0 && m_KeyDir.z == 0 && m_isCrouch)
 		{
 			m_CameraPosY = CAMERA_CROUCH_POS_Y;
 			m_Anim = EPlayerAnim::eAnim_CrouchIdle;
 			m_AnimSpeed = HALF_ANIM_SPEED;
 		}
-		//しゃがみ歩き
+		//しゃがみ歩ぁE
 		else if (m_KeyDir.x != 0 || m_KeyDir.z != 0 && m_isCrouch)
 		{
 			m_CameraPosY = CAMERA_CROUCH_POS_Y;
@@ -584,27 +569,27 @@ void Player::TakeWeapon()
 {
 	if (m_SelectedWeapon == EWeapons::eShotgun)
 	{
-		//ショットガンを持って歩く
+		//ショチE��ガンを持って歩ぁE
 		if (m_isTakeWeapon && m_isMove && !m_isRun)
 		{
 			m_MoveSpeed = WALK_SPEED;
 			m_Anim = EPlayerAnim::eAnim_WalkTakeGun;
 			m_AnimSpeed = DEFAULT_ANIM_SPEED;
 		}
-		//ショットガンを持って走る
+		//ショチE��ガンを持って走めE
 		else if (m_isTakeWeapon && m_isRun)
 		{
 			m_MoveSpeed = RUN_SPEED;
 			m_Anim = EPlayerAnim::eAnim_RunTakeGun;
 			m_AnimSpeed = RUN_ANIM_SPEED;
 		}
-		//ショットガンを持った状態で待機
+		//ショチE��ガンを持った状態で征E��E
 		else if (m_isTakeWeapon && !m_isMove)
 		{
 			m_Anim = EPlayerAnim::eAnim_IdleTakeGun;
 			m_AnimSpeed = HALF_ANIM_SPEED;
 		}
-		//ショットガンを取る
+		//ショチE��ガンを取めE
 		else
 		{
 			m_Anim = EPlayerAnim::eAnim_TakeGun;
@@ -619,27 +604,27 @@ void Player::TakeWeapon()
 	}
 	else if (m_SelectedWeapon == EWeapons::eHandgun)
 	{
-		//ハンドガンを持って歩く
+		//ハンドガンを持って歩ぁE
 		if (m_isTakeWeapon && m_isMove && !m_isRun)
 		{
 			m_MoveSpeed = WALK_SPEED;
 			m_Anim = EPlayerAnim::eAnim_WalkTakeHandgun;
 			m_AnimSpeed = DEFAULT_ANIM_SPEED;
 		}
-		//ハンドガンを持って走る
+		//ハンドガンを持って走めE
 		else if (m_isTakeWeapon && m_isRun)
 		{
 			m_MoveSpeed = RUN_SPEED;
 			m_Anim = EPlayerAnim::eAnim_RunTakeHandgun;
 			m_AnimSpeed = RUN_ANIM_SPEED;
 		}
-		//ハンドガンを持った状態で待機
+		//ハンドガンを持った状態で征E��E
 		else if (m_isTakeWeapon && !m_isMove)
 		{
 			m_Anim = EPlayerAnim::eAnim_IdleTakeHandgun;
 			m_AnimSpeed = HALF_ANIM_SPEED;
 		}
-		//ハンドガンを取る
+		//ハンドガンを取めE
 		else
 		{
 			m_Anim = EPlayerAnim::eAnim_TakeHandgun;
@@ -695,17 +680,10 @@ void Player::SetupWeapon()
 		m_Anim = EPlayerAnim::eAnim_SetupHandgun;
 		m_AnimSpeed = TWICE_ANIM_SPEED;
 	}
-<<<<<<< HEAD
 	//�\����ԂŒ�~
 	if ((m_Anim == EPlayerAnim::eAnim_SetupGun ||
 		m_Anim == EPlayerAnim::eAnim_SetupHandgun) &&
 		m_Model.GetPlayTime(m_JudgementAnim) > 28)
-=======
-	//構え状態で停止
-	if ((m_Model.GetPlayAnimation() == EPlayerAnim::eAnim_SetupGun ||
-		m_Model.GetPlayAnimation() == EPlayerAnim::eAnim_SetupHandgun) &&
-		m_Model.GetPlayTime() > 28)
->>>>>>> f77d2aed4bcd1f685b2fc0395e3341b05a850882
 	{
 		m_SphereMap.radius = MAP_HIT_RADIUS_SETWEAPON;
 		m_SetupWeapon = true;
@@ -726,13 +704,8 @@ void Player::Reload()
 		m_AnimSpeed = RELOAD_ANIM_SPEED;
 	}
 
-<<<<<<< HEAD
 	//�A�j���[�V�����I��
 	if (m_Model.GetPlayTime(m_JudgementAnim) > 28)
-=======
-	//アニメーション終了
-	if (m_Model.GetPlayTime() > 28)
->>>>>>> f77d2aed4bcd1f685b2fc0395e3341b05a850882
 	{
 		m_isReload = false;
 		m_SelectedWeapon == EWeapons::eShotgun ? g_pShotgun->Reload() : g_pHandgun->Reload();
@@ -750,13 +723,8 @@ void Player::Hit()
 	m_Anim = EPlayerAnim::eAnim_Hit;
 	m_AnimSpeed = DEFAULT_ANIM_SPEED;
 
-<<<<<<< HEAD
 	//�A�j���[�V�����I��
 	if (m_Model.GetPlayTime(m_JudgementAnim) > 28)
-=======
-	//アニメーション終了
-	if (m_Model.GetPlayTime() > 28)
->>>>>>> f77d2aed4bcd1f685b2fc0395e3341b05a850882
 	{
 		m_isHit = false;
 		m_State = m_OldState;
@@ -788,7 +756,7 @@ void Player::HitEnemyAttack(Result_Capsule &hitData)
 {
 	//m_isHit = true;
 	//m_OldState = m_State;
-	//血しぶきのエフェクト
+	//血し�Eき�EエフェクチE
 	EffectInfo effectData;
 	effectData.imageName = "Blood";
 	effectData.num = 60;
