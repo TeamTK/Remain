@@ -8,3 +8,4 @@ Image media\UI_Shotgun.png UI_Shotgun
 Image media\UI_Handgun.png UI_Handgun
 Image media\UI_None.png UI_None
 Image media\Number.png Number
+Image media\MapHit.png MapHit

@@ -1,7 +1,7 @@
 #include "SightSystem.h"
 #include <list>
 #include <assert.h>
-#include "..\GEKO\Collider\ColliderManager.h"
+#include "..\..\GEKO\Collider\ColliderManager.h"
 
 EnemySight::EnemySight() :
 	m_isSleep(false),

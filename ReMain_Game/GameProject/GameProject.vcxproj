@@ -12,14 +12,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Chapter\Chapter.cpp" />
-    <ClCompile Include="GameSystem\Effect.cpp" />
+    <ClCompile Include="GameSystem\Effect\Effect.cpp" />
+    <ClCompile Include="GameSystem\Effect\EffectParabola.cpp" />
+    <ClCompile Include="GameSystem\Effect\EffectSphere.cpp" />
     <ClCompile Include="GameSystem\GUI\BaseGui.cpp" />
     <ClCompile Include="GameSystem\GUI\Number.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_Reticle.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_SelectWeapon.cpp" />
-    <ClCompile Include="GameSystem\Auditory.cpp" />
-    <ClCompile Include="GameSystem\SightSystem.cpp" />
-    <ClCompile Include="GameSystem\StageObject.cpp" />
+    <ClCompile Include="GameSystem\FiveSenses\Auditory.cpp" />
+    <ClCompile Include="GameSystem\FiveSenses\SightSystem.cpp" />
+    <ClCompile Include="GameSystem\StageObject\StageObject.cpp" />
     <ClCompile Include="GEKO\AnimationMesh\DynamicMesh.cpp" />
     <ClCompile Include="GEKO\AnimationMesh\DynamicMeshAsset.cpp" />
     <ClCompile Include="GEKO\AnimationMesh\LoadXDynamic.cpp" />
@@ -83,15 +85,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chapter\Chapter.h" />
-    <ClInclude Include="GameSystem\Effect.h" />
+    <ClInclude Include="GameSystem\Effect\Effect.h" />
+    <ClInclude Include="GameSystem\Effect\EffectParabola.h" />
+    <ClInclude Include="GameSystem\Effect\EffectSphere.h" />
     <ClInclude Include="GameSystem\GUI\BaseGui.h" />
     <ClInclude Include="GameSystem\GUI\Number.h" />
     <ClInclude Include="GameSystem\GUI\SelectWeapon.h" />
     <ClInclude Include="GameSystem\GUI\UI_Reticle.h" />
     <ClInclude Include="GameSystem\GUI\UI_SelectWeapon.h" />
-    <ClInclude Include="GameSystem\Auditory.h" />
-    <ClInclude Include="GameSystem\SightSystem.h" />
-    <ClInclude Include="GameSystem\StageObject.h" />
+    <ClInclude Include="GameSystem\FiveSenses\Auditory.h" />
+    <ClInclude Include="GameSystem\FiveSenses\SightSystem.h" />
+    <ClInclude Include="GameSystem\StageObject\StageObject.h" />
     <ClInclude Include="GEKO\AnimationMesh\DynamicMesh.h" />
     <ClInclude Include="GEKO\AnimationMesh\DynamicMeshAsset.h" />
     <ClInclude Include="GEKO\AnimationMesh\LoadXDynamic.h" />

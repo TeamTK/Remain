@@ -1,11 +1,12 @@
 #ifndef _STAGE_OBJECT_
 #define _STAGE_OBJECT_
+
 #include <list>
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include "../GEKO//Mesh/StaticMesh.h"
-#include "../GEKO/Collider/Collider.h"
+#include "../../GEKO/Collider/Collider.h"
+#include "../../GEKO/Mesh/StaticMesh.h"
 
 struct XYZ
 {

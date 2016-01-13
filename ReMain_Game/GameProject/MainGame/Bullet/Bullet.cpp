@@ -1,5 +1,6 @@
 #include "Bullet.h"
-#include "..\..\GameSystem\Effect.h"
+#include "../../GameSystem/Effect/EffectSphere.h"
+#include "../../GameSystem/Effect/EffectParabola.h"
 
 Bullet::Bullet(const char *taskName, const Vector3D &start, const Vector3D &dir, float speed, float time, float radius) :
 	Task(taskName, 1),
@@ -44,13 +45,12 @@ void Bullet::HitMap(Result_Porygon& r)
 {
 	//エフェクト
 	EffectInfo effectData;
-	effectData.imageName = "Blood";
-	effectData.num = 60;
+	effectData.imageName = "MapHit";
+	effectData.num = 15;
 	effectData.pos = r.contactPos;
-	effectData.scale = Vector3D(1.0f, 1.0f, 1.0f);
+	effectData.scale = Vector3D(0.1f, 0.1f, 0.1f);
 	effectData.speed = 0.1f;
-	effectData.time = 120;
-	new Effect(effectData, "Map");
+	effectData.time = 60;
 
 	if (r.targetName == "Tree_1")
 	{
@@ -70,12 +70,16 @@ void Bullet::HitMap(Result_Porygon& r)
 	if (r.targetName == "Ground")
 	{
 		std::cout << "地面" << "\n";
+		effectData.imageName = "GunEffect";
 	}
 
 	if (r.targetName == "RockWall")
 	{
 		std::cout << "壁" << "\n";
+		effectData.imageName = "GunEffect";
 	}
+
+	new EffectParabola(effectData, "Map", (m_Oldpos - r.contactPos).GetNormalize());
 
 	m_ColliderMap.Sleep();
 	m_Collider.Sleep();

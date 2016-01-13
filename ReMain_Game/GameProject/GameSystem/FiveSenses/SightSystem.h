@@ -2,7 +2,7 @@
 #define _SIGHT_SYSTEM_H_
 
 #include <functional>
-#include "..\GEKO\Collider\Collider.h"
+#include "..\..\GEKO\Collider\Collider.h"
 
 class SightManager;
 

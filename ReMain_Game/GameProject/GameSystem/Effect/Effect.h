@@ -3,8 +3,8 @@
 
 #include <list>
 
-#include "..\GEKO\Figure\Fiqure.h"
-#include "..\GEKO\Task\RenderTask.h"
+#include "..\..\GEKO\Figure\Fiqure.h"
+#include "..\..\GEKO\Task\RenderTask.h"
 
 struct EffectInfo
 {
@@ -16,6 +16,7 @@ struct EffectInfo
 	std::string imageName;
 };
 
+//エフェクトの部品
 class EffectPart
 {
 public:
@@ -29,15 +30,19 @@ private:
 	Vector3D m_Pos;
 };
 
+//基底エフェクト
 class Effect : public Task
 {
 public:
 	Effect(const EffectInfo &info, const char* effectName);
-	~Effect();
+	virtual ~Effect();
 	void SetSpeed(float speed);
 	void SetScale(float x, float y, float z);
-	void Update();
+	virtual void Update();
 	void Render();
+
+protected:
+	std::list<EffectPart> m_list;
 
 private:
 	int m_TimeCnt;
@@ -45,7 +50,6 @@ private:
 	float m_Speed;
 	Vector3D m_Scale;
 	std::string m_ImageName;
-	std::list<EffectPart> m_list;
 	RenderTask m_RenderTask;
 };
 
