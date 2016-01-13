@@ -1,9 +1,8 @@
 #ifndef _ENEMY_H_
 #define _ENEMY_H_
 
-#include "..\Character.h"
-#include "..\..\GameSystem\SightSystem.h"
-#include "..\..\GEKO\Task\FunctionTask.h"
+#include "../Character.h"
+#include "../../GEKO/Task/FunctionTask.h"
 
 #define ENEMY_NORMAL_SPEED 30.0f
 
@@ -55,6 +54,7 @@ protected:
 
 private:
 	void HitSight(const Vector3D *pPos);
+	void Auditory(int volume);
 
 protected:
 	unsigned int m_AnimType; //アニメーションの種類
@@ -71,7 +71,13 @@ protected:
 	Vector3D m_SightPos; //視界の位置
 	Vector3D m_SightVec; //視界の方向
 
-	AuditorySense m_AuditorySense;
+	//聴覚探知
+	enum
+	{
+		eOblivious = 1, eCaution = 2, eDiscovery = 3
+	};
+	float m_AuditoryRange; //探知範囲
+	AuditorySense m_AuditorySense; //探知クラス
 
 	//追跡用
 	Vector3D m_Distance; //敵とプレイヤーとの距離

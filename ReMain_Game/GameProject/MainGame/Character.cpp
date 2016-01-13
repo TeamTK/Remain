@@ -9,6 +9,7 @@ Character::Character(float hp, const char *taskName, unsigned int priority) :
 	m_ColliderMap.Regist_S_vs_SMesh(&m_SphereMap.pos, &m_SphereMap.radius, REGIST_FUNC(Character::HitMap));
 	m_ColliderMap.SetID(eHITID1 | eHITID2, eHITID0);
 
+	//ƒLƒƒƒ‰“¯Žm‚Ì‘Ì‚Ì“–‚½‚è”»’è
 	m_BodyRadius = 1.0f;
 	m_ColliderBody.Regist_S_vs_S(&m_pos, &m_BodyRadius, REGIST_FUNC(Character::PushBody));
 	m_ColliderBody.SetID(eHITID0, eHITID0);

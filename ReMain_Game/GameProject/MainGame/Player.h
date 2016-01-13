@@ -6,7 +6,6 @@
 #include "enums.h"
 #include "../MainGame/Weapon/Shotgun.h"
 #include "../MainGame/Weapon/Handgun.h"
-#include "../GameSystem/SightSystem.h"
 #include"../GameSystem/GUI/UI_SelectWeapon.h"
 #include "../GameSystem/GUI/Number.h"
 
@@ -62,8 +61,10 @@ private:
 	Collider m_HitAmmoBox;	//弾薬箱の当たり判定
 	Collider m_HitEnemyAttack; //敵からの攻撃の当たり判定
 	PlayerSightInfo m_PlayerSightInfo; //プレイヤーの視界情報
+	AuditoryObject m_AuditoryObject; //聴覚対象
 	int m_Phase;
 	int m_PlayAnim;			//武器に渡す用
+	int m_Volume; //プレイヤーが出す音の音量
 	float m_Vertical;		//垂直方向のマウス入力量
 	float m_Horizontal;		//水平方向のマウス入力量
 	float m_MoveSpeed;		//移動速度

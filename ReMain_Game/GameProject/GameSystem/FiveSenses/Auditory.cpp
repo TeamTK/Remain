@@ -1,12 +1,11 @@
 #include "Auditory.h"
 #include <list>
-#include "../GEKO/System/Math.h"
+#include "../../GEKO/System/Math.h"
 
 //’®Šo’T’m
 AuditorySense::AuditorySense() :
 	m_IsStop(false),
-	m_HearNum(0),
-	m_DetectionRange(0.0f),
+	m_pDetectionRange(nullptr),
 	m_pPos(nullptr)
 {
 	AuditoryManager::GetInstance()->AddAuditorySense(this);
@@ -22,14 +21,9 @@ void AuditorySense::SetFunc(std::function<void(int)> func)
 	m_func = func;
 }
 
-void AuditorySense::SetHearNum(int hearNum)
+void AuditorySense::SetDetectionRange(float *pRange)
 {
-	m_HearNum = hearNum;
-}
-
-void AuditorySense::SetDetectionRange(float range)
-{
-	m_DetectionRange = range;
+	m_pDetectionRange = pRange;
 }
 
 void AuditorySense::SetPos(Vector3D *pPos)
@@ -58,14 +52,9 @@ AuditoryObject::~AuditoryObject()
 	AuditoryManager::GetInstance()->ClaerAuditoryObject(this);
 }
 
-void AuditoryObject::SetVolume(int volume)
+void AuditoryObject::SetVolume(int *pVolume)
 {
-	m_Volume = volume;
-}
-
-void AuditoryObject::SetDetectionRange(float range)
-{
-	m_DetectionRange = range;
+	m_pVolume = pVolume;
 }
 
 void AuditoryObject::SetPos(Vector3D *pPos)
@@ -146,15 +135,17 @@ void AuditoryManager::AllClaer()
 
 void AuditoryManager::Update()
 {
+	Vector3D length;
 	for (auto& i : m_pAuditoryPimpl->auditorySenseList)
 	{
 		if (i->m_IsStop) continue;
 		for (auto& j : m_pAuditoryPimpl->auditoryObjectList)
 		{
-			//’T’m‘ÎÛ‚Ì‰¹‚ª•·‚±‚¦‚½‚ç’T’m‘¤‚ÌŠÖ”‚ðŒÄ‚Ô
-			if (j->m_Volume > i->m_HearNum)
+			//”ÍˆÍŒvŽZ
+			length = *i->m_pPos - *j->m_pPos;
+			if (length.LengthSq() < *i->m_pDetectionRange * *i->m_pDetectionRange)
 			{
-				i->m_func(j->m_Volume);
+				i->m_func(*j->m_pVolume);
 			}
 		}
 	}

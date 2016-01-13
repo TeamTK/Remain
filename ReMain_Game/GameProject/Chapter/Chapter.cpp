@@ -1,6 +1,6 @@
 #include "Chapter.h"
 #include "../MainGame/Enemy/EnemyStateManager.h"
-#include "../GameSystem/StageObject.h"
+#include "../GameSystem/StageObject/StageObject.h"
 
 Chapter_1_1::Chapter_1_1() :
 	Task("Chapter_1_1", 0)

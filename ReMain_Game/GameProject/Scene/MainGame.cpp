@@ -1,11 +1,11 @@
 #include "MainGame.h"
 #include "..\GameSystem\GUI\UI_Reticle.h"
-#include "../GameSystem/StageObject.h"
+#include "../GameSystem/StageObject/StageObject.h"
 #include "../MainGame/Player.h"
 #include "../MainGame/Enemy/EnemyStateManager.h"
 #include "../MainGame/AmmoBox/AmmoBox_Shotgun.h"
 #include "../MainGame/AmmoBox/AmmoBox_Handgun.h"
-#include "..\Chapter\Chapter.h"
+#include "../Chapter/Chapter.h"
 
 MainGame::MainGame() :
 	Task("MainGame", 0)
@@ -34,6 +34,7 @@ MainGame::~MainGame()
 void MainGame::Update()
 {
 	SightManager::GetInstance()->Update();
+	AuditoryManager::GetInstance()->Update();
 
 	if (Input::KeyP.Clicked()) //“G’Ç‰Á(‰¼)
 	{

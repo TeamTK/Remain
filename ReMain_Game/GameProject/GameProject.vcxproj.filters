@@ -59,7 +59,6 @@
     <ClCompile Include="GEKO\ImageSystem\Image.cpp" />
     <ClCompile Include="GEKO\ImageSystem\ImageAsset.cpp" />
     <ClCompile Include="GEKO\Mesh\LoadXStatic.cpp" />
-    <ClCompile Include="GameSystem\StageObject.cpp" />
     <ClCompile Include="GEKO\Mesh\WorldMatrixManager.cpp" />
     <ClCompile Include="GEKO\AnimationMesh\LoadXDynamic.cpp" />
     <ClCompile Include="GEKO\Figure\Fiqure.cpp" />
@@ -75,9 +74,7 @@
     <ClCompile Include="GEKO\Collider\BaseCollider.cpp" />
     <ClCompile Include="GEKO\Collider\CapsuleCollider.cpp" />
     <ClCompile Include="GEKO\Figure\Sphere3D.cpp" />
-    <ClCompile Include="GameSystem\SightSystem.cpp" />
     <ClCompile Include="GEKO\Figure\Billboard.cpp" />
-    <ClCompile Include="GameSystem\Effect.cpp" />
     <ClCompile Include="GameSystem\GUI\BaseGui.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_SelectWeapon.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_Reticle.cpp" />
@@ -98,7 +95,12 @@
     <ClCompile Include="GEKO\Mesh\Shader.cpp" />
     <ClCompile Include="Scene\GameOvar.cpp" />
     <ClCompile Include="Chapter\Chapter.cpp" />
-    <ClCompile Include="GameSystem\Auditory.cpp" />
+    <ClCompile Include="GameSystem\Effect\Effect.cpp" />
+    <ClCompile Include="GameSystem\Effect\EffectParabola.cpp" />
+    <ClCompile Include="GameSystem\Effect\EffectSphere.cpp" />
+    <ClCompile Include="GameSystem\FiveSenses\Auditory.cpp" />
+    <ClCompile Include="GameSystem\FiveSenses\SightSystem.cpp" />
+    <ClCompile Include="GameSystem\StageObject\StageObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -149,7 +151,6 @@
     </ClInclude>
     <ClInclude Include="GEKO\ImageSystem\ImageAsset.h" />
     <ClInclude Include="GEKO\Mesh\LoadXStatic.h" />
-    <ClInclude Include="GameSystem\StageObject.h" />
     <ClInclude Include="GEKO\Mesh\WorldMatrixManager.h" />
     <ClInclude Include="GEKO\AnimationMesh\LoadXDynamic.h" />
     <ClInclude Include="GEKO\Include\D2D1Helper.h" />
@@ -239,10 +240,8 @@
     <ClInclude Include="GEKO\Collider\BaseCollider.h" />
     <ClInclude Include="GEKO\Collider\CapsuleCollider.h" />
     <ClInclude Include="GEKO\Figure\Sphere3D.h" />
-    <ClInclude Include="GameSystem\SightSystem.h" />
     <ClInclude Include="MainGame\enums.h" />
     <ClInclude Include="GEKO\Figure\Billboard.h" />
-    <ClInclude Include="GameSystem\Effect.h" />
     <ClInclude Include="GameSystem\GUI\BaseGui.h" />
     <ClInclude Include="GameSystem\GUI\SelectWeapon.h" />
     <ClInclude Include="GameSystem\GUI\UI_SelectWeapon.h" />
@@ -267,7 +266,12 @@
     <ClInclude Include="GEKO\Mesh\Shader.h" />
     <ClInclude Include="Scene\GameOvar.h" />
     <ClInclude Include="Chapter\Chapter.h" />
-    <ClInclude Include="GameSystem\Auditory.h" />
+    <ClInclude Include="GameSystem\Effect\Effect.h" />
+    <ClInclude Include="GameSystem\Effect\EffectParabola.h" />
+    <ClInclude Include="GameSystem\Effect\EffectSphere.h" />
+    <ClInclude Include="GameSystem\FiveSenses\Auditory.h" />
+    <ClInclude Include="GameSystem\FiveSenses\SightSystem.h" />
+    <ClInclude Include="GameSystem\StageObject\StageObject.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

@@ -1,7 +1,8 @@
 #include "Player.h"
 #include "../MainGame/Bullet/Bullet.h"
 #include "../GEKO/System/Input.h"
-#include "../GameSystem/Effect.h"
+#include "../GameSystem/Effect/EffectSphere.h"
+#include "../GameSystem/Effect/EffectParabola.h"
 
 #define CAMERA_NO_CROUCH_POS_Y 1.8f;//しゃがみ姿勢じゃないときのカメラのY座標の高さ
 #define CAMERA_CROUCH_POS_Y 0.95f;	//しゃがみ姿勢のときのカメラのY座標の高さ
@@ -22,6 +23,10 @@
 #define RUN_ANIM_SPEED 50	//走り
 #define TAKEWEAPON_ANIM_SPEED 40	//武器をとる
 #define RELOAD_ANIM_SPEED 10	//リロード
+
+#define VOLUME_CROUCH 1
+#define VOLUME_WALK 2
+#define VOLUME_RUN 3
 
 Vector3D *g_pPlayerPos;
 
@@ -69,6 +74,10 @@ Player::Player(Vector3D pos) :
 	g_pPlayerPos = &m_pos;
 
 	m_JudgementAnim = 20; //アニメーション判断（ボーン単位）
+
+	m_Volume = VOLUME_WALK;
+	m_AuditoryObject.SetPos(&m_pos);
+	m_AuditoryObject.SetVolume(&m_Volume);
 }
 
 Player::~Player()
@@ -301,12 +310,12 @@ void Player::Weapon()
 		{
 			EffectInfo effectData;
 			effectData.imageName = "GunEffect";
-			effectData.num = 30;
+			effectData.num = 15;
 			effectData.pos = m_Model.GetBornPos(24) + m_Model.GetAxisZ(0.9f);
 			effectData.scale = Vector3D(0.05f, 0.05f, 0.1f);
 			effectData.speed = 0.05f;
-			effectData.time = 60;
-			new Effect(effectData, "GunEffect");
+			effectData.time = 30;
+			new EffectParabola(effectData, "GunEffect", dir);
 		}
 	}
 }
@@ -464,6 +473,7 @@ void Player::Idle()
 void Player::Walk()
 {
 	m_MoveSpeed = WALK_SPEED;
+	m_Volume = VOLUME_WALK;
 
 	if (m_isTakeWeapon) //武器を持っているとき
 	{
@@ -489,6 +499,7 @@ void Player::Walk()
 void Player::Run()
 {
 	m_MoveSpeed = RUN_SPEED;
+	m_Volume = VOLUME_RUN;
 
 	//武器を持っているとき
 	if (m_isTakeWeapon)
@@ -513,6 +524,8 @@ void Player::Run()
 
 void Player::Crouch()
 {
+	m_Volume = VOLUME_CROUCH;
+
 	//武器を持っている時は武器をしまってからしゃがむ
 	if (m_isTakeWeapon)
 	{
@@ -759,10 +772,10 @@ void Player::HitEnemyAttack(Result_Capsule &hitData)
 	//血しぶきのエフェクト
 	EffectInfo effectData;
 	effectData.imageName = "Blood";
-	effectData.num = 60;
+	effectData.num = 30;
 	effectData.pos = hitData.end;
 	effectData.scale = Vector3D(1.0f, 1.0f, 1.0f);
 	effectData.speed = 0.1f;
-	effectData.time = 120;
-	new Effect(effectData, "Blood");
+	effectData.time = 60;
+	new EffectParabola(effectData, "Blood", hitData.start.GetNormalize());
 }

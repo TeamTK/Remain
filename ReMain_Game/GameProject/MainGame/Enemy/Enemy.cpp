@@ -1,6 +1,6 @@
 #include "Enemy.h"
-#include "..\..\GameSystem\Effect.h"
-#include "..\Player.h"
+#include "../../GameSystem/Effect/EffectParabola.h"
+#include "../Player.h"
 
 #define COMMON_BORN_ANIM_ENEMY 20
 
@@ -16,6 +16,7 @@ Enemy::Enemy(const char* name, EnemyState &enemyState) :
 	m_RunSpeed = enemyState.runSpeed;
 	m_WalkSpeed = enemyState.walkSpeed;
 	m_FlinchNum = enemyState.flinch;
+	m_AuditoryRange = 10.0f;
 	m_pos = enemyState.posSpawn;
 	m_rot = enemyState.rotation;
 	m_Model.SetAsset(name);
@@ -28,7 +29,9 @@ Enemy::Enemy(const char* name, EnemyState &enemyState) :
 	m_Sight.Regist(&m_SightData, REGIST_FUNC(Enemy::HitSight));
 
 	//聴覚探知
-	m_AuditorySense.SetHearNum(2);
+	m_AuditorySense.SetFunc(REGIST_FUNC(Enemy::Auditory));
+	m_AuditorySense.SetPos(&m_pos);
+	m_AuditorySense.SetDetectionRange(&m_AuditoryRange);
 }
 
 Enemy::~Enemy()
@@ -147,12 +150,12 @@ void Enemy::HitBullet(Result_Sphere& r)
 	//血しぶきのエフェクト
 	EffectInfo effectData;
 	effectData.imageName = "Blood";
-	effectData.num = 60;
+	effectData.num = 40;
 	effectData.pos = r.position;
 	effectData.scale = Vector3D(1.0f, 1.0f, 1.0f);
 	effectData.speed = 0.1f;
-	effectData.time = 120;
-	new Effect(effectData, "Blood");
+	effectData.time = 60;
+	new EffectParabola(effectData, "Blood", r.position.GetNormalize());
 
 	//銃の種類ごとの威力
 	float GunPower = 1.0f;
@@ -164,8 +167,6 @@ void Enemy::HitBullet(Result_Sphere& r)
 	{
 		GunPower = 3.0f;
 	}
-	
-	std::cout << r.name << "\n";
 
 	//当たり判定停止（弾からの）
 	auto bornNum = m_BoneCapsule.size();
@@ -191,9 +192,9 @@ void Enemy::HitBullet(Result_Sphere& r)
 		//怯み動作
 		if (m_FlinchCnt >= (float)m_FlinchNum)
 		{
-			m_FlinchCnt = 0;
 			m_Model.SetTime(0);
 			m_FuncTask.Start("HitDamage");
+			m_FlinchCnt = 0;
 			for (unsigned int i = 0; i < bornNum; i++) m_pHitAttack[i].Sleep();
 		}
 		else
@@ -212,6 +213,7 @@ void Enemy::HitBullet(Result_Sphere& r)
 	{
 		for (unsigned int i = 0; i < bornNum; i++) m_pHitAttack[i].Sleep();
 		m_Model.SetTime(0);
+		m_FuncTask.AllStop();
 		m_FuncTask.Start("Die");
 		m_Sight.Sleep();
 	}
@@ -229,4 +231,28 @@ void Enemy::HitSight(const Vector3D *pPos)
 	m_FuncTask.AllStop();
 	m_FuncTask.Start("Chase");
 	m_Sight.Sleep();
+	m_AuditorySense.Stop();
+}
+
+void Enemy::Auditory(int volume)
+{
+	switch (volume)
+	{
+	case eOblivious:
+		break;
+
+	case eCaution:
+		break;
+
+	case eDiscovery:
+		m_pPlayerPos = g_pPlayerPos;
+		m_FuncTask.AllStop();
+		m_FuncTask.Start("Chase");
+		m_Sight.Sleep();
+		m_AuditorySense.Stop();
+		break;
+
+	default:
+		break;
+	}
 }

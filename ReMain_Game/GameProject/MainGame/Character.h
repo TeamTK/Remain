@@ -2,7 +2,8 @@
 #define _CHARACTER_H_
 
 #include "../GEKO/GEKO.h"
-#include "../GameSystem/Auditory.h"
+#include "../GameSystem/FiveSenses/Auditory.h"
+#include "../GameSystem/FiveSenses/SightSystem.h"
 
 class Character : public Task
 {

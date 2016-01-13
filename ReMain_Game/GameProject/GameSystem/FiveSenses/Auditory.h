@@ -15,18 +15,16 @@ public:
 	AuditorySense();
 	~AuditorySense();
 	void SetFunc(std::function<void(int)> func);
-	void SetHearNum(int hearNum);
-	void SetDetectionRange(float range);
+	void SetDetectionRange(float *pRange);
 	void SetPos(Vector3D *pPos);
 	void Stop();
 	void Start();
 
 private:
-	bool m_IsStop;
-	int m_HearNum;
-	float m_DetectionRange;
-	std::function<void(int)> m_func;
-	Vector3D *m_pPos;
+	bool m_IsStop; //探索を停止
+	float *m_pDetectionRange; //聞こえる範囲（平方根をしない長さ）
+	std::function<void(int)> m_func; //呼び出す関数ポインタ
+	Vector3D *m_pPos; //探索者の位置
 
 };
 
@@ -38,14 +36,12 @@ class AuditoryObject
 public:
 	AuditoryObject();
 	~AuditoryObject();
-	void SetVolume(int volume);
-	void SetDetectionRange(float range);
+	void SetVolume(int *pVolume);
 	void SetPos(Vector3D *pPos);
 
 private:
-	int m_Volume;
-	float m_DetectionRange;
-	Vector3D *m_pPos;
+	int *m_pVolume; //出す音の量
+	Vector3D *m_pPos; //探索対象の位置
 };
 
 //聴覚管理
