@@ -57,7 +57,7 @@ void StaticMesh::Render()
 
 void StaticMesh::RenderMatrix(Matrix &matrix)
 {
-	RenderFunc(matrix);
+	RenderFunc(m_pMeshData->GetMeshInfo()->m_LocalMat * matrix);
 }
 
 const VertexInfo *StaticMesh::GetVertex() const
@@ -95,11 +95,11 @@ void StaticMesh::RenderFunc(Matrix &matrix)
 	ID3D11DeviceContext *pDeviceContext;
 	pDeviceContext = Direct3D11::Get().GetID3D11DeviceContext();
 
-	//assert(m_pMeshData != nullptr && "メッシュ情報がありません");
+	assert(m_pMeshData != nullptr && "メッシュ情報がありません");
 
 	MeshInfo *data = m_pMeshData->GetMeshInfo();
 
-	D3DXMATRIX World = m_LocalMatrix * matrix; //ワールド行列格納
+	D3DXMATRIX World = matrix; //ワールド行列格納
 
 	//使用するシェーダーの登録
 	pDeviceContext->VSSetShader(data->m_pVertexShader, NULL, 0);

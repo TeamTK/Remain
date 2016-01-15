@@ -123,9 +123,19 @@ Vector3D MeshBase::GetAxisX(float length) const
 	return Vector3D::Matrix3x3(Vector3D(1.0f, 0.0f, 0.0f), m_Matrix) * length;
 }
 
+Vector3D MeshBase::GetAxisX(const Matrix &matrix, float length) const
+{
+	return Vector3D::Matrix3x3(Vector3D(1.0f, 0.0f, 0.0f), matrix) * length;
+}
+
 Vector3D MeshBase::GetAxisY(float length) const
 {
 	return Vector3D::Matrix3x3(Vector3D(0.0f, 1.0f, 0.0f), m_Matrix) * length;
+}
+
+Vector3D MeshBase::GetAxisY(const Matrix &matrix, float length) const
+{
+	return Vector3D::Matrix3x3(Vector3D(0.0f, 1.0f, 0.0f), matrix) * length;
 }
 
 Vector3D MeshBase::GetAxisZ(float length) const
@@ -133,7 +143,12 @@ Vector3D MeshBase::GetAxisZ(float length) const
 	return Vector3D::Matrix3x3(Vector3D(0.0f, 0.0f, 1.0f), m_Matrix) * length;
 }
 
-const Matrix *MeshBase::GetMatrix() const
+Vector3D MeshBase::GetAxisZ(const Matrix &matrix, float length) const
+{
+	return Vector3D::Matrix3x3(Vector3D(0.0f, 0.0f, 1.0f), matrix) * length;
+}
+
+const Matrix *MeshBase::GetWorldMatrix() const
 {
 	return &m_Matrix;
 }
@@ -145,6 +160,24 @@ void MeshBase::DebugAxis()
 	Vector3D z_Normal(0.0f, 0.0f, 1.0f);
 
 	Vector3D pos(m_Matrix._41, m_Matrix._42, m_Matrix._43);
+
+	//モデルの変換後の法線
+	x_Normal = Vector3D::Matrix3x3(x_Normal, m_Matrix);
+	y_Normal = Vector3D::Matrix3x3(y_Normal, m_Matrix);
+	z_Normal = Vector3D::Matrix3x3(z_Normal, m_Matrix);
+
+	Fiqure::RenderLine3D(pos, pos + x_Normal * 2, Vector3D(1.0f, 0.0f, 0.0f));
+	Fiqure::RenderLine3D(pos, pos + y_Normal * 2, Vector3D(0.0f, 1.0f, 0.0f));
+	Fiqure::RenderLine3D(pos, pos + z_Normal * 2, Vector3D(0.0f, 0.0f, 1.0f));
+}
+
+void MeshBase::DebugAxis(const Matrix &matrix)
+{
+	Vector3D x_Normal(1.0f, 0.0f, 0.0f);
+	Vector3D y_Normal(0.0f, 1.0f, 0.0f);
+	Vector3D z_Normal(0.0f, 0.0f, 1.0f);
+
+	Vector3D pos(matrix._41, matrix._42, matrix._43);
 
 	//モデルの変換後の法線
 	x_Normal = Vector3D::Matrix3x3(x_Normal, m_Matrix);

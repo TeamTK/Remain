@@ -48,44 +48,19 @@ struct Skin
 	float3 Normal;
 };
 
-//指定した番号のボーンのポーズ行列を返す　サブ関数（バーテックスシェーダーで使用）
-matrix FetchBoneMatrix(uint iBone)
-{
-	return g_mConstBoneWorld[iBone];
-}
-
 //頂点をスキニング（ボーンにより移動）する。サブ関数（バーテックスシェーダーで使用）
 Skin SkinVert(float4 Pos, float4 Normal, uint4  Bones, float4 Weights)
 {
 	Skin Output = (Skin)0;
 
-	//ボーン0
-	uint iBone = Bones.x;
-	float fWeight= Weights.x;
-	matrix m = FetchBoneMatrix(iBone);
-	Output.Pos += fWeight * mul(Pos, m);
-	Output.Normal += fWeight * mul(Normal, (float3x3)m);
+	matrix matA = Weights.x * g_mConstBoneWorld[Bones.x];
+	matrix matB = Weights.y * g_mConstBoneWorld[Bones.y];
+	matrix matC = Weights.z * g_mConstBoneWorld[Bones.z];
+	matrix matD = Weights.w * g_mConstBoneWorld[Bones.w];
+	matrix mat = matA + matB + matC + matD;
 
-	//ボーン1
-	iBone = Bones.y;
-	fWeight = Weights.y;
-	m = FetchBoneMatrix(iBone);
-	Output.Pos += fWeight * mul(Pos,m);
-	Output.Normal += fWeight * mul(Normal, (float3x3)m);
-
-	//ボーン2
-	iBone = Bones.z;
-	fWeight = Weights.z;
-	m = FetchBoneMatrix(iBone);
-	Output.Pos += fWeight * mul(Pos,m);
-	Output.Normal += fWeight * mul(Normal, (float3x3)m);
-
-	//ボーン3
-	iBone = Bones.w;
-	fWeight = Weights.w;
-	m = FetchBoneMatrix(iBone);
-	Output.Pos += fWeight * mul(Pos,m);
-	Output.Normal += fWeight * mul(Normal, (float3x3)m);
+	Output.Pos = mul(Pos, mat);
+	Output.Normal = mul(Normal, (float3x3)mat);
 
 	return Output;
 }
@@ -144,7 +119,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
 	//拡散反射光　項
 	float NL = saturate(dot(input.Normal, input.Light));
-	float4 diffuse = g_Diffuse * NL;
+	float Half = NL * 0.5f + 0.5f;
+	float4 diffuse = g_Diffuse * (Half * Half);
 
 	//鏡面反射光　項
 	float3 reflect = normalize(2 * NL * input.Normal - input.Light);

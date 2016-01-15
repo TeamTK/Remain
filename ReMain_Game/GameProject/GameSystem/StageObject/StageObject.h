@@ -175,8 +175,8 @@ public:
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2 | eHITID3);
 
-		m_CamraHit.Regist_SMesh_vs_L(&m_Object);
-		m_CamraHit.SetID(eHITID1, eHITID0);
+		m_CameraHit.Regist_SMesh_vs_L(&m_Object);
+		m_CameraHit.SetID(eHITID1, eHITID0);
 
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
 		m_BulletHit.SetID(eHITID6, eHITID2);
@@ -186,7 +186,7 @@ public:
 	~Ground() {}
 
 private:
-	Collider m_CamraHit;
+	Collider m_CameraHit;
 	Collider m_BulletHit;
 };
 
@@ -208,8 +208,8 @@ public:
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2 | eHITID3);
 
 		//ÉJÉÅÉâÇ∆ï«ÇÃìñÇΩÇËîªíË
-		m_CamraHit.Regist_SMesh_vs_L(&m_HitMesh);
-		m_CamraHit.SetID(eHITID1, eHITID0);
+		m_CameraHit.Regist_SMesh_vs_L(&m_HitMesh);
+		m_CameraHit.SetID(eHITID1, eHITID0);
 
 		//íeÇ∆ï«ÇÃìñÇΩÇËîªíË
 		m_BulletHit.Regist_SMesh_vs_L(&m_HitMesh);
@@ -220,7 +220,7 @@ public:
 
 private:
 	StaticMesh m_HitMesh;
-	Collider m_CamraHit;
+	Collider m_CameraHit;
 	Collider m_BulletHit;
 };
 

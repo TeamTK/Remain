@@ -25,8 +25,9 @@ void WeaponBase::Update()
 
 void WeaponBase::Render()
 {
-	Matrix m = *m_Model.GetMatrix();
-	m_Model.RenderMatrix(m * *m_BoneMtx);
+	Matrix m = *m_Model.GetWorldMatrix();
+	Matrix m2 = *m_Model.GetLocalMatrix();
+	m_Model.RenderMatrix(m2 * m * *m_BoneMtx);
 }
 
 void WeaponBase::Shot()

@@ -212,17 +212,7 @@ Matrix DynamicMesh::GetBornMatrix(int bornIndex, bool isWorld) const
 Matrix DynamicMesh::GetBornMatrix(std::string name, bool isWorld) const
 {
 	BornInfo *pBornData = m_pSkinMeshData->GetBornInfo();
-	/*
-	unsigned int bornNum = pBornData->BornList.size();
-	for (unsigned int i = 0; i < bornNum; i++)
-	{
-		if (pBornData->BornList[i]->BornName == name)
-		{
-			if (isWorld) return m_CopyBornArray[i]->ParentAndChildMat * m_LocalMatrix * m_Matrix;
-			return m_CopyBornArray[i]->ParentAndChildMat;
-		}
-	}
-	*/
+
 	int cnt = 0;
 	for (auto& i : pBornData->BornList)
 	{
@@ -247,18 +237,6 @@ Vector3D DynamicMesh::GetBornPos(std::string name) const
 {
 	BornInfo *pBornData = m_pSkinMeshData->GetBornInfo();
 
-	/*
-	unsigned int bornNum = pBornData->BornList.size();
-	for (unsigned int i = 0; i < bornNum; i++)
-	{
-		if (pBornData->BornList[i]->BornName == name)
-		{
-			Matrix m = m_CopyBornArray[i]->ParentAndChildMat;
-			return Vector3D(m._41, m._42, m._43) * m_LocalMatrix * m_Matrix;
-		}
-	}
-	*/
-
 	int cnt = 0;
 	for (auto& i : pBornData->BornList)
 	{
@@ -275,7 +253,7 @@ Vector3D DynamicMesh::GetBornPos(std::string name) const
 
 void DynamicMesh::Render()
 {
-	RenderFunc(m_Matrix);
+	RenderFunc(m_LocalMatrix * m_Matrix);
 }
 
 void DynamicMesh::RenderOutline(float size = 1.0f)
@@ -294,7 +272,7 @@ void DynamicMesh::RenderOutline(float size = 1.0f)
 
 void DynamicMesh::RenderMatrix(Matrix &matrix)
 {
-	RenderFunc(matrix);
+	RenderFunc(m_LocalMatrix * matrix);
 }
 
 void DynamicMesh::BornDebug(eBornDebug eBornDebug)
@@ -318,11 +296,11 @@ void DynamicMesh::RenderFunc(Matrix &matrix)
 	ID3D11DeviceContext *pDeviceContext;
 	pDeviceContext = Direct3D11::Get().GetID3D11DeviceContext();
 
-	//assert(m_pSkinMeshData != nullptr && "メッシュ情報がありません");
+	assert(m_pSkinMeshData != nullptr && "メッシュ情報がありません");
 
 	SkinMeshInfo *data = m_pSkinMeshData->GetSkinMeshInfo();
 
-	D3DXMATRIX World = m_LocalMatrix * matrix; //ワールド行列格納
+	D3DXMATRIX World = matrix; //ワールド行列格納
 
 	//使用するシェーダーの登録
 	pDeviceContext->VSSetShader(data->m_pVertexShader, NULL, 0);

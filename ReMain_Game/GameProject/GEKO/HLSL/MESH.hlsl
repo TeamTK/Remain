@@ -82,7 +82,8 @@ float4 PS( VS_OUTPUT input ) : SV_Target
 
 	//ŠgU”½ËŒõ@€
 	float NL = saturate(dot(input.Normal, input.Light));
-	float4 diffuse = g_Diffuse * NL;
+	float Half = NL * 0.5f + 0.5f;
+	float4 diffuse = g_Diffuse * (Half * Half);
 
 	//‹¾–Ê”½ËŒõ@€
 	float3 reflect = normalize(2 * NL * input.Normal - input.Light);

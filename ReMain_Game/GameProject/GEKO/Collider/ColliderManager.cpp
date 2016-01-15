@@ -750,7 +750,7 @@ bool ColliderManager::HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, Li
 	HitResult_SegmentTriangle hit;
 
 	//モデルの変換行列
-	Matrix world = *hitData1.GetMatrix();
+	Matrix world = *hitData1.GetWorldMatrix();
 	Matrix local = *hitData1.GetLocalMatrix();
 	Matrix m = local * world;
 	Matrix inverse = m.GetInverse();
@@ -767,8 +767,10 @@ bool ColliderManager::HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, Li
 	int materialAllNum = hitData1.GetMaterialAllNum();
 	for (int i = 0; i < materialAllNum; i++)
 	{
+		//マテリアル別のインデックスを取得
 		const int *index = hitData1.GetPolygonIndex(i);
 		int faceNum = material[i].dwNumFace;
+
 		for (int j = 0; j < faceNum; j++)
 		{
 			hitTriangle.v1 = ver[index[j * 3]].vPos;
@@ -780,11 +782,14 @@ bool ColliderManager::HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, Li
 			//当たったら当たった頂点格納
 			if (hit.isHit)
 			{
-				pory->contactPos = hit.pos * m;
-				pory->normal = Vector3D::Matrix3x3(hit.normal, m).GetNormalize();
-				pory->vertexPos[0] = hitTriangle.v1 * m;
-				pory->vertexPos[1] = hitTriangle.v2 * m;
-				pory->vertexPos[2] = hitTriangle.v3 * m;
+				pory->worldMatrix = world;
+				pory->localMatrix = local;
+				pory->meshMatrix = m;
+				pory->contactPos = hit.pos;
+				pory->normal = hit.normal;
+				pory->vertexPos[0] = hitTriangle.v1;
+				pory->vertexPos[1] = hitTriangle.v2;
+				pory->vertexPos[2] = hitTriangle.v3;
 				pory->materialIndex = i;
 				return true;
 			}
@@ -798,7 +803,7 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereH
 	HitResult_SphereTriangle Hitdata;
 
 	//モデルの変換行列
-	Matrix world = *hitData1.GetMatrix();
+	Matrix world = *hitData1.GetWorldMatrix();
 	Matrix local = *hitData1.GetLocalMatrix();
 	Matrix m = local * world;
 
@@ -821,8 +826,10 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereH
 	int materialAllNum = hitData1.GetMaterialAllNum();
 	for (int i = 0; i < materialAllNum; i++)
 	{
+		//マテリアル別のインデックスを取得
 		const int *index = hitData1.GetPolygonIndex(i);
 		int faceNum = material[i].dwNumFace;
+
 		for (int j = 0; j < faceNum; j++)
 		{
 			hitTriangle.v1 = ver[index[j * 3]].vPos;
@@ -848,11 +855,14 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereH
 	pory->pArray = new Result_Porygon_Sphere[hitVer.size()];
 	for (unsigned int i = 0; i < hitVer.size(); i++)
 	{
-		pory->pArray[i].contactPos = hitPos[i] * m;
-		pory->pArray[i].normal = Vector3D::Matrix3x3(hitNormal[i], m).GetNormalize();
-		pory->pArray[i].vertexPos[0] = hitVer[i].v1 * m;
-		pory->pArray[i].vertexPos[1] = hitVer[i].v2 * m;
-		pory->pArray[i].vertexPos[2] = hitVer[i].v3 * m;
+		pory->pArray[i].worldMatrix = world;
+		pory->pArray[i].localMatrix = local;
+		pory->pArray[i].meshMatrix = m;
+		pory->pArray[i].contactPos = hitPos[i];
+		pory->pArray[i].normal = hitNormal[i];
+		pory->pArray[i].vertexPos[0];
+		pory->pArray[i].vertexPos[1];
+		pory->pArray[i].vertexPos[2];
 		pory->pArray[i].materialIndex = materialNum[i];
 		pory->pArray[i].dist = hitDist[i];
 	}

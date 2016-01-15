@@ -85,4 +85,5 @@ private:
 	bool m_isReload;	//ƒŠƒ[ƒh’†‚©
 	bool m_isHit;		//“G‚ÌUŒ‚‚ª“–‚½‚Á‚½‚©
 };
+
 #endif
