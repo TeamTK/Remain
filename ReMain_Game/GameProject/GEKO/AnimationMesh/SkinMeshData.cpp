@@ -20,12 +20,12 @@ SkinMeshData::~SkinMeshData()
 {
 }
 
-SkinMeshInfo* SkinMeshData::GetSkinMeshInfo()
+const SkinMeshInfo* SkinMeshData::GetSkinMeshInfo() const
 {
 	return &m_MeshInfo;
 }
 
-BornInfo* SkinMeshData::GetBornInfo()
+const BornInfo* SkinMeshData::GetBornInfo() const
 {
 	return &m_BornInfo;
 }

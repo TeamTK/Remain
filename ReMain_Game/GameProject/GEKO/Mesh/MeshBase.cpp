@@ -15,6 +15,7 @@ MeshBase::MeshBase() :
 
 MeshBase::~MeshBase()
 {
+	//ƒ}ƒeƒŠƒAƒ‹Á‹
 	m_Diffuse.shrink_to_fit();
 	m_Specular.shrink_to_fit();
 	m_Ambient.shrink_to_fit();

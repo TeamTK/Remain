@@ -7,14 +7,19 @@ class TracerouteManager
 {
 public:
 	~TracerouteManager();
-	void Add(StaticMesh &staticMesh);
-	void Clear();
-	void AlClear();
-	void DebugRender();
+	static void Add(const StaticMesh *staticMesh, const char* name);
+	static void Clear(const char* name);
+	static void AlClear();
+	static void DebugRender(const char* name);
+	static void ProcessBuilding(const char* name);
 
 private:
 	TracerouteManager();
+	static TracerouteManager* GetInstance();
 
+private:
+	class TraceroutePimpl;
+	TraceroutePimpl *m_pTraceroutePimpl;
 };
 
 #endif

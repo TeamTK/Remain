@@ -31,17 +31,14 @@ struct MaterialInfo
 	Vector4D Diffuse;	//ディフューズ
 	Vector3D Specular;	//スペキュラー
 	Vector3D Ambient;	//アンビエント
-	std::string TextureName;//テクスチャーファイル名
-	int *pPolygonIndex;	 //ポリゴンのインデックス
+	std::string TextureName; //テクスチャーファイル名
+	int *pPolygonIndex; //ポリゴンのインデックス
 	int dwNumFace;		//そのマテリアルであるポリゴン数
-	MaterialInfo()
-	{
-		pTexture = nullptr;
-		dwNumFace = 0;
-	}
-	~MaterialInfo()
-	{
-	}
+	MaterialInfo() :
+		pTexture(nullptr),
+		pPolygonIndex(nullptr),
+		dwNumFace(0) {}
+	~MaterialInfo() {}
 };
 
 //頂点の構造体
@@ -74,15 +71,9 @@ struct MeshInfo
 	int materialNumAll;  //マテリアルの数
 	int materialListNumAll; //マテリアルリストの数;
 	int uvNumAll;	  //UVの数
-	MeshInfo()
-	{
-		m_pVertexBuffer = nullptr;
-		m_pMaterial = nullptr;
-		m_IsTexture = true;
-	}
-	~MeshInfo()
-	{
-	}
+	MeshInfo() :
+		m_IsTexture(true) {}
+	~MeshInfo() {}
 };
 
 class MeshData

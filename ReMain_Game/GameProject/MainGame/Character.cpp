@@ -41,10 +41,11 @@ void Character::HitMap(Result_Porygon_Group& r)
 	Vector3D v(0.0f, 0.0f, 0.0f);
 	Vector3D normal(0.0f, 0.0f, 0.0f);
 
+	//Å‘å’l‚ğæ“¾
 	for (int i = 0; i < r.hitNum; i++)
 	{
 		Result_Porygon_Sphere *poly = &r.pArray[i];
-		normal = Vector3D::Matrix3x3(poly->normal, poly->meshMatrix);
+		normal = Vector3D::Matrix3x3(poly->normal, r.meshMatrix);
 		Vector3D nv = normal * (m_SphereMap.radius - poly->dist);
 		if (fabsf(v.x) < fabsf(nv.x)) v.x = nv.x;
 		if (fabsf(v.y) < fabsf(nv.y)) v.y = nv.y;

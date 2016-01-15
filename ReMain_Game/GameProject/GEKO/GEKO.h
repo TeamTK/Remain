@@ -13,6 +13,7 @@
 #include "System\Collision.h"
 #include "Figure\Fiqure.h"
 #include "Collider\Collider.h"
+#include "Collider\ColliderManager.h"
 #include "Task\RenderTask.h"
 #include "Task\FunctionTask.h"
 #include "System\Timer.h"

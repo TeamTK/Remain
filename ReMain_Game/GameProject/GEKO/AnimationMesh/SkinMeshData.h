@@ -131,11 +131,11 @@ struct Born
 	std::string BornName;
 	D3DXMATRIX initMat;
 	D3DXMATRIX offsetMat;
-	Born()
-	{
-		brother = nullptr;
-		child = nullptr;
-	}
+	Born() :
+		indexId(0),
+		brother(nullptr),
+		child(nullptr),
+		BornName("NoName") {}
 };
 
 //コピーするボーン
@@ -148,11 +148,11 @@ struct CopyBorn
 	D3DXMATRIX ParentAndChildMat;
 	unsigned int animNum;
 	float animFrame;
-	CopyBorn()
-	{
-		brother = nullptr;
-		child = nullptr;
-	}
+	CopyBorn() :
+		brother(nullptr),
+		child(nullptr),
+		animNum(0),
+		animFrame(0.0f) {}
 };
 
 //ボーン情報
@@ -169,8 +169,8 @@ class SkinMeshData
 public:
 	SkinMeshData();
 	virtual ~SkinMeshData();
-	SkinMeshInfo *GetSkinMeshInfo();
-	BornInfo *GetBornInfo();
+	const SkinMeshInfo *GetSkinMeshInfo() const;
+	const BornInfo *GetBornInfo() const;
 	virtual void Relese();
 	virtual void Update(CopyBorn *pCopyBorn);
 	virtual void BornDebug(eBornDebug eBornDebug);

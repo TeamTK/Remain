@@ -8,9 +8,9 @@ class DynamicMesh : public MeshBase
 {
 public:
 	DynamicMesh();
+	DynamicMesh(const std::string &meshName);
 	~DynamicMesh();
-	void SetAsset(SkinMeshData *meshData);
-	void SetAsset(const std::string &MeshName);
+	void SetAsset(const std::string &meshName);
 	void ChangeAnimation(unsigned int num); //アニメーションを変更
 	void PartChangeAnimation(int bornIndex, unsigned int num); //アニメーションを変更
 	void PartRangeChangeAnimation(int bornStart, int bornEnd, unsigned int num); //アニメーションを変更
@@ -34,12 +34,13 @@ public:
 	void Render();
 	void RenderOutline(float size);
 	void RenderMatrix(Matrix &matrix);
-	void BornDebug(eBornDebug eBornDebug);
-	void AnimationDebug(int animNum);
+	void BornDebug(eBornDebug eBornDebug) const;
+	void AnimationDebug(int animNum) const;
 
 private:
+	void AllocationSkinMeshData(const std::string &meshName);
 	void RenderFunc(Matrix &matrix);
-	void ReleseCopyBornTree(CopyBorn *pBornCopy);
+	void ReleseCopyBornTree(CopyBorn *pBornCopy) const;
 
 private:
 	SkinMeshData *m_pSkinMeshData;
