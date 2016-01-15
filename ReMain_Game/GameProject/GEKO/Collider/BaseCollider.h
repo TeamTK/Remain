@@ -87,6 +87,9 @@ struct Result_LineSegment
 //ƒ|ƒŠƒSƒ“‚É“–‚½‚Á‚½Œ‹‰Ê
 struct Result_Porygon
 {
+	Matrix worldMatrix;
+	Matrix localMatrix;
+	Matrix meshMatrix;
 	Vector3D vertexPos[3];
 	Vector3D contactPos;
 	Vector3D normal;
@@ -94,13 +97,14 @@ struct Result_Porygon
 	unsigned int targetID;
 	const char *name;
 	const char *targetName;
-	Result_Porygon() {};
-	~Result_Porygon() {};
 };
 
 //ƒ|ƒŠƒSƒ“‚É“–‚½‚Á‚½Œ‹‰Ê(‹…—p)
 struct Result_Porygon_Sphere
 {
+	Matrix worldMatrix;
+	Matrix localMatrix;
+	Matrix meshMatrix;
 	Vector3D vertexPos[3];
 	Vector3D contactPos;
 	Vector3D normal;

@@ -655,6 +655,7 @@ Matrix Matrix::GetInverse()
 
 void Matrix::operator = (const Matrix &matrix)
 {
+	/*
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
@@ -662,10 +663,17 @@ void Matrix::operator = (const Matrix &matrix)
 			m[i][j] = matrix.m[i][j];
 		}
 	}
+	*/
+
+	_11 = matrix._11, _12 = matrix._12, _13 = matrix._13, _14 = matrix._14;
+	_21 = matrix._21, _22 = matrix._22, _23 = matrix._23, _24 = matrix._24;
+	_31 = matrix._31, _32 = matrix._32, _33 = matrix._33, _34 = matrix._34;
+	_41 = matrix._41, _42 = matrix._42, _43 = matrix._43, _44 = matrix._44;
 }
 
 void Matrix::operator = (const D3DXMATRIX &d3dxMatrix)
 {
+	/*
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
@@ -673,12 +681,20 @@ void Matrix::operator = (const D3DXMATRIX &d3dxMatrix)
 			m[i][j] = d3dxMatrix.m[i][j];
 		}
 	}
+	*/
+	
+	_11 = d3dxMatrix._11, _12 = d3dxMatrix._12, _13 = d3dxMatrix._13, _14 = d3dxMatrix._14;
+	_21 = d3dxMatrix._21, _22 = d3dxMatrix._22, _23 = d3dxMatrix._23, _24 = d3dxMatrix._24;
+	_31 = d3dxMatrix._31, _32 = d3dxMatrix._32, _33 = d3dxMatrix._33, _34 = d3dxMatrix._34;
+	_41 = d3dxMatrix._41, _42 = d3dxMatrix._42, _43 = d3dxMatrix._43, _44 = d3dxMatrix._44;
+	
 }
 
 Matrix Matrix::operator * (float num)
 {
 	Matrix temp;
 
+	/*
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
@@ -686,6 +702,12 @@ Matrix Matrix::operator * (float num)
 			temp.m[i][j] *= num;
 		}
 	}
+	*/
+
+	temp._11 *= num, temp._12 *= num, temp._13 *= num, temp._14 *= num;
+	temp._21 *= num, temp._22 *= num, temp._23 *= num, temp._24 *= num;
+	temp._31 *= num, temp._32 *= num, temp._33 *= num, temp._34 *= num;
+	temp._41 *= num, temp._42 *= num, temp._43 *= num, temp._44 *= num;
 
 	return temp;
 }

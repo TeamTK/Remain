@@ -746,9 +746,8 @@ void Player::Hit()
 
 void Player::HitCamera(Result_Porygon &hitData)
 {
-	Vector3D vec = m_LookPos - m_CameraPos;
-	float dist = (hitData.contactPos - m_CameraPos).Length();
-	m_CameraPos += vec.GetNormalize() * dist;
+	Camera::SetEye(hitData.contactPos * hitData.meshMatrix);
+	Camera::SetLookat(Vector3D::Lerp(m_Model.GetBornPos(6), m_LookPos, 0.6f));
 }
 
 void Player::HitAmmoBox(Result_Sphere& r)

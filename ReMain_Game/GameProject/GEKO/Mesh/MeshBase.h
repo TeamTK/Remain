@@ -26,9 +26,13 @@ public:
 	Vector3D GetSpecular(int materialIndex) const;
 	Vector3D GetAmbient(int materialIndex) const;
 	Vector3D GetAxisX(float length) const;
+	Vector3D GetAxisX(const Matrix &matrix, float length) const;
 	Vector3D GetAxisY(float length) const;
+	Vector3D GetAxisY(const Matrix &matrix, float length) const;
 	Vector3D GetAxisZ(float length) const;
-	const Matrix *GetMatrix() const;
+	Vector3D GetAxisZ(const Matrix &matrix, float length) const;
+	const Matrix *GetWorldMatrix() const;
+	void DebugAxis(const Matrix &matrix);
 	void DebugAxis();
 
 protected:

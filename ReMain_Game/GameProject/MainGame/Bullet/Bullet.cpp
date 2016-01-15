@@ -43,11 +43,13 @@ void Bullet::HitCharacter(Result_Capsule& r)
 
 void Bullet::HitMap(Result_Porygon& r)
 {
+	Vector3D contactPos = r.contactPos * r.meshMatrix;
+
 	//エフェクト
 	EffectInfo effectData;
 	effectData.imageName = "MapHit";
 	effectData.num = 15;
-	effectData.pos = r.contactPos;
+	effectData.pos = contactPos;
 	effectData.scale = Vector3D(0.1f, 0.1f, 0.1f);
 	effectData.speed = 0.1f;
 	effectData.time = 60;
@@ -79,7 +81,7 @@ void Bullet::HitMap(Result_Porygon& r)
 		effectData.imageName = "GunEffect";
 	}
 
-	new EffectParabola(effectData, "Map", (m_Oldpos - r.contactPos).GetNormalize());
+	new EffectParabola(effectData, "Map", (m_Oldpos - contactPos).GetNormalize());
 
 	m_ColliderMap.Sleep();
 	m_Collider.Sleep();
