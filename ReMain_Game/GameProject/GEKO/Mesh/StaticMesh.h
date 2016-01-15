@@ -7,22 +7,23 @@ class StaticMesh : public MeshBase
 {
 public:
 	StaticMesh();
+	StaticMesh(const std::string &meshName);
 	~StaticMesh();
-	void SetAsset(MeshData *meshData);
-	void SetAsset(const std::string &MeshName);
+	void SetAsset(const std::string &meshName);
 	const VertexInfo *GetVertex() const;
 	const MaterialInfo *GetMaterial() const;
 	const Matrix *GetLocalMatrix() const;
 	const int *GetPolygonIndex(int materialIndex) const;
 	const int GetFaceAllNum() const;
 	const int GetMaterialAllNum() const;
-	void Render();
-	void RenderMatrix(Matrix &matrix);
-	void DebugNormal();
-	void DebugPolygon();
+	void Render() const;
+	void RenderMatrix(Matrix &matrix) const;
+	void DebugNormal() const;
+	void DebugPolygon() const;
 
 private:
-	void RenderFunc(Matrix &matrix);
+	void AllocationMeshData(const std::string &meshName);
+	void RenderFunc(Matrix &matrix) const;
 
 private:
 	MeshData *m_pMeshData;

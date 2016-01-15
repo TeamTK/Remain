@@ -855,9 +855,6 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereH
 	pory->pArray = new Result_Porygon_Sphere[hitVer.size()];
 	for (unsigned int i = 0; i < hitVer.size(); i++)
 	{
-		pory->pArray[i].worldMatrix = world;
-		pory->pArray[i].localMatrix = local;
-		pory->pArray[i].meshMatrix = m;
 		pory->pArray[i].contactPos = hitPos[i];
 		pory->pArray[i].normal = hitNormal[i];
 		pory->pArray[i].vertexPos[0];
@@ -866,6 +863,9 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereH
 		pory->pArray[i].materialIndex = materialNum[i];
 		pory->pArray[i].dist = hitDist[i];
 	}
+	pory->worldMatrix = world;
+	pory->localMatrix = local;
+	pory->meshMatrix = m;
 	pory->hitNum = hitVer.size();
 
 	//‰¼î•ñíœ

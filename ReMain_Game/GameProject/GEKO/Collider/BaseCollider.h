@@ -102,9 +102,6 @@ struct Result_Porygon
 //ƒ|ƒŠƒSƒ“‚É“–‚½‚Á‚½Œ‹‰Ê(‹…—p)
 struct Result_Porygon_Sphere
 {
-	Matrix worldMatrix;
-	Matrix localMatrix;
-	Matrix meshMatrix;
 	Vector3D vertexPos[3];
 	Vector3D contactPos;
 	Vector3D normal;
@@ -120,6 +117,9 @@ struct Result_Porygon_Group
 	float dist;
 	const char *name;
 	const char *targetName;
+	Matrix worldMatrix;
+	Matrix localMatrix;
+	Matrix meshMatrix;
 	Result_Porygon_Sphere *pArray;
 	Result_Porygon_Group() :
 		hitNum(0),

@@ -1,10 +1,9 @@
 #include "DirectionalLight.h"
 
 DirectionalLight::DirectionalLight() :
-	m_Direction(0.0f, -1.0f, 0.0f, 0.0f),
+	m_Direction(0.0f, 1.0f, 0.0f, 0.0f),
 	m_LightColor(1.0f, 1.0f, 1.0f, 1.0f)
 {
-
 }
 
 DirectionalLight::~DirectionalLight()

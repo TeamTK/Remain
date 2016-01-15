@@ -1,5 +1,5 @@
 #include "MainGame.h"
-#include "..\GameSystem\GUI\UI_Reticle.h"
+#include "../GameSystem/GUI/UI_Reticle.h"
 #include "../GameSystem/StageObject/StageObject.h"
 #include "../MainGame/Player.h"
 #include "../MainGame/Enemy/EnemyStateManager.h"
