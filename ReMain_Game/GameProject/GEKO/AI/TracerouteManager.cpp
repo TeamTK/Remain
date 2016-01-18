@@ -102,9 +102,9 @@ void TracerouteManager::ProcessBuilding(const char* name)
 		faceNum = pMaterial[i].dwNumFace;
 		for (int j = 0; j < faceNum; j++)
 		{
-			pInfo->pPoryLinkInfo[j].linkPolyIndex[0] = -1;
-			pInfo->pPoryLinkInfo[j].linkPolyIndex[1] = -1;
-			pInfo->pPoryLinkInfo[j].linkPolyIndex[2] = -1;
+			pInfo->pPoryLinkInfo[index[j * 3]].linkPolyIndex[0] = -1;
+			pInfo->pPoryLinkInfo[index[j * 3 + 1]].linkPolyIndex[1] = -1;
+			pInfo->pPoryLinkInfo[index[j * 3 + 2]].linkPolyIndex[2] = -1;
 
 
 		}

@@ -17,6 +17,7 @@ public:
 	const int *GetPolygonIndex(int materialIndex) const;
 	const int GetFaceAllNum() const;
 	const int GetMaterialAllNum() const;
+	const int GetNormalAllNum() const;
 	void Render() const;
 	void RenderMatrix(Matrix &matrix) const;
 	void DebugNormal() const;

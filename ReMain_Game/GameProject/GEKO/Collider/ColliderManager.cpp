@@ -6,7 +6,7 @@
 #include "..\System\Collision.h"
 #include "..\Mesh\StaticMesh.h"
 #include <list>
-//#include <map>
+#include <map>
 
 class ColliderManager::ColliderListPimpl
 {
@@ -34,6 +34,9 @@ public:
 		//StaticMesh
 		StaticMesh_vs_LineSegmentList.clear();
 		StaticMesh_vs_SphereList.clear();
+
+		myId.clear();
+		targetId.clear();
 	}
 
 	//球
@@ -56,6 +59,9 @@ public:
 	//StaticMesh
 	std::list<StaticMesh_vs_LineSegmentCollider*> StaticMesh_vs_LineSegmentList; //メッシュ対線分
 	std::list<StaticMesh_vs_SphereCollider*> StaticMesh_vs_SphereList; //メッシュ対球
+
+	std::map<const char*, unsigned int> myId;
+	std::map<const char*, unsigned int> targetId;
 };
 
 //コライダーマネージャー//
@@ -109,32 +115,18 @@ void ColliderManager::AllClear()
 	m_pColliderListPimpl->StaticMesh_vs_SphereList.clear();
 }
 
+void ColliderManager::MyIdSetting(const char *name, unsigned int myId)
+{
+	m_pColliderListPimpl->myId[name] = myId;
+}
+
+void ColliderManager::TargetIdSetting(const char *name, unsigned int targetId)
+{
+	m_pColliderListPimpl->targetId[name] = targetId;
+}
+
 bool ColliderManager::HitCheckStaticMesh_Line(Result_Porygon *resultPorygon, Vector3D *start, Vector3D *end, unsigned int targetId)
 {
-	auto it2 = m_pColliderListPimpl->StaticMesh_vs_LineSegmentList.begin();
-	auto it2End = m_pColliderListPimpl->StaticMesh_vs_LineSegmentList.end();
-	for (; it2 != it2End; it2++)
-	{
-		if ((*it2)->m_IsSeep) continue;
-
-		//IDが一致したら当たり判定計算開始
-		if (targetId & (*it2)->m_MyId)
-		{
-			LineSegmentHitData lineInfo;
-			lineInfo.pStart = start;
-			lineInfo.pEnd = end;
-
-			static Result_Porygon pory;
-			if (HitCheckStaticMesh_vs_LineSegment(*(*it2)->m_pStaticMeshInfo, lineInfo, &pory))
-			{
-				pory.targetID = (*it2)->m_MyId;
-				*resultPorygon = pory;
-				return true;
-			}
-		}
-	}
-
-	/*
 	for (auto& i : m_pColliderListPimpl->StaticMesh_vs_LineSegmentList)
 	{
 		if (i->m_IsSeep) continue;
@@ -147,7 +139,7 @@ bool ColliderManager::HitCheckStaticMesh_Line(Result_Porygon *resultPorygon, Vec
 			lineInfo.pEnd = end;
 
 			static Result_Porygon pory;
-			if (HitCheckStaticMesh_vs_LineSegment(*i->m_pStaticMeshInfo, lineInfo, &pory))
+			if (HitCheckStaticMesh_vs_LineSegment(*i->m_pStaticMeshInfo, i->m_pNormal, lineInfo, &pory))
 			{
 				pory.targetID = i->m_MyId;
 				*resultPorygon = pory;
@@ -155,7 +147,7 @@ bool ColliderManager::HitCheckStaticMesh_Line(Result_Porygon *resultPorygon, Vec
 			}
 		}
 	}
-	*/
+
 	return false;
 }
 
@@ -449,41 +441,37 @@ void ColliderManager::CheckSphere()
 
 void ColliderManager::CheckSphere_vs_Capsule()
 {
-	auto it = m_pColliderListPimpl->Sphere_vs_CapsuleList.begin();
-	auto itEnd = m_pColliderListPimpl->Sphere_vs_CapsuleList.end();
-	for (; it != itEnd; it++)
+	for (auto& i : m_pColliderListPimpl->Sphere_vs_CapsuleList)
 	{
-		if ((*it)->m_IsSeep) continue;
-		auto it2 = m_pColliderListPimpl->Capsule_vs_SphereList.begin();
-		auto it2End = m_pColliderListPimpl->Capsule_vs_SphereList.end();
-		for (; it2 != it2End; it2++)
-		{
-			if ((*it2)->m_IsSeep) continue;
+		if (i->m_IsSeep) continue;
 
+		for (auto& j : m_pColliderListPimpl->Capsule_vs_SphereList)
+		{
+			if (j->m_IsSeep) continue;
 			//IDが一致したら当たり判定計算開始
-			if ((*it)->m_TargetId & (*it2)->m_MyId)
+			if (i->m_TargetId & j->m_MyId)
 			{
-				if (HitCheckSphere_vs_Capsule((*it)->m_HitData, (*it2)->m_HitData))
+				if (HitCheckSphere_vs_Capsule(i->m_HitData, j->m_HitData))
 				{
 					//それぞれの当たり判定情報を渡す
 					static Result_Capsule hitData1;
 					static Result_Sphere hitData2;
 
-					hitData1.start = *(*it2)->m_HitData.pStart;
-					hitData1.end = *(*it2)->m_HitData.pEnd;
-					hitData1.radius = *(*it2)->m_HitData.pRadius;
-					hitData1.targetID = (*it2)->m_MyId;
-					hitData1.targetName = (*it2)->m_Name;
-					hitData1.name = (*it)->m_Name;
+					hitData1.start = *j->m_HitData.pStart;
+					hitData1.end = *j->m_HitData.pEnd;
+					hitData1.radius = *j->m_HitData.pRadius;
+					hitData1.targetID = j->m_MyId;
+					hitData1.targetName = j->m_Name;
+					hitData1.name = i->m_Name;
 
-					hitData2.position = *(*it)->m_HitData.pPosition;
-					hitData2.radius = *(*it)->m_HitData.pRadius;
-					hitData2.targetID = (*it)->m_MyId;
-					hitData2.targetName = (*it)->m_Name;
-					hitData2.name = (*it2)->m_Name;
+					hitData2.position = *i->m_HitData.pPosition;
+					hitData2.radius = *i->m_HitData.pRadius;
+					hitData2.targetID = i->m_MyId;
+					hitData2.targetName = i->m_Name;
+					hitData2.name = j->m_Name;
 
-					(*it)->m_Func(hitData1);  //カプセル側の情報
-					(*it2)->m_Func(hitData2); //球側の情報
+					i->m_Func(hitData1);  //カプセル側の情報
+					j->m_Func(hitData2); //球側の情報
 				}
 			}
 		}
@@ -492,40 +480,37 @@ void ColliderManager::CheckSphere_vs_Capsule()
 
 void ColliderManager::CheckSphere_vs_LineSegment()
 {
-	auto it = m_pColliderListPimpl->Sphere_vs_LineSegmentList.begin();
-	auto itEnd = m_pColliderListPimpl->Sphere_vs_LineSegmentList.begin();
-	for (; it != itEnd; it++)
+	for (auto& i : m_pColliderListPimpl->Sphere_vs_LineSegmentList)
 	{
-		if ((*it)->m_IsSeep) continue;
-		auto it2 = m_pColliderListPimpl->LineSegment_vs_SphereList.begin();
-		auto it2End = m_pColliderListPimpl->LineSegment_vs_SphereList.end();
-		for (; it2 != it2End; it2++)
+		if (i->m_IsSeep) continue;
+
+		for (auto& j : m_pColliderListPimpl->LineSegment_vs_SphereList)
 		{
-			if ((*it2)->m_IsSeep) continue;
+			if (j->m_IsSeep) continue;
 
 			//IDが一致したら当たり判定計算開始
-			if ((*it)->m_TargetId & (*it2)->m_MyId)
+			if (i->m_TargetId & j->m_MyId)
 			{
-				if (HitCheckSphere_vs_LineSegment((*it)->m_HitData, (*it2)->m_HitData))
+				if (HitCheckSphere_vs_LineSegment(i->m_HitData, j->m_HitData))
 				{
 					//それぞれの当たり判定情報を渡す
 					static Result_LineSegment hitData1;
 					static Result_Sphere hitData2;
 
-					hitData1.start = *(*it2)->m_HitData.pStart;
-					hitData1.end = *(*it2)->m_HitData.pEnd;
-					hitData1.targetID = (*it2)->m_MyId;
-					hitData1.targetName = (*it2)->m_Name;
-					hitData1.name = (*it)->m_Name;
+					hitData1.start = *j->m_HitData.pStart;
+					hitData1.end = *j->m_HitData.pEnd;
+					hitData1.targetID = j->m_MyId;
+					hitData1.targetName = j->m_Name;
+					hitData1.name = i->m_Name;
 
-					hitData2.position = *(*it)->m_HitData.pPosition;
-					hitData2.radius = *(*it)->m_HitData.pRadius;
-					hitData2.targetID = (*it)->m_MyId;
-					hitData2.targetName = (*it)->m_Name;
-					hitData2.name = (*it2)->m_Name;
+					hitData2.position = *i->m_HitData.pPosition;
+					hitData2.radius = *i->m_HitData.pRadius;
+					hitData2.targetID = i->m_MyId;
+					hitData2.targetName = i->m_Name;
+					hitData2.name = j->m_Name;
 
-					(*it)->m_Func(hitData1);  //線分側の情報
-					(*it2)->m_Func(hitData2); //球側の情報
+					i->m_Func(hitData1);  //線分側の情報
+					j->m_Func(hitData2);  //球側の情報
 				}
 			}
 		}
@@ -577,42 +562,39 @@ void ColliderManager::CheckCapsule()
 
 void ColliderManager::CheckCapsule_vs_LineSegment()
 {
-	auto it = m_pColliderListPimpl->Capsule_vs_LineSegmentList.begin();
-	auto itEnd = m_pColliderListPimpl->Capsule_vs_LineSegmentList.begin();
-	for (; it != itEnd; it++)
+	for (auto& i : m_pColliderListPimpl->Capsule_vs_LineSegmentList)
 	{
-		if ((*it)->m_IsSeep) continue;
-		auto it2 = m_pColliderListPimpl->LineSegment_vs_CapsuleList.begin();
-		auto it2End = m_pColliderListPimpl->LineSegment_vs_CapsuleList.end();
-		for (; it2 != it2End; it2++)
+		if (i->m_IsSeep) continue;
+
+		for (auto& j : m_pColliderListPimpl->LineSegment_vs_CapsuleList)
 		{
-			if ((*it2)->m_IsSeep) continue;
+			if (j->m_IsSeep) continue;
 
 			//IDが一致したら当たり判定計算開始
-			if ((*it)->m_TargetId & (*it2)->m_MyId)
+			if (i->m_TargetId & j->m_MyId)
 			{
-				if (HitCheckCapsule_vs_LineSegment((*it)->m_HitData, (*it2)->m_HitData))
+				if (HitCheckCapsule_vs_LineSegment(i->m_HitData, j->m_HitData))
 				{
 					//それぞれの当たり判定情報を渡す
 					static Result_LineSegment hitData1;
 					static Result_Capsule hitData2;
 
-					hitData1.start = *(*it2)->m_HitData.pStart;
-					hitData1.end = *(*it2)->m_HitData.pEnd;
-					hitData1.targetID = (*it2)->m_MyId;
-					hitData1.targetName = (*it2)->m_Name;
-					hitData1.name = (*it)->m_Name;
+					hitData1.start = *j->m_HitData.pStart;
+					hitData1.end = *j->m_HitData.pEnd;
+					hitData1.targetID = j->m_MyId;
+					hitData1.targetName = j->m_Name;
+					hitData1.name = i->m_Name;
 
-					hitData2.start = *(*it)->m_HitData.pStart;
-					hitData2.end = *(*it)->m_HitData.pEnd;
-					hitData2.radius = *(*it)->m_HitData.pRadius;
-					hitData2.targetID = (*it)->m_MyId;
-					hitData2.targetName = (*it)->m_Name;
-					hitData2.name = (*it2)->m_Name;
+					hitData2.start = *i->m_HitData.pStart;
+					hitData2.end = *i->m_HitData.pEnd;
+					hitData2.radius = *i->m_HitData.pRadius;
+					hitData2.targetID = i->m_MyId;
+					hitData2.targetName = i->m_Name;
+					hitData2.name = j->m_Name;
 
 
-					(*it)->m_Func(hitData1);  //線分側の情報
-					(*it2)->m_Func(hitData2); //カプセル側の情報
+					i->m_Func(hitData1);  //線分側の情報
+					j->m_Func(hitData2); //カプセル側の情報
 				}
 			}
 		}
@@ -662,27 +644,25 @@ void ColliderManager::CheckLineSegment()
 
 void ColliderManager::CheckStaitcMesh_vs_LineSegment()
 {
-	auto it = m_pColliderListPimpl->LineSegment_vs_StaticMeshList.begin();
-	auto itEnd = m_pColliderListPimpl->LineSegment_vs_StaticMeshList.end();
-	for (; it != itEnd; it++)
+	//線対スタティックメッシュ
+	for (auto& i : m_pColliderListPimpl->LineSegment_vs_StaticMeshList)
 	{
-		if ((*it)->m_IsSeep) continue;
-		auto it2 = m_pColliderListPimpl->StaticMesh_vs_LineSegmentList.begin();
-		auto it2End = m_pColliderListPimpl->StaticMesh_vs_LineSegmentList.end();
-		for (; it2 != it2End; it2++)
+		if (i->m_IsSeep) continue;
+
+		for (auto& j : m_pColliderListPimpl->StaticMesh_vs_LineSegmentList)
 		{
-			if ((*it2)->m_IsSeep) continue;
+			if (j->m_IsSeep) continue;
 
 			//IDが一致したら当たり判定計算開始
-			if ((*it)->m_TargetId & (*it2)->m_MyId)
+			if (i->m_TargetId & j->m_MyId)
 			{
 				static Result_Porygon pory;
-				if (HitCheckStaticMesh_vs_LineSegment(*(*it2)->m_pStaticMeshInfo, (*it)->m_HitData, &pory))
+				if (HitCheckStaticMesh_vs_LineSegment(*j->m_pStaticMeshInfo, j->m_pNormal, i->m_HitData, &pory))
 				{
-					pory.targetID = (*it2)->m_MyId;
-					pory.targetName = (*it2)->m_Name;
-					pory.name = (*it)->m_Name;
-					(*it)->m_Func(pory);
+					pory.targetID = j->m_MyId;
+					pory.targetName = j->m_Name;
+					pory.name = i->m_Name;
+					i->m_Func(pory);
 				}
 			}
 		}
@@ -691,26 +671,24 @@ void ColliderManager::CheckStaitcMesh_vs_LineSegment()
 
 void ColliderManager::CheckStaitcMesh_vs_Sphere()
 {
-	auto it = m_pColliderListPimpl->Sphere_vs_StaticMeshList.begin();
-	auto itEnd = m_pColliderListPimpl->Sphere_vs_StaticMeshList.end();
-	for (; it != itEnd; it++)
+	//球対スタティックメッシュ
+	for (auto& i : m_pColliderListPimpl->Sphere_vs_StaticMeshList)
 	{
-		if ((*it)->m_IsSeep) continue;
-		auto it2 = m_pColliderListPimpl->StaticMesh_vs_SphereList.begin();
-		auto it2End = m_pColliderListPimpl->StaticMesh_vs_SphereList.end();
-		for (; it2 != it2End; it2++)
+		if (i->m_IsSeep) continue;
+
+		for (auto& j : m_pColliderListPimpl->StaticMesh_vs_SphereList)
 		{
-			if ((*it2)->m_IsSeep) continue;
+			if (j->m_IsSeep) continue;
 
 			//IDが一致したら当たり判定計算開始
-			if ((*it)->m_TargetId & (*it2)->m_MyId)
+			if (i->m_TargetId & j->m_MyId)
 			{
 				Result_Porygon_Group pory;
-				if (HitCheckStaticMesh_vs_Sphere(*(*it2)->m_pStaticMeshInfo, (*it)->m_HitData, &pory))
+				if (HitCheckStaticMesh_vs_Sphere(*j->m_pStaticMeshInfo, j->m_pNormal, i->m_HitData, &pory))
 				{
-					pory.targetName = (*it2)->m_Name;
-					pory.name = (*it)->m_Name;
-					(*it)->m_Func(pory);
+					pory.targetName = j->m_Name;
+					pory.name = i->m_Name;
+					i->m_Func(pory);
 					delete[] pory.pArray;
 				}
 			}
@@ -768,7 +746,7 @@ bool ColliderManager::HitCheckLineSegment(LineSegmentHitData &pHitData1, LineSeg
 	return true;
 }
 
-bool ColliderManager::HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, LineSegmentHitData &hitData2, Result_Porygon *pory)
+bool ColliderManager::HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, Vector3D *normal, LineSegmentHitData &hitData2, Result_Porygon *pory)
 {
 	HitResult_SegmentTriangle hit;
 
@@ -786,6 +764,8 @@ bool ColliderManager::HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, Li
 	const VertexInfo *ver = hitData1.GetVertex();
 	const MaterialInfo *material = hitData1.GetMaterial();
 
+	int cnt = 0;
+
 	//マテリアルごとにポリゴンとの当たり判定をする
 	int materialAllNum = hitData1.GetMaterialAllNum();
 	for (int i = 0; i < materialAllNum; i++)
@@ -800,7 +780,8 @@ bool ColliderManager::HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, Li
 			hitTriangle.v2 = ver[index[j * 3 + 1]].vPos;
 			hitTriangle.v3 = ver[index[j * 3 + 2]].vPos;
 
-			hit = Collision3D::LineSegmentTriangle(hitLine, hitTriangle);
+			hit = Collision3D::LineSegmentTriangle(hitLine, hitTriangle, normal[cnt]);
+			cnt++;
 
 			//当たったら当たった頂点格納
 			if (hit.isHit)
@@ -821,7 +802,7 @@ bool ColliderManager::HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, Li
 	return false;
 }
 
-bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereHitData &hitData2, Result_Porygon_Group *pory)
+bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, Vector3D *vec, SphereHitData &hitData2, Result_Porygon_Group *pory)
 {
 	HitResult_SphereTriangle Hitdata;
 
@@ -845,6 +826,8 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereH
 	std::vector<float> hitDist;
 	std::vector<TriangleInfo> hitVer;
 
+	int cnt = 0;
+
 	//マテリアルごとにポリゴンとの当たり判定をする
 	int materialAllNum = hitData1.GetMaterialAllNum();
 	for (int i = 0; i < materialAllNum; i++)
@@ -858,7 +841,9 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereH
 			hitTriangle.v1 = ver[index[j * 3]].vPos;
 			hitTriangle.v2 = ver[index[j * 3 + 1]].vPos;
 			hitTriangle.v3 = ver[index[j * 3 + 2]].vPos;
-			Hitdata = Collision3D::SphereTriangle(hitSphere, hitTriangle);
+
+			Hitdata = Collision3D::SphereTriangle(hitSphere, hitTriangle, vec[cnt]);
+			cnt++;
 
 			//当たったら当たった頂点格納
 			if (Hitdata.isHit)

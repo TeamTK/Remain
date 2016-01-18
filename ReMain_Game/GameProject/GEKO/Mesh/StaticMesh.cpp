@@ -93,6 +93,11 @@ const int StaticMesh::GetMaterialAllNum() const
 	return m_pMeshData->GetMeshInfo()->materialNumAll;
 }
 
+const int StaticMesh::GetNormalAllNum() const
+{
+	return m_pMeshData->GetMeshInfo()->normalNumAll;
+}
+
 void StaticMesh::Render() const
 {
 	RenderFunc(m_pMeshData->GetMeshInfo()->m_LocalMat * m_Matrix);

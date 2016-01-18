@@ -107,19 +107,22 @@ struct SkinMeshInfo
 	bool m_IsTexture;						 //テクスチャー判断
 	SkinVertexInfo* pvVertex;				 //頂点情報
 	int vertexNumAll;						 //頂点数
-	int faceNumAll;							 //面の数
+	int faceNumAll;						 //面の数
 	int normalNumAll;						 //法線の数
-	int materialNumAll;						 //マテリアルの数
-	int materialListNumAll;					 //マテリアルリストの数;
+	int materialNumAll;					 //マテリアルの数
+	int materialListNumAll;				 //マテリアルリストの数;
 	int uvNumAll;							 //UVの数
-	SkinMeshInfo()
-	{
-		m_pVertexBuffer = nullptr;
-		m_pMaterial = nullptr;
-	}
-	~SkinMeshInfo()
-	{
-	}
+	SkinMeshInfo() :
+		m_IsTexture(true),
+		m_pVertexBuffer(nullptr),
+		m_pMaterial(nullptr),
+		pvVertex(nullptr),
+		faceNumAll(0),
+		normalNumAll(0),
+		materialNumAll(0),
+		materialListNumAll(0),
+		uvNumAll(0) {}
+	~SkinMeshInfo() {}
 };
 
 //ボーン

@@ -2,9 +2,11 @@
 #define _STATIC_MESH_COLLIDER_H_
 
 #include "BaseCollider.h"
+#include <vector>
 
 class StaticMesh;
 
+//StaticMesh‚Æü‚Ì“–‚½‚è”»’è
 class StaticMesh_vs_LineSegmentCollider : public BaseCollider
 {
 public:
@@ -16,7 +18,7 @@ public:
 
 private:
 	StaticMesh *m_pStaticMeshInfo;
-
+	Vector3D *m_pNormal;
 };
 
 //StaticMesh‚Æ‹…‚Ì“–‚½‚è”»’è
@@ -31,7 +33,7 @@ public:
 
 private:
 	StaticMesh *m_pStaticMeshInfo;
-
+	Vector3D *m_pNormal;
 };
 
 #endif
