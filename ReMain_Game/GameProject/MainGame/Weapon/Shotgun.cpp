@@ -20,7 +20,8 @@ Shotgun::~Shotgun()
 void Shotgun::Update()
 {
 	//e‚ÌˆÊ’u
-	if (*m_PlayerAnim == EPlayerAnim::eAnim_SetupGun)
+	if (*m_PlayerAnim == EPlayerAnim::eAnim_SetupGun ||
+		*m_PlayerAnim == EPlayerAnim::eAnim_RecoilGun)
 	{
 		//\‚¦ó‘Ô
 		//SetTranselate(ã, ‘O, ¶)
@@ -52,8 +53,17 @@ void Shotgun::Reload()
 	//ŽèŽ‚¿’e”‚ª0‚æ‚è‘å‚«‚¢•e‚É“ü‚Á‚Ä‚¢‚é’e”‚ªÅ‘å‘•’e”‚æ‚è¬‚³‚¢
 	if (m_Ammo > 0 && m_LoadedAmmo < AMMO_LOADED_SHOTGUN)
 	{
-		int temp = AMMO_LOADED_SHOTGUN - m_LoadedAmmo;
-		m_LoadedAmmo += temp;
-		m_Ammo -= temp;
+		if (m_Ammo < 6)
+		{
+			m_LoadedAmmo += m_Ammo;
+			m_Ammo = 0;
+		}
+		else
+		{
+			int temp = AMMO_LOADED_SHOTGUN - m_LoadedAmmo;
+			m_LoadedAmmo += temp;
+			m_Ammo -= temp;
+			if (m_Ammo < 0)m_Ammo = 0;
+		}
 	}
 }

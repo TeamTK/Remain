@@ -12,7 +12,14 @@ std::string className[] =
 	"RockWall",
 	"SkyDome",
 	"Bush",
-	"Fern"
+	"Clover",
+	"Fern",
+	"Fence",
+	"Stone_A",
+	"Fallen_leaves",
+	"Tree_1_Trunk",
+	"Shrub",
+	"Weeds"
 };
 
 
@@ -135,7 +142,6 @@ void StageObjectManager::LoadObject(char* filepath)
 				m_Scale.emplace_back(x, y, z);
 			}
 		}
-
 	}
 	for (int i = 0; i < m_num; i++)
 	{
@@ -244,7 +250,35 @@ MapObject::MapObject(XYZ &pos, XYZ &rot, XYZ &sca, std::string name)
 	}
 	else if (name == className[9])
 	{
+		mp_StageObject = new Clover(pos, rot, sca, name);
+	}
+	else if (name == className[10])
+	{
 		mp_StageObject = new Fern(pos, rot, sca, name);
+	}
+	else if (name == className[11])
+	{
+		mp_StageObject = new Fence(pos, rot, sca, name);
+	}
+	else if (name == className[12])
+	{
+		mp_StageObject = new Stone_A(pos, rot, sca, name);
+	}
+	else if (name == className[13])
+	{
+		mp_StageObject = new Fallen_leaves(pos, rot, sca, name);
+	}
+	else if (name == className[14])
+	{
+		mp_StageObject = new Tree_1_Trunk(pos, rot, sca, name);
+	}
+	else if (name == className[15])
+	{
+		mp_StageObject = new Shrub(pos, rot, sca, name);
+	}
+	else if (name == className[16])
+	{
+		mp_StageObject = new Weeds(pos, rot, sca, name);
 	}
 	else
 	{
