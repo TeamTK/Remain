@@ -30,6 +30,7 @@ private:
 	void TakeWeapon();
 	void PutBackWeapon();
 	void SetupWeapon();
+	void Recoil();
 	void Reload();
 	void Die();
 	void Hit();
@@ -84,6 +85,7 @@ private:
 	bool m_isAttack;	//UŒ‚’†‚©
 	bool m_isReload;	//ƒŠƒ[ƒh’†‚©
 	bool m_isHit;		//“G‚ÌUŒ‚‚ª“–‚½‚Á‚½‚©
+	bool m_isShot;
 };
 
 #endif

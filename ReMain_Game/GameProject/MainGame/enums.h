@@ -12,6 +12,8 @@ enum EPlayerAnim
 	eAnim_Idle,				//待機状態
 	eAnim_IdleTakeGun,		//ショットガン持ち待機状態
 	eAnim_IdleTakeHandgun,	//ハンドガン持ち待機状態
+	eAnim_RecoilGun,		//ショットガン反動
+	eAnim_RecoilHandgun,	//ハンドガン反動
 	eAnim_ReloadGun,		//ショットガンリロード
 	eAnim_ReloadHandgun,	//ハンドガンリロード
 	eAnim_Run,				//走り
@@ -36,6 +38,7 @@ enum EPlayerState
 	eState_TakeWeapon,
 	eState_PutBackWeapon,
 	eState_SetupWeapon,
+	eState_Recoil,
 	eState_Reload,
 	eState_Hit,
 	eState_Die,

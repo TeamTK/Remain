@@ -242,6 +242,15 @@ public:
 	~Bush() {}
 };
 
+//クローバー
+class Clover : public StageObject
+{
+public:
+	Clover(XYZ pos, XYZ rot, XYZ sca, std::string name) :
+		StageObject(pos, rot, sca, name) {}
+	~Clover() {}
+};
+
 //シダ
 class Fern : public StageObject
 {
@@ -249,6 +258,60 @@ public:
 	Fern(XYZ pos, XYZ rot, XYZ sca, std::string name) :
 		StageObject(pos, rot, sca, name) {}
 	~Fern() {}
+};
+
+//フェンス
+class Fence : public StageObject
+{
+public:
+	Fence(XYZ pos, XYZ rot, XYZ sca, std::string name) :
+		StageObject(pos, rot, sca, name) {}
+	~Fence() {}
+};
+
+//石A
+class Stone_A : public StageObject
+{
+public:
+	Stone_A(XYZ pos, XYZ rot, XYZ sca, std::string name) :
+		StageObject(pos, rot, sca, name) {}
+	~Stone_A() {}
+};
+
+//落ち葉
+class Fallen_leaves : public StageObject
+{
+public:
+	Fallen_leaves(XYZ pos, XYZ rot, XYZ sca, std::string name) :
+		StageObject(pos, rot, sca, name) {}
+	~Fallen_leaves() {}
+};
+
+//枯れ木
+class Tree_1_Trunk : public StageObject
+{
+public:
+	Tree_1_Trunk(XYZ pos, XYZ rot, XYZ sca, std::string name) :
+		StageObject(pos, rot, sca, name) {}
+	~Tree_1_Trunk() {}
+};
+
+//低木
+class Shrub : public StageObject
+{
+public:
+	Shrub(XYZ pos, XYZ rot, XYZ sca, std::string name) :
+		StageObject(pos, rot, sca, name) {}
+	~Shrub() {}
+};
+
+//低木
+class Weeds : public StageObject
+{
+public:
+	Weeds(XYZ pos, XYZ rot, XYZ sca, std::string name) :
+		StageObject(pos, rot, sca, name) {}
+	~Weeds() {}
 };
 #endif
 
