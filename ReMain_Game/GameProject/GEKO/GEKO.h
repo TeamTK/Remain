@@ -20,11 +20,14 @@
 
 namespace GEKO
 {
-	bool Init(char* WinName, INT WinWidth, INT WinHeight);
+	bool Init(const char* winName, int winWidth, int winHeight, int resolutionWidth, int resolutionHeight);
 	bool Loop();
-	void BackgroundColor(int Red, int Green, int Blue);
+	void BackgroundColor(int red, int green, int blue);
+	void ClearColor(int red, int green, int blue);
+	void ScreenUpdate();
 	void WindowFixing();
 	void FullScreen(bool isFullScreen);
+	void SetResolution_And_RefreshRate(int width, int height, int refreshRateNum);
 	void NoWindowFrame();
 	void MouseErasure();
 	void DrawFps();

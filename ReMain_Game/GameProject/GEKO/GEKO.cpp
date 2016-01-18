@@ -4,14 +4,16 @@
 
 namespace GEKO
 {
-	bool Init(char *winName, INT WinWidth, INT WinHeight)
+	bool Init(const char* winName, int winWidth, int winHeight, int resolutionWidth, int resolutionHeight)
 	{
 		//ウィンドウの初期化
-		if (SUCCEEDED(Window::Get()->InitWindow(winName, WinWidth, WinHeight)))
+		if (SUCCEEDED(Window::Get()->InitWindow(winName, winWidth, winHeight)))
 		{
 			//ダイレクトX11の初期化
-			if (SUCCEEDED(Direct3D11::Get().InitD3D11(WinWidth, WinHeight)))
+			if (SUCCEEDED(Direct3D11::GetInstance()->InitD3D11(resolutionWidth, resolutionHeight)))
 			{
+				Direct3D11::GetInstance()->Clear(0.4f, 0.4f, 1.0f);
+
 				Input::KeyManagement::Get().Init();
 				SoundManagement::Get()->Init();
 				return true;
@@ -30,9 +32,19 @@ namespace GEKO
 		return Window::Get()->Loop(); 
 	}
 
-	void BackgroundColor(int Red, int Green, int Blue)
+	void BackgroundColor(int red, int green, int blue)
 	{
-		Direct3D11::Get().Clear(Red * RGB, Green * RGB, Blue * RGB);
+		Window::Get()->SetScreenColor(red * RGB, green * RGB, blue * RGB);
+	}
+
+	void ClearColor(int red, int green, int blue)
+	{
+		Direct3D11::GetInstance()->Clear(red * RGB, green * RGB, blue * RGB);
+	}
+
+	void ScreenUpdate()
+	{
+		Direct3D11::GetInstance()->Present();
 	}
 
 	void WindowFixing()
@@ -53,7 +65,12 @@ namespace GEKO
 
 	void FullScreen(bool isFullScreen)
 	{
-		Direct3D11::Get().FullScreen(isFullScreen);
+		Direct3D11::GetInstance()->FullScreen(isFullScreen);
+	}
+
+	void SetResolution_And_RefreshRate(int width, int height, int refreshRateNum)
+	{
+		Direct3D11::GetInstance()->SetResolution_And_RefreshRate(width, height, refreshRateNum);
 	}
 
 	void DrawFps()
@@ -98,7 +115,7 @@ namespace GEKO
 		SoundAsset::AllClear();
 		DynamicMeshAsset::AllClear();
 		StaticMeshAsset::AllClear();
-		Direct3D11::Get().DestroyD3D11();
+		Direct3D11::GetInstance()->DestroyD3D11();
 		Input::KeyManagement::Get().End();
 		OutputDebugString(TEXT("GEKO_Systemが正常に終了しました\n"));
 	};

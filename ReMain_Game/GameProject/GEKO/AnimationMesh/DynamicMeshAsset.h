@@ -8,7 +8,6 @@ class DynamicMeshAsset
 public:
 	~DynamicMeshAsset();
 	static SkinMeshData* GetMesh(std::string name);
-	static void CopyMesh(std::string copyName, std::string name);
 	static void LoadMesh(std::string filmeName, std::string name);
 	static void LoadFile(std::string filmeName);
 	static void PartClear(std::string name);

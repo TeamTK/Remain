@@ -2,9 +2,10 @@
 #include <map>
 #include "Sound.h"
 #include <iostream>
+#include <fstream>
 #include "..\System\Direct3D11.h"
 
-SoundData::SoundData(char *flimeName)
+SoundData::SoundData(std::string flimeName)
 {
 	//ZeroMemory(this, sizeof(Sound));
 	HMMIO hMmio = NULL;//WindowsマルチメディアAPIのハンドル(WindowsマルチメディアAPIはWAVファイル関係の操作用のAPI)
@@ -15,7 +16,7 @@ SoundData::SoundData(char *flimeName)
 	PCMWAVEFORMAT pcmWaveForm;
 
 	//WAVファイル内のヘッダー情報（音データ以外）の確認と読み込み
-	hMmio = mmioOpenA(flimeName, NULL, MMIO_ALLOCBUF | MMIO_READ);
+	hMmio = mmioOpenA(const_cast<char*>(flimeName.c_str()), NULL, MMIO_ALLOCBUF | MMIO_READ);
 
 	//ファイルポインタをRIFFチャンクの先頭にセットする
 	mmioDescend(hMmio, &riffckInfo, NULL, 0);
@@ -61,7 +62,7 @@ void SoundData::Relese()
 class SoundAsset::SoundPimpl
 {
 public:
-	std::map<const char*, SoundData*> map;
+	std::map<std::string, SoundData*> map;
 };
 
 SoundAsset::SoundAsset()
@@ -80,44 +81,78 @@ SoundAsset *SoundAsset::GetInstance()
 	return &soundAsset;
 }
 
-SoundData *SoundAsset::GetSound(const char *name)
+SoundData *SoundAsset::GetSound(std::string name)
 {
 	SoundPimpl *soundPimpl = GetInstance()->m_pSoundPimpl;
 
-	//指定のサウンドデータがない場合警告を出しウインドウ停止
+	//指定のサウンドデータがない場合警告を出す
 	if (soundPimpl->map.find(name) == soundPimpl->map.end())
 	{
-		GetInstance()->AllClear();
-		MessageBox(0, TEXT("指定のSoundDataはありません"), NULL, MB_OK);
-		Window::Get()->WindowEnd();
+		std::string str = name + "はSoundAssetにありません";
+		MessageBoxA(0, str.c_str(), NULL, MB_OK);
 	}
-
-	return soundPimpl->map[name];
+	else
+	{
+		return soundPimpl->map[name];
+	}
+	return nullptr;
 }
 
-void SoundAsset::LoadSound(char *flimeName, const char *name)
+void SoundAsset::LoadSound(std::string filmeName, std::string name)
 {
 	SoundPimpl *soundPimpl = GetInstance()->m_pSoundPimpl;
 
-	//すでにある場合は警告を出しウィンドウ終了
+	//すでにある場合は警告を出す
 	if (soundPimpl->map.find(name) != soundPimpl->map.end())
 	{
-		GetInstance()->AllClear();
-		MessageBox(0, TEXT("指定の名前は存在します"), NULL, MB_OK);
-		Window::Get()->WindowEnd();
+		std::string str = name + "はSoundAssetに既に存在します";
+		MessageBoxA(0, str.c_str(), NULL, MB_OK);
+		return;
+	}
+	else
+	{
+		//wavファイルだったら読み込み
+		if (filmeName[filmeName.length() - 1] == 'v' &&
+			filmeName[filmeName.length() - 2] == 'a' &&
+			filmeName[filmeName.length() - 3] == 'w')
+		{
+			soundPimpl->map[name] = new SoundData(filmeName);
+			return;
+		}
 	}
 
-	soundPimpl->map[name] = new SoundData(flimeName);
+	std::string str = filmeName + "はSoundAssetが読み込みできるファイルではありません";
+	MessageBoxA(0, str.c_str(), NULL, MB_OK);
 }
 
-void SoundAsset::PartClear(const char *name)
+void SoundAsset::LoadFile(std::string filmeName)
+{
+	std::ifstream ifs(filmeName);
+	std::string str = filmeName;
+	str += "の読み込みに失敗しました";
+	if (ifs.fail()) MessageBoxA(0, str.c_str(), NULL, MB_OK);
+
+	while (!ifs.eof())
+	{
+		ifs >> str;
+
+		if (str == "Sound")
+		{
+			ifs >> str; std::string fileName = str;
+			ifs >> str; std::string Name = str;
+			SoundAsset::LoadSound(fileName, str);
+		}
+	}
+}
+
+void SoundAsset::PartClear(std::string name)
 {
 	SoundPimpl *soundPimpl = GetInstance()->m_pSoundPimpl;
 
 	auto it = soundPimpl->map.find(name);
 	if (it != soundPimpl->map.end())
 	{
-		std::cout << it->first << "は削除されました" << "\n";
+		std::cout << it->first.c_str() << "は削除されました" << "\n";
 		it->second->Relese();
 		delete it->second;
 		soundPimpl->map.erase(it);
@@ -129,12 +164,11 @@ void SoundAsset::AllClear()
 	SoundPimpl *soundPimpl = GetInstance()->m_pSoundPimpl;
 
 	//SoundDataのデータをリリース
-	auto it = soundPimpl->map.begin();
-	for (; it != soundPimpl->map.end(); it++)
+	for (auto& i : soundPimpl->map)
 	{
-		std::cout << it->first << "は削除されました\n";
-		it->second->Relese();
-		delete it->second;
+		std::cout << i.first.c_str() << "は削除されました\n";
+		i.second->Relese();
+		delete i.second;
 	}
 
 	//全ての要素を削除
@@ -146,9 +180,8 @@ void SoundAsset::DebugDraw()
 	SoundPimpl *soundPimpl = GetInstance()->m_pSoundPimpl;
 
 	//現在あるサウンドデータを表示
-	auto it = soundPimpl->map.begin();
-	for (; it != soundPimpl->map.end(); it++)
+	for (auto& i : soundPimpl->map)
 	{
-		std::cout << it->first << "\n";
+		std::cout << i.first.c_str() << "\n";
 	}
 }

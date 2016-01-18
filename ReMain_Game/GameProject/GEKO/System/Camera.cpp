@@ -9,6 +9,7 @@ Camera::Camera() :
 	m_UpVec(D3DXVECTOR3(0.0f, 1.0f, 0.0f)),
 	m_Near(0.1f),
 	m_Far(1000.0f),
+	m_ViewAngle(Math::ChangeToRadian(45)),
 	m_Vertical(1.0f),
 	m_Horizontal(1.0f)
 {
@@ -18,7 +19,7 @@ Camera::~Camera()
 {
 }
 
-Camera* const Camera::GetInstance()
+Camera* Camera::GetInstance()
 {
 	static Camera camera;
 	return &camera;
@@ -57,6 +58,11 @@ void Camera::SetNearFar(float Near, float Far)
 	pInstance->m_Far = Far;
 }
 
+void Camera::SetViewAngle(float viewAngle)
+{
+	GetInstance()->m_ViewAngle = Math::ChangeToRadian(viewAngle);
+}
+
 void Camera::SetEye(float x, float y, float z)
 {
 	GetInstance()->m_EyePt = D3DXVECTOR3(x, y, z);
@@ -89,7 +95,7 @@ void Camera::SetUpVec(const Vector3D &upVec)
 
 void Camera::SetDrawArea(float width, float height, float x, float y)
 {
-	Direct3D11::Get().SetViewport(width, height, x, y);
+	Direct3D11::GetInstance()->SetViewport(width, height, x, y);
 }
 
 void Camera::Update()
@@ -105,10 +111,10 @@ void Camera::Update()
 	FLOAT Height = (FLOAT)winSize->sHeight;
 
 	// 希望するクライアント領域のサイズを持つウィンドウサイズを計算
-	D3DXMatrixPerspectiveFovLH(&pInstance->m_Proj, (FLOAT)D3DX_PI / 4, Width / Height, (FLOAT)pInstance->m_Near, (FLOAT)pInstance->m_Far);
+	D3DXMatrixPerspectiveFovLH(&pInstance->m_Proj, (FLOAT)pInstance->m_ViewAngle, Width / Height, (FLOAT)pInstance->m_Near, (FLOAT)pInstance->m_Far);
 
 	//ビューポート更新
-	D3D11_VIEWPORT *viewport = Direct3D11::Get().GetViewportD3D11();
+	D3D11_VIEWPORT *viewport = Direct3D11::GetInstance()->GetViewportD3D11();
 
 	float w = viewport->Width / 2;
 	float h = viewport->Height / 2;

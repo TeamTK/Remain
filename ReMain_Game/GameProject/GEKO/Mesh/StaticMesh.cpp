@@ -23,6 +23,46 @@ void StaticMesh::SetAsset(const std::string &meshName)
 	AllocationMeshData(meshName);
 }
 
+void StaticMesh::WorldMatrixBuilding()
+{
+	D3DXQUATERNION qOut(0, 0, 0, 1); //単位クォータニオン
+	D3DXQUATERNION qX(0, 0, 0, 1); //単位クォータニオン
+	D3DXQUATERNION qY(0, 0, 0, 1); //単位クォータニオン
+	D3DXQUATERNION qZ(0, 0, 0, 1); //単位クォータニオン
+	D3DXVECTOR3 xAxis(1, 0, 0); //Xの中心軸
+	D3DXVECTOR3 yAxis(0, 1, 0); //Yの中心軸
+	D3DXVECTOR3 zAxis(0, 0, 1); //Zの中心軸
+	D3DXMATRIX Mat;
+
+	D3DXQuaternionRotationAxis(&qX, &xAxis, m_Rotation.x);
+	D3DXQuaternionRotationAxis(&qY, &yAxis, m_Rotation.y);
+	D3DXQuaternionRotationAxis(&qZ, &zAxis, m_Rotation.z);
+	qOut = qX * qY * qZ;
+
+	//クオータニオンから行列に変更
+	D3DXMatrixRotationQuaternion(&Mat, &qOut);
+
+	//拡大縮小
+	Mat._11 *= m_Scale.x;
+	Mat._21 *= m_Scale.x;
+	Mat._31 *= m_Scale.x;
+
+	Mat._12 *= m_Scale.y;
+	Mat._22 *= m_Scale.y;
+	Mat._32 *= m_Scale.y;
+
+	Mat._13 *= m_Scale.z;
+	Mat._23 *= m_Scale.z;
+	Mat._33 *= m_Scale.z;
+
+	//平行移動
+	Mat._41 = m_Scale.x;
+	Mat._42 = m_Scale.y;
+	Mat._43 = m_Scale.z;
+
+	m_Matrix = Mat;
+}
+
 const VertexInfo *StaticMesh::GetVertex() const
 {
 	return m_pMeshData->GetMeshInfo()->pvVertex;
@@ -157,8 +197,7 @@ void StaticMesh::AllocationMeshData(const std::string &meshName)
 
 void StaticMesh::RenderFunc(Matrix &matrix) const
 {
-	ID3D11DeviceContext *pDeviceContext;
-	pDeviceContext = Direct3D11::Get().GetID3D11DeviceContext();
+	ID3D11DeviceContext *pDeviceContext = Direct3D11::GetInstance()->GetID3D11DeviceContext();
 
 	assert(m_pMeshData != nullptr && "メッシュ情報がありません");
 
@@ -192,6 +231,7 @@ void StaticMesh::RenderFunc(Matrix &matrix) const
 		//視点位置を渡す
 		D3DXVECTOR3 EyePos(Camera::GetEyePositionD3D());
 		sg.vEye = D3DXVECTOR4(EyePos.x, EyePos.y, EyePos.z, 0);
+
 		memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(ConstantBuffer0));
 		pDeviceContext->Unmap(data->m_pConstantBuffer0, 0);
 	}
@@ -201,9 +241,8 @@ void StaticMesh::RenderFunc(Matrix &matrix) const
 	pDeviceContext->PSSetConstantBuffers(0, 1, &data->m_pConstantBuffer0);
 
 	//頂点インプットレイアウトをセット
-	pDeviceContext->IASetInputLayout(data->m_pVertexLayout);
-
 	//プリミティブ・トポロジーをセット
+	pDeviceContext->IASetInputLayout(data->m_pVertexLayout);
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//属性ごとにレンダリング
@@ -244,9 +283,10 @@ void StaticMesh::RenderFunc(Matrix &matrix) const
 		if (SUCCEEDED(pDeviceContext->Map(data->m_pConstantBuffer1, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 		{
 			ConstantBuffer1 sg;
-			sg.vDiffuse = diffuse;//ディフューズカラーをシェーダーに渡す
-			sg.vSpecular = specular;//スペキュラーをシェーダーに渡す
-			sg.vAmbient = ambient;//アンビエントををシェーダーに渡す
+			sg.vDiffuse = diffuse;   //ディフューズカラーをシェーダーに渡す
+			sg.vSpecular = specular; //スペキュラーをシェーダーに渡す
+			sg.vAmbient = ambient;   //アンビエントををシェーダーに渡す
+
 			memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(ConstantBuffer1));
 			pDeviceContext->Unmap(data->m_pConstantBuffer1, 0);
 		}

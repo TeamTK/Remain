@@ -6,14 +6,32 @@
 
 #include "Debug.h"
 
-Direct3D11& Direct3D11::Get()
+Direct3D11::Direct3D11()
+{
+	INIT_NULLPOINTR(m_pBlendState);
+	INIT_NULLPOINTR(m_pSwapChain);
+	INIT_NULLPOINTR(m_pRenderTargetView);
+	INIT_NULLPOINTR(m_pDepthStencilView);
+	INIT_NULLPOINTR(m_pDepthStencil);
+	INIT_NULLPOINTR(m_pDeviceContext);
+	INIT_NULLPOINTR(m_pDevice);
+}
+
+Direct3D11::~Direct3D11()
+{
+}
+
+Direct3D11* Direct3D11::GetInstance()
 {
 	static Direct3D11 direct3d11;
-	return direct3d11;
+	return &direct3d11;
 }
 
 HRESULT Direct3D11::InitD3D11(INT Width, INT Height)
 {
+	m_ResolutionWidth = Width;
+	m_ResolutionHeight = Height;
+
 	// デバイスとスワップチェーンの作成
 	DXGI_SWAP_CHAIN_DESC sd;
 	ZeroMemory(&sd, sizeof(sd));
@@ -55,42 +73,7 @@ HRESULT Direct3D11::InitD3D11(INT Width, INT Height)
 
 	//各種テクスチャーと、それに付帯する各種ビューを作成
 
-	//バックバッファーテクスチャーを取得
-	ID3D11Texture2D *pBackBuffer_Tex;
-	m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer_Tex);
-	//そのテクスチャーに対しレンダーターゲットビュー(RTV)を作成
-	m_pDevice->CreateRenderTargetView(pBackBuffer_Tex, NULL, &m_pBackBuffer_TexRTV);
-	SAFE_RELEASE(pBackBuffer_Tex);
-
-	//デプスステンシルビュー用のテクスチャーを作成
-	D3D11_TEXTURE2D_DESC descDepth;
-	descDepth.Width = Width;
-	descDepth.Height = Height;
-	descDepth.MipLevels = 1;
-	descDepth.ArraySize = 1;
-	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
-	descDepth.SampleDesc.Count = (UINT)SAMPLE_COUNT;
-	descDepth.SampleDesc.Quality = (UINT)SAMPLE_QUALITY;
-	descDepth.Usage = D3D11_USAGE_DEFAULT;
-	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	descDepth.CPUAccessFlags = 0;
-	descDepth.MiscFlags = 0;
-	m_pDevice->CreateTexture2D(&descDepth, NULL, &m_pBuckBuffer_DSTex);
-	//そのテクスチャーに対しデプスステンシルビュー(DSV)を作成
-	m_pDevice->CreateDepthStencilView(m_pBuckBuffer_DSTex, NULL, &m_pBuckBuffer_DSTexDSV);
-
-	//レンダーターゲットビューとデプスステンシルビューをパイプラインにセット
-	m_pDeviceContext->OMSetRenderTargets(1, &m_pBackBuffer_TexRTV, m_pBuckBuffer_DSTexDSV);
-
-	//ビューポートの設定
-	D3D11_VIEWPORT vp;
-	vp.Width = (FLOAT)Width;
-	vp.Height = (FLOAT)Height;
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
-	vp.TopLeftX = 0.0f;
-	vp.TopLeftY = 0.0f;
-	m_pDeviceContext->RSSetViewports(1, &vp);
+	if(FAILED(InitBackBuffer())) return FALSE;
 
 	//ラスタライズ設定
 	D3D11_RASTERIZER_DESC rdc;
@@ -130,9 +113,88 @@ HRESULT Direct3D11::InitD3D11(INT Width, INT Height)
 	}
 
 	UINT mask = 0xffffffff;
-	Direct3D11::Get().GetID3D11DeviceContext()->OMSetBlendState(m_pBlendState, NULL, mask);
+	m_pDeviceContext->OMSetBlendState(m_pBlendState, NULL, mask);
 
 	return S_OK;
+}
+
+HRESULT Direct3D11::InitBackBuffer()
+{
+	//バックバッファーテクスチャーを取得
+	ID3D11Texture2D *pBackBufferTexture;
+	m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBufferTexture);
+
+	// バック・バッファの情報
+	D3D11_TEXTURE2D_DESC descBackBuffer;
+	pBackBufferTexture->GetDesc(&descBackBuffer);
+
+	//テクスチャーに対しレンダーターゲットビューを作成
+	m_pDevice->CreateRenderTargetView(pBackBufferTexture, NULL, &m_pRenderTargetView);
+	SAFE_RELEASE(pBackBufferTexture);
+
+	//デプスステンシルのテクスチャーを作成
+	D3D11_TEXTURE2D_DESC descDepth = descBackBuffer;
+	//descDepth.Width = Width;
+	//descDepth.Height = Height;
+	descDepth.MipLevels = 1;
+	descDepth.ArraySize = 1;
+	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
+	//descDepth.SampleDesc.Count = (UINT)SAMPLE_COUNT;
+	//descDepth.SampleDesc.Quality = (UINT)SAMPLE_QUALITY;
+	descDepth.Usage = D3D11_USAGE_DEFAULT;
+	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	descDepth.CPUAccessFlags = 0;
+	descDepth.MiscFlags = 0;
+	m_pDevice->CreateTexture2D(&descDepth, NULL, &m_pDepthStencil);
+	m_pDevice->CreateDepthStencilView(m_pDepthStencil, NULL, &m_pDepthStencilView);
+
+	//レンダーターゲットビューとデプスステンシルビューをパイプラインにセット
+	m_pDeviceContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_pDepthStencilView);
+
+	//ビューポートの設定
+	D3D11_VIEWPORT vp;
+	vp.Width = (FLOAT)descBackBuffer.Width;
+	vp.Height = (FLOAT)descBackBuffer.Height;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0.0f;
+	vp.TopLeftY = 0.0f;
+	m_pDeviceContext->RSSetViewports(1, &vp);
+
+	return S_OK;
+}
+
+void Direct3D11::ChangeWindowSize()
+{
+	// 描画ターゲットを解除する
+	m_pDeviceContext->OMSetRenderTargets(0, NULL, NULL);	// 描画ターゲットの解除
+	SAFE_RELEASE(m_pRenderTargetView);					    // 描画ターゲット ビューの解放
+	SAFE_RELEASE(m_pDepthStencilView);					    // 深度/ステンシル ビューの解放
+	SAFE_RELEASE(m_pDepthStencil);						    // 深度/ステンシル テクスチャの解放
+
+	m_pSwapChain->ResizeBuffers(1, m_ResolutionWidth, m_ResolutionHeight, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
+
+	InitBackBuffer();
+}
+
+void Direct3D11::SetResolution_And_RefreshRate(int width, int height, int refreshRateNum = 60)
+{
+	m_ResolutionWidth = width;
+	m_ResolutionHeight = height;
+
+	/*
+	DXGI_MODE_DESC desc;
+	desc.Width = width;
+	desc.Height = height;
+	desc.RefreshRate.Numerator = refreshRateNum;
+	desc.RefreshRate.Denominator = 1;
+	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	desc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	m_pSwapChain->ResizeTarget(&desc);
+	*/
+
+	ChangeWindowSize();
 }
 
 void Direct3D11::SetRasterizer(D3D11_CULL_MODE cullMode, D3D11_FILL_MODE fillMode)
@@ -174,17 +236,17 @@ D3D11_VIEWPORT *Direct3D11::GetViewportD3D11()
 	return &m_Viewport;
 }
 
-void Direct3D11::Clear(float R, float G, float B)
+void Direct3D11::Clear(float r, float g, float b)
 {
 	//画面クリア
-	float ClearColor[4] = { R, G, B, 1 };// クリア色　RGBAの順
-	m_pDeviceContext->ClearRenderTargetView(m_pBackBuffer_TexRTV, ClearColor);//カラーバッファクリア
-	m_pDeviceContext->ClearDepthStencilView(m_pBuckBuffer_DSTexDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);//デプスステンシルバッファクリア
+	float ClearColor[4] = { r, g, b, 1 }; //クリア色RGBAの順
+	m_pDeviceContext->ClearRenderTargetView(m_pRenderTargetView, ClearColor); //カラーバッファクリア
+	m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0); //デプスステンシルバッファクリア
 }
 
 void Direct3D11::Present()
 {
-	m_pSwapChain->Present(0, 0);//画面更新（バックバッファをフロントバッファに)
+	m_pSwapChain->Present(0, 0); //画面更新（バックバッファをフロントバッファに)
 }
 
 void Direct3D11::FullScreen(bool isFullScreen)
@@ -207,16 +269,14 @@ void Direct3D11::SetViewport(float width, float height, float x, float y)
 
 void Direct3D11::DestroyD3D11()
 {
-	if (m_pSwapChain)
-	{
-		m_pSwapChain->SetFullscreenState(false, 0);
-	}
+	if (m_pSwapChain) m_pSwapChain->SetFullscreenState(false, 0);
+	if(m_pDeviceContext) m_pDeviceContext->ClearState();
 
 	SAFE_RELEASE(m_pBlendState);
 	SAFE_RELEASE(m_pSwapChain);
-	SAFE_RELEASE(m_pBackBuffer_TexRTV);
-	SAFE_RELEASE(m_pBuckBuffer_DSTexDSV);
-	SAFE_RELEASE(m_pBuckBuffer_DSTex);
+	SAFE_RELEASE(m_pRenderTargetView);
+	SAFE_RELEASE(m_pDepthStencilView);
+	SAFE_RELEASE(m_pDepthStencil);
 	SAFE_RELEASE(m_pDeviceContext);
 	SAFE_RELEASE(m_pDevice);
 	OutputDebugString(TEXT("Direct3D11が正常に終了しました\n"));

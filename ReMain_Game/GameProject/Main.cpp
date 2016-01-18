@@ -1,18 +1,20 @@
 #include "GEKO\GEKO.h"
 #include "GameSystem\StageObject\StageObject.h"
 #include "Scene\MainGame.h"
+#include "Scene\Title.h"
 
 INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 {
 	Debug::Start();
 	Debug::SearchMemoryLeak();
-	GEKO::Init("GEKO3DX", 800, 600);
+	GEKO::Init("Remain", 800, 600, 800, 600);
 	GEKO::MouseErasure();
 
 	DirectionalLight::SetIntensity(0.6f);
 	DirectionalLight::SetDirection(0.0f, 45.0f);
 
-	new MainGame();
+	//new MainGame();
+	new Title();
 
 	while (GEKO::Loop())
 	{

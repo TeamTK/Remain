@@ -47,11 +47,10 @@ LoadXDynamic::~LoadXDynamic()
 	m_BornInfo.BornList.shrink_to_fit();
 
 	//アニメーションフレーム数
-	auto it3 = m_BornInfo.AnimationSetFrameNum.begin();
-	for (; it3 != m_BornInfo.AnimationSetFrameNum.end(); it3++)
+	for (auto& i : m_BornInfo.AnimationSetFrameNum)
 	{
-		it3->second.clear();
-		it3->second.shrink_to_fit();
+		i.second.clear();
+		i.second.shrink_to_fit();
 	}
 	m_BornInfo.AnimationSetFrameNum.clear();
 
@@ -61,8 +60,7 @@ LoadXDynamic::~LoadXDynamic()
 
 HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 {
-	ID3D11Device *pDevice;
-	pDevice = Direct3D11::Get().GetID3D11Device();
+	ID3D11Device *pDevice = Direct3D11::GetInstance()->GetID3D11Device();
 
 	//ファイルを開いて内容を読み込む
 	FILE* fp = NULL;
@@ -336,7 +334,7 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 		else
 		{
 			//テクスチャーを作成
-			if (FAILED(D3DX11CreateShaderResourceViewFromFile(pDevice, m_MeshInfo.m_pMaterial[i].TextureName.c_str(), NULL, NULL, &m_MeshInfo.m_pMaterial[i].pTexture, NULL)))
+			if (FAILED(D3DX11CreateShaderResourceViewFromFile(pDevice, material[i].TextureName.c_str(), NULL, NULL, &m_MeshInfo.m_pMaterial[i].pTexture, NULL)))
 			{
 				MessageBoxA(NULL, "テクスチャーの読み込みに失敗しました", NULL, MB_OK);
 				return E_FAIL;
@@ -717,22 +715,19 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 	D3DXMATRIX m;
 	D3DXMATRIX S;
 
-	auto it = AnimationSet.begin();
-	auto itEnd = AnimationSet.end();
-	for (int i = 0; it != itEnd; it++, i++)
+	int cnt = 0;
+	for (auto& i : AnimationSet)
 	{
-		int loopNum = m_BornInfo.AnimationSetFrameNum[i].size();
-		auto it2 = it->second.begin();
-		auto it2End = it->second.end();
-		for (; it2 != it2End; it2++)
+		int loopNum = m_BornInfo.AnimationSetFrameNum[cnt].size();
+		for (auto& j : i.second)
 		{
-			for (int j = 0; j < loopNum; j++)
+			for (int k = 0; k < loopNum; k++)
 			{
 				D3DXMatrixIdentity(&m);
 
-				D3DXVECTOR4 rotation = it2->second.rotation[j];
-				D3DXVECTOR3 scale = it2->second.scale[j];
-				D3DXVECTOR3 position = it2->second.position[j];
+				D3DXVECTOR4 rotation = j.second.rotation[k];
+				D3DXVECTOR3 scale = j.second.scale[k];
+				D3DXVECTOR3 position = j.second.position[k];
 
 				D3DXQUATERNION quaternionOut(rotation.x, rotation.y, rotation.z, -rotation.w);
 				D3DXMatrixRotationQuaternion(&m, &quaternionOut);
@@ -745,84 +740,74 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 				m._42 = position.y;
 				m._43 = position.z;
 
-				m_BornInfo.AnimationSetMat[i][it2->first].emplace_back(m);
+				m_BornInfo.AnimationSetMat[cnt][j.first].emplace_back(m);
 			}
 		}
+		cnt++;
 	}
 
 	//頂点にボーンの番号とウェイト値を割り当てる
-	auto it2 = SkinWeightInfo.begin();
-	auto it2End = SkinWeightInfo.end();
-	for (; it2 != it2End; it2++)
+	for (auto& i : SkinWeightInfo)
 	{
-		//ボーンに割り当ててる数分実行
-		for (int i = 0; i < it2->second.listNumAll; i++)
+		int cntBorn = 0;
+		for (int j = 0; j < i.second.listNumAll; j++)
 		{
 			//一つの頂点にボーンは4つまで空いているとこに格納
-			int BornIndex = it2->second.weightList[i];
-			for (int j = 0; j < 4; j++)
+			int index = i.second.weightList[cntBorn];
+			for (int k = 0; k < 4; k++)
 			{
-				if (pVB[BornIndex].BoneIndex[j] == 0)
+				if (pVB[index].BoneIndex[k] == 0)
 				{
 					//該当するボーンのインデックス番号格納
-					int BornNum = 0;
-					auto it3 = m_BornInfo.BornList.begin();
-					for (; it3 != m_BornInfo.BornList.end(); it3++)
+					int bornNum = 0;
+					for (auto& m : m_BornInfo.BornList)
 					{
-						if ((*it3)->BornName == it2->first)
+						if (m->BornName == i.first)
 						{
-							BornNum = (*it3)->indexId;
+							bornNum = m->indexId;
 							break;
 						}
 					}
-
 					//ボーンインデックスとウェイト値格納
-					pVB[BornIndex].BoneIndex[j] = BornNum;
-					pVB[BornIndex].BoneWeight[j] = it2->second.weight[i];
+					pVB[index].BoneIndex[k] = bornNum;
+					pVB[index].BoneWeight[k] = i.second.weight[j];
 					break;
 				}
 			}
+			cntBorn++;
 		}
 	}
 
-	//ボーンオフセット行列格納
-	auto itBornList = m_BornInfo.BornList.begin();
-	auto itBornListEnd = m_BornInfo.BornList.end();
-	for (; itBornList != itBornListEnd; itBornList++)
+	//オフセット行列格納
+	for (auto& i : m_BornInfo.BornList)
 	{
-		(*itBornList)->offsetMat = SkinWeightInfo[(*itBornList)->BornName].offsetMat;
+		i->offsetMat = SkinWeightInfo[i->BornName].offsetMat;
 	}
 
 	//アニメーションセット削除
-	auto itAnim = AnimationSet.begin();
-	auto itAnimEnd = AnimationSet.end();
-	for (; itAnim != itAnimEnd; itAnim++)
+	for (auto& i : AnimationSet)
 	{
 		//回転とスケールと平行移動を削除
-		auto anim = itAnim->second.begin();
-		auto animEnd = itAnim->second.end();
-		for (; anim != animEnd; anim++)
+		for (auto& j : i.second)
 		{
-			anim->second.rotation.clear();
-			anim->second.rotation.shrink_to_fit();
-			anim->second.scale.clear();
-			anim->second.scale.shrink_to_fit();
-			anim->second.position.clear();
-			anim->second.position.shrink_to_fit();
+			j.second.rotation.clear();
+			j.second.rotation.shrink_to_fit();
+			j.second.scale.clear();
+			j.second.scale.shrink_to_fit();
+			j.second.position.clear();
+			j.second.position.shrink_to_fit();
 		}
-		itAnim->second.clear();
+		i.second.clear();
 	}
 	AnimationSet.clear();
 
 	//スキンウェイト削除
-	auto itWeight = SkinWeightInfo.begin();
-	auto itWeightEnd = SkinWeightInfo.end();
-	for (; itWeight != itWeightEnd; itWeight++)
+	for (auto& i : SkinWeightInfo)
 	{
-		itWeight->second.weightList.clear();
-		itWeight->second.weightList.shrink_to_fit();
-		itWeight->second.weight.clear();
-		itWeight->second.weight.shrink_to_fit();
+		i.second.weightList.clear();
+		i.second.weightList.shrink_to_fit();
+		i.second.weight.clear();
+		i.second.weight.shrink_to_fit();
 	}
 	SkinWeightInfo.clear();
 }

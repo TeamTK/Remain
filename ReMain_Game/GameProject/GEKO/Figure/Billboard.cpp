@@ -27,7 +27,7 @@ void Billboard::Render(const Vector3D &pos, const Vector3D &scale, const std::st
 	ImageInfo *p = pImage->GetImageInfo();
 
 	ID3D11DeviceContext *pDeviceContext;
-	pDeviceContext = Direct3D11::Get().GetID3D11DeviceContext();
+	pDeviceContext = Direct3D11::GetInstance()->GetID3D11DeviceContext();
 
 	//使用するシェーダーのセット
 	pDeviceContext->VSSetShader(m_FigureInfo.pVertexShader, NULL, 0);
@@ -73,7 +73,7 @@ void Billboard::Render(const Vector3D &pos, const Vector3D &scale, const std::st
 	//バーテックスバッファーをセット
 	UINT stride = sizeof(BillboradVertex);
 	UINT offset = 0;
-	Direct3D11::Get().GetID3D11DeviceContext()->IASetVertexBuffers(0, 1, &m_FigureInfo.pVertexBuffer, &stride, &offset);
+	Direct3D11::GetInstance()->GetID3D11DeviceContext()->IASetVertexBuffers(0, 1, &m_FigureInfo.pVertexBuffer, &stride, &offset);
 
 	//頂点インプットレイアウトをセット
 	pDeviceContext->IASetInputLayout(m_FigureInfo.pVertexLayout);
@@ -92,7 +92,7 @@ void Billboard::Render(const Vector3D &pos, const Vector3D &scale, const std::st
 HRESULT Billboard::InitShader()
 {
 	ID3D11Device *pDevice;
-	pDevice = Direct3D11::Get().GetID3D11Device();
+	pDevice = Direct3D11::GetInstance()->GetID3D11Device();
 
 	//hlslファイル読み込みブロブ作成
 	ID3D10Blob *pCompiledShader = NULL;
@@ -182,7 +182,7 @@ HRESULT Billboard::InitVertex()
 	D3D11_SUBRESOURCE_DATA InitData;
 	InitData.pSysMem = vertices;
 
-	if (FAILED(Direct3D11::Get().GetID3D11Device()->CreateBuffer(&bd, &InitData, &m_FigureInfo.pVertexBuffer)))
+	if (FAILED(Direct3D11::GetInstance()->GetID3D11Device()->CreateBuffer(&bd, &InitData, &m_FigureInfo.pVertexBuffer)))
 	{
 		return E_FAIL;
 	}

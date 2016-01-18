@@ -217,9 +217,9 @@ void DynamicMesh::RenderOutline(float size = 1.0f)
 	//m._22 *= size;
 	m._33 *= size;
 
-	Direct3D11::Get().SetRasterizer(D3D11_CULL_FRONT, D3D11_FILL_SOLID);
+	Direct3D11::GetInstance()->SetRasterizer(D3D11_CULL_FRONT, D3D11_FILL_SOLID);
 	RenderFunc(m);
-	Direct3D11::Get().SetRasterizer(D3D11_CULL_BACK, D3D11_FILL_SOLID);
+	Direct3D11::GetInstance()->SetRasterizer(D3D11_CULL_BACK, D3D11_FILL_SOLID);
 }
 
 void DynamicMesh::RenderMatrix(Matrix &matrix)
@@ -289,7 +289,7 @@ void DynamicMesh::AllocationSkinMeshData(const std::string &meshName)
 void DynamicMesh::RenderFunc(Matrix &matrix)
 {
 	ID3D11DeviceContext *pDeviceContext;
-	pDeviceContext = Direct3D11::Get().GetID3D11DeviceContext();
+	pDeviceContext = Direct3D11::GetInstance()->GetID3D11DeviceContext();
 
 	assert(m_pSkinMeshData != nullptr && "ƒƒbƒVƒ…î•ñ‚ª‚ ‚è‚Ü‚¹‚ñ");
 

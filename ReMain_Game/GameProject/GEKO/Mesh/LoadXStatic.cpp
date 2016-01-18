@@ -23,7 +23,7 @@ LoadXStatic::~LoadXStatic()
 HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 {
 	ID3D11Device *pDevice;
-	pDevice = Direct3D11::Get().GetID3D11Device();
+	pDevice = Direct3D11::GetInstance()->GetID3D11Device();
 
 	//ファイルを開いて内容を読み込む
 	FILE* fp = NULL;
