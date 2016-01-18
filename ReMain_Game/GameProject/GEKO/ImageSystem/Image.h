@@ -22,10 +22,11 @@ class Image
 {
 public:
 	Image();
+	Image(const std::string name);
 	~Image();
 	int GetWidth();
 	int GetHeight();
-	void SetAsset(const char *name);
+	void SetAsset(const std::string name);
 	void SetAlpha(int alpha);
 	void SetAngle(int angle);
 	void SetRGB(int red, int green, int blue);

@@ -6,22 +6,12 @@
 class Sound
 {
 public:
-	/// <summary>
-	/// wavファイル読み込み
-	/// </summary>
-	/// <param name="FileName">
-	/// wavファイル名
-	/// </param>
-	/// <returns>
-	/// なし
-	/// </returns>
 	Sound();
+	Sound(const std::string name);
 
 	~Sound();
 
-	void SetAsset(SoundData *soundData);
-
-	void SetAseet(const char *name);
+	void SetAseet(const std::string name);
 
 	/// <summary>
 	/// ボリュームを設定
@@ -51,7 +41,7 @@ public:
 	/// <returns>
 	/// なし
 	/// </returns>
-	void Play();
+	void Play() const;
 
 	/// <summary>
 	/// 再生を停止

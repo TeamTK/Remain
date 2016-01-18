@@ -29,63 +29,44 @@ SkinMeshData *DynamicMeshAsset::GetMesh(std::string name)
 {
 	DynamicMeshPimpl *meshPimpl = GetInstance()->m_pMeshPimpl;
 
-	//指定のメッシュがない場合警告を出しウインドウ停止
+	//指定のメッシュがない場合警告を出し
 	if (meshPimpl->m_Map.find(name) == meshPimpl->m_Map.end())
 	{
-		GetInstance()->AllClear();
-		MessageBox(0, TEXT("指定のStaticMeshはありません"), NULL, MB_OK);
-		Window::Get()->WindowEnd();
+		std::string str = name + "はDynamicMeshAssetにはありません";
+		MessageBoxA(0, str.c_str(), NULL, MB_OK);
 	}
-
-	return meshPimpl->m_Map[name];
-}
-
-void DynamicMeshAsset::CopyMesh(std::string copyName, std::string name)
-{
-	DynamicMeshPimpl *meshPimpl = GetInstance()->m_pMeshPimpl;
-
-	//すでにある場合は警告を出しウィンドウ終了
-	if (meshPimpl->m_Map.find(name) != meshPimpl->m_Map.end())
+	else
 	{
-		GetInstance()->AllClear();
-		MessageBox(0, TEXT("すでに同じ名前が存在します"), NULL, MB_OK);
-		Window::Get()->WindowEnd();
+		return meshPimpl->m_Map[name];
 	}
-
-	//すでにある場合は警告を出しウィンドウ終了
-	if (meshPimpl->m_Map.find(copyName) == meshPimpl->m_Map.end())
-	{
-		GetInstance()->AllClear();
-		MessageBox(0, TEXT("コピーする対象がありません"), NULL, MB_OK);
-		Window::Get()->WindowEnd();
-	}
-
-	meshPimpl->m_Map[name] = meshPimpl->m_Map[copyName];
+	return nullptr;
 }
 
 void DynamicMeshAsset::LoadMesh(std::string filmeName, std::string name)
 {
 	DynamicMeshPimpl *meshPimpl = GetInstance()->m_pMeshPimpl;
 
-	//すでにある場合は警告を出しウィンドウ終了
+	//すでにある場合は警告を出し
 	if (meshPimpl->m_Map.find(name) != meshPimpl->m_Map.end())
 	{
-		GetInstance()->AllClear();
-		MessageBox(0, TEXT("指定のDynamicMeshは存在します"), NULL, MB_OK);
-		Window::Get()->WindowEnd();
-	}
-
-	//Xファイル判断だったら読み込み
-	if (filmeName[filmeName.length() - 1] == 'x' &&
-		filmeName[filmeName.length() - 2] == '.')
-	{
-		meshPimpl->m_Map[name] = new LoadXDynamic(filmeName);
+		std::string str = name + "はDynamicMeshAssetに既に存在します";
+		MessageBoxA(0, str.c_str(), NULL, MB_OK);
 		return;
+	}
+	else
+	{
+		//Xファイル判断だったら読み込み
+		if (filmeName[filmeName.length() - 1] == 'x' &&
+			filmeName[filmeName.length() - 2] == '.')
+		{
+			meshPimpl->m_Map[name] = new LoadXDynamic(filmeName);
+			return;
+		}
 	}
 
 	//ここまで来たらすべて削除して終了
-	GetInstance()->AllClear();
-	MessageBox(0, TEXT("読み込みできるファイルではありません"), NULL, MB_OK);
+	std::string str = name + "はDynamicMeshAssetが読み込みできるファイルではありません";
+	MessageBoxA(0, str.c_str(), NULL, MB_OK);
 	Window::Get()->WindowEnd();
 }
 
@@ -93,7 +74,7 @@ void DynamicMeshAsset::LoadFile(const std::string filmeName)
 {
 	std::ifstream ifs(filmeName);
 	std::string str = filmeName;
-	str += "読み込みに失敗しました";
+	str += "の読み込みに失敗しました";
 	if (ifs.fail()) MessageBoxA(0, str.c_str(), NULL, MB_OK);
 
 	while (!ifs.eof())
@@ -119,7 +100,6 @@ void DynamicMeshAsset::PartClear(std::string name)
 		std::cout << it->first << "は削除されました" << "\n";
 		it->second->Relese();
 		delete it->second;
-		//it->second = nullptr;
 		meshPimpl->m_Map.erase(it);
 	}
 }
@@ -129,13 +109,11 @@ void DynamicMeshAsset::AllClear()
 	DynamicMeshPimpl *meshPimpl = GetInstance()->m_pMeshPimpl;
 
 	//Meshのデータをリリース
-	auto it = meshPimpl->m_Map.begin();
-	for (; it != meshPimpl->m_Map.end(); it++)
+	for (auto& i : meshPimpl->m_Map)
 	{
-		std::cout << it->first << "\n";
-		it->second->Relese();
-		delete it->second;
-		//it->second = nullptr;
+		std::cout << i.first <<  "は削除されました"  << "\n";
+		i.second->Relese();
+		delete i.second;
 	}
 
 	//全ての要素を削除
@@ -147,10 +125,8 @@ void DynamicMeshAsset::DebugDraw()
 	DynamicMeshPimpl *meshPimpl = GetInstance()->m_pMeshPimpl;
 
 	//現在あるメッシュを表示
-	auto it = meshPimpl->m_Map.begin();
-	for (; it != meshPimpl->m_Map.end(); it++)
+	for (auto& i : meshPimpl->m_Map)
 	{
-		std::cout << it->first << "\n";
-		//std::cout << it->second.GetMeshInfo()->pvVertex[0].vPos.y << "\n";
+		std::cout << i.first << "\n";
 	}
 }

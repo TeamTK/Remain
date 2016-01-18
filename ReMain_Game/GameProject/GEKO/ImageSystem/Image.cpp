@@ -12,6 +12,35 @@ Image::Image() :
 {
 }
 
+Image::Image(const std::string name) :
+	m_SizeW(0),
+	m_SizeH(0),
+	m_Angle(0),
+	m_CenterX(0),
+	m_CenterY(0)
+{
+	m_pImageData = ImageAsset::GetImage(name);
+
+	ImageInfo *data = m_pImageData->GetImageInfo();
+
+	m_RGBA = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+	//UV座標サイズ
+	m_UvSize.top = static_cast<LONG>(0.0f);
+	m_UvSize.left = static_cast<LONG>(0.0f);
+	m_UvSize.right = static_cast<LONG>(data->Width);
+	m_UvSize.bottom = static_cast<LONG>(data->Height);
+
+	//変更するサイズを初期化
+	m_SizeW = data->Width;
+	m_SizeH = data->Height;
+
+	m_CenterX = 0;
+	m_CenterY = 0;
+
+	InitModel(0, 0);
+}
+
 Image::~Image()
 {
 	m_pImageData = nullptr;
@@ -50,7 +79,7 @@ void Image::InitModel(int centerX, int centerY)
 	InitData.SysMemPitch = 0;
 	InitData.SysMemSlicePitch = 0;
 
-	if (FAILED(Direct3D11::Get().GetID3D11Device()->CreateBuffer(&bd, &InitData, &data->pVertexBuffer)))
+	if (FAILED(Direct3D11::GetInstance()->GetID3D11Device()->CreateBuffer(&bd, &InitData, &data->pVertexBuffer)))
 	{
 		MessageBox(0, TEXT("バーテックスバッファー作成失敗"), NULL, MB_OK);
 	}
@@ -66,7 +95,7 @@ int Image::GetHeight()
 	return m_SizeH;
 }
 
-void Image::SetAsset(const char *name)
+void Image::SetAsset(const std::string name)
 {
 	m_pImageData = ImageAsset::GetImage(name);
 
@@ -132,7 +161,7 @@ void Image::Draw(int x, int y)
 	InitModel(m_CenterX, m_CenterY);
 
 	ID3D11DeviceContext *pDeviceContext;
-	pDeviceContext = Direct3D11::Get().GetID3D11DeviceContext();
+	pDeviceContext = Direct3D11::GetInstance()->GetID3D11DeviceContext();
 
 	ImageInfo *data = m_pImageData->GetImageInfo();
 
@@ -205,12 +234,13 @@ void Image::Draw(int x, int y)
 	pDeviceContext->IASetVertexBuffers(0, 1, &data->pVertexBuffer, &stride, &offset);
 
 	//頂点インプットレイアウトをセット
-	pDeviceContext->IASetInputLayout(data->pVertexLayout);
 	//プリミティブ・トポロジーをセット
+	pDeviceContext->IASetInputLayout(data->pVertexLayout);
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
 	//テクスチャーをシェーダーに渡す
 	pDeviceContext->PSSetSamplers(0, 1, &data->pSampler);
 	pDeviceContext->PSSetShaderResources(0, 1, &data->pTexture);
-	//プリミティブをレンダリング
-	pDeviceContext->Draw(4, 0);
+
+	pDeviceContext->Draw(4, 0); //プリミティブをレンダリング
 }

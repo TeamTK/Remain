@@ -2,20 +2,23 @@
 #include "..\System\Direct3D11.h"
 
 Sound::Sound() :
-	m_isLoop(false)
+	m_isLoop(false),
+	m_pSoundInfo(nullptr)
 {
+}
+
+Sound::Sound(const std::string name) :
+	m_isLoop(false),
+	m_pSoundInfo(nullptr)
+{
+	m_pSoundInfo = SoundAsset::GetSound(name);
 }
 
 Sound::~Sound()
 {
 }
 
-void Sound::SetAsset(SoundData *soundData)
-{
-	m_pSoundInfo = soundData;
-}
-
-void Sound::SetAseet(const char *name)
+void Sound::SetAseet(const std::string name)
 {
 	m_pSoundInfo = SoundAsset::GetSound(name);
 }
@@ -30,7 +33,7 @@ void Sound::SetLoop(bool isLoop)
 	m_isLoop = isLoop;
 }
 
-void Sound::Play()
+void Sound::Play() const
 {
 	m_pSoundInfo->m_pSourceVoice->Stop(0, XAUDIO2_COMMIT_NOW);
 	m_pSoundInfo->m_pSourceVoice->FlushSourceBuffers();

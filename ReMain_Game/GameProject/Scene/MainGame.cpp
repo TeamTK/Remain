@@ -11,9 +11,8 @@ MainGame::MainGame() :
 	Task("MainGame", 0)
 {
 	//アッセットtxt読み込み
-	StaticMeshAsset::LoadFile("TextData\\StaticMesh.txt");
-	DynamicMeshAsset::LoadFile("TextData\\DynamicMesh.txt");
-	ImageAsset::LoadFile("TextData\\Image.txt");
+	//StaticMeshAsset::LoadFile("TextData\\StaticMesh.txt");
+	//DynamicMeshAsset::LoadFile("TextData\\DynamicMesh.txt");
 	StageObjectManager::GetInstance()->LoadObject("TextData\\StageObject.txt");
 
 	new Chapter_1_1();

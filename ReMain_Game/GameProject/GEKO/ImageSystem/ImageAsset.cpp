@@ -15,8 +15,7 @@ ImageData::ImageData(std::string fileName)
 	INIT_NULLPOINTR(m_ImageInfo.pVertexBuffer);
 	INIT_NULLPOINTR(m_ImageInfo.pVertexLayout);
 
-	ID3D11Device *pDevice;
-	pDevice = Direct3D11::Get().GetID3D11Device();
+	ID3D11Device *pDevice = Direct3D11::GetInstance()->GetID3D11Device();
 
 	ID3D10Blob *pCompiledShader = NULL;
 	ID3D10Blob *pErrors = NULL;
@@ -165,41 +164,40 @@ ImageData *ImageAsset::GetImage(std::string name)
 {
 	ImagePimpl *imagePimpl = GetInstance()->m_pImagePimpl;
 
-	//指定のサウンドデータがない場合警告を出しウインドウ停止
+	//指定のサウンドデータがない場合警告を出す
 	if (imagePimpl->map.find(name) == imagePimpl->map.end())
 	{
-		GetInstance()->AllClear();
-		std::string str = name;
-		str += "はImageAssetにはありません";
+		std::string str = name + "はImageAssetにはありません";
 		MessageBoxA(0, str.c_str(), NULL, MB_OK);
-		Window::Get()->WindowEnd();
 	}
-
-	return imagePimpl->map[name];
+	else
+	{
+		return imagePimpl->map[name];
+	}
+	return nullptr;
 }
 
 void ImageAsset::LoadAsset(std::string filmeName, std::string name)
 {
 	ImagePimpl *imagePimpl = GetInstance()->m_pImagePimpl;
 
-	//すでにある場合は警告を出しウィンドウ終了
+	//すでにある場合は警告を出す
 	if (imagePimpl->map.find(name) != imagePimpl->map.end())
 	{
-		GetInstance()->AllClear();
-		std::string str = name;
-		str += "の名前は存在します";
+		std::string str = name + "はImageAssetに既に存在します";
 		MessageBoxA(0, str.c_str(), NULL, MB_OK);
-		Window::Get()->WindowEnd();
 	}
-
-	imagePimpl->map[name] = new ImageData(filmeName);
+	else
+	{
+		imagePimpl->map[name] = new ImageData(filmeName);
+	}
 }
 
 void ImageAsset::LoadFile(const std::string filmeName)
 {
 	std::ifstream ifs(filmeName);
 	std::string str = filmeName;
-	str += "読み込みに失敗しました";
+	str += "の読み込みに失敗しました";
 	if (ifs.fail()) MessageBoxA(0, str.c_str(), NULL, MB_OK);
 
 	while (!ifs.eof())

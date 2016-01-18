@@ -16,7 +16,10 @@ LRESULT CALLBACK MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 Window::Window() :
 	m_hWnd(NULL),
-	m_isFixing(false)
+	m_IsFixing(false),
+	m_Red(0.4f),
+	m_Green(0.4f),
+	m_Blue(1.0f)
 {
 }
 
@@ -45,8 +48,10 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 	// ウインドウ サイズの変更処理
 	case WM_SIZE:
-		if (!Direct3D11::Get().GetID3D11Device() || wParam == SIZE_MINIMIZED)
+		if (!Direct3D11::GetInstance()->GetID3D11Device() || wParam == SIZE_MINIMIZED)
 			break;
+
+		Direct3D11::GetInstance()->ChangeWindowSize();
 
 		//ウインドウ更新
 		RECT rc;
@@ -86,7 +91,7 @@ HRESULT Window::InitWindow(LPCSTR Winname, INT WinWidth, INT WinHeight)
 	RegisterClassEx(&wc);
 
 	//ウィンドウサイズ固定判断
-	if (m_isFixing)
+	if (m_IsFixing)
 	{
 		//ウィンドウサイズ固定
 		m_hWnd = CreateWindow(Winname, Winname, WINDOW_FIXING,
@@ -151,9 +156,16 @@ WindowSize *Window::GetWindowOriginSize()
 	return &m_OriginWinSize;
 }
 
+void Window::SetScreenColor(float red, float green, float blue)
+{
+	m_Red = red;
+	m_Green = green;
+	m_Blue = blue;
+}
+
 void Window::SetFixing()
 {
-	m_isFixing = true;
+	m_IsFixing = true;
 }
 
 void Window::NoDrawFrame()
@@ -203,10 +215,10 @@ bool Window::Loop()
 	}
 
 	//裏画面を描画
-	Direct3D11::Get().Present();
+	Direct3D11::GetInstance()->Present();
 
 	//画面更新
-	Direct3D11::Get().Clear(0.4f, 0.4f, 1.0f);
+	Direct3D11::GetInstance()->Clear(m_Red, m_Green, m_Blue);
 
 	return true;
 }

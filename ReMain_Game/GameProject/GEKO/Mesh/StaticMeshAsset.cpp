@@ -30,15 +30,17 @@ MeshData *StaticMeshAsset::GetMesh(const std::string name)
 {
 	StaticMeshPimpl *meshPimpl = GetInstance()->m_pMeshPimpl;
 
-	//指定のメッシュがない場合警告を出しウインドウ停止
+	//指定のメッシュがない場合警告を出す
 	if (meshPimpl->m_Map.find(name) == meshPimpl->m_Map.end())
 	{
-		GetInstance()->AllClear();
-		MessageBox(0, TEXT("指定のStaticMeshはありません"), NULL, MB_OK);
-		Window::Get()->WindowEnd();
+		std::string str = name + "はStaticMeshAssetにはありません";
+		MessageBoxA(0, str.c_str(), NULL, MB_OK);
 	}
-
-	return meshPimpl->m_Map[name];
+	else
+	{
+		return meshPimpl->m_Map[name];
+	}
+	return nullptr;
 }
 
 bool StaticMeshAsset::GetIsExistence(const std::string name)
@@ -50,61 +52,40 @@ bool StaticMeshAsset::GetIsExistence(const std::string name)
 	return false;
 }
 
-void StaticMeshAsset::CopyMesh(std::string copyName, const std::string name)
-{
-	StaticMeshPimpl *meshPimpl = GetInstance()->m_pMeshPimpl;
-
-	//すでにある場合は警告を出しウィンドウ終了
-	if (meshPimpl->m_Map.find(name) != meshPimpl->m_Map.end())
-	{
-		GetInstance()->AllClear();
-		MessageBox(0, TEXT("すでに同じ名前が存在します"), NULL, MB_OK);
-		Window::Get()->WindowEnd();
-	}
-
-	//すでにある場合は警告を出しウィンドウ終了
-	if (meshPimpl->m_Map.find(copyName) == meshPimpl->m_Map.end())
-	{
-		GetInstance()->AllClear();
-		MessageBox(0, TEXT("コピーする対象がありません"), NULL, MB_OK);
-		Window::Get()->WindowEnd();
-	}
-
-	meshPimpl->m_Map[name] = meshPimpl->m_Map[copyName];
-}
-
 void StaticMeshAsset::LoadMesh(const std::string filmeName, const std::string name)
 {
 	StaticMeshPimpl *meshPimpl = GetInstance()->m_pMeshPimpl;
 
-	//すでにある場合は警告を出しウィンドウ終了
+	//すでにある場合は警告を出す
 	if (meshPimpl->m_Map.find(name) != meshPimpl->m_Map.end())
 	{
-		GetInstance()->AllClear();
-		MessageBox(0, TEXT("指定のStaticMeshは存在します"), NULL, MB_OK);
-		Window::Get()->WindowEnd();
-	}
-
-	//objファイルだったら読み込み
-	if (filmeName[filmeName.length() - 1] == 'j' &&
-		filmeName[filmeName.length() - 2] == 'b' &&
-		filmeName[filmeName.length() - 3] == 'o')
-	{
-		meshPimpl->m_Map[name] = new MeshData();
+		std::string str = name + "はStaticMeshAssetに既に存在します";
+		MessageBoxA(0, str.c_str(), NULL, MB_OK);
 		return;
 	}
-
-	//Xファイル判断だったら読み込み
-	if (filmeName[filmeName.length() - 1] == 'x' &&
-		filmeName[filmeName.length() - 2] == '.')
+	else
 	{
-		meshPimpl->m_Map[name] = new LoadXStatic(filmeName);
-		return;
+		//objファイルだったら読み込み
+		if (filmeName[filmeName.length() - 1] == 'j' &&
+			filmeName[filmeName.length() - 2] == 'b' &&
+			filmeName[filmeName.length() - 3] == 'o')
+		{
+			meshPimpl->m_Map[name] = new MeshData();
+			return;
+		}
+
+		//Xファイル判断だったら読み込み
+		if (filmeName[filmeName.length() - 1] == 'x' &&
+			filmeName[filmeName.length() - 2] == '.')
+		{
+			meshPimpl->m_Map[name] = new LoadXStatic(filmeName);
+			return;
+		}
 	}
 
 	//ここまで来たらすべて削除して終了
-	GetInstance()->AllClear();
-	MessageBox(0, TEXT("StaticAssetが読み込みできるファイルではありません"), NULL, MB_OK);
+	std::string str = filmeName + "はStaticMeshAssetが読み込みできるファイルではありません";
+	MessageBoxA(0, str.c_str(), NULL, MB_OK);
 	Window::Get()->WindowEnd();
 }
 
@@ -112,7 +93,7 @@ void StaticMeshAsset::LoadFile(const std::string filmeName)
 {
 	std::ifstream ifs(filmeName);
 	std::string str = filmeName;
-	str += "読み込みに失敗しました";
+	str += "の読み込みに失敗しました";
 	if (ifs.fail()) MessageBoxA(0, str.c_str(), NULL, MB_OK);
 
 	while (!ifs.eof())
@@ -148,12 +129,11 @@ void StaticMeshAsset::AllClear()
 	StaticMeshPimpl *meshPimpl = GetInstance()->m_pMeshPimpl;
 
 	//Meshのデータをリリース
-	auto it = meshPimpl->m_Map.begin();
-	for (; it != meshPimpl->m_Map.end(); it++)
+	for (auto& i : meshPimpl->m_Map)
 	{
-		std::cout << it->first << "は削除されました\n";
-		it->second->Relese();
-		delete it->second;
+		std::cout << i.first << "は削除されました\n";
+		i.second->Relese();
+		delete i.second;
 	}
 
 	//全ての要素を削除
@@ -165,9 +145,8 @@ void StaticMeshAsset::DebugDraw()
 	StaticMeshPimpl *meshPimpl = GetInstance()->m_pMeshPimpl;
 
 	//現在あるメッシュを表示
-	auto it = meshPimpl->m_Map.begin();
-	for (; it != meshPimpl->m_Map.end(); it++)
+	for (auto& i : meshPimpl->m_Map)
 	{
-		std::cout << it->first << "\n";
+		std::cout << i.first << "\n";
 	}
 }

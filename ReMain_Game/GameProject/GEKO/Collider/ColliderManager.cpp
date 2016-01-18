@@ -5,8 +5,8 @@
 #include "StaticMeshCollider.h"
 #include "..\System\Collision.h"
 #include "..\Mesh\StaticMesh.h"
-//#include "..\Figure\Fiqure.h"
 #include <list>
+//#include <map>
 
 class ColliderManager::ColliderListPimpl
 {
@@ -42,18 +42,18 @@ public:
 	std::list<Sphere_vs_LineSegmentCollider*> Sphere_vs_LineSegmentList; //球対線分
 	std::list<Sphere_vs_StaticMeshCollider*> Sphere_vs_StaticMeshList; //球対StaticMesh
 
-																	   //カプセル
+	//カプセル
 	std::list<CapsuleCollider*> CapsuleList; //カプセル対カプセル
 	std::list<Capsule_vs_SphereCollider*> Capsule_vs_SphereList; //カプセル対球
 	std::list<Capsule_vs_LineSegmentCollider*> Capsule_vs_LineSegmentList; //カプセル対線分
 
-																		   //線分
+	//線分
 	std::list<LineSegmentCollider*> LineSegmentList; //線分対線分
 	std::list<LineSegment_vs_SphereCollider*> LineSegment_vs_SphereList; //線分球
 	std::list<LineSegment_vs_CapsuleCollider*> LineSegment_vs_CapsuleList; //線分対カプセル
 	std::list<LineSegment_vs_StaticMeshCollider*> LineSegment_vs_StaticMeshList; //線分対staticMesh
 
-																				 //StaticMesh
+	//StaticMesh
 	std::list<StaticMesh_vs_LineSegmentCollider*> StaticMesh_vs_LineSegmentList; //メッシュ対線分
 	std::list<StaticMesh_vs_SphereCollider*> StaticMesh_vs_SphereList; //メッシュ対球
 };
@@ -133,6 +133,29 @@ bool ColliderManager::HitCheckStaticMesh_Line(Result_Porygon *resultPorygon, Vec
 			}
 		}
 	}
+
+	/*
+	for (auto& i : m_pColliderListPimpl->StaticMesh_vs_LineSegmentList)
+	{
+		if (i->m_IsSeep) continue;
+
+		//IDが一致したら当たり判定計算開始
+		if (targetId & i->m_MyId)
+		{
+			LineSegmentHitData lineInfo;
+			lineInfo.pStart = start;
+			lineInfo.pEnd = end;
+
+			static Result_Porygon pory;
+			if (HitCheckStaticMesh_vs_LineSegment(*i->m_pStaticMeshInfo, lineInfo, &pory))
+			{
+				pory.targetID = i->m_MyId;
+				*resultPorygon = pory;
+				return true;
+			}
+		}
+	}
+	*/
 	return false;
 }
 

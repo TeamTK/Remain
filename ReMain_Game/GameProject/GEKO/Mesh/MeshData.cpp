@@ -28,7 +28,7 @@ MeshInfo* MeshData::GetMeshInfo()
 HRESULT MeshData::InitShader()
 {
 	ID3D11Device *pDevice;
-	pDevice = Direct3D11::Get().GetID3D11Device();
+	pDevice = Direct3D11::GetInstance()->GetID3D11Device();
 
 	//hlslファイル読み込みブロブ作成
 	ID3D10Blob *pCompiledShader = NULL;

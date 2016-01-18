@@ -79,6 +79,8 @@ public:
 	/// </returns>
 	WindowSize *GetWindowOriginSize();
 
+	void SetScreenColor(float red, float green, float blue);
+
 	/// <summary>
 	/// ウィンドウを固定する
 	/// </summary>
@@ -130,7 +132,10 @@ private:
 	MSG  m_msg;					//メッセージハンドル
 	WindowSize m_WinSize;		//ウインドウのサイズ横と縦
 	WindowSize m_OriginWinSize; //最初に設定した幅と高さ
-	bool m_isFixing;			//ウィンドウサイズを固定判断
+	bool m_IsFixing;			//ウィンドウサイズを固定判断
+	float m_Red;				//画面クリア色（赤）
+	float m_Green;				//画面クリア色（緑）
+	float m_Blue;				//画面クリア色（青）
 };
 
 #endif 

@@ -1,15 +1,16 @@
-#ifndef _SOUNDASSET_H_
-#define _SOUNDASSET_H_
+#ifndef _SOUND_ASSET_H_
+#define _SOUND_ASSET_H_
 
 #include "..\System\Window.h"
 #include <mmsystem.h>
 #include "..\Include\XAudio2.h"
+#include <string>
 
 //ÉTÉEÉìÉhèÓïÒ
 class SoundData
 {
 public:
-	SoundData(char *flimeName);
+	SoundData(std::string flimeName);
 	~SoundData();
 	void Relese();
 
@@ -23,9 +24,10 @@ class SoundAsset
 {
 public:
 	~SoundAsset();
-	static SoundData* GetSound(const char* nam);
-	static void LoadSound(char *flimeName, const char* name);
-	static void PartClear(const char *name);
+	static SoundData* GetSound(std::string name);
+	static void LoadSound(std::string filmeName, std::string name);
+	static void LoadFile(std::string filmeName);
+	static void PartClear(std::string name);
 	static void AllClear();
 	static void DebugDraw();
 

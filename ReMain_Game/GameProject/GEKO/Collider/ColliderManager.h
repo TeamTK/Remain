@@ -60,36 +60,55 @@ public:
 	static ColliderManager *GetInstance();
 	void Update();
 	void AllClear();
+	//void MyIdSetting(const char *name, unsigned int myId);
+	//void TargetIdSetting(const char *name, unsigned int targetId);
 	bool HitCheckStaticMesh_Line(Result_Porygon *resultPorygon, Vector3D *start, Vector3D *end, unsigned int targetId);
 
 private:
 	ColliderManager();
+
+	//球
 	void Add(SphereCollider *pSphere);
 	void Add(Sphere_vs_CapsuleCollider *pSphere);
 	void Add(Sphere_vs_LineSegmentCollider *pSphere);
 	void Add(Sphere_vs_StaticMeshCollider *pSphere);
+
+	//カプセル
 	void Add(CapsuleCollider *pCapsule);
 	void Add(Capsule_vs_SphereCollider *pCapsule);
 	void Add(Capsule_vs_LineSegmentCollider *pCapsule);
+
+	//線分
 	void Add(LineSegmentCollider *pLineSegment);
 	void Add(LineSegment_vs_SphereCollider *pLineSegment);
 	void Add(LineSegment_vs_CapsuleCollider *pLineSegment);
 	void Add(LineSegment_vs_StaticMeshCollider *pLineSegment);
+
+	//StaticMesh
 	void Add(StaticMesh_vs_LineSegmentCollider *pStaticMesh);
 	void Add(StaticMesh_vs_SphereCollider *pStaticMesh);
+
+	//球
 	void Clear(SphereCollider *pSphere);
 	void Clear(Sphere_vs_CapsuleCollider *pSphere);
 	void Clear(Sphere_vs_LineSegmentCollider *pSphere);
 	void Clear(Sphere_vs_StaticMeshCollider *pSphere);
+
+	//カプセル
 	void Clear(CapsuleCollider *pCapsule);
 	void Clear(Capsule_vs_SphereCollider *pCapsule);
 	void Clear(Capsule_vs_LineSegmentCollider *pCapsule);
+
+	//線分
 	void Clear(LineSegmentCollider *pLineSegment);
 	void Clear(LineSegment_vs_SphereCollider *pLineSegment);
 	void Clear(LineSegment_vs_CapsuleCollider *pLineSegment);
 	void Clear(LineSegment_vs_StaticMeshCollider *pLineSegment);
+
+	//StaticMesh
 	void Clear(StaticMesh_vs_LineSegmentCollider *pStaticMesh);
 	void Clear(StaticMesh_vs_SphereCollider *pStaticMesh);
+
 	void CheckSphere();
 	void CheckSphere_vs_Capsule();
 	void CheckSphere_vs_LineSegment();
