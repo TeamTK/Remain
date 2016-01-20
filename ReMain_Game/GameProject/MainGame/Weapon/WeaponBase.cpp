@@ -5,11 +5,12 @@ WeaponBase::WeaponBase()
 
 }
 
-WeaponBase::WeaponBase(int* anim, float* frame, Matrix* m, const char *taskName, unsigned int priority) :
+WeaponBase::WeaponBase(int* anim, float* frame, bool* take, Matrix* m, const char *taskName, unsigned int priority) :
 	Task(taskName, priority)
 {
 	m_BoneMtx = m;
 	m_PlayerAnim = anim;
+	m_TakeWeapon= take;
 	m_PlayerAnimFrame = frame;
 	m_RenderTask.Regist(0, REGIST_RENDER_FUNC(WeaponBase::Render));
 }
