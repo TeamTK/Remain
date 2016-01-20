@@ -1,5 +1,5 @@
-#ifndef _STATICMESH_H_
-#define _STATICMESH_H_
+#ifndef _STATIC_MESH_H_
+#define _STATIC_MESH_H_
 
 #include "MeshBase.h"
 
@@ -11,10 +11,10 @@ public:
 	~StaticMesh();
 	void SetAsset(const std::string &meshName);
 	void WorldMatrixBuilding();
+	const IndexInfo *GetIndex() const;
 	const VertexInfo *GetVertex() const;
 	const MaterialInfo *GetMaterial() const;
 	const Matrix *GetLocalMatrix() const;
-	const int *GetPolygonIndex(int materialIndex) const;
 	const int GetFaceAllNum() const;
 	const int GetMaterialAllNum() const;
 	void Render() const;

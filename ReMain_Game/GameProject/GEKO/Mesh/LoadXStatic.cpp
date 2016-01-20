@@ -287,12 +287,16 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 	assert(material.size() != 0 && "Xファイルのマテリアルがありません");
 
 	//マテリアルとインデックスバッファー動的作成
-	m_MeshInfo.m_pMaterial = new MaterialInfo[m_MeshInfo.materialNumAll];
-	m_MeshInfo.m_ppIndexBuffer = new ID3D11Buffer*[m_MeshInfo.materialNumAll];
-	m_MeshInfo.pvVertex = new VertexInfo[m_MeshInfo.vertexNumAll];
-	
+	m_MeshInfo.m_pMaterial = new MaterialInfo[m_MeshInfo.materialNumAll];		//マテリアル
+	m_MeshInfo.m_ppIndexBuffer = new ID3D11Buffer*[m_MeshInfo.materialNumAll];	//インデックス
+	m_MeshInfo.pVertex = new VertexInfo[m_MeshInfo.vertexNumAll];				//公開用頂点
+	VertexData *pVertexData = new VertexData[m_MeshInfo.vertexNumAll];			//内部用頂点
+	m_MeshInfo.pIndex = new IndexInfo[m_MeshInfo.faceNumAll];
+
 	D3D11_BUFFER_DESC bd;
 	D3D11_SUBRESOURCE_DATA InitData;
+
+	int indexCnt = 0;
 
 	//マテリアルの数分インデックスバッファー作成
 	int count = 0;
@@ -329,6 +333,14 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 		{
 			if (i == materialList[j])
 			{
+				//公開用インデックス
+				m_MeshInfo.pIndex[indexCnt].vertexIndex[0] = face[j * 3];
+				m_MeshInfo.pIndex[indexCnt].vertexIndex[1] = face[j * 3 + 1];
+				m_MeshInfo.pIndex[indexCnt].vertexIndex[2] = face[j * 3 + 2];
+				m_MeshInfo.pIndex[indexCnt].materialIndex = i;
+				indexCnt++;
+
+				//内部用インデックス
 				pFaceBuffer[count] = face[j * 3];
 				pFaceBuffer[count + 1] = face[j * 3 + 1];
 				pFaceBuffer[count + 2] = face[j * 3 + 2];
@@ -337,15 +349,7 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 			}
 		}
 		if (count == 0) continue;
-
-		//ポリゴンのインデックス作成
 		count = 0;
-		int num = m_MeshInfo.m_pMaterial[i].dwNumFace * 3;
-		m_MeshInfo.m_pMaterial[i].pPolygonIndex = new int[num];
-		for (int k = 0; k < num; k++, count++)
-		{
-			m_MeshInfo.m_pMaterial[i].pPolygonIndex[k] = pFaceBuffer[count];
-		}
 
 		//インデックスバッファーを作成
 		bd.Usage = D3D11_USAGE_DEFAULT;
@@ -369,9 +373,15 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 		//uv有りバージョン
 		for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
 		{
-			m_MeshInfo.pvVertex[i].vPos = coordinate[i];
-			m_MeshInfo.pvVertex[face[i]].vNormal = normal[normalIndex[i]];
-			m_MeshInfo.pvVertex[i].vTex = uv[i];
+			//公開用頂点
+			m_MeshInfo.pVertex[i].pos = coordinate[i];
+			m_MeshInfo.pVertex[face[i]].normal = normal[normalIndex[i]];
+			m_MeshInfo.pVertex[i].uv = uv[i];
+
+			//内部用頂点
+			pVertexData[i].pos = coordinate[i];
+			pVertexData[i].normal = normal[normalIndex[i]];
+			pVertexData[i].uv = uv[i];
 		}
 	}
 	else
@@ -379,20 +389,27 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 		//uvなしバージョン
 		for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
 		{
-			m_MeshInfo.pvVertex[i].vPos = coordinate[i];
-			m_MeshInfo.pvVertex[i].vNormal = normal[i];
+			//公開用頂点
+			m_MeshInfo.pVertex[i].pos = coordinate[i];
+			m_MeshInfo.pVertex[i].normal = normal[normalIndex[i]];
+
+			//内部用頂点
+			pVertexData[i].pos = coordinate[i];
+			pVertexData[i].normal = normal[normalIndex[i]];
 		}
 	}
 
 	//バーテックスバッファーを作成
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(VertexInfo) * m_MeshInfo.vertexNumAll;
+	bd.ByteWidth = sizeof(VertexData) * m_MeshInfo.vertexNumAll;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
-	InitData.pSysMem = m_MeshInfo.pvVertex;
+	InitData.pSysMem = pVertexData;
 	if (FAILED(pDevice->CreateBuffer(&bd, &InitData, &m_MeshInfo.m_pVertexBuffer)))
 		return FALSE;
+
+	delete pVertexData;
 
 	//削除
 	 face.clear();
@@ -422,11 +439,11 @@ void LoadXStatic::Relese()
 		for (int i = 0; i < m_MeshInfo.materialNumAll; i++)
 		{
 			SAFE_RELEASE(m_MeshInfo.m_pMaterial[i].pTexture);
-			SAFE_DELETE_ARRAY(m_MeshInfo.m_pMaterial[i].pPolygonIndex);
 			m_MeshInfo.m_ppIndexBuffer[i]->Release();
 		}
-
-		SAFE_DELETE_ARRAY(m_MeshInfo.pvVertex);
+		
+		SAFE_DELETE_ARRAY(m_MeshInfo.pIndex);
+		SAFE_DELETE_ARRAY(m_MeshInfo.pVertex);
 		SAFE_DELETE_ARRAY(m_MeshInfo.m_pMaterial);
 		SAFE_DELETE_ARRAY(m_MeshInfo.m_ppIndexBuffer);
 		SAFE_RELEASE(m_MeshInfo.m_Nothing);

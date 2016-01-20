@@ -101,6 +101,12 @@
     <ClCompile Include="GameSystem\FiveSenses\Auditory.cpp" />
     <ClCompile Include="GameSystem\FiveSenses\SightSystem.cpp" />
     <ClCompile Include="GameSystem\StageObject\StageObject.cpp" />
+    <ClCompile Include="GEKO\AI\Traceroute.cpp" />
+    <ClCompile Include="GEKO\AI\TracerouteManager.cpp" />
+    <ClCompile Include="GEKO\AI\TracerouteObject.cpp" />
+    <ClCompile Include="GEKO\AI\TracerouteSearch.cpp" />
+    <ClCompile Include="GEKO\AI\TracerouteTarget.cpp" />
+    <ClCompile Include="GEKO\Mesh\StaticMeshShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -272,6 +278,13 @@
     <ClInclude Include="GameSystem\FiveSenses\Auditory.h" />
     <ClInclude Include="GameSystem\FiveSenses\SightSystem.h" />
     <ClInclude Include="GameSystem\StageObject\StageObject.h" />
+    <ClInclude Include="GEKO\AI\Traceroute.h" />
+    <ClInclude Include="GEKO\AI\TracerouteInfo.h" />
+    <ClInclude Include="GEKO\AI\TracerouteManager.h" />
+    <ClInclude Include="GEKO\AI\TracerouteObject.h" />
+    <ClInclude Include="GEKO\AI\TracerouteSearch.h" />
+    <ClInclude Include="GEKO\AI\TracerouteTarget.h" />
+    <ClInclude Include="GEKO\Mesh\StaticMeshShader.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

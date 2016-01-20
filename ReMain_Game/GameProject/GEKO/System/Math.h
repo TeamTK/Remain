@@ -7,6 +7,7 @@
 
 class Matrix;
 
+//êîäwÉNÉâÉX
 class Math
 {
 public:
@@ -62,12 +63,13 @@ struct SVector4D
 	};
 };
 
-class Vector2D : public SVector2D
+class Vector2D : public D3DXVECTOR2
 {
 public:
 	Vector2D();
 	~Vector2D();
 	Vector2D(const Vector2D &v);
+	Vector2D(D3DXVECTOR2 &v);
 	Vector2D(float x, float y);
 	Vector2D operator +  (const Vector2D &v) const;
 	Vector2D operator -  (const Vector2D &v) const;
@@ -91,7 +93,7 @@ private:
 
 };
 
-class Vector3D : public SVector3D
+class Vector3D : public D3DXVECTOR3
 {
 public:
 	Vector3D();

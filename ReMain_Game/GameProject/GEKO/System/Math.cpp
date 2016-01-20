@@ -64,6 +64,11 @@ Vector2D::Vector2D(const Vector2D &v)
 	x = v.x, y = v.y;
 }
 
+Vector2D::Vector2D(D3DXVECTOR2 &v)
+{
+	x = v.x, y = v.y;
+}
+
 Vector2D::Vector2D(float x, float y)
 {
 	this->x = x, this->y = y;

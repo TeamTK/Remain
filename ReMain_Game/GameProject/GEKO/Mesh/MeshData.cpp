@@ -3,7 +3,8 @@
 
 MeshData::MeshData()
 {
-	INIT_NULLPOINTR(m_MeshInfo.pvVertex);
+	INIT_NULLPOINTR(m_MeshInfo.pVertex);
+	INIT_NULLPOINTR(m_MeshInfo.pIndex);
 	INIT_NULLPOINTR(m_MeshInfo.m_pMaterial);
 	INIT_NULLPOINTR(m_MeshInfo.m_ppIndexBuffer);
 	INIT_NULLPOINTR(m_MeshInfo.m_Nothing);
@@ -166,11 +167,11 @@ void MeshData::Relese()
 		for (int i = 0; i < m_MeshInfo.materialNumAll; i++)
 		{
 			SAFE_RELEASE(m_MeshInfo.m_pMaterial[i].pTexture);
-			SAFE_DELETE_ARRAY(m_MeshInfo.m_pMaterial[i].pPolygonIndex);
 			m_MeshInfo.m_ppIndexBuffer[i]->Release();
 		}
 
-		SAFE_DELETE_ARRAY(m_MeshInfo.pvVertex);
+		SAFE_DELETE_ARRAY(m_MeshInfo.pVertex);
+		SAFE_DELETE_ARRAY(m_MeshInfo.pIndex);
 		SAFE_DELETE_ARRAY(m_MeshInfo.m_pMaterial);
 		SAFE_DELETE_ARRAY(m_MeshInfo.m_ppIndexBuffer);
 		SAFE_RELEASE(m_MeshInfo.m_Nothing);

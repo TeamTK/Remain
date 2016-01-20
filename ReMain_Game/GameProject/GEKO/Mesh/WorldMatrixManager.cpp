@@ -37,41 +37,40 @@ void WorldMatrixManager::Update()
 	D3DXQUATERNION qX(0, 0, 0, 1); //単位クォータニオン
 	D3DXQUATERNION qY(0, 0, 0, 1); //単位クォータニオン
 	D3DXQUATERNION qZ(0, 0, 0, 1); //単位クォータニオン
-	D3DXVECTOR3 xAxis(1, 0, 0); //Xの中心軸
-	D3DXVECTOR3 yAxis(0, 1, 0); //Yの中心軸
-	D3DXVECTOR3 zAxis(0, 0, 1); //Zの中心軸
-	D3DXMATRIX Mat;
+	Vector3D xAxis(1, 0, 0); //Xの中心軸
+	Vector3D yAxis(0, 1, 0); //Yの中心軸
+	Vector3D zAxis(0, 0, 1); //Zの中心軸
+	Matrix mat;
 
-	auto it = m_pListPimpl->m_List.begin();
-	for (; it != m_pListPimpl->m_List.end(); it++)
+	for (auto& i : m_pListPimpl->m_List)
 	{
-		D3DXQuaternionRotationAxis(&qX, &xAxis, (*it)->pRotation->x);
-		D3DXQuaternionRotationAxis(&qY, &yAxis, (*it)->pRotation->y);
-		D3DXQuaternionRotationAxis(&qZ, &zAxis, (*it)->pRotation->z);
+		D3DXQuaternionRotationAxis(&qX, &xAxis, i->pRotation->x);
+		D3DXQuaternionRotationAxis(&qY, &yAxis, i->pRotation->y);
+		D3DXQuaternionRotationAxis(&qZ, &zAxis, i->pRotation->z);
 		qOut = qX * qY * qZ;
 
 		//クオータニオンから行列に変更
-		D3DXMatrixRotationQuaternion(&Mat, &qOut);
+		D3DXMatrixRotationQuaternion(&mat, &qOut);
 
 		//拡大縮小
-		Mat._11 *= (*it)->pScale->x;
-		Mat._21 *= (*it)->pScale->x;
-		Mat._31 *= (*it)->pScale->x;
+		mat._11 *= i->pScale->x;
+		mat._21 *= i->pScale->x;
+		mat._31 *= i->pScale->x;
 
-		Mat._12 *= (*it)->pScale->y;
-		Mat._22 *= (*it)->pScale->y;
-		Mat._32 *= (*it)->pScale->y;
+		mat._12 *= i->pScale->y;
+		mat._22 *= i->pScale->y;
+		mat._32 *= i->pScale->y;
 
-		Mat._13 *= (*it)->pScale->z;
-		Mat._23 *= (*it)->pScale->z;
-		Mat._33 *= (*it)->pScale->z;
+		mat._13 *= i->pScale->z;
+		mat._23 *= i->pScale->z;
+		mat._33 *= i->pScale->z;
 
 		//平行移動
-		Mat._41 = (*it)->pTranselate->x;
-		Mat._42 = (*it)->pTranselate->y;
-		Mat._43 = (*it)->pTranselate->z;
+		mat._41 = i->pTranselate->x;
+		mat._42 = i->pTranselate->y;
+		mat._43 = i->pTranselate->z;
 
-		*(*it)->pMatrix = Mat;
+		*i->pMatrix = mat;
 	}
 }
 

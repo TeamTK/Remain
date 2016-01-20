@@ -60,8 +60,8 @@ public:
 	static ColliderManager *GetInstance();
 	void Update();
 	void AllClear();
-	//void MyIdSetting(const char *name, unsigned int myId);
-	//void TargetIdSetting(const char *name, unsigned int targetId);
+	void MyIdSetting(const char *name, unsigned int myId);
+	void TargetIdSetting(const char *name, unsigned int targetId);
 	bool HitCheckStaticMesh_Line(Result_Porygon *resultPorygon, Vector3D *start, Vector3D *end, unsigned int targetId);
 
 private:
@@ -123,8 +123,10 @@ private:
 	bool HitCheckCapsule(CapsuleHitData &pHitData1, CapsuleHitData &pHitData2);
 	bool HitCheckCapsule_vs_LineSegment(CapsuleHitData &pHitData1, LineSegmentHitData &pHitData2);
 	bool HitCheckLineSegment(LineSegmentHitData &pHitData1, LineSegmentHitData &pHitData2);
-	bool HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, LineSegmentHitData &hitData2, Result_Porygon *pory);
-	bool HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereHitData &hitData2, Result_Porygon_Group *pory);
+	//bool HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, LineSegmentHitData &hitData2, Result_Porygon *pory);
+	bool HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, Vector3D *normal, LineSegmentHitData &hitData2, Result_Porygon *pory);
+	//bool HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereHitData &hitData2, Result_Porygon_Group *pory);
+	bool HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, Vector3D *normal, SphereHitData &hitData2, Result_Porygon_Group *pory);
 
 private:
 	class ColliderListPimpl;

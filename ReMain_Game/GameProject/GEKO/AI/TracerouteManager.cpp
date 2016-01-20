@@ -26,7 +26,7 @@ TracerouteManager* TracerouteManager::GetInstance()
 	return &tracerouteManager;
 }
 
-void TracerouteManager::Add(const StaticMesh *staticMesh, const char* name)
+void TracerouteManager::Add(StaticMesh *staticMesh, const char* name)
 {
 	TracerouteManager *pInfo = GetInstance();
 	pInfo->m_pTraceroutePimpl->tracerouteInfo[name];
@@ -52,16 +52,16 @@ void TracerouteManager::ProcessBuilding(const char* name)
 {
 	auto *pTraceroute = GetInstance()->m_pTraceroutePimpl;
 	auto *pInfo = &pTraceroute->tracerouteInfo[name];
-	auto *pMesh = pInfo->pStaticMesh;
 
+	//ポリゴン情報
+	auto *pMesh = pInfo->pStaticMesh; //メッシュ
+	auto *pPoryLinkInfo = pInfo->pPoryLinkInfo;
 	const auto *pVertex = pMesh->GetVertex();
-	const auto *pMaterial = pMesh->GetMaterial();
-	const int materialAllNum = pMesh->GetMaterialAllNum();
-	const int *index;
-	int faceNum = 0;
+	const IndexInfo *index = pMesh->GetIndex();
+	const int polyNum = pMesh->GetFaceAllNum();
 	Vector3D pos[3];
 
-	//*pMesh->WorldMatrixBuilding();
+	pMesh->WorldMatrixBuilding();
 	Matrix world = *pMesh->GetWorldMatrix();
 	Matrix local = *pMesh->GetLocalMatrix();
 	Matrix mat = local * world;
@@ -71,42 +71,37 @@ void TracerouteManager::ProcessBuilding(const char* name)
 		delete[] pInfo->pPoryLinkInfo;
 		pInfo->pPoryLinkInfo = nullptr;
 	}
-	pInfo->pPoryLinkInfo = new PolyLinkInfo[pMesh->GetFaceAllNum()];
+	pPoryLinkInfo = new PolyLinkInfo[polyNum];
 
-	//マテリアル別にポリゴンの中心座標を算出
-	for (int i = 0; i < materialAllNum; i++)
+	//全てのポリゴンの中心座標取得
+	for (int i = 0; i < polyNum; i++)
 	{
-		//マテリアル別のインデックスを取得
-		index = pMesh->GetPolygonIndex(i);
-		faceNum = pMaterial[i].dwNumFace;
-		for (int j = 0; j < faceNum; j++)
-		{
-			pos[0] = pVertex[index[j * 3]].vPos;
-			pos[1] = pVertex[index[j * 3 + 1]].vPos;
-			pos[2] = pVertex[index[j * 3 + 2]].vPos;
+		pos[0] = pVertex[index[i].vertexIndex[0]].pos * mat;
+		pos[1] = pVertex[index[i].vertexIndex[1]].pos * mat;
+		pos[2] = pVertex[index[i].vertexIndex[2]].pos * mat;
 
-			//ワールド座標に変換
-			pos[0] = pos[0] * mat;
-			pos[1] = pos[1] * mat;
-			pos[2] = pos[2] * mat;
-
-			pInfo->pPoryLinkInfo[j].centerPosition = (pos[0] + pos[1] + pos[2]) * 0.3f;
-		}
+		pPoryLinkInfo[i].centerPosition = (pos[0] + pos[1] + pos[2]) * 0.33333333333f;
 	}
 
-	//マテリアル別にポリゴンの中心座標を算出
-	for (int i = 0; i < materialAllNum; i++)
+	//ポリゴン同士の隣接情報の構築
+	for (int i = 0; i < polyNum; i++)
 	{
-		//マテリアル別のインデックスを取得
-		index = pMesh->GetPolygonIndex(i);
-		faceNum = pMaterial[i].dwNumFace;
-		for (int j = 0; j < faceNum; j++)
+		pPoryLinkInfo[i].linkPolyIndex[0] = -1;
+		pPoryLinkInfo[i].linkPolyIndex[1] = -1;
+		pPoryLinkInfo[i].linkPolyIndex[2] = -1;
+
+		//隣接するポリゴンを探す
+		for (int j = 0; j < polyNum; j++)
 		{
-			pInfo->pPoryLinkInfo[j].linkPolyIndex[0] = -1;
-			pInfo->pPoryLinkInfo[j].linkPolyIndex[1] = -1;
-			pInfo->pPoryLinkInfo[j].linkPolyIndex[2] = -1;
+			if (i == j) continue; //自分のポリゴンなら飛ばす
 
+			bool is = (pPoryLinkInfo[i].linkPolyIndex[0] == -1);
 
+			if (pPoryLinkInfo[i].linkPolyIndex[0] == -1 &&
+				((index[i].vertexIndex[0] == index[j].vertexIndex[0])))
+			{
+
+			}
 		}
 	}
 }

@@ -148,7 +148,7 @@ protected:
 	unsigned int m_MyId;
 	unsigned int m_TargetId;
 	bool		 m_IsSeep;
-	const char* m_Name;
+	const char*  m_Name;
 };
 
 #endif
