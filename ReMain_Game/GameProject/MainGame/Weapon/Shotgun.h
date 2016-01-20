@@ -6,7 +6,7 @@
 class Shotgun : public WeaponBase
 {
 public:
-	Shotgun(int* anim, float* frame, Matrix* m);
+	Shotgun(int* anim, float* frame, bool* take, Matrix* m);
 	~Shotgun();
 	void Update();
 	void Reload();		//’e‚ğƒŠƒ[ƒh

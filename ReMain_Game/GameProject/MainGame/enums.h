@@ -8,8 +8,6 @@ struct PartAnimData
 	unsigned int num;
 };
 
-
-
 //プレイヤーのアニメーション
 enum EPlayerAnim
 {
@@ -30,12 +28,14 @@ enum EPlayerAnim
 	eAnim_RunTakeHandgun,	//ハンドガンを持って走る
 	eAnim_SetupGun,			//ショットガンを持った状態から構える
 	eAnim_SetupHandgun,		//ハンドガンを持った状態から構える
+	eAnim_StealthAttack,	//ステルスアタック
 	eAnim_TakeGun,			//ショットガンを手に持つ
 	eAnim_TakeHandgun,		//ハンドガンを手に持つ
 	eAnim_Walk,				//歩く
 	eAnim_WalkTakeGun,		//ショットガンを持って歩く
 	eAnim_WalkTakeHandgun,	//ハンドガンを持って歩く
-	eAnim_ALL
+	eAnim_WalkReloadGun,	//リロード中歩き
+	eAnim_WalkReloadHandgun	//リロード中歩き
 };
 
 //プレイヤーの状態
@@ -48,6 +48,7 @@ enum EPlayerState
 	eState_TakeWeapon,
 	eState_PutBackWeapon,
 	eState_SetupWeapon,
+	eState_StealthAttack,
 	eState_Recoil,
 	eState_Reload,
 	eState_Hit,

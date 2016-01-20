@@ -6,6 +6,7 @@
 #include "enums.h"
 #include "../MainGame/Weapon/Shotgun.h"
 #include "../MainGame/Weapon/Handgun.h"
+#include "../MainGame/Weapon/Knife.h"
 #include"../GameSystem/GUI/UI_SelectWeapon.h"
 #include "../GameSystem/GUI/Number.h"
 
@@ -18,7 +19,7 @@ public:
 	~Player();
 	void Update();
 	void Move();
-	void Weapon();
+	void Attack();
 	void Camera();
 	void Animation();
 
@@ -32,6 +33,7 @@ private:
 	void SetupWeapon();
 	void Recoil();
 	void Reload();
+	void StealthAttack();
 	void Die();
 	void Hit();
 
@@ -40,8 +42,6 @@ private:
 	void HitEnemyAttack(Result_Capsule &hitData);
 
 private:
-	Number m_Num;
-	UI_SelectWeapon m_SelectWeapon;
 	Vector3D m_KeyDir;		//キー入力軸
 	Vector3D m_PadDir;		//コントローラー入力値
 	Vector3D m_CamDir;		//カメラの方向
@@ -51,10 +51,13 @@ private:
 	Vector3D m_End;			//線分の当たり判定用 終点
 	Vector3D m_SightPos;	//視線判定の位置
 	Vector3D m_HitCameraPos; //カメラの当たり判定位置
-	Matrix m_MatrixS;		//ショットガンの行列
-	Matrix m_MatrixH;		//ハンドガンの行列
+
+	Matrix m_MatrixS;		//ショットガン用プレイヤーの行列
+	Matrix m_MatrixH;		//ハンドガン用プレイヤーの行列
+	Matrix m_MatrixK;		//ナイフ用プレイヤーの行列
+	Number m_Num;
+	UI_SelectWeapon m_SelectWeapon;
 	EPlayerState m_State;	//プレイヤーの状態
-	EPlayerState m_OldState;	//プレイヤーの状態
 	EPlayerAnim m_Anim;		//プレイヤーのアニメーション
 	EWeapons m_SelectedWeapon;	//選択している銃
 	Collider m_HitCamera;	//カメラの当たり判定
@@ -63,9 +66,11 @@ private:
 	Collider m_HitEnemyAttack; //敵からの攻撃の当たり判定
 	PlayerSightInfo m_PlayerSightInfo; //プレイヤーの視界情報
 	AuditoryObject m_AuditoryObject; //聴覚対象
+
 	int m_Phase;
 	int m_PlayAnim;			//武器に渡す用
 	int m_Volume; //プレイヤーが出す音の音量
+
 	float m_Vertical;		//垂直方向のマウス入力量
 	float m_Horizontal;		//水平方向のマウス入力量
 	float m_MoveSpeed;		//移動速度
@@ -74,6 +79,7 @@ private:
 	float m_AnimSpeed;		//アニメーションスピード
 	float m_PlayAnimTime;	//武器に渡す用
 	float m_Radius;			//弾薬箱との当たり判定の半径
+
 	bool m_ChangeTakeWeapon;	//銃を持つ
 	bool m_ChangePutBackWeapon;	//銃をしまう
 	bool m_ToggleCrouch;	//しゃがみトグル
@@ -85,7 +91,8 @@ private:
 	bool m_isAttack;	//攻撃中か
 	bool m_isReload;	//リロード中か
 	bool m_isHit;		//敵の攻撃が当たったか
-	bool m_isShot;
+	bool m_isShot;		//発砲したか
+	bool m_isSteAttack;	//ステルスアタック
 };
 
 #endif

@@ -3,8 +3,8 @@
 
 Shotgun* g_pShotgun;
 
-Shotgun::Shotgun(int* anim, float* frame, Matrix* m) :
-	WeaponBase(anim, frame, m, "Shotgun", 0)
+Shotgun::Shotgun(int* anim, float* frame, bool* take, Matrix* m) :
+	WeaponBase(anim, frame, take, m, "Shotgun", 0)
 {
 	m_Model.SetAsset("Shotgun");
 
@@ -20,20 +20,18 @@ Shotgun::~Shotgun()
 void Shotgun::Update()
 {
 	//銃の位置
-	if (*m_PlayerAnim == EPlayerAnim::eAnim_SetupGun ||
-		*m_PlayerAnim == EPlayerAnim::eAnim_RecoilGun ||
-		*m_PlayerAnim == EPlayerAnim::eAnim_Hit)
+	if (*m_PlayerAnim == eAnim_SetupGun || *m_PlayerAnim == eAnim_RecoilGun ||
+		(*m_PlayerAnim == eAnim_Hit && *m_TakeWeapon))
 	{
 		//構え状態
 		//SetTranselate(上, 前, 左)
 		m_Model.SetTranselate(0.03f, 0.1f, 0.05f);
 		m_Model.SetRotationDegree(180, -90, 8);
 	}
-	else if ((*m_PlayerAnim == EPlayerAnim::eAnim_TakeGun && *m_PlayerAnimFrame >= 15) ||
-		*m_PlayerAnim == EPlayerAnim::eAnim_IdleTakeGun ||
-		*m_PlayerAnim == EPlayerAnim::eAnim_WalkTakeGun ||
-		*m_PlayerAnim == EPlayerAnim::eAnim_ReloadGun ||
-		*m_PlayerAnim == EPlayerAnim::eAnim_RunTakeGun)
+	else if ((*m_PlayerAnim == eAnim_TakeGun && *m_PlayerAnimFrame >= 15) ||
+		*m_PlayerAnim == eAnim_IdleTakeGun || *m_PlayerAnim == eAnim_WalkTakeGun ||
+		*m_PlayerAnim == eAnim_ReloadGun || *m_PlayerAnim == eAnim_RunTakeGun ||
+		*m_PlayerAnim == eAnim_WalkReloadGun)
 	{
 		//手に持っている状態
 		//SetTranselate(左, 前, 下)

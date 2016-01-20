@@ -6,7 +6,7 @@
 class Knife : public WeaponBase
 {
 public:
-	Knife(int* anim, float* frame, Matrix* m);
+	Knife(int* anim, float* frame, bool* take, Matrix* m);
 	~Knife();
 	void Update();
 
