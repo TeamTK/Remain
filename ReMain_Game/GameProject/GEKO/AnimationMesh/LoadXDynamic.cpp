@@ -855,7 +855,7 @@ void LoadXDynamic::AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn)
 	auto itAnimMat = pAnimMat->begin();
 
 	//指定のアニメーションフレームを超えたら戻す
-	if (pCopyBorn->animFrame > frameAnimNum)
+	if (pCopyBorn->animFrame > (float)frameAnimNum)
 	{
 		pCopyBorn->animFrame = 0.0f;
 	}
