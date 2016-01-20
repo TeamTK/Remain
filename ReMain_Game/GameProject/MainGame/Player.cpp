@@ -30,6 +30,33 @@
 
 Vector3D *g_pPlayerPos;
 
+PartAnimData g_PartAnimData[] =
+{
+	{ 0, 42, eAnim_Crouch },
+	{ 0, 42, eAnim_CrouchIdle },
+	{ 0, 42, eAnim_CrouchWalk },
+	{ 0, 42, eAnim_Die },
+	{ 0, 42, eAnim_Hit },
+	{ 0, 42, eAnim_Idle },
+	{ 0, 42, eAnim_IdleTakeGun },
+	{ 0, 42, eAnim_IdleTakeHandgun },
+	{ 0, 42, eAnim_RecoilGun },
+	{ 0, 42, eAnim_RecoilHandgun },
+	{ 0, 42, eAnim_ReloadGun },
+	{ 0, 42, eAnim_ReloadHandgun },
+	{ 0, 42, eAnim_Run },
+	{ 0, 42, eAnim_RunTakeGun },
+	{ 0, 42, eAnim_RunTakeHandgun },
+	{ 0, 42, eAnim_SetupGun },
+	{ 0, 42, eAnim_SetupHandgun },
+	{ 0, 42, eAnim_TakeGun },
+	{ 0, 42, eAnim_TakeHandgun },
+	{ 0, 42, eAnim_Walk },
+	{ 35, 42, eAnim_Walk },		//足のみ
+	{ 0, 42, eAnim_WalkTakeGun },
+	{ 0, 42, eAnim_WalkTakeHandgun },
+};
+
 Player::Player(Vector3D pos) :
 	Character(100.0f, "Player", 0), m_CamDir(0.0f, 0.0f, 0.0f),
 	m_CameraPos(-50.0f, 2.0f, -12.0f), m_KeyDir(0.0f, 0.0f, 0.0f),
@@ -100,15 +127,12 @@ void Player::Update()
 	m_HitCameraPos = m_pos;
 	m_HitCameraPos.y += CAMERA_HIT_HIGHT;
 
-	//当たり判定用 始点終点
-	m_Start = m_CameraPos;
-	m_End = ((m_LookPos - m_CameraPos) + m_LookPos).GetNormalize();
-
 	//プレイヤーのボーン行列の切り替え
 	if ((m_Anim == EPlayerAnim::eAnim_TakeGun && m_Model.GetPlayTime(m_JudgementAnim) >= 15) ||
 		m_Anim == EPlayerAnim::eAnim_SetupGun || m_Anim == EPlayerAnim::eAnim_IdleTakeGun ||
 		m_Anim == EPlayerAnim::eAnim_WalkTakeGun || m_Anim == EPlayerAnim::eAnim_RunTakeGun ||
-		m_Anim == EPlayerAnim::eAnim_RecoilGun || m_Anim == EPlayerAnim::eAnim_ReloadGun)
+		m_Anim == EPlayerAnim::eAnim_RecoilGun || m_Anim == EPlayerAnim::eAnim_ReloadGun ||
+		m_Anim == EPlayerAnim::eAnim_Hit)
 	{
 		m_MatrixS = m_Model.GetBornMatrix(24, true);
 	}
@@ -120,7 +144,8 @@ void Player::Update()
 	if ((m_Anim == EPlayerAnim::eAnim_TakeHandgun && m_Model.GetPlayTime(m_JudgementAnim) >= 15) ||
 		m_Anim == EPlayerAnim::eAnim_SetupHandgun || m_Anim == EPlayerAnim::eAnim_IdleTakeHandgun ||
 		m_Anim == EPlayerAnim::eAnim_WalkTakeHandgun || m_Anim == EPlayerAnim::eAnim_RunTakeHandgun ||
-		m_Anim == EPlayerAnim::eAnim_RecoilHandgun || m_Anim == EPlayerAnim::eAnim_ReloadHandgun)
+		m_Anim == EPlayerAnim::eAnim_RecoilHandgun || m_Anim == EPlayerAnim::eAnim_ReloadHandgun ||
+		m_Anim == EPlayerAnim::eAnim_Hit)
 	{
 		m_MatrixH = m_Model.GetBornMatrix(24, true);
 	}
@@ -267,7 +292,7 @@ void Player::Weapon()
 	}
 
 	//リロード
-	if (Input::KeyR.Clicked() && m_isTakeWeapon)
+	if (Input::KeyR.Clicked() && m_isTakeWeapon && !m_isReload &&!m_isShot)
 	{
 		if (m_SelectedWeapon == EWeapons::eShotgun &&
 			g_pShotgun->GetLoadedAmmo() < AMMO_LOADED_SHOTGUN &&
@@ -289,7 +314,8 @@ void Player::Weapon()
 		m_State = EPlayerState::eState_Reload;
 
 	//発砲　(マウス左クリック, 右ショルダボタン)
-	if ((Input::Mouse.LClicked() || Input::XInputPad1.ShoulderRightClicked()) && m_SetupWeapon && !m_isShot)
+	if ((Input::Mouse.LClicked() || Input::XInputPad1.ShoulderRightClicked()) &
+		m_SetupWeapon && !m_isShot && !m_isReload)
 	{
 		bool isCanShot = false;
 		Vector3D dir = (m_LookPos - Camera::GetEyePosition()).GetNormalize();
@@ -327,8 +353,8 @@ void Player::Weapon()
 	if (m_isShot)
 		m_State = EPlayerState::eState_Recoil;
 
-	printf("%d ", g_pShotgun->GetAmmo());
-	printf("%d \n", g_pShotgun->GetLoadedAmmo());
+	if (m_isHit)
+		m_State = EPlayerState::eState_Hit;
 }
 
 void Player::Camera()
@@ -750,6 +776,9 @@ void Player::Recoil()
 
 void Player::Reload()
 {
+	m_MoveSpeed = WALK_SPEED;
+
+
 	switch (m_SelectedWeapon)
 	{
 	case eShotgun:
@@ -761,11 +790,24 @@ void Player::Reload()
 		m_AnimSpeed = RELOAD_ANIM_SPEED;
 		break;
 	}
+
+	if (m_isMove)
+		m_Model.PartRangeChangeAnimation(35, 42, EPlayerAnim::eAnim_Walk);
+
 	//アニメーション終了
 	if (m_Model.GetPlayTime(m_JudgementAnim) > 28)
 	{
 		m_isReload = false;
-		m_SelectedWeapon == EWeapons::eShotgun ? g_pShotgun->Reload() : g_pHandgun->Reload();
+		//装弾数を増やす
+		switch (m_SelectedWeapon)
+		{
+		case eShotgun:
+			g_pShotgun->Reload();
+			break;
+		case eHandgun:
+			g_pHandgun->Reload();
+			break;
+		}
 	}
 }
 
@@ -810,8 +852,8 @@ void Player::HitAmmoBox(Result_Sphere& r)
 
 void Player::HitEnemyAttack(Result_Capsule &hitData)
 {
-	//m_isHit = true;
-	//m_OldState = m_State;
+	m_isHit = true;
+	m_OldState = m_State;
 	//血しぶきのエフェクト
 	EffectInfo effectData;
 	effectData.imageName = "Blood";

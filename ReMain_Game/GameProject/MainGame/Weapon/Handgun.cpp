@@ -21,7 +21,8 @@ void Handgun::Update()
 {
 	//e‚ÌˆÊ’u
 	if (*m_PlayerAnim == EPlayerAnim::eAnim_SetupHandgun ||
-		*m_PlayerAnim == EPlayerAnim::eAnim_RecoilHandgun)
+		*m_PlayerAnim == EPlayerAnim::eAnim_RecoilHandgun ||
+		*m_PlayerAnim == EPlayerAnim::eAnim_Hit)
 	{
 		//\‚¦ó‘Ô
 		//SetTranselate(ã, ‘O, ¶)

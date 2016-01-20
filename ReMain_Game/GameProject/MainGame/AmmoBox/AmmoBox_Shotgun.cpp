@@ -21,5 +21,5 @@ AmmoBox_Shotgun::~AmmoBox_Shotgun()
 
 void AmmoBox_Shotgun::Update()
 {
-	Fiqure::RenderBillboard(m_Pos + Vector3D(0.0f, 2.0f, 0.0f), Vector3D(0.5f, 0.5f, 0.5f), "UI_Shotgun");
+	Fiqure::RenderBillboard(m_Pos + Vector3D(0.0f, 1.5f, 0.0f), Vector3D(0.3f, 0.3f, 0.3f), "UI_Shotgun");
 }
