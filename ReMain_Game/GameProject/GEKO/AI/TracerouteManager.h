@@ -7,7 +7,7 @@ class TracerouteManager
 {
 public:
 	~TracerouteManager();
-	static void Add(const StaticMesh *staticMesh, const char* name);
+	static void Add(StaticMesh *staticMesh, const char* name);
 	static void Clear(const char* name);
 	static void AlClear();
 	static void DebugRender(const char* name);

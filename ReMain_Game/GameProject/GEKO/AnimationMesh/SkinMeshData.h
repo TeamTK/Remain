@@ -49,14 +49,10 @@ struct SkinMaterialInfo
 	Vector3D Ambient;	//アンビエント
 	std::string TextureName;//テクスチャーファイル名
 	int dwNumFace;		//そのマテリアルであるポリゴン数
-	SkinMaterialInfo()
-	{
-		pTexture = nullptr;
-		dwNumFace = 0;
-	}
-	~SkinMaterialInfo()
-	{
-	}
+	SkinMaterialInfo() :
+		pTexture(nullptr),
+		dwNumFace(0) {}
+	~SkinMaterialInfo() {}
 };
 
 //頂点の構造体

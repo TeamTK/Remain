@@ -13,7 +13,7 @@ struct PolyLinkInfo
 
 struct TracerouteInfo
 {
-	const StaticMesh *pStaticMesh;
+	StaticMesh *pStaticMesh;
 	PolyLinkInfo *pPoryLinkInfo;
 
 	TracerouteInfo() :

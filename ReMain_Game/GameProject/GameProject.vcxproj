@@ -22,6 +22,11 @@
     <ClCompile Include="GameSystem\FiveSenses\Auditory.cpp" />
     <ClCompile Include="GameSystem\FiveSenses\SightSystem.cpp" />
     <ClCompile Include="GameSystem\StageObject\StageObject.cpp" />
+    <ClCompile Include="GEKO\AI\Traceroute.cpp" />
+    <ClCompile Include="GEKO\AI\TracerouteManager.cpp" />
+    <ClCompile Include="GEKO\AI\TracerouteObject.cpp" />
+    <ClCompile Include="GEKO\AI\TracerouteSearch.cpp" />
+    <ClCompile Include="GEKO\AI\TracerouteTarget.cpp" />
     <ClCompile Include="GEKO\AnimationMesh\DynamicMesh.cpp" />
     <ClCompile Include="GEKO\AnimationMesh\DynamicMeshAsset.cpp" />
     <ClCompile Include="GEKO\AnimationMesh\LoadXDynamic.cpp" />
@@ -39,6 +44,7 @@
     <ClCompile Include="GEKO\GEKO.cpp" />
     <ClCompile Include="GEKO\ImageSystem\ImageAsset.cpp" />
     <ClCompile Include="GEKO\Mesh\Shader.cpp" />
+    <ClCompile Include="GEKO\Mesh\StaticMeshShader.cpp" />
     <ClCompile Include="GEKO\Mesh\WorldMatrixManager.cpp" />
     <ClCompile Include="GEKO\SoundSystem\SoundAsset.cpp" />
     <ClCompile Include="GEKO\System\Camera.cpp" />
@@ -96,6 +102,12 @@
     <ClInclude Include="GameSystem\FiveSenses\Auditory.h" />
     <ClInclude Include="GameSystem\FiveSenses\SightSystem.h" />
     <ClInclude Include="GameSystem\StageObject\StageObject.h" />
+    <ClInclude Include="GEKO\AI\Traceroute.h" />
+    <ClInclude Include="GEKO\AI\TracerouteInfo.h" />
+    <ClInclude Include="GEKO\AI\TracerouteManager.h" />
+    <ClInclude Include="GEKO\AI\TracerouteObject.h" />
+    <ClInclude Include="GEKO\AI\TracerouteSearch.h" />
+    <ClInclude Include="GEKO\AI\TracerouteTarget.h" />
     <ClInclude Include="GEKO\AnimationMesh\DynamicMesh.h" />
     <ClInclude Include="GEKO\AnimationMesh\DynamicMeshAsset.h" />
     <ClInclude Include="GEKO\AnimationMesh\LoadXDynamic.h" />
@@ -187,6 +199,7 @@
     <ClInclude Include="GEKO\Include\xma2defs.h" />
     <ClInclude Include="GEKO\Include\xnamath.h" />
     <ClInclude Include="GEKO\Mesh\Shader.h" />
+    <ClInclude Include="GEKO\Mesh\StaticMeshShader.h" />
     <ClInclude Include="GEKO\Mesh\WorldMatrixManager.h" />
     <ClInclude Include="GEKO\SoundSystem\SoundAsset.h" />
     <ClInclude Include="GEKO\System\Camera.h" />

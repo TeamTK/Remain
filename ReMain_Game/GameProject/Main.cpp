@@ -13,7 +13,6 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 	DirectionalLight::SetIntensity(0.6f);
 	DirectionalLight::SetDirection(0.0f, 45.0f);
 
-	//new MainGame();
 	new Title();
 
 	while (GEKO::Loop())

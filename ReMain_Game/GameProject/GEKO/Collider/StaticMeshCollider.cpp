@@ -8,40 +8,21 @@ StaticMesh_vs_LineSegmentCollider::StaticMesh_vs_LineSegmentCollider(StaticMesh 
 	pStaticMeshHitInfo->WorldMatrixBuilding();
 	m_pNormal = new Vector3D[pStaticMeshHitInfo->GetFaceAllNum()];
 
-	//モデルの変換行列
-	Matrix world = *pStaticMeshHitInfo->GetWorldMatrix();
-	Matrix local = *pStaticMeshHitInfo->GetLocalMatrix();
-	Matrix m = local * world;
-
 	Vector3D pos[3];
 
-	//頂点データとマテリアルデータ
+	//頂点データとポリゴンのインデックス
 	const VertexInfo *ver = pStaticMeshHitInfo->GetVertex();
-	const MaterialInfo *material = pStaticMeshHitInfo->GetMaterial();
+	const IndexInfo *index = pStaticMeshHitInfo->GetIndex();
+	int polyNum = pStaticMeshHitInfo->GetFaceAllNum();
 
-	int cnt = 0;
-
-	//マテリアルごとにポリゴンとの当たり判定をする
-	int materialAllNum = pStaticMeshHitInfo->GetMaterialAllNum();
-	for (int i = 0; i < materialAllNum; i++)
+	//全ての三角形の法線取得
+	for (int i = 0; i < polyNum; i++)
 	{
-		//マテリアル別のインデックスを取得
-		const int *index = pStaticMeshHitInfo->GetPolygonIndex(i);
-		int faceNum = material[i].dwNumFace;
+		pos[0] = ver[index[i].vertexIndex[0]].pos;
+		pos[1] = ver[index[i].vertexIndex[1]].pos;
+		pos[2] = ver[index[i].vertexIndex[2]].pos;
 
-		for (int j = 0; j < faceNum; j++)
-		{
-			pos[0] = ver[index[j * 3]].vPos;
-			pos[1] = ver[index[j * 3 + 1]].vPos;
-			pos[2] = ver[index[j * 3 + 2]].vPos;
-
-			Vector3D e1 = pos[1] - pos[0];
-			Vector3D e2 = pos[2] - pos[0];
-			Vector3D normal = Vector3D::Cross(e2, e1).GetNormalize();
-
-			m_pNormal[cnt] = normal;
-			cnt++;
-		}
+		m_pNormal[i] = Vector3D::Cross(pos[2] - pos[0], pos[1] - pos[0]).GetNormalize();
 	}
 
 	ColliderManager::GetInstance()->Add(this);
@@ -59,40 +40,21 @@ StaticMesh_vs_SphereCollider::StaticMesh_vs_SphereCollider(StaticMesh *pStaticMe
 	pStaticMeshHitInfo->WorldMatrixBuilding();
 	m_pNormal = new Vector3D[pStaticMeshHitInfo->GetFaceAllNum()];
 
-	//モデルの変換行列
-	Matrix world = *pStaticMeshHitInfo->GetWorldMatrix();
-	Matrix local = *pStaticMeshHitInfo->GetLocalMatrix();
-	Matrix m = local * world;
-
 	Vector3D pos[3];
 
-	//頂点データとマテリアルデータ
+	//頂点データとポリゴンのインデックス
 	const VertexInfo *ver = pStaticMeshHitInfo->GetVertex();
-	const MaterialInfo *material = pStaticMeshHitInfo->GetMaterial();
+	const IndexInfo *index = pStaticMeshHitInfo->GetIndex();
+	int polyNum = pStaticMeshHitInfo->GetFaceAllNum();
 
-	int cnt = 0;
-
-	//マテリアルごとにポリゴンとの当たり判定をする
-	int materialAllNum = pStaticMeshHitInfo->GetMaterialAllNum();
-	for (int i = 0; i < materialAllNum; i++)
+	//全ての三角形の法線取得
+	for (int i = 0; i < polyNum; i++)
 	{
-		//マテリアル別のインデックスを取得
-		const int *index = pStaticMeshHitInfo->GetPolygonIndex(i);
-		int faceNum = material[i].dwNumFace;
+		pos[0] = ver[index[i].vertexIndex[0]].pos;
+		pos[1] = ver[index[i].vertexIndex[1]].pos;
+		pos[2] = ver[index[i].vertexIndex[2]].pos;
 
-		for (int j = 0; j < faceNum; j++)
-		{
-			 pos[0] = ver[index[j * 3]].vPos;
-			 pos[1] = ver[index[j * 3 + 1]].vPos;
-			 pos[2] = ver[index[j * 3 + 2]].vPos;
-
-			 Vector3D e1 = pos[1] - pos[0];
-			 Vector3D e2 = pos[2] - pos[0];
-			 Vector3D normal = Vector3D::Cross(e2, e1).GetNormalize();
-
-			 m_pNormal[cnt] = normal;
-			 cnt++;
-		}
+		m_pNormal[i] = Vector3D::Cross(pos[2] - pos[0], pos[1] - pos[0]).GetNormalize();
 	}
 
 	ColliderManager::GetInstance()->Add(this);

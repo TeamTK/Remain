@@ -34,38 +34,45 @@ void StaticMesh::WorldMatrixBuilding()
 	D3DXVECTOR3 zAxis(0, 0, 1); //Zの中心軸
 	D3DXMATRIX Mat;
 
+	Matrix mat;
+
 	D3DXQuaternionRotationAxis(&qX, &xAxis, m_Rotation.x);
 	D3DXQuaternionRotationAxis(&qY, &yAxis, m_Rotation.y);
 	D3DXQuaternionRotationAxis(&qZ, &zAxis, m_Rotation.z);
 	qOut = qX * qY * qZ;
 
 	//クオータニオンから行列に変更
-	D3DXMatrixRotationQuaternion(&Mat, &qOut);
+	D3DXMatrixRotationQuaternion(&mat, &qOut);
 
 	//拡大縮小
-	Mat._11 *= m_Scale.x;
-	Mat._21 *= m_Scale.x;
-	Mat._31 *= m_Scale.x;
+	mat._11 *= m_Scale.x;
+	mat._21 *= m_Scale.x;
+	mat._31 *= m_Scale.x;
 
-	Mat._12 *= m_Scale.y;
-	Mat._22 *= m_Scale.y;
-	Mat._32 *= m_Scale.y;
+	mat._12 *= m_Scale.y;
+	mat._22 *= m_Scale.y;
+	mat._32 *= m_Scale.y;
 
-	Mat._13 *= m_Scale.z;
-	Mat._23 *= m_Scale.z;
-	Mat._33 *= m_Scale.z;
+	mat._13 *= m_Scale.z;
+	mat._23 *= m_Scale.z;
+	mat._33 *= m_Scale.z;
 
 	//平行移動
-	Mat._41 = m_Scale.x;
-	Mat._42 = m_Scale.y;
-	Mat._43 = m_Scale.z;
+	mat._41 = m_Transelate.x;
+	mat._42 = m_Transelate.y;
+	mat._43 = m_Transelate.z;
 
-	m_Matrix = Mat;
+	m_Matrix = mat;
+}
+
+const IndexInfo *StaticMesh::GetIndex() const
+{
+	return m_pMeshData->GetMeshInfo()->pIndex;
 }
 
 const VertexInfo *StaticMesh::GetVertex() const
 {
-	return m_pMeshData->GetMeshInfo()->pvVertex;
+	return m_pMeshData->GetMeshInfo()->pVertex;
 }
 
 const MaterialInfo *StaticMesh::GetMaterial() const
@@ -78,11 +85,6 @@ const Matrix *StaticMesh::GetLocalMatrix() const
 	return &m_pMeshData->GetMeshInfo()->m_LocalMat;
 }
 
-const int *StaticMesh::GetPolygonIndex(int materialIndex) const
-{
-	return m_pMeshData->GetMeshInfo()->m_pMaterial[materialIndex].pPolygonIndex;
-}
-
 const int StaticMesh::GetFaceAllNum() const
 {
 	return m_pMeshData->GetMeshInfo()->faceNumAll;
@@ -91,11 +93,6 @@ const int StaticMesh::GetFaceAllNum() const
 const int StaticMesh::GetMaterialAllNum() const
 {
 	return m_pMeshData->GetMeshInfo()->materialNumAll;
-}
-
-const int StaticMesh::GetNormalAllNum() const
-{
-	return m_pMeshData->GetMeshInfo()->normalNumAll;
 }
 
 void StaticMesh::Render() const
@@ -112,34 +109,25 @@ void StaticMesh::DebugNormal() const
 {
 	Vector3D v1, v2, v3;
 	Vector3D normal1, normal2, normal3;
-
 	Matrix m = m_pMeshData->GetMeshInfo()->m_LocalMat * m_Matrix;
+	VertexInfo *vertex = m_pMeshData->GetMeshInfo()->pVertex;
+	IndexInfo *index = m_pMeshData->GetMeshInfo()->pIndex;
+	int polyNum = m_pMeshData->GetMeshInfo()->faceNumAll;
 
-	int materialNum = m_pMeshData->GetMeshInfo()->materialNumAll;
-	for (int i = 0; i < materialNum; i++)
+	//全ての頂点の法線描画
+	for (int i = 0; i < polyNum; i++)
 	{
-		int *pFaceIndex = m_pMeshData->GetMeshInfo()->m_pMaterial[i].pPolygonIndex;
-		int faceNum = m_pMeshData->GetMeshInfo()->m_pMaterial[i].dwNumFace;
-		for (int j = 0; j < faceNum; j++)
-		{
-			v1 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3]].vPos;
-			v2 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3 + 1]].vPos;
-			v3 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3 + 2]].vPos;
-			normal1 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3]].vNormal;
-			normal2 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3 + 1]].vNormal;
-			normal3 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3 + 2]].vNormal;
+		v1 = vertex[index[i].vertexIndex[0]].pos * m;
+		v2 = vertex[index[i].vertexIndex[1]].pos * m;
+		v3 = vertex[index[i].vertexIndex[2]].pos * m;
 
-			v1 = v1 * m;
-			v2 = v2 * m;
-			v3 = v3 * m;
-			normal1 = Vector3D::Matrix3x3(normal1, m).GetNormalize();
-			normal2 = Vector3D::Matrix3x3(normal2, m).GetNormalize();
-			normal3 = Vector3D::Matrix3x3(normal3, m).GetNormalize();
+		normal1 = Vector3D::Matrix3x3(vertex[index[i].vertexIndex[0]].normal, m).GetNormalize();
+		normal2 = Vector3D::Matrix3x3(vertex[index[i].vertexIndex[1]].normal, m).GetNormalize();
+		normal3 = Vector3D::Matrix3x3(vertex[index[i].vertexIndex[2]].normal, m).GetNormalize();
 
-			Fiqure::RenderLine3D(v1, normal1 + v1, Vector3D(0.0f, 1.0f, 0.8f));
-			Fiqure::RenderLine3D(v2, normal2 + v2, Vector3D(0.0f, 1.0f, 0.8f));
-			Fiqure::RenderLine3D(v3, normal3 + v3, Vector3D(0.0f, 1.0f, 0.8f));
-		}
+		Fiqure::RenderLine3D(v1, normal1 + v1, Vector3D(0.0f, 1.0f, 0.8f));
+		Fiqure::RenderLine3D(v2, normal2 + v2, Vector3D(0.0f, 1.0f, 0.8f));
+		Fiqure::RenderLine3D(v3, normal3 + v3, Vector3D(0.0f, 1.0f, 0.8f));
 	}
 }
 
@@ -147,26 +135,20 @@ void StaticMesh::DebugPolygon() const
 {
 	Vector3D v1, v2, v3;
 	Matrix m = m_pMeshData->GetMeshInfo()->m_LocalMat * m_Matrix;
+	VertexInfo *vertex = m_pMeshData->GetMeshInfo()->pVertex;
+	IndexInfo *index = m_pMeshData->GetMeshInfo()->pIndex;
+	int polyNum = m_pMeshData->GetMeshInfo()->faceNumAll;
 
-	int materialNum = m_pMeshData->GetMeshInfo()->materialNumAll;
-	for (int i = 0; i < materialNum; i++)
+	//全ての頂点の描画
+	for (int i = 0; i < polyNum; i++)
 	{
-		int *pFaceIndex = m_pMeshData->GetMeshInfo()->m_pMaterial[i].pPolygonIndex;
-		int faceNum = m_pMeshData->GetMeshInfo()->m_pMaterial[i].dwNumFace;
-		for (int j = 0; j < faceNum; j++)
-		{
-			v1 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3]].vPos;
-			v2 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3 + 1]].vPos;
-			v3 = m_pMeshData->GetMeshInfo()->pvVertex[pFaceIndex[j * 3 + 2]].vPos;
+		v1 = vertex[index[i].vertexIndex[0]].pos * m;
+		v2 = vertex[index[i].vertexIndex[1]].pos * m;
+		v3 = vertex[index[i].vertexIndex[2]].pos * m;
 
-			v1 = v1 * m;
-			v2 = v2 * m;
-			v3 = v3 * m;
-
-			Fiqure::RenderLine3D(v1, v2, Vector3D(0.0f, 0.0f, 0.0f));
-			Fiqure::RenderLine3D(v2, v3, Vector3D(0.0f, 0.0f, 0.0f));
-			Fiqure::RenderLine3D(v3, v1, Vector3D(0.0f, 0.0f, 0.0f));
-		}
+		Fiqure::RenderLine3D(v1, v2, Vector3D(0.0f, 0.0f, 0.0f));
+		Fiqure::RenderLine3D(v2, v3, Vector3D(0.0f, 0.0f, 0.0f));
+		Fiqure::RenderLine3D(v3, v1, Vector3D(0.0f, 0.0f, 0.0f));
 	}
 }
 
@@ -230,12 +212,12 @@ void StaticMesh::RenderFunc(Matrix &matrix) const
 		D3DXMatrixTranspose(&sg.mWVP, &sg.mWVP);
 
 		//ライトの方向を渡す
-		D3DXVec4Normalize(&sg.vLightDir, DirectionalLight::GetDirection());
+		D3DXVec4Normalize(&sg.LightDir, DirectionalLight::GetDirection());
 		sg.fIntensity = DirectionalLight::GetLightColor()->Change();
 
 		//視点位置を渡す
 		D3DXVECTOR3 EyePos(Camera::GetEyePositionD3D());
-		sg.vEye = D3DXVECTOR4(EyePos.x, EyePos.y, EyePos.z, 0);
+		sg.eyePos = D3DXVECTOR4(EyePos.x, EyePos.y, EyePos.z, 0);
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(ConstantBuffer0));
 		pDeviceContext->Unmap(data->m_pConstantBuffer0, 0);
@@ -288,9 +270,9 @@ void StaticMesh::RenderFunc(Matrix &matrix) const
 		if (SUCCEEDED(pDeviceContext->Map(data->m_pConstantBuffer1, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 		{
 			ConstantBuffer1 sg;
-			sg.vDiffuse = diffuse;   //ディフューズカラーをシェーダーに渡す
-			sg.vSpecular = specular; //スペキュラーをシェーダーに渡す
-			sg.vAmbient = ambient;   //アンビエントををシェーダーに渡す
+			sg.diffuse = diffuse;   //ディフューズカラーをシェーダーに渡す
+			sg.specular = specular; //スペキュラーをシェーダーに渡す
+			sg.ambient = ambient;   //アンビエントををシェーダーに渡す
 
 			memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(ConstantBuffer1));
 			pDeviceContext->Unmap(data->m_pConstantBuffer1, 0);

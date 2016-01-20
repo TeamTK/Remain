@@ -35,6 +35,7 @@ public:
 		StaticMesh_vs_LineSegmentList.clear();
 		StaticMesh_vs_SphereList.clear();
 
+		//ID管理
 		myId.clear();
 		targetId.clear();
 	}
@@ -60,8 +61,9 @@ public:
 	std::list<StaticMesh_vs_LineSegmentCollider*> StaticMesh_vs_LineSegmentList; //メッシュ対線分
 	std::list<StaticMesh_vs_SphereCollider*> StaticMesh_vs_SphereList; //メッシュ対球
 
-	std::map<const char*, unsigned int> myId;
-	std::map<const char*, unsigned int> targetId;
+	//ID管理
+	std::map<const char*, unsigned int> myId; //自分のID
+	std::map<const char*, unsigned int> targetId; //目標のID
 };
 
 //コライダーマネージャー//
@@ -760,45 +762,36 @@ bool ColliderManager::HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, Ve
 	TriangleInfo hitTriangle;
 	LineSegmentInfo hitLine(*hitData2.pStart * inverse, *hitData2.pEnd * inverse);
 
-	//頂点データとマテリアルデータ
+	//頂点データとポリゴンのインデックス
 	const VertexInfo *ver = hitData1.GetVertex();
-	const MaterialInfo *material = hitData1.GetMaterial();
+	const IndexInfo *index = hitData1.GetIndex();
+	int polyNum = hitData1.GetFaceAllNum();
 
-	int cnt = 0;
-
-	//マテリアルごとにポリゴンとの当たり判定をする
-	int materialAllNum = hitData1.GetMaterialAllNum();
-	for (int i = 0; i < materialAllNum; i++)
+	//全てのポリゴンと当たり判定
+	for (int i = 0; i < polyNum; i++)
 	{
-		//マテリアル別のインデックスを取得
-		const int *index = hitData1.GetPolygonIndex(i);
-		int faceNum = material[i].dwNumFace;
+		hitTriangle.v1 = ver[index[i].vertexIndex[0]].pos;
+		hitTriangle.v2 = ver[index[i].vertexIndex[1]].pos;
+		hitTriangle.v3 = ver[index[i].vertexIndex[2]].pos;
 
-		for (int j = 0; j < faceNum; j++)
+		hit = Collision3D::LineSegmentTriangle(hitLine, hitTriangle, normal[i]);
+
+		//当たったら当たった頂点格納
+		if (hit.isHit)
 		{
-			hitTriangle.v1 = ver[index[j * 3]].vPos;
-			hitTriangle.v2 = ver[index[j * 3 + 1]].vPos;
-			hitTriangle.v3 = ver[index[j * 3 + 2]].vPos;
-
-			hit = Collision3D::LineSegmentTriangle(hitLine, hitTriangle, normal[cnt]);
-			cnt++;
-
-			//当たったら当たった頂点格納
-			if (hit.isHit)
-			{
-				pory->worldMatrix = world;
-				pory->localMatrix = local;
-				pory->meshMatrix = m;
-				pory->contactPos = hit.pos;
-				pory->normal = hit.normal;
-				pory->vertexPos[0] = hitTriangle.v1;
-				pory->vertexPos[1] = hitTriangle.v2;
-				pory->vertexPos[2] = hitTriangle.v3;
-				pory->materialIndex = i;
-				return true;
-			}
+			pory->worldMatrix = world;
+			pory->localMatrix = local;
+			pory->meshMatrix = m;
+			pory->contactPos = hit.pos;
+			pory->normal = hit.normal;
+			pory->vertexPos[0] = hitTriangle.v1;
+			pory->vertexPos[1] = hitTriangle.v2;
+			pory->vertexPos[2] = hitTriangle.v3;
+			pory->materialIndex = i;
+			return true;
 		}
 	}
+
 	return false;
 }
 
@@ -815,10 +808,6 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, Vector3
 	TriangleInfo hitTriangle;
 	SphereInfo hitSphere(*hitData2.pPosition * m.GetInverse(), *hitData2.pRadius);
 
-	//頂点データとマテリアルデータ
-	const VertexInfo *ver = hitData1.GetVertex();
-	const MaterialInfo *material = hitData1.GetMaterial();
-
 	//当たった情報
 	std::vector<Vector3D> hitPos;
 	std::vector<Vector3D> hitNormal;
@@ -826,34 +815,28 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, Vector3
 	std::vector<float> hitDist;
 	std::vector<TriangleInfo> hitVer;
 
-	int cnt = 0;
+	//頂点データとポリゴンのインデックス
+	const VertexInfo *ver = hitData1.GetVertex();
+	const IndexInfo *index = hitData1.GetIndex();
+	int polyNum = hitData1.GetFaceAllNum();
 
-	//マテリアルごとにポリゴンとの当たり判定をする
-	int materialAllNum = hitData1.GetMaterialAllNum();
-	for (int i = 0; i < materialAllNum; i++)
+	//全てのポリゴンと当たり判定
+	for (int i = 0; i < polyNum; i++)
 	{
-		//マテリアル別のインデックスを取得
-		const int *index = hitData1.GetPolygonIndex(i);
-		int faceNum = material[i].dwNumFace;
+		hitTriangle.v1 = ver[index[i].vertexIndex[0]].pos;
+		hitTriangle.v2 = ver[index[i].vertexIndex[1]].pos;
+		hitTriangle.v3 = ver[index[i].vertexIndex[2]].pos;
 
-		for (int j = 0; j < faceNum; j++)
+		Hitdata = Collision3D::SphereTriangle(hitSphere, hitTriangle, vec[i]);
+
+		//当たったら当たった頂点格納
+		if (Hitdata.isHit)
 		{
-			hitTriangle.v1 = ver[index[j * 3]].vPos;
-			hitTriangle.v2 = ver[index[j * 3 + 1]].vPos;
-			hitTriangle.v3 = ver[index[j * 3 + 2]].vPos;
-
-			Hitdata = Collision3D::SphereTriangle(hitSphere, hitTriangle, vec[cnt]);
-			cnt++;
-
-			//当たったら当たった頂点格納
-			if (Hitdata.isHit)
-			{
-				hitPos.emplace_back(Hitdata.pos);
-				hitNormal.emplace_back(Hitdata.normal);
-				hitVer.emplace_back(hitTriangle.v1, hitTriangle.v2, hitTriangle.v3);
-				materialNum.emplace_back(i);
-				hitDist.emplace_back(Hitdata.dist);
-			}
+			hitPos.emplace_back(Hitdata.pos);
+			hitNormal.emplace_back(Hitdata.normal);
+			hitVer.emplace_back(hitTriangle.v1, hitTriangle.v2, hitTriangle.v3);
+			materialNum.emplace_back(i);
+			hitDist.emplace_back(Hitdata.dist);
 		}
 	}
 
