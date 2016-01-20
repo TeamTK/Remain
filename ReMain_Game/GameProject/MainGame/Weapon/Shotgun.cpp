@@ -21,7 +21,8 @@ void Shotgun::Update()
 {
 	//èeÇÃà íu
 	if (*m_PlayerAnim == EPlayerAnim::eAnim_SetupGun ||
-		*m_PlayerAnim == EPlayerAnim::eAnim_RecoilGun)
+		*m_PlayerAnim == EPlayerAnim::eAnim_RecoilGun ||
+		*m_PlayerAnim == EPlayerAnim::eAnim_Hit)
 	{
 		//ç\Ç¶èÛë‘
 		//SetTranselate(è„, ëO, ç∂)

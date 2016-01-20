@@ -12,4 +12,5 @@ StaticMesh media\Wall_Collision.x Wall_Collision
 StaticMesh media\SkyDome.x SkyDome
 StaticMesh media\Shotgun.x Shotgun
 StaticMesh media\Handgun.x Handgun
+StaticMesh media\Knife.x Knife
 StaticMesh media\AmmoBox.x AmmoBox

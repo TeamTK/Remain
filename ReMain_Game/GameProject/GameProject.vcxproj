@@ -82,6 +82,7 @@
     <ClCompile Include="MainGame\Enemy\Monster_B.cpp" />
     <ClCompile Include="MainGame\Player.cpp" />
     <ClCompile Include="MainGame\Weapon\Handgun.cpp" />
+    <ClCompile Include="MainGame\Weapon\Knife.cpp" />
     <ClCompile Include="MainGame\Weapon\Shotgun.cpp" />
     <ClCompile Include="MainGame\Weapon\WeaponBase.cpp" />
     <ClCompile Include="Scene\GameOvar.cpp" />
@@ -242,6 +243,7 @@
     <ClInclude Include="MainGame\Monster_A.h" />
     <ClInclude Include="MainGame\Player.h" />
     <ClInclude Include="MainGame\Weapon\Handgun.h" />
+    <ClInclude Include="MainGame\Weapon\Knife.h" />
     <ClInclude Include="MainGame\Weapon\Shotgun.h" />
     <ClInclude Include="MainGame\Weapon\WeaponBase.h" />
     <ClInclude Include="Scene\GameOvar.h" />

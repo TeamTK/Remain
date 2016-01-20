@@ -1,6 +1,15 @@
 #ifndef ENUMS_H
 #define ENUMS_H
 
+struct PartAnimData
+{
+	int bomeStart;
+	int boneEnd;
+	unsigned int num;
+};
+
+
+
 //プレイヤーのアニメーション
 enum EPlayerAnim
 {
@@ -25,7 +34,8 @@ enum EPlayerAnim
 	eAnim_TakeHandgun,		//ハンドガンを手に持つ
 	eAnim_Walk,				//歩く
 	eAnim_WalkTakeGun,		//ショットガンを持って歩く
-	eAnim_WalkTakeHandgun	//ハンドガンを持って歩く
+	eAnim_WalkTakeHandgun,	//ハンドガンを持って歩く
+	eAnim_ALL
 };
 
 //プレイヤーの状態
