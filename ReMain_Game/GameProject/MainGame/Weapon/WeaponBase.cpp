@@ -70,3 +70,8 @@ void WeaponBase::Reload()
 {
 
 }
+
+EWeapons WeaponBase::GetSelect()
+{
+	return *m_Weapon;
+}

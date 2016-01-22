@@ -5,10 +5,9 @@
 #include "../GameSystem/Effect/EffectParabola.h"
 
 #define CAMERA_NO_CROUCH_POS_Y 1.8f;//しゃがみ姿勢じゃないときのカメラのY座標の高さ
-#define CAMERA_CROUCH_POS_Y 0.95f;	//しゃがみ姿勢のときのカメラのY座標の高さ
 #define CAMERA_HIT_HIGHT 1.5f;		//カメラの当たり判定の高さ
-#define WALK_SPEED 0.07f			//歩くスピード
-#define RUN_SPEED 0.16f				//走るスピード
+#define WALK_SPEED 0.05f			//歩くスピード
+#define RUN_SPEED 0.12f				//走るスピード
 #define CROUCH_WALK_SPPED 0.02f		//しゃがみ歩きスピード
 #define	SETUPWEAPON_MOVE_SPEED 0.03f;//武器を構えた時の移動速度
 #define CAMERA_LENGE	2.0f		//プレイヤーとカメラの距離
@@ -35,7 +34,7 @@ Player::Player(Vector3D pos) :
 	m_CameraPos(-50.0f, 2.0f, -12.0f), m_KeyDir(0.0f, 0.0f, 0.0f),
 	m_Horizontal(0.134f), m_Vertical(-1.5f),
 	m_MoveSpeed(0.0f), m_AnimSpeed(30.0f),
-	m_CameraPosY(1.8f), m_CamSpeed(0.000002f),
+	m_CamSpeed(0.000002f),
 	m_Radius(0.5f), m_Phase(0),
 	m_isCrouch(false), m_isAttack(false),
 	m_isTakeWeapon(false), m_isMove(false),
@@ -51,7 +50,7 @@ Player::Player(Vector3D pos) :
 
 	m_Model.SetScale(1.0f, 1.0f, 1.0f);
 	m_pos = pos;
-
+	Camera::SetEye(-50.0f, 2.0f, -12.0f);
 	//カメラの当たり判定
 	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_HitCameraPos, REGIST_FUNC(Player::HitCamera));
 	m_HitCamera.SetID(eHITID0, eHITID1);
@@ -63,9 +62,9 @@ Player::Player(Vector3D pos) :
 	m_HitEnemyAttack.Regist_C_vs_C(&m_pos, &m_SightPos, &m_Radius, REGIST_FUNC(Player::HitEnemyAttack));
 	m_HitEnemyAttack.SetID(eHITID0, eHITID1);
 
-	g_pShotgun = new Shotgun(&m_PlayAnim, &m_PlayAnimTime, &m_isTakeWeapon, &m_MatrixS);
-	g_pHandgun = new Handgun(&m_PlayAnim, &m_PlayAnimTime, &m_isTakeWeapon, &m_MatrixH);
-	
+	g_pShotgun = new Shotgun(&m_PlayAnim, &m_PlayAnimTime, &m_isTakeWeapon, &m_SelectedWeapon, &m_MatrixS);
+	g_pHandgun = new Handgun(&m_PlayAnim, &m_PlayAnimTime, &m_isTakeWeapon, &m_SelectedWeapon, &m_MatrixH);
+
 
 	m_SphereMap.radius = MAP_HIT_RADIUS;
 
@@ -95,14 +94,20 @@ void Player::Update()
 	Character::Update();
 	m_SelectWeapon.Update();
 
-	m_SightPos = m_Model.GetBornPos(6); //頭のボーン位置
+	if (m_Timer.GetSecond() >= 1.5)	m_HitEnemyAttack.Awake();
 
-										//カメラの当たり判定位置
+	m_SightPos = m_Model.GetBornPos(6); //頭のボーン位置
+	m_MatrixK = m_Model.GetBornMatrix(25, true);	//指のボーン位置
+
+	//カメラの当たり判定位置
 	m_HitCameraPos = m_pos;
 	m_HitCameraPos.y += CAMERA_HIT_HIGHT;
 
+	//printf("%d %d\n", m_ToggleCrouch, m_isCrouch);
+	//printf("%d\n", m_isSteAttack);
+
 	//プレイヤーのボーン行列の切り替え
-	if ((m_Anim == eAnim_TakeGun && m_Model.GetPlayTime(m_JudgementAnim) >= 15) ||
+	if ((m_Anim == eAnim_TakeGun && m_Model.GetPlayTime(m_JudgementAnim) > 16) ||
 		m_Anim == eAnim_SetupGun || m_Anim == eAnim_IdleTakeGun ||
 		m_Anim == eAnim_WalkTakeGun || m_Anim == eAnim_RunTakeGun ||
 		m_Anim == eAnim_RecoilGun || m_Anim == eAnim_ReloadGun ||
@@ -117,7 +122,7 @@ void Player::Update()
 		m_MatrixS = m_Model.GetBornMatrix(21, true);
 	}
 
-	if ((m_Anim == eAnim_TakeHandgun && m_Model.GetPlayTime(m_JudgementAnim) >= 15) ||
+	if ((m_Anim == eAnim_TakeHandgun && m_Model.GetPlayTime(m_JudgementAnim) > 16) ||
 		m_Anim == eAnim_SetupHandgun || m_Anim == eAnim_IdleTakeHandgun ||
 		m_Anim == eAnim_WalkTakeHandgun || m_Anim == eAnim_RunTakeHandgun ||
 		m_Anim == eAnim_RecoilHandgun || m_Anim == eAnim_ReloadHandgun ||
@@ -133,22 +138,10 @@ void Player::Update()
 		m_MatrixH = m_Model.GetBornMatrix(3, true);
 	}
 
-
-	//弾薬数を表示
-	if (m_SelectedWeapon == EWeapons::eShotgun)
-	{
-		m_Num.NumDraw(Vector2D(0, 90), g_pShotgun->GetAmmo());
-		m_Num.NumDraw(Vector2D(44, 90), g_pShotgun->GetLoadedAmmo());
-	}
-	else if (m_SelectedWeapon == EWeapons::eHandgun)
-	{
-		m_Num.NumDraw(Vector2D(0, 90), g_pHandgun->GetAmmo());
-		m_Num.NumDraw(Vector2D(44, 90), g_pHandgun->GetLoadedAmmo());
-	}
+	
 
 	m_PlayAnim = m_Model.GetPlayAnimation(m_JudgementAnim);
 	m_PlayAnimTime = m_Model.GetPlayTime(m_JudgementAnim);
-	m_MatrixK = m_Model.GetBornMatrix(25, true);
 }
 
 void Player::Move()
@@ -199,9 +192,9 @@ void Player::Move()
 	{
 		m_State = EPlayerState::eState_Crouch;
 	}
-	else
+	else if (m_isCrouch && !m_ToggleCrouch)
 	{
-		m_isCrouch = false;
+		m_State = EPlayerState::eState_StandUp;
 	}
 
 	//プレイヤーが歩き状態なら移動処理
@@ -213,11 +206,11 @@ void Player::Move()
 
 		if (m_SetupWeapon)
 		{
-			m_Phase++;
 			//武器を構えた状態の移動
 			m_pos += m_Model.GetAxisX(1.0f) * m_KeyDir.x * m_MoveSpeed;
 			m_pos += m_Model.GetAxisZ(1.0f) * m_KeyDir.z * m_MoveSpeed;
 			//プレイヤーの上下移動
+			m_Phase++;
 			m_pos.y += sinf(m_Phase * (PI * 10) / 150.0f) / 120.0f;
 		}
 		else
@@ -232,7 +225,7 @@ void Player::Move()
 void Player::Attack()
 {
 	//武器の切り替え(ホイールクリック, 方向キー左右)
-	if ((Input::Mouse.WheelClicked() || Input::XInputPad1.ThumbRightClicked()) && !m_isTakeWeapon)
+	if ((Input::Mouse.WheelClicked() || Input::XInputPad1.ThumbRightClicked()))
 	{
 		m_SelectedWeapon = m_SelectWeapon.Select();
 	}
@@ -247,7 +240,7 @@ void Player::Attack()
 			m_ChangePutBackWeapon = true;
 			m_Model.SetTime(29);
 		}
-		else if (!m_isTakeWeapon && !m_ChangeTakeWeapon && !m_ChangePutBackWeapon)
+		else if (!m_isTakeWeapon && !m_ChangePutBackWeapon && !m_ChangeTakeWeapon)
 		{
 			m_ChangeTakeWeapon = true;
 			m_Model.SetTime(0);
@@ -327,9 +320,9 @@ void Player::Attack()
 			}
 		}
 		//ステルスアタック
-		else if (m_isCrouch && Stealth)
+		else if (m_isCrouch && Stealth && !m_isSteAttack)
 		{
-			g_pKnife = new Knife(&m_PlayAnim, &m_PlayAnimTime, &m_isTakeWeapon, &m_MatrixK);
+			new Knife(&m_PlayAnim, &m_PlayAnimTime, &m_isSteAttack, &m_MatrixK);
 			m_isSteAttack = true;
 			m_isCrouch = false;
 		}
@@ -412,8 +405,7 @@ void Player::Camera()
 		if (m_Vertical <= -0.9f) m_Vertical = -0.9f;	//カメラ角度上限
 
 		m_rot.x = 0.0f;
-		newLookPos = m_pos + mat.GetAxisX() * 0.4f;
-		newLookPos.y = m_CameraPosY + m_pos.y;
+		newLookPos = m_Model.GetBornPos(6) + mat.GetAxisX() * 0.4f;
 
 		//カメラの座標
 		newCameraPos = newLookPos;
@@ -438,7 +430,6 @@ void Player::Camera()
 
 void Player::Animation()
 {
-	m_CameraPosY = CAMERA_NO_CROUCH_POS_Y;
 	m_SphereMap.radius = MAP_HIT_RADIUS;
 
 	switch (m_State)
@@ -454,6 +445,9 @@ void Player::Animation()
 		break;
 	case EPlayerState::eState_Crouch:
 		Crouch();
+		break;
+	case EPlayerState::eState_StandUp:
+		StandUp();
 		break;
 	case EPlayerState::eState_TakeWeapon:
 		TakeWeapon();
@@ -482,6 +476,8 @@ void Player::Animation()
 	default:
 		break;
 	}
+
+	printf("%d\n", m_Anim);
 	m_Model.SetPlayTime(m_AnimSpeed);
 	m_Model.ChangeAnimation(m_Anim);
 }
@@ -596,30 +592,39 @@ void Player::Crouch()
 		if (!m_isCrouch)
 		{
 			m_Anim = EPlayerAnim::eAnim_Crouch;
-			m_AnimSpeed = DEFAULT_ANIM_SPEED;
+			m_AnimSpeed = TWICE_ANIM_SPEED;
 		}
 
 		//しゃがみ待機
 		if (m_KeyDir.x == 0 && m_KeyDir.z == 0 && m_isCrouch)
 		{
-			m_CameraPosY = CAMERA_CROUCH_POS_Y;
 			m_Anim = EPlayerAnim::eAnim_CrouchIdle;
 			m_AnimSpeed = HALF_ANIM_SPEED;
 		}
 		//しゃがみ歩き
 		else if (m_KeyDir.x != 0 || m_KeyDir.z != 0 && m_isCrouch)
 		{
-			m_CameraPosY = CAMERA_CROUCH_POS_Y;
 			m_MoveSpeed = CROUCH_WALK_SPPED;
 			m_Anim = EPlayerAnim::eAnim_CrouchWalk;
 			m_AnimSpeed = DEFAULT_ANIM_SPEED;
 			m_isMove = true;
 		}
 
-		if (m_Anim == EPlayerAnim::eAnim_Crouch &&m_Model.GetPlayTime(m_JudgementAnim) > 28)
+		if (m_Anim == EPlayerAnim::eAnim_Crouch && m_Model.GetPlayTime(m_JudgementAnim) > 28)
 		{
 			m_isCrouch = true;
 		}
+	}
+}
+
+void Player::StandUp()
+{
+	m_Anim = EPlayerAnim::eAnim_Crouch;
+	m_AnimSpeed = -DEFAULT_ANIM_SPEED;
+
+	if (m_Anim == EPlayerAnim::eAnim_Crouch && m_Model.GetPlayTime(m_JudgementAnim) < 1)
+	{
+		m_isCrouch = false;
 	}
 }
 
@@ -660,7 +665,6 @@ void Player::TakeWeapon()
 			m_ChangeTakeWeapon = false;
 			m_isTakeWeapon = true;
 		}
-
 		break;
 	case eHandgun:
 		//ハンドガンを持って歩く
@@ -832,6 +836,7 @@ void Player::StealthAttack()
 	//アニメーション終了
 	if (m_Model.GetPlayTime(m_JudgementAnim) > 58)
 	{
+		TaskManager::Kill("Knife");
 		m_isSteAttack = false;
 		m_State = eState_Crouch;
 	}
@@ -887,4 +892,6 @@ void Player::HitEnemyAttack(Result_Capsule &hitData)
 	effectData.speed = 0.1f;
 	effectData.time = 60;
 	new EffectParabola(effectData, "Blood", hitData.start.GetNormalize());
+	m_Timer.Start();
+	m_HitEnemyAttack.Sleep();
 }

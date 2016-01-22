@@ -108,6 +108,8 @@
     <ClCompile Include="GEKO\AI\TracerouteTarget.cpp" />
     <ClCompile Include="GEKO\Mesh\StaticMeshShader.cpp" />
     <ClCompile Include="MainGame\Weapon\Knife.cpp" />
+    <ClCompile Include="GEKO\System\Timer.cpp" />
+    <ClCompile Include="GameSystem\GUI\UI_AmmoNum.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -287,6 +289,8 @@
     <ClInclude Include="GEKO\AI\TracerouteTarget.h" />
     <ClInclude Include="GEKO\Mesh\StaticMeshShader.h" />
     <ClInclude Include="MainGame\Weapon\Knife.h" />
+    <ClInclude Include="GEKO\System\Timer.h" />
+    <ClInclude Include="GameSystem\GUI\UI_AmmoNum.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

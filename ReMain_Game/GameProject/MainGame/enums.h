@@ -3,6 +3,7 @@
 
 struct PartAnimData
 {
+
 	int bomeStart;
 	int boneEnd;
 	unsigned int num;
@@ -45,6 +46,7 @@ enum EPlayerState
 	eState_Walk,
 	eState_Run,
 	eState_Crouch,
+	eState_StandUp,
 	eState_TakeWeapon,
 	eState_PutBackWeapon,
 	eState_SetupWeapon,

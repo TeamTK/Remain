@@ -13,6 +13,4 @@ public:
 private:
 };
 
-extern Knife* g_pKnife;
-
 #endif
