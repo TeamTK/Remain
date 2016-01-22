@@ -4,7 +4,7 @@ AmmoBoxBase::AmmoBoxBase(Vector3D pos, Vector3D rot, const char *taskName, unsig
 	Task(taskName, priority), m_Radius(BOX_RADIUS), m_Pos(pos)
 {
 
-	m_RenderTask.Regist(0, REGIST_RENDER_FUNC(AmmoBoxBase::Render));
+	m_RenderTask.Regist(1, REGIST_RENDER_FUNC(AmmoBoxBase::Render));
 }
 
 AmmoBoxBase::AmmoBoxBase()

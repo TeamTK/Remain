@@ -19,7 +19,8 @@ std::string className[] =
 	"Fallen_leaves",
 	"Tree_1_Trunk",
 	"Shrub",
-	"Weeds"
+	"Weeds",
+	"WoodBox"
 };
 
 
@@ -279,6 +280,10 @@ MapObject::MapObject(XYZ &pos, XYZ &rot, XYZ &sca, std::string name)
 	else if (name == className[16])
 	{
 		mp_StageObject = new Weeds(pos, rot, sca, name);
+	}
+	else if (name == className[17])
+	{
+		mp_StageObject = new WoodBox(pos, rot, sca, name);
 	}
 	else
 	{

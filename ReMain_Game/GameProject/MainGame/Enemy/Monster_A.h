@@ -10,6 +10,7 @@ class Monster_A : public Enemy
 		eAnimationWalk,
 		eAnimationAttack,
 		eAnimationDie,
+		eAnimDie_Front,
 		eAnimationHitDamage,
 		eAnimationIdle,
 		eAnimationTrot,

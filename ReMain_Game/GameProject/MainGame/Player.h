@@ -43,7 +43,6 @@ private:
 
 private:
 	Vector3D m_KeyDir;		//キー入力軸
-	Vector3D m_PadDir;		//コントローラー入力値
 	Vector3D m_CamDir;		//カメラの方向
 	Vector3D m_CameraPos;	//カメラの位置
 	Vector3D m_LookPos;		//カメラの注視点

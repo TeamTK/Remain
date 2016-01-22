@@ -5,7 +5,7 @@
 UI_AmmoNum::UI_AmmoNum() :
 	Task("UI_AmmoNum", 1)
 {
-	m_RenderTask.Regist(1, REGIST_RENDER_FUNC(UI_AmmoNum::Draw));
+	m_RenderTask.Regist(0, REGIST_RENDER_FUNC(UI_AmmoNum::Draw));
 
 }
 

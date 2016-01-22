@@ -31,7 +31,8 @@ Vector3D *g_pPlayerPos;
 
 Player::Player(Vector3D pos) :
 	Character(100.0f, "Player", 0), m_CamDir(0.0f, 0.0f, 0.0f),
-	m_CameraPos(-50.0f, 2.0f, -12.0f), m_KeyDir(0.0f, 0.0f, 0.0f),
+	m_CameraPos(-50.0f, 2.0f, -12.0f), m_LookPos(-47.9f, 1.7f, -11.4f),
+	m_KeyDir(0.0f, 0.0f, 0.0f),
 	m_Horizontal(0.134f), m_Vertical(-1.5f),
 	m_MoveSpeed(0.0f), m_AnimSpeed(30.0f),
 	m_CamSpeed(0.000002f),
@@ -50,7 +51,7 @@ Player::Player(Vector3D pos) :
 
 	m_Model.SetScale(1.0f, 1.0f, 1.0f);
 	m_pos = pos;
-	Camera::SetEye(-50.0f, 2.0f, -12.0f);
+
 	//カメラの当たり判定
 	m_HitCamera.Regist_L_vs_SMesh(&m_CameraPos, &m_HitCameraPos, REGIST_FUNC(Player::HitCamera));
 	m_HitCamera.SetID(eHITID0, eHITID1);
@@ -103,9 +104,6 @@ void Player::Update()
 	m_HitCameraPos = m_pos;
 	m_HitCameraPos.y += CAMERA_HIT_HIGHT;
 
-	//printf("%d %d\n", m_ToggleCrouch, m_isCrouch);
-	//printf("%d\n", m_isSteAttack);
-
 	//プレイヤーのボーン行列の切り替え
 	if ((m_Anim == eAnim_TakeGun && m_Model.GetPlayTime(m_JudgementAnim) > 16) ||
 		m_Anim == eAnim_SetupGun || m_Anim == eAnim_IdleTakeGun ||
@@ -138,8 +136,6 @@ void Player::Update()
 		m_MatrixH = m_Model.GetBornMatrix(3, true);
 	}
 
-	
-
 	m_PlayAnim = m_Model.GetPlayAnimation(m_JudgementAnim);
 	m_PlayAnimTime = m_Model.GetPlayTime(m_JudgementAnim);
 }
@@ -156,8 +152,8 @@ void Player::Move()
 	if (Input::XInputPad1.GetIsConnection())
 	{
 		//コントローラー入力
-		m_PadDir = Vector3D((float)Input::XInputPad1.ThumbLeftX(), 0.0f, (float)Input::XInputPad1.ThumbLeftY());
-		m_KeyDir = (m_PadDir - Vector3D(128, 128, 128)) / 32767;
+		Vector3D PadDir = Vector3D((float)Input::XInputPad1.ThumbLeftX(), 0.0f, (float)Input::XInputPad1.ThumbLeftY());
+		m_KeyDir = (PadDir - Vector3D(128, 128, 128)) / 32767;
 	}
 	else
 	{
@@ -201,7 +197,7 @@ void Player::Move()
 	if (m_isMove && m_Anim != EPlayerAnim::eAnim_TakeGun && m_Anim != EPlayerAnim::eAnim_TakeHandgun)
 	{
 		const D3DXMATRIX *camDir = Camera::GetView();
-		Vector3D playerRot(0.0f, atan2f(camDir->m[0][2], camDir->m[2][2]) + atan2f(m_KeyDir.x, m_KeyDir.z), 0.0f);
+		Vector3D playerRot = Vector3D(0.0f, atan2f(camDir->m[0][2], camDir->m[2][2]) + atan2f(m_KeyDir.x, m_KeyDir.z), 0.0f);
 		m_rot.y = playerRot.y;
 
 		if (m_SetupWeapon)
@@ -279,6 +275,7 @@ void Player::Attack()
 		}
 	}
 
+	//仮
 	bool Stealth = false;
 	if (Input::KeyH.Pressed())	Stealth = true;
 
@@ -349,8 +346,8 @@ void Player::Attack()
 
 void Player::Camera()
 {
-	Vector3D newCameraPos;
-	Vector3D newLookPos;
+	Vector3D OldCameraPos = m_CameraPos;
+	Vector3D OldLookPos = m_LookPos;
 	Point mouseValue = Input::Mouse.GetRelativeValue();
 	static float lenge = CAMERA_LENGE;
 
@@ -390,12 +387,10 @@ void Player::Camera()
 		m_Model.SetRotationRadian(m_rot.x, m_rot.y, m_rot.z);
 
 		Matrix mat = m_Model.GetBornMatrix(6, true);
-		Vector4D eye;
-		eye = Vector4D(-0.25f, 0.15f, -0.1f, 1.0f) * mat;
-		Vector4D at;
-		at = Vector4D(-0.25f, 0.15f, 0.5f, 1.0f) *  mat;
-		newCameraPos = Vector3D(eye.x, eye.y, eye.z);
-		newLookPos = Vector3D(at.x, at.y, at.z);
+		Vector4D eye = Vector4D(-0.25f, 0.15f, -0.1f, 1.0f) * mat;
+		Vector4D at = Vector4D(-0.25f, 0.15f, 0.5f, 1.0f) *  mat;
+		m_CameraPos = Vector3D(eye.x, eye.y, eye.z);
+		m_LookPos = Vector3D(at.x, at.y, at.z);
 	}
 	//通常状態のカメラ位置
 	else
@@ -405,23 +400,23 @@ void Player::Camera()
 		if (m_Vertical <= -0.9f) m_Vertical = -0.9f;	//カメラ角度上限
 
 		m_rot.x = 0.0f;
-		newLookPos = m_Model.GetBornPos(6) + mat.GetAxisX() * 0.4f;
+		m_LookPos = m_Model.GetBornPos(6) + mat.GetAxisX() * 0.4f;
 
 		//カメラの座標
-		newCameraPos = newLookPos;
-		newCameraPos -= m_CamDir * lenge;
+		m_CameraPos = m_LookPos;
+		m_CameraPos -= m_CamDir * lenge;
 	}
 
 	//カメラ補完移動
 	if (m_SetupWeapon)
 	{
-		m_CameraPos = Vector3D::Lerp(m_CameraPos, newCameraPos, 0.8f);
-		m_LookPos = Vector3D::Lerp(m_LookPos, newLookPos, 0.8f);
+		m_CameraPos = Vector3D::Lerp(OldCameraPos, m_CameraPos, 0.8f);
+		m_LookPos = Vector3D::Lerp(OldLookPos, m_LookPos, 0.8f);
 	}
 	else
 	{
-		m_CameraPos = Vector3D::Lerp(m_CameraPos, newCameraPos, 0.3f);
-		m_LookPos = Vector3D::Lerp(m_LookPos, newLookPos, 0.3f);
+		m_CameraPos = Vector3D::Lerp(OldCameraPos, m_CameraPos, 0.3f);
+		m_LookPos = Vector3D::Lerp(OldLookPos, m_LookPos, 0.3f);
 	}
 
 	Camera::SetEye(m_CameraPos);
@@ -477,8 +472,8 @@ void Player::Animation()
 		break;
 	}
 
-	printf("%d\n", m_Anim);
 	m_Model.SetPlayTime(m_AnimSpeed);
+	//printf("%d\n",m_Anim);
 	m_Model.ChangeAnimation(m_Anim);
 }
 
@@ -501,7 +496,7 @@ void Player::Idle()
 		}
 	}
 	//待機
-	else
+	else if(!m_isTakeWeapon)
 	{
 		m_Anim = EPlayerAnim::eAnim_Idle;
 		m_AnimSpeed = HALF_ANIM_SPEED;
@@ -596,13 +591,13 @@ void Player::Crouch()
 		}
 
 		//しゃがみ待機
-		if (m_KeyDir.x == 0 && m_KeyDir.z == 0 && m_isCrouch)
+		if (!m_isMove && m_isCrouch)
 		{
 			m_Anim = EPlayerAnim::eAnim_CrouchIdle;
 			m_AnimSpeed = HALF_ANIM_SPEED;
 		}
 		//しゃがみ歩き
-		else if (m_KeyDir.x != 0 || m_KeyDir.z != 0 && m_isCrouch)
+		else if (m_isMove && m_isCrouch)
 		{
 			m_MoveSpeed = CROUCH_WALK_SPPED;
 			m_Anim = EPlayerAnim::eAnim_CrouchWalk;
