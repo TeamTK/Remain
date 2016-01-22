@@ -3,12 +3,13 @@
 
 Shotgun* g_pShotgun;
 
-Shotgun::Shotgun(int* anim, float* frame, bool* take, Matrix* m) :
+Shotgun::Shotgun(int* anim, float* frame, bool* take, EWeapons* weapon, Matrix* m) :
 	WeaponBase(anim, frame, take, m, "Shotgun", 0)
 {
 	m_Model.SetAsset("Shotgun");
 
 	m_Ammo = 6;
+	m_Weapon = weapon;
 	m_LoadedAmmo = AMMO_LOADED_SHOTGUN;
 }
 
@@ -24,7 +25,6 @@ void Shotgun::Update()
 		(*m_PlayerAnim == eAnim_Hit && *m_TakeWeapon))
 	{
 		//ç\Ç¶èÛë‘
-		//SetTranselate(è„, ëO, ç∂)
 		m_Model.SetTranselate(0.03f, 0.1f, 0.05f);
 		m_Model.SetRotationDegree(180, -90, 8);
 	}
@@ -34,7 +34,6 @@ void Shotgun::Update()
 		*m_PlayerAnim == eAnim_WalkReloadGun)
 	{
 		//éËÇ…éùÇ¡ÇƒÇ¢ÇÈèÛë‘
-		//SetTranselate(ç∂, ëO, â∫)
 		m_Model.SetTranselate(0.0f, 0.11f, 0.05f);
 		m_Model.SetRotationDegree(200, 0, -80);
 	}
@@ -59,9 +58,9 @@ void Shotgun::Reload()
 		}
 		else
 		{
-			int temp = AMMO_LOADED_SHOTGUN - m_LoadedAmmo;
-			m_LoadedAmmo += temp;
-			m_Ammo -= temp;
+			int num = AMMO_LOADED_SHOTGUN - m_LoadedAmmo;
+			m_LoadedAmmo += num;
+			m_Ammo -= num;
 			if (m_Ammo < 0)m_Ammo = 0;
 		}
 	}

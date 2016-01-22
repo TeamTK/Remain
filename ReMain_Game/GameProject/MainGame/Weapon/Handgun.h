@@ -7,7 +7,7 @@
 class Handgun :public WeaponBase
 {
 public:
-	Handgun(int* anim, float* frame, bool* take, Matrix* m);
+	Handgun(int* anim, float* frame, bool* take, EWeapons* weapon, Matrix* m);
 	~Handgun();
 	void Update();
 	void Reload();		//’e‚ğƒŠƒ[ƒh

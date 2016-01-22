@@ -8,7 +8,6 @@
 #include "../MainGame/Weapon/Handgun.h"
 #include "../MainGame/Weapon/Knife.h"
 #include"../GameSystem/GUI/UI_SelectWeapon.h"
-#include "../GameSystem/GUI/Number.h"
 
 extern Vector3D *g_pPlayerPos;
 
@@ -28,6 +27,7 @@ private:
 	void Walk();
 	void Run();
 	void Crouch();
+	void StandUp();
 	void TakeWeapon();
 	void PutBackWeapon();
 	void SetupWeapon();
@@ -55,7 +55,6 @@ private:
 	Matrix m_MatrixS;		//ショットガン用プレイヤーの行列
 	Matrix m_MatrixH;		//ハンドガン用プレイヤーの行列
 	Matrix m_MatrixK;		//ナイフ用プレイヤーの行列
-	Number m_Num;
 	UI_SelectWeapon m_SelectWeapon;
 	EPlayerState m_State;	//プレイヤーの状態
 	EPlayerAnim m_Anim;		//プレイヤーのアニメーション
@@ -66,6 +65,7 @@ private:
 	Collider m_HitEnemyAttack; //敵からの攻撃の当たり判定
 	PlayerSightInfo m_PlayerSightInfo; //プレイヤーの視界情報
 	AuditoryObject m_AuditoryObject; //聴覚対象
+	Timer m_Timer;
 
 	int m_Phase;
 	int m_PlayAnim;			//武器に渡す用
@@ -74,7 +74,6 @@ private:
 	float m_Vertical;		//垂直方向のマウス入力量
 	float m_Horizontal;		//水平方向のマウス入力量
 	float m_MoveSpeed;		//移動速度
-	float m_CameraPosY;		//カメラのY座標
 	float m_CamSpeed;		//カメラの回転速度
 	float m_AnimSpeed;		//アニメーションスピード
 	float m_PlayAnimTime;	//武器に渡す用
@@ -83,9 +82,9 @@ private:
 	bool m_ChangeTakeWeapon;	//銃を持つ
 	bool m_ChangePutBackWeapon;	//銃をしまう
 	bool m_ToggleCrouch;	//しゃがみトグル
+	bool m_isCrouch;	//しゃがんでいるか
 	bool m_isTakeWeapon;	//銃を持っているか
 	bool m_SetupWeapon;	//銃を構えているか
-	bool m_isCrouch;	//しゃがんでいるか
 	bool m_isRun;		//走っているか
 	bool m_isMove;		//移動中か
 	bool m_isAttack;	//攻撃中か

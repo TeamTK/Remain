@@ -3,12 +3,13 @@
 
 Handgun* g_pHandgun;
 
-Handgun::Handgun(int* anim, float* frame, bool* take, Matrix* m) :
+Handgun::Handgun(int* anim, float* frame, bool* take, EWeapons* weapon, Matrix* m) :
 	WeaponBase(anim, frame, take, m, "Handgun", 0)
 {
 	m_Model.SetAsset("Handgun");
 
 	m_Ammo = 6;
+	m_Weapon = weapon;
 	m_LoadedAmmo = AMMO_LOADED_HANDGUN;
 }
 
@@ -24,7 +25,6 @@ void Handgun::Update()
 		(*m_PlayerAnim == eAnim_Hit && *m_TakeWeapon))
 	{
 		//\‚¦ó‘Ô
-		//SetTranselate(ã, ‘O, ¶)
 		m_Model.SetTranselate(0.03f, 0.1f, 0.05f);
 		m_Model.SetRotationDegree(180, -90, 8);
 	}
@@ -34,7 +34,6 @@ void Handgun::Update()
 		*m_PlayerAnim == eAnim_WalkReloadHandgun)
 	{
 		//è‚É‚Á‚Ä‚¢‚éó‘Ô
-		//SetTranselate(ã, ‘O, ¶)
 		m_Model.SetTranselate(0.03f, 0.1f, 0.05f);
 		m_Model.SetRotationDegree(180, -90, 0);
 	}
