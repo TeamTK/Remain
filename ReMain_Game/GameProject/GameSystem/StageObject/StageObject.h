@@ -313,5 +313,25 @@ public:
 		StageObject(pos, rot, sca, name) {}
 	~Weeds() {}
 };
+
+//ñÿî†
+class WoodBox : public StageObject
+{
+public:
+	WoodBox(XYZ pos, XYZ rot, XYZ sca, std::string name) :
+		StageObject(pos, rot, sca, name)
+	{
+		//ÉvÉåÉCÉÑÅ[ÇÃîªíËÇÕâº
+		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
+		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
+		m_BulletHit.SetID(eHITID3, eHITID2);
+		m_BulletHit.SetName("WoodBox");
+	}
+	~WoodBox() {}
+
+private:
+	Collider m_BulletHit;
+};
 #endif
 

@@ -27,7 +27,7 @@ UI_SelectWeapon::UI_SelectWeapon() :
 	m_isSelected(false), m_CircleSize(0), m_WeponUISize(0),
 	m_Selected(1), m_ScPos(400.0f, 155.0f, 0.0f)
 {
-	m_RenderTask.Regist(1, REGIST_RENDER_FUNC(UI_SelectWeapon::Draw));
+	m_RenderTask.Regist(0, REGIST_RENDER_FUNC(UI_SelectWeapon::Draw));
 	State = eOpen;
 	m_Circle.SetAsset("SelectCircle");
 	m_SelectedCursor.SetAsset("SelectedCursor");

@@ -14,7 +14,7 @@ Character::Character(float hp, const char *taskName, unsigned int priority) :
 	m_ColliderBody.Regist_S_vs_S(&m_pos, &m_BodyRadius, REGIST_FUNC(Character::PushBody));
 	m_ColliderBody.SetID(eHITID0, eHITID0);
 
-	m_RenderTask.Regist(0, REGIST_RENDER_FUNC(Character::Render));
+	m_RenderTask.Regist(1, REGIST_RENDER_FUNC(Character::Render));
 }
 
 Character::~Character()
