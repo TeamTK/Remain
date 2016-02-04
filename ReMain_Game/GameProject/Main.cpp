@@ -9,9 +9,17 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 	Debug::SearchMemoryLeak();
 	GEKO::Init("Remain", 800, 600, 800, 600);
 	GEKO::MouseErasure();
+	//GEKO::SetResolution_And_RefreshRate(1980, 1080, 60);
+	//GEKO::FullScreen(true);
+
+	Camera::SetEye(0.0f, 0.0f, 0.0f);
+	Camera::SetLookat(0.0f, 0.0f, 0.0f);
 
 	DirectionalLight::SetIntensity(0.6f);
 	DirectionalLight::SetDirection(0.0f, 45.0f);
+
+	ImageAsset::LoadFile("TextData\\Image.txt");
+	StaticMeshAsset::LoadFile("TextData\\StaticMesh.txt");
 
 	new Title();
 
@@ -23,7 +31,7 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 		TaskManager::Update();
 		RenderManager::Render();
 	}
-	
+
 	GEKO::End();
 	Debug::End();
 

@@ -9,9 +9,9 @@
 struct EffectInfo
 {
 	Vector3D pos;
-	Vector3D scale;
 	int num;
 	int time;
+	float size;
 	float speed;
 	std::string imageName;
 };
@@ -23,7 +23,7 @@ public:
 	EffectPart(float x, float y, float z, const Vector3D &pos);
 	~EffectPart();
 	void SetDirection(const Vector3D &direction);
-	void Render(const Vector3D &sclae, float speed, int time, const std::string &name);
+	void Render(float size, float speed, int time, const std::string &name);
 
 private:
 	Vector3D m_Direction;
@@ -37,7 +37,7 @@ public:
 	Effect(const EffectInfo &info, const char* effectName);
 	virtual ~Effect();
 	void SetSpeed(float speed);
-	void SetScale(float x, float y, float z);
+	void SetSize(float size);
 	virtual void Update();
 	void Render();
 
@@ -47,8 +47,8 @@ protected:
 private:
 	int m_TimeCnt;
 	int m_AllTime;
+	float m_Size;
 	float m_Speed;
-	Vector3D m_Scale;
 	std::string m_ImageName;
 	RenderTask m_RenderTask;
 };

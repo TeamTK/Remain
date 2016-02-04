@@ -3,15 +3,22 @@
 
 #include "..\System\Direct3D11.h"
 
+struct ConstantBuffer2
+{
+
+};
+
 class StaticMeshShader
 {
 public:
 	~StaticMeshShader();
 	static StaticMeshShader* GetInstance();
 	HRESULT Init();
-	void Begin();
+	void BaseConstantBuffer(const Matrix &mat);
+	void MaterialConstantBuffer(D3DXVECTOR4 &diffuse, D3DXVECTOR4 &specular, D3DXVECTOR4 &ambient);
+	void Begin(const char* classInstanceName);
 	void End();
-	void Release();
+	void Release();	
 
 private:
 	StaticMeshShader();

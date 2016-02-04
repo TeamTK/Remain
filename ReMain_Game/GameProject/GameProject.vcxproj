@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="Chapter\Chapter.cpp" />
     <ClCompile Include="GameSystem\Effect\Effect.cpp" />
+    <ClCompile Include="GameSystem\Effect\EffectAnimation.cpp" />
     <ClCompile Include="GameSystem\Effect\EffectParabola.cpp" />
     <ClCompile Include="GameSystem\Effect\EffectSphere.cpp" />
     <ClCompile Include="GameSystem\GUI\BaseGui.cpp" />
@@ -22,10 +23,9 @@
     <ClCompile Include="GameSystem\GUI\UI_SelectWeapon.cpp" />
     <ClCompile Include="GameSystem\FiveSenses\Auditory.cpp" />
     <ClCompile Include="GameSystem\FiveSenses\SightSystem.cpp" />
+    <ClCompile Include="GameSystem\ScreenTransfer.cpp" />
     <ClCompile Include="GameSystem\StageObject\StageObject.cpp" />
-    <ClCompile Include="GEKO\AI\Traceroute.cpp" />
     <ClCompile Include="GEKO\AI\TracerouteManager.cpp" />
-    <ClCompile Include="GEKO\AI\TracerouteObject.cpp" />
     <ClCompile Include="GEKO\AI\TracerouteSearch.cpp" />
     <ClCompile Include="GEKO\AI\TracerouteTarget.cpp" />
     <ClCompile Include="GEKO\AnimationMesh\DynamicMesh.cpp" />
@@ -40,6 +40,7 @@
     <ClCompile Include="GEKO\Collider\SphereCollider.cpp" />
     <ClCompile Include="GEKO\Collider\StaticMeshCollider.cpp" />
     <ClCompile Include="GEKO\Figure\Billboard.cpp" />
+    <ClCompile Include="GEKO\Figure\FiqureShaderManager.cpp" />
     <ClCompile Include="GEKO\Figure\Sphere3D.cpp" />
     <ClCompile Include="GEKO\Figure\Triangle3D.cpp" />
     <ClCompile Include="GEKO\GEKO.cpp" />
@@ -47,6 +48,9 @@
     <ClCompile Include="GEKO\Mesh\Shader.cpp" />
     <ClCompile Include="GEKO\Mesh\StaticMeshShader.cpp" />
     <ClCompile Include="GEKO\Mesh\WorldMatrixManager.cpp" />
+    <ClCompile Include="GEKO\Shader\CopmuteShader\BaseCopmute.cpp" />
+    <ClCompile Include="GEKO\Shader\CopmuteShader\LineTriangleCopmute.cpp" />
+    <ClCompile Include="GEKO\Shader\CopmuteShader\SphereTriangleCopmute.cpp" />
     <ClCompile Include="GEKO\SoundSystem\SoundAsset.cpp" />
     <ClCompile Include="GEKO\System\Camera.cpp" />
     <ClCompile Include="GEKO\System\Change.cpp" />
@@ -67,6 +71,7 @@
     <ClCompile Include="GEKO\Mesh\LoadXStatic.cpp" />
     <ClCompile Include="GEKO\Mesh\MeshData.cpp" />
     <ClCompile Include="GEKO\System\Timer.cpp" />
+    <ClCompile Include="GEKO\Task\CommandTask.cpp" />
     <ClCompile Include="GEKO\Task\FunctionTask.cpp" />
     <ClCompile Include="GEKO\Task\RenderTask.cpp" />
     <ClCompile Include="GEKO\SoundSystem\Sound.cpp" />
@@ -79,22 +84,29 @@
     <ClCompile Include="MainGame\Bullet\Bullet.cpp" />
     <ClCompile Include="MainGame\Character.cpp" />
     <ClCompile Include="MainGame\Enemy\Enemy.cpp" />
+    <ClCompile Include="MainGame\Enemy\EnemyWave.cpp" />
     <ClCompile Include="MainGame\Enemy\EnemyStateManager.cpp" />
     <ClCompile Include="MainGame\Enemy\Monster_A.cpp" />
     <ClCompile Include="MainGame\Enemy\Monster_B.cpp" />
-    <ClCompile Include="MainGame\Player.cpp" />
+    <ClCompile Include="MainGame\Enemy\Wanderings.cpp" />
+    <ClCompile Include="MainGame\Gravity.cpp" />
+    <ClCompile Include="MainGame\Player\Player.cpp" />
+    <ClCompile Include="MainGame\Player\TPSCamera.cpp" />
+    <ClCompile Include="MainGame\Player\YouAreDead.cpp" />
     <ClCompile Include="MainGame\Weapon\Handgun.cpp" />
     <ClCompile Include="MainGame\Weapon\Knife.cpp" />
     <ClCompile Include="MainGame\Weapon\Shotgun.cpp" />
     <ClCompile Include="MainGame\Weapon\WeaponBase.cpp" />
     <ClCompile Include="Scene\GameOvar.cpp" />
     <ClCompile Include="Scene\MainGame.cpp" />
+    <ClCompile Include="Scene\NowLoading.cpp" />
     <ClCompile Include="Scene\Opening.cpp" />
     <ClCompile Include="Scene\Title.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chapter\Chapter.h" />
     <ClInclude Include="GameSystem\Effect\Effect.h" />
+    <ClInclude Include="GameSystem\Effect\EffectAnimation.h" />
     <ClInclude Include="GameSystem\Effect\EffectParabola.h" />
     <ClInclude Include="GameSystem\Effect\EffectSphere.h" />
     <ClInclude Include="GameSystem\GUI\BaseGui.h" />
@@ -105,11 +117,10 @@
     <ClInclude Include="GameSystem\GUI\UI_SelectWeapon.h" />
     <ClInclude Include="GameSystem\FiveSenses\Auditory.h" />
     <ClInclude Include="GameSystem\FiveSenses\SightSystem.h" />
+    <ClInclude Include="GameSystem\ScreenTransfer.h" />
     <ClInclude Include="GameSystem\StageObject\StageObject.h" />
-    <ClInclude Include="GEKO\AI\Traceroute.h" />
     <ClInclude Include="GEKO\AI\TracerouteInfo.h" />
     <ClInclude Include="GEKO\AI\TracerouteManager.h" />
-    <ClInclude Include="GEKO\AI\TracerouteObject.h" />
     <ClInclude Include="GEKO\AI\TracerouteSearch.h" />
     <ClInclude Include="GEKO\AI\TracerouteTarget.h" />
     <ClInclude Include="GEKO\AnimationMesh\DynamicMesh.h" />
@@ -124,6 +135,8 @@
     <ClInclude Include="GEKO\Collider\SphereCollider.h" />
     <ClInclude Include="GEKO\Collider\StaticMeshCollider.h" />
     <ClInclude Include="GEKO\Figure\Billboard.h" />
+    <ClInclude Include="GEKO\Figure\FiqureInfo.h" />
+    <ClInclude Include="GEKO\Figure\FiqureShaderManager.h" />
     <ClInclude Include="GEKO\Figure\Sphere3D.h" />
     <ClInclude Include="GEKO\Figure\Triangle3D.h" />
     <ClInclude Include="GEKO\GEKO.h" />
@@ -205,6 +218,10 @@
     <ClInclude Include="GEKO\Mesh\Shader.h" />
     <ClInclude Include="GEKO\Mesh\StaticMeshShader.h" />
     <ClInclude Include="GEKO\Mesh\WorldMatrixManager.h" />
+    <ClInclude Include="GEKO\Shader\CopmuteShader\BaseCopmute.h" />
+    <ClInclude Include="GEKO\Shader\CopmuteShader\CopmuteInfo.h" />
+    <ClInclude Include="GEKO\Shader\CopmuteShader\LineTriangleCopmute.h" />
+    <ClInclude Include="GEKO\Shader\CopmuteShader\SphereTriangleCopmute.h" />
     <ClInclude Include="GEKO\SoundSystem\SoundAsset.h" />
     <ClInclude Include="GEKO\System\Camera.h" />
     <ClInclude Include="GEKO\System\Change.h" />
@@ -226,6 +243,7 @@
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
     <ClInclude Include="GEKO\Mesh\LoadXStatic.h" />
     <ClInclude Include="GEKO\Mesh\MeshData.h" />
+    <ClInclude Include="GEKO\Task\CommandTask.h" />
     <ClInclude Include="GEKO\Task\FunctionTask.h" />
     <ClInclude Include="GEKO\Task\RenderTask.h" />
     <ClInclude Include="GEKO\SoundSystem\Sound.h" />
@@ -240,18 +258,25 @@
     <ClInclude Include="MainGame\Character.h" />
     <ClInclude Include="MainGame\Enemy.h" />
     <ClInclude Include="MainGame\Enemy\Enemy.h" />
+    <ClInclude Include="MainGame\Enemy\EnemyWave.h" />
     <ClInclude Include="MainGame\Enemy\EnemyStateManager.h" />
     <ClInclude Include="MainGame\Enemy\Monster_A.h" />
     <ClInclude Include="MainGame\Enemy\Monster_B.h" />
-    <ClInclude Include="MainGame\enums.h" />
+    <ClInclude Include="MainGame\Enemy\Wanderings.h" />
+    <ClInclude Include="MainGame\Gravity.h" />
     <ClInclude Include="MainGame\Monster_A.h" />
-    <ClInclude Include="MainGame\Player.h" />
+    <ClInclude Include="MainGame\Player\Player.h" />
+    <ClInclude Include="MainGame\Player\PlayerInfo.h" />
+    <ClInclude Include="MainGame\Player\TPSCamera.h" />
+    <ClInclude Include="MainGame\Player\YouAreDead.h" />
     <ClInclude Include="MainGame\Weapon\Handgun.h" />
     <ClInclude Include="MainGame\Weapon\Knife.h" />
     <ClInclude Include="MainGame\Weapon\Shotgun.h" />
     <ClInclude Include="MainGame\Weapon\WeaponBase.h" />
+    <ClInclude Include="MainGame\Weapon\WeaponInfo.h" />
     <ClInclude Include="Scene\GameOvar.h" />
     <ClInclude Include="Scene\MainGame.h" />
+    <ClInclude Include="Scene\NowLoading.h" />
     <ClInclude Include="Scene\Opening.h" />
     <ClInclude Include="Scene\Title.h" />
   </ItemGroup>
@@ -305,6 +330,15 @@
     <Image Include="media\Cabin.png" />
     <Image Include="media\Grass_1.png" />
     <Image Include="media\Grass_2.png" />
+    <Image Include="media\ImageData\Blood.png" />
+    <Image Include="media\ImageData\GunEffect.png" />
+    <Image Include="media\ImageData\Now Loading.png" />
+    <Image Include="media\ImageData\SelectCircle.png" />
+    <Image Include="media\ImageData\SelectedCursor.png" />
+    <Image Include="media\ImageData\UI_FreeHand.png" />
+    <Image Include="media\ImageData\UI_Handgun.png" />
+    <Image Include="media\ImageData\UI_None.png" />
+    <Image Include="media\ImageData\UI_Shotgun.png" />
     <Image Include="media\Leaf2.png" />
     <Image Include="media\TreeTrunk.png" />
     <Image Include="media\Tree_Leaf.png" />
@@ -386,6 +420,12 @@
     <None Include="media\Cabin.x" />
     <None Include="media\Grass_1.x" />
     <None Include="media\Grass_2.x" />
+    <None Include="media\ImageData\SelectCircle.psd" />
+    <None Include="media\ImageData\SelectedCursor.psd" />
+    <None Include="media\ImageData\UI_FreeHand.psd" />
+    <None Include="media\ImageData\UI_Handgun.psd" />
+    <None Include="media\ImageData\UI_None.psd" />
+    <None Include="media\ImageData\UI_Shotgun.psd" />
     <None Include="media\Tree_1.x" />
     <None Include="media\Tree_2.x" />
   </ItemGroup>

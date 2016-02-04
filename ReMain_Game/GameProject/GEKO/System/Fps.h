@@ -15,6 +15,7 @@ private:
 	static Fps* const GetInstance();
 
 public:
+	static float GetFPS();
 	static void SetFps(int fps);
 	static void Update();
 	static void Wait();

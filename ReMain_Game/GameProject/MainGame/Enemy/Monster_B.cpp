@@ -33,11 +33,13 @@ Monster_B::Monster_B(EnemyState &enemyState) :
 	unsigned int bornNum = m_BoneCapsule.size();
 	for (unsigned int i = 0; i < bornNum; i++)
 	{
+		//ƒvƒŒƒCƒ„[‚©‚ç‚ÌUŒ‚‚Ì“–‚½‚è”»’è
 		m_pHitAttackBody[i].Regist_C_vs_S(&m_pCapsule[i].segment.start, &m_pCapsule[i].segment.end,
 			&m_pCapsule[i].radius, REGIST_FUNC(Enemy::HitBullet));
 		m_pHitAttackBody[i].SetID(eHITID0, eHITID1);
 		m_pHitAttackBody[i].SetName(m_BoneCapsule[i].name);
 
+		//“G‚©‚ç‚ÌUŒ‚‚Ì“–‚½‚è”»’è
 		m_pHitAttack[i].Regist_C_vs_C(&m_pCapsule[i].segment.start, &m_pCapsule[i].segment.end,
 			&m_pCapsule[i].radius, REGIST_FUNC(Enemy::HitAttack));
 		m_pHitAttack[i].SetID(eHITID1, eHITID0);
@@ -51,8 +53,16 @@ Monster_B::Monster_B(EnemyState &enemyState) :
 	m_FuncTask.Regist("HitDamage", REGIST_FUNC_TASK(Monster_B::HitDamage));
 	m_FuncTask.Regist("Die", REGIST_FUNC_TASK(Monster_B::Die));
 
+	//Œo˜H’Tõ”»’f
 	m_FuncTask.AllStop();
-	m_FuncTask.Start("Idle");
+	if (enemyState.isSearch)
+	{
+		m_FuncTask.Start("Chase");
+	}
+	else
+	{
+		m_FuncTask.Start("Idle");
+	}
 
 	m_JudgementAnim = 13;
 }
@@ -66,14 +76,14 @@ void Monster_B::Attack()
 	float animNum = m_Model.GetPlayTime(13);
 
 	//•ø‚«‚µ‚ßUŒ‚“–‚½‚è”»’èŠJn
-	if (animNum == 10)
+	if (animNum >= 10)
 	{
 		m_pHitAttack[2].Awake(); //¶˜r‚Ì“–‚½‚è”»’è‹N“®
 		m_pHitAttack[3].Awake(); //‰E˜r‚Ì“–‚½‚è”»’è‹N“®
 	}
 
 	//•ø‚«‚µ‚ßUŒ‚“–‚½‚è”»’èI—¹
-	if (animNum == 20)
+	if (animNum >= 20)
 	{
 		m_pHitAttack[2].Sleep(); //¶˜r‚Ì“–‚½‚è”»’è‹N“®
 		m_pHitAttack[3].Sleep(); //‰E˜r‚Ì“–‚½‚è”»’è‹N“®

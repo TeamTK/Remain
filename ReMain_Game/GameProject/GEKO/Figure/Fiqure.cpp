@@ -44,7 +44,7 @@ void Fiqure::RenderSphere3D(const Vector3D &pos, const Vector3D &scale, const Ve
 	//GetInstance()->m_Fiqure->m_Sphere3D.Render(pos, scale, color);
 }
 
-void Fiqure::RenderBillboard(const Vector3D &pos, const Vector3D &scale, const std::string &name)
+void Fiqure::RenderBillboard(const Vector3D &pos, float size, const std::string &name)
 {
-	GetInstance()->m_Fiqure->m_Billboard.Render(pos, scale, name);
+	GetInstance()->m_Fiqure->m_Billboard.Render(pos, size, name);
 }

@@ -10,7 +10,6 @@ public:
 	StaticMesh(const std::string &meshName);
 	~StaticMesh();
 	void SetAsset(const std::string &meshName);
-	void WorldMatrixBuilding();
 	const IndexInfo *GetIndex() const;
 	const VertexInfo *GetVertex() const;
 	const MaterialInfo *GetMaterial() const;

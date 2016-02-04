@@ -1,28 +1,51 @@
 #include "Billboard.h"
+#include "FiqureShaderManager.h"
+#include "FiqureInfo.h"
 #include "..\ImageSystem\Image.h"
 #include "..\System\Camera.h"
+#include "..\System\Input.h"
+#include <assert.h>
 
-Billboard::Billboard()
+Billboard::Billboard() :
+	m_pVertexBuffer(nullptr)
 {
-	//シェーダーの初期化
-	if (FAILED(InitShader()))
-	{
-		MessageBoxA(0, "Billboard(シェーダーの初期化に失敗しました", NULL, MB_OK);
-	}
-
-	//頂点作成
-	if (FAILED(InitVertex()))
-	{
-		MessageBoxA(0, "Billboard(頂点のシェーダーの作成に失敗しました", NULL, MB_OK);
-	}
+	ChangeVertex(VertexBillboardInfo());
 }
 
 Billboard::~Billboard()
 {
+	SAFE_RELEASE(m_pVertexBuffer);
 }
 
-void Billboard::Render(const Vector3D &pos, const Vector3D &scale, const std::string &name)
+void Billboard::ChangeVertex(const VertexBillboardInfo& info)
 {
+	SAFE_RELEASE(m_pVertexBuffer);
+
+	VertexBillboard vertex[] =
+	{
+		D3DXVECTOR3(info.leftDwonPos),   D3DXVECTOR2(info.leftDwonUV),
+		D3DXVECTOR3(info.leftTopPos),    D3DXVECTOR2(info.leftTopUV),
+		D3DXVECTOR3(info.rightDwonPos),  D3DXVECTOR2(info.rightDwonUV),
+		D3DXVECTOR3(info.rightTopPos),   D3DXVECTOR2(info.rightTopUV)
+	};
+
+	D3D11_BUFFER_DESC bd;
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(vertex) * 4;
+	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bd.CPUAccessFlags = 0;
+	bd.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA InitData;
+	InitData.pSysMem = vertex;
+
+	Direct3D11::GetInstance()->GetID3D11Device()->CreateBuffer(&bd, &InitData, &m_pVertexBuffer);
+}
+
+void Billboard::Render(const Vector3D &pos, float size, const std::string &name)
+{
+	FigureBillboardInfo *pInfo = FiqureShaderManager::GetInstance()->GetBillboardInfo();
+	
 	ImageData *pImage = ImageAsset::GetImage(name);
 	ImageInfo *p = pImage->GetImageInfo();
 
@@ -30,8 +53,8 @@ void Billboard::Render(const Vector3D &pos, const Vector3D &scale, const std::st
 	pDeviceContext = Direct3D11::GetInstance()->GetID3D11DeviceContext();
 
 	//使用するシェーダーのセット
-	pDeviceContext->VSSetShader(m_FigureInfo.pVertexShader, NULL, 0);
-	pDeviceContext->PSSetShader(m_FigureInfo.pPixelShader, NULL, 0);
+	pDeviceContext->VSSetShader(pInfo->pVertexShader, NULL, 0);
+	pDeviceContext->PSSetShader(pInfo->pPixelShader, NULL, 0);
 
 	D3DXMATRIX world;
 	D3DXMatrixIdentity(&world);
@@ -42,41 +65,40 @@ void Billboard::Render(const Vector3D &pos, const Vector3D &scale, const std::st
 	world._43 = pos.z;
 
 	//拡大縮小
-	world._11 = scale.x;
-	world._22 = scale.y;
-	world._33 = scale.z;
+	world._11 = size;
+	world._22 = size;
+	world._33 = size;
 
 	D3DXMATRIX CancelRotation = (*Camera::GetView());
-	CancelRotation._41 = CancelRotation._42 = CancelRotation._43 = 0;
+	CancelRotation._41 = CancelRotation._42 = CancelRotation._43 = 0.0f;
 	D3DXMatrixInverse(&CancelRotation, NULL, &CancelRotation);
 	world = CancelRotation * world;
 
 	//変換行列とカラーをシェーダーに送る
 	D3D11_MAPPED_SUBRESOURCE pData;
-	ConstantBufferFiqure cb;
-	if (SUCCEEDED(pDeviceContext->Map(m_FigureInfo.pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+	ConstantBufferFiqureBillboard cb;
+	if (SUCCEEDED(pDeviceContext->Map(pInfo->pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
 		//ワールド、カメラ、射影行列を渡す
 		D3DXMATRIX m = world * (*Camera::GetView()) * (*Camera::GetProjection());
 		D3DXMatrixTranspose(&m, &m);
 		cb.mWVP = m;
-		cb.Color = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));
-		pDeviceContext->Unmap(m_FigureInfo.pConstantBuffer, 0);
+		pDeviceContext->Unmap(pInfo->pConstantBuffer, 0);
 	}
 
 	//このコンスタントバッファーをどのシェーダーで使うか
-	pDeviceContext->VSSetConstantBuffers(0, 1, &m_FigureInfo.pConstantBuffer);
-	pDeviceContext->PSSetConstantBuffers(0, 1, &m_FigureInfo.pConstantBuffer);
+	pDeviceContext->VSSetConstantBuffers(0, 1, &pInfo->pConstantBuffer);
+	pDeviceContext->PSSetConstantBuffers(0, 1, &pInfo->pConstantBuffer);
 
 	//バーテックスバッファーをセット
-	UINT stride = sizeof(BillboradVertex);
+	UINT stride = sizeof(VertexBillboard);
 	UINT offset = 0;
-	Direct3D11::GetInstance()->GetID3D11DeviceContext()->IASetVertexBuffers(0, 1, &m_FigureInfo.pVertexBuffer, &stride, &offset);
+	Direct3D11::GetInstance()->GetID3D11DeviceContext()->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
 
 	//頂点インプットレイアウトをセット
-	pDeviceContext->IASetInputLayout(m_FigureInfo.pVertexLayout);
+	pDeviceContext->IASetInputLayout(pInfo->pVertexLayout);
 
 	//プリミティブ・トポロジーをセット
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
@@ -89,103 +111,122 @@ void Billboard::Render(const Vector3D &pos, const Vector3D &scale, const std::st
 	pDeviceContext->Draw(4, 0);
 }
 
-HRESULT Billboard::InitShader()
+//ビルボードアニメーション
+BillboardAnimation::BillboardAnimation() :
+	m_IsEnd(false),
+	m_FrameNum(0),
+	m_FrameAllNum(0),
+	m_Speed(0.0f),
+	m_pBillboard(nullptr)
 {
-	ID3D11Device *pDevice;
-	pDevice = Direct3D11::GetInstance()->GetID3D11Device();
 
-	//hlslファイル読み込みブロブ作成
-	ID3D10Blob *pCompiledShader = NULL;
-	ID3D10Blob *pErrors = NULL;
-
-	//ブロブからバーテックスシェーダー作成
-	if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\Billboard.hlsl"), NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
-	{
-		MessageBox(0, TEXT("hlsl読み込み失敗"), NULL, MB_OK);
-		return E_FAIL;
-	}
-
-	if (FAILED(pDevice->CreateVertexShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_FigureInfo.pVertexShader)))
-	{
-		SAFE_RELEASE(pCompiledShader);
-		MessageBox(0, TEXT("バーテックスシェーダー作成失敗"), NULL, MB_OK);
-		return E_FAIL;
-	}
-
-	//頂点インプットレイアウトを定義
-	//D3D11_INPUT_ELEMENT_DESC layout;
-	D3D11_INPUT_ELEMENT_DESC layout[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-	UINT numElements = sizeof(layout) / sizeof(layout[0]);
-
-	//頂点インプットレイアウトを作成
-	if (FAILED(pDevice->CreateInputLayout(layout, numElements, pCompiledShader->GetBufferPointer(),
-										  pCompiledShader->GetBufferSize(), &m_FigureInfo.pVertexLayout)))
-	{
-		return FALSE;
-	}
-
-	//ブロブからピクセルシェーダー作成
-	if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\Billboard.hlsl"), NULL, NULL, "PS", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
-	{
-		MessageBox(0, TEXT("hlsl読み込み失敗"), NULL, MB_OK);
-		return E_FAIL;
-	}
-
-	if (FAILED(pDevice->CreatePixelShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_FigureInfo.pPixelShader)))
-	{
-		SAFE_RELEASE(pCompiledShader);
-		MessageBox(0, TEXT("ピクセルシェーダー作成失敗"), NULL, MB_OK);
-		return E_FAIL;
-	}
-
-	//コンスタントバッファー作成　変換行列渡し用
-	D3D11_BUFFER_DESC cb;
-	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cb.ByteWidth = sizeof(ConstantBufferFiqure);
-	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cb.MiscFlags = 0;
-	cb.Usage = D3D11_USAGE_DYNAMIC;
-
-	if (FAILED(pDevice->CreateBuffer(&cb, NULL, &m_FigureInfo.pConstantBuffer)))
-	{
-		return E_FAIL;
-	}
-
-	SAFE_RELEASE(pCompiledShader);
-	SAFE_RELEASE(pErrors);
-
-	return S_OK;
 }
 
-HRESULT Billboard::InitVertex()
+BillboardAnimation::BillboardAnimation(const std::string &assetName, int frameNum, int sizeW, int sizeH) :
+	m_IsEnd(false),
+	m_Speed(0.0f)
 {
-	//バーテックスバッファー作成
-	BillboradVertex vertices[] =
+	FrameDivision(assetName, frameNum, sizeW, sizeH);
+}
+
+BillboardAnimation::~BillboardAnimation()
+{
+	if (m_pBillboard != nullptr) delete[] m_pBillboard;
+}
+
+bool BillboardAnimation::GetIsEnd() const
+{
+	return m_IsEnd;
+}
+
+void BillboardAnimation::FrameDivision(const std::string &assetName, int frameNum, int sizeW, int sizeH)
+{
+	ImageInfo *pImage = ImageAsset::GetImage(assetName)->GetImageInfo();
+
+	if (m_pBillboard != nullptr)
 	{
-		D3DXVECTOR3(-1.0, -1.0,0),D3DXVECTOR2(0,1), //頂点1,
-		D3DXVECTOR3(-1.0, 1.0,0), D3DXVECTOR2(0,0), //頂点2
-		D3DXVECTOR3(1.0, -1.0,0), D3DXVECTOR2(1,1), //頂点3
-		D3DXVECTOR3(1.0, 1.0,0),  D3DXVECTOR2(1,0), //頂点4
-	};
-
-	D3D11_BUFFER_DESC bd;
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(BillboradVertex) * 4;
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = 0;
-	bd.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA InitData;
-	InitData.pSysMem = vertices;
-
-	if (FAILED(Direct3D11::GetInstance()->GetID3D11Device()->CreateBuffer(&bd, &InitData, &m_FigureInfo.pVertexBuffer)))
-	{
-		return E_FAIL;
+		delete[] m_pBillboard;
+		m_pBillboard = nullptr;
 	}
 
-	return S_OK;
+	m_pBillboard = new Billboard[frameNum];
+
+	m_Name = assetName;
+	m_FrameAllNum = frameNum;
+
+	//幅縦の分割数カウント変数
+	int DivW = pImage->Width / sizeW;
+	int DivH = pImage->Height / sizeH;
+
+	//幅縦の分割数カウント変数
+	int cntW = 0;
+	int cntH = 0;
+
+	//画像分割幅と高さ
+	float cntSizeW = 0.0f;
+	float cntSizeH = 0.0f;
+
+	VertexBillboardInfo info;
+
+	for (int i = 0; i < frameNum; i++)
+	{
+		//ピクセル値からUV座標に変換
+		float uvLeft = cntSizeW / (float)pImage->Width;
+		float uvRight = (cntSizeW + sizeW) / (float)pImage->Width;
+		float uvTop = cntSizeH / (float)pImage->Height;
+		float uvBotton = (cntSizeH + sizeW) / (float)pImage->Height;
+
+		info.leftTopUV = Vector2D(uvLeft, uvTop);
+		info.leftDwonUV = Vector2D(uvLeft, uvBotton);
+		info.rightTopUV = Vector2D(uvRight, uvTop);
+		info.rightDwonUV = Vector2D(uvRight, uvBotton);
+		m_pBillboard[i].ChangeVertex(info);
+
+		//幅は右に沿って更新
+		cntW++;
+		cntSizeW += sizeW;
+
+		//横方向の分割更新
+		if (cntW == DivW)
+		{
+			cntW = 0;
+			cntSizeW = 0.0f;
+			cntH++;
+			cntSizeH += sizeH;
+		}
+
+		//縦方向の分割更新
+		if (cntH > DivH)
+		{
+			cntH = 0;
+			cntSizeH = 0.0f;
+			break;
+		}
+	}
+}
+
+void BillboardAnimation::PlayFrame(float frame)
+{
+	m_Speed += Math::VelocityToFrameM(frame);
+}
+
+void BillboardAnimation::Render(const Vector3D &pos, float size)
+{
+	assert(m_pBillboard != nullptr && "ビルボードアニメーションでの画像分割が行われていません");
+
+	m_FrameNum = (int)m_Speed;
+
+	//設定したフレームを超えたら初期化
+	if (m_FrameNum >= m_FrameAllNum)
+	{
+		m_Speed = 0;
+		m_FrameNum = 0;
+		m_IsEnd = true;
+	}
+	m_pBillboard[m_FrameNum].Render(pos, size, m_Name);
+}
+
+void BillboardAnimation::DebugFrame()
+{
+	std::cout << m_FrameNum << "\n";
 }

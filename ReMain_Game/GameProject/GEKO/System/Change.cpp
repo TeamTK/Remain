@@ -1,5 +1,6 @@
 #include "Change.h"
 #include "Camera.h"
+#include "Fps.h"
 
 Change::Change()
 {
@@ -64,11 +65,9 @@ Vector2D Change::WorldToScreen(const Vector3D &pos)
 	return Vector2D(s2.x, s2.y);
 }
 
-#define FPS 60
-
 float Change::SecondToFrame(float second)
 {
-	return second * FPS;
+	return second * Fps::GetFPS();
 }
 
 float Change::MinuteToFrame(float minute)
@@ -83,17 +82,17 @@ float Change::HourToFrame(float hour)
 
 float Change::FrameToSecond(float frame)
 {
-	return frame / FPS;
+	return frame / Fps::GetFPS();
 }
 
 float Change::FrameToMinute(float frame)
 {
-	return frame / (60 * FPS);
+	return frame / (60 * Fps::GetFPS());
 }
 
 float Change::FrameToHour(float frame)
 {
-	return frame / (60 * 60 * FPS);
+	return frame / (60 * 60 * Fps::GetFPS());
 }
 
 float Change::MilliToMeter(float milli)

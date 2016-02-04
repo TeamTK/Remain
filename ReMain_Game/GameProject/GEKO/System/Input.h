@@ -339,6 +339,8 @@ namespace Input
 	static Key KeyLControl(DIK_LCONTROL);
 	static Key KeyRControl(DIK_RCONTROL);
 	static Key KeyTab(DIK_TAB);
+	static Key KeyEnter(DIK_RETURN);
+	static Key KeyNumPadEnter(DIK_NUMPADENTER);
 
 	//É}ÉEÉX
 	static KeyMouse Mouse;

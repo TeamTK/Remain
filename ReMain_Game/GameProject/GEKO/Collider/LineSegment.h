@@ -72,4 +72,19 @@ private:
 	std::function<void(Result_Porygon &)> m_Func;
 };
 
+//ü‚ÆStaticMesh‚Æ‚Ì“–‚½‚è”»’è(•¡”‚ÌŒ‹‰Ê‚ğ‚à‚ç‚¤)
+class LineSegment_Group_vs_StaticMeshCollider : public BaseCollider
+{
+public:
+	friend ColliderManager;
+
+public:
+	LineSegment_Group_vs_StaticMeshCollider(Vector3D *pStart, Vector3D *pEnd, std::function<void(Result_Porygon_Group_LineSegment &)> func);
+	~LineSegment_Group_vs_StaticMeshCollider();
+
+private:
+	LineSegmentHitData m_HitData;
+	std::function<void(Result_Porygon_Group_LineSegment &)> m_Func;
+};
+
 #endif

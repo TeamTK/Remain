@@ -1,56 +1,43 @@
 #include "Title.h"
-#include "..\GEKO\GEKO.h"
-#include "../GameSystem/StageObject/StageObject.h"
-#include "MainGame.h"
-#include <thread>
+#include "NowLoading.h"
 
-Image g_titleImage;
-bool g_isLoad = false;
+#define TITLE_POS 100, 200
+#define START_POS 600, 350
+#define EXIT_POS 600, 420
+
+bool g_isResource = false;
 
 Title::Title() :
-	Task("Title", 0)
+	Task("Title", 0),
+	m_SelectPos(-100, -100),
+	m_Select(Select::eNo)
 {
-	ImageAsset::LoadFile("TextData\\Image.txt");
-	g_titleImage.SetAsset("SelectCircle");
+	//リソース設定2D
+	m_TitleImage.SetAsset("Remain");
+	m_StartImage.SetAsset("Start");
+	m_ExitImage.SetAsset("Exit");
+	m_SelectImage.SetAsset("Blood");
 
-	auto func = [] 
-	{ 
-		StaticMeshAsset::LoadFile("TextData\\StaticMesh.txt");
-		DynamicMeshAsset::LoadFile("TextData\\DynamicMesh.txt"); 
-		g_isLoad = true; 
-	};
+	//リソース設定3D
+	m_Cabin.SetAsset("Cabin");
+	m_ShotGun.SetAsset("Shotgun");
+	m_HandGun.SetAsset("Handgun");
 
-	auto func2 = []
-	{
-		/*
-		float cnt = 0.0f;
-		for (;;)
-		{
-			if (g_isLoad) break;
-			GEKO::ScreenUpdate();
-			GEKO::ClearColor(0, 255, 255);
+	//選択画像設定
+	m_SelectImage.SetSize(m_SelectImage.GetWidth() / 4, m_SelectImage.GetHeight() / 5);
+	m_SelectImage.SetCenter(m_SelectImage.GetWidth() / 2, m_SelectImage.GetHeight() / 2);
 
-			cnt += 0.5f;
-			g_titleImage.SetAngle(cnt);
-			WindowSize size = *Window::Get()->GetWindowSize();
-			g_titleImage.Draw(size.sWidth / 2, size.sHeight / 2);
-		}
-		*/
-		GEKO::ClearColor(0, 255, 255);
-		WindowSize size = *Window::Get()->GetWindowSize();
-		g_titleImage.Draw(size.sWidth / 3, size.sHeight / 3);
-		GEKO::ScreenUpdate();
-	};
+	//3Dオブジェクト回転と平行移動
+	m_ShotGun.SetRotationDegree(240, 0, 90);
+	m_HandGun.SetRotationDegree(220, 0, 90);
+	m_ShotGun.SetTranselate(-1.5f, 1.0f, -3.0f);
+	m_HandGun.SetTranselate(-1.5f, 1.0f, -2.8f);
 
-	std::thread t1(func);
-	std::thread t2(func2);
+	m_Render.Regist(0, REGIST_RENDER_FUNC(Title::Render));
 
-	t1.join();
-	t2.join();
-
-	new MainGame;
-
-	Task::SetKill();
+	//カメラ位置と注視点
+	Camera::SetEye(-1.5f, 2.0f, -2.0f);
+	Camera::SetLookat(-1.0f, 0.0f, -4.0f);
 }
 
 Title::~Title()
@@ -59,8 +46,56 @@ Title::~Title()
 
 void Title::Update()
 {
+	//選択上
+	if (Input::KeyUp.Clicked() || Input::XInputPad1.UpClicked())
+	{
+		m_SelectPos = Vector2D(START_POS);
+		m_Select = Select::eStart;
+	}
+
+	//選択下
+	if (Input::KeyDown.Clicked() || Input::XInputPad1.DownClicked())
+	{
+		m_SelectPos = Vector2D(EXIT_POS);
+		m_Select = Select::eExit;
+	}
+
+	//決定ボタン
+	if (Input::KeyEnter.Clicked() || Input::XInputPad1.AClicked())
+	{
+		switch (m_Select)
+		{
+		case Select::eNo:
+			break;
+
+		case Select::eStart:
+			SetKill();
+			m_Render.Sleep();
+			new NowLoading(g_isResource);
+			g_isResource = true;
+
+			break;
+
+		case Select::eExit:
+			SetKill();
+			m_Render.Sleep();
+			GEKO::LoopEnd();
+
+			break;
+		}
+	}
 }
 
 void Title::Render()
 {
+	//3Dオブジェクト
+	m_Cabin.Render();
+	m_ShotGun.Render();
+	m_HandGun.Render();
+
+	//2Dオブジェクト
+	m_TitleImage.Draw(TITLE_POS);
+	m_StartImage.Draw(START_POS);
+	m_ExitImage.Draw(EXIT_POS);
+	m_SelectImage.Draw(m_SelectPos);
 }

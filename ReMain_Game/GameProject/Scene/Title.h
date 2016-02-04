@@ -1,7 +1,8 @@
 #ifndef _TITLE_H_
 #define _TITLE_H_
 
-#include "..\GEKO\Task\Task.h"
+#include "..\GEKO\GEKO.h"
+#include "..\GameSystem\ScreenTransfer.h"
 
 class Title : public Task
 {
@@ -12,7 +13,24 @@ public:
 	void Render();
 
 private:
+	enum Select
+	{
+		eNo,
+		eStart,
+		eExit
+	};
 
+	RenderTask m_Render;
+	Image m_TitleImage;
+	Image m_StartImage;
+	Image m_ExitImage;
+	Image m_SelectImage;
+	StaticMesh m_Cabin;
+	StaticMesh m_ShotGun;
+	StaticMesh m_HandGun;
+	Vector2D m_SelectPos;
+	Select m_Select;
+	ScreenTransfer_In m_Transfer;
 };
 
 #endif

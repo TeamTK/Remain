@@ -23,48 +23,6 @@ void StaticMesh::SetAsset(const std::string &meshName)
 	AllocationMeshData(meshName);
 }
 
-void StaticMesh::WorldMatrixBuilding()
-{
-	D3DXQUATERNION qOut(0, 0, 0, 1); //単位クォータニオン
-	D3DXQUATERNION qX(0, 0, 0, 1); //単位クォータニオン
-	D3DXQUATERNION qY(0, 0, 0, 1); //単位クォータニオン
-	D3DXQUATERNION qZ(0, 0, 0, 1); //単位クォータニオン
-	D3DXVECTOR3 xAxis(1, 0, 0); //Xの中心軸
-	D3DXVECTOR3 yAxis(0, 1, 0); //Yの中心軸
-	D3DXVECTOR3 zAxis(0, 0, 1); //Zの中心軸
-	D3DXMATRIX Mat;
-
-	Matrix mat;
-
-	D3DXQuaternionRotationAxis(&qX, &xAxis, m_Rotation.x);
-	D3DXQuaternionRotationAxis(&qY, &yAxis, m_Rotation.y);
-	D3DXQuaternionRotationAxis(&qZ, &zAxis, m_Rotation.z);
-	qOut = qX * qY * qZ;
-
-	//クオータニオンから行列に変更
-	D3DXMatrixRotationQuaternion(&mat, &qOut);
-
-	//拡大縮小
-	mat._11 *= m_Scale.x;
-	mat._21 *= m_Scale.x;
-	mat._31 *= m_Scale.x;
-
-	mat._12 *= m_Scale.y;
-	mat._22 *= m_Scale.y;
-	mat._32 *= m_Scale.y;
-
-	mat._13 *= m_Scale.z;
-	mat._23 *= m_Scale.z;
-	mat._33 *= m_Scale.z;
-
-	//平行移動
-	mat._41 = m_Transelate.x;
-	mat._42 = m_Transelate.y;
-	mat._43 = m_Transelate.z;
-
-	m_Matrix = mat;
-}
-
 const IndexInfo *StaticMesh::GetIndex() const
 {
 	return m_pMeshData->GetMeshInfo()->pIndex;
@@ -285,10 +243,6 @@ void StaticMesh::RenderFunc(Matrix &matrix) const
 		{
 			pDeviceContext->PSSetSamplers(0, 1, &data->m_pSampleLinear);
 			pDeviceContext->PSSetShaderResources(0, 1, &data->m_pMaterial[i].pTexture);
-		}
-		else
-		{
-			pDeviceContext->PSSetShaderResources(0, 1, &data->m_Nothing);
 		}
 
 		//プリミティブをレンダリング

@@ -1,5 +1,5 @@
 #include "Knife.h"
-#include "../enums.h"
+#include "../Player/PlayerInfo.h"
 
 Knife::Knife(int* anim, float* frame, bool* take, Matrix* m) :
 	WeaponBase(anim, frame, take, m, "Knife", 0)

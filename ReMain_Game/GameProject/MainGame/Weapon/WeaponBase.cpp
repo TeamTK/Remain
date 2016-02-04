@@ -12,7 +12,7 @@ WeaponBase::WeaponBase(int* anim, float* frame, bool* take, Matrix* m, const cha
 	m_PlayerAnim = anim;
 	m_TakeWeapon= take;
 	m_PlayerAnimFrame = frame;
-	m_RenderTask.Regist(0, REGIST_RENDER_FUNC(WeaponBase::Render));
+	m_RenderTask.Regist(1, REGIST_RENDER_FUNC(WeaponBase::Render));
 }
 
 WeaponBase::~WeaponBase()

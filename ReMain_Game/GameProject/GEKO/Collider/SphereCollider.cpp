@@ -44,7 +44,7 @@ Sphere_vs_LineSegmentCollider::~Sphere_vs_LineSegmentCollider()
 }
 
 //‹…‚ÆStaticMesh‚Ì“–‚½‚è”»’è
-Sphere_vs_StaticMeshCollider::Sphere_vs_StaticMeshCollider(Vector3D *pPos, float *pRadius, std::function<void(Result_Porygon_Group &)> func)
+Sphere_vs_StaticMeshCollider::Sphere_vs_StaticMeshCollider(Vector3D *pPos, float *pRadius, std::function<void(Result_Porygon_Group_Sphere &)> func)
 {
 	m_HitData.pPosition = pPos;
 	m_HitData.pRadius = pRadius;

@@ -1,8 +1,8 @@
 #ifndef UI_SELECT_WEAPON_H
 #define UI_SELECT_WEAPON_H
 
-#include "../../MainGame/enums.h"
-#include "../../GEKO/GEKO.h"
+#include "../../MainGame/Player/PlayerInfo.h"
+#include "../../MainGame/Weapon/WeaponInfo.h"
 
 class UI_SelectWeapon
 {

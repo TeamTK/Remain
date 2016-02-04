@@ -1,7 +1,7 @@
 #include "DirectionalLight.h"
 
 DirectionalLight::DirectionalLight() :
-	m_Direction(0.0f, 1.0f, 0.0f, 0.0f),
+	m_Direction(0.0f, -1.0f, 0.0f, 0.0f),
 	m_LightColor(1.0f, 1.0f, 1.0f, 1.0f)
 {
 }
@@ -39,7 +39,7 @@ void DirectionalLight::SetDirection(float x, float y)
 	RX.RotationDegreeX(x);
 	RY.RotationDegreeZ(y);
 
-	Vector3D vec = Vector3D(0.0f, 1.0f, 0.0f) * (RX * RY);
+	Vector3D vec = Vector3D(0.0f, -1.0f, 0.0f) * (RX * RY);
 	vec.SetNormalize();
 
 	GetInstance()->m_Direction.x = vec.x;

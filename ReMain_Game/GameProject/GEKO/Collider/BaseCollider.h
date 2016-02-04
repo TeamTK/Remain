@@ -94,9 +94,40 @@ struct Result_Porygon
 	Vector3D contactPos;
 	Vector3D normal;
 	int materialIndex;
+	int PoryIndex;
 	unsigned int targetID;
 	const char *name;
 	const char *targetName;
+};
+
+//ポリゴンに当たった結果(線分用)
+struct Result_Porygon_LineSegment
+{
+	Vector3D vertexPos[3];
+	Vector3D contactPos;
+	Vector3D normal;
+	int materialIndex;
+	unsigned int targetID;
+};
+
+//ポリゴンに当たった結果(複数線分用)
+struct Result_Porygon_Group_LineSegment
+{
+	int hitNum;
+	unsigned int targetID;
+	const char *name;
+	const char *targetName;
+	Matrix worldMatrix;
+	Matrix localMatrix;
+	Matrix meshMatrix;
+	Result_Porygon_LineSegment *pArray;
+
+	Result_Porygon_Group_LineSegment() :
+		hitNum(0),
+		name("NoName"),
+		targetName(nullptr),
+		pArray(nullptr) {};
+	~Result_Porygon_Group_LineSegment() {};
 };
 
 //ポリゴンに当たった結果(球用)
@@ -110,23 +141,24 @@ struct Result_Porygon_Sphere
 	float dist;
 };
 
-//当たったポリゴンの結果（複数）
-struct Result_Porygon_Group
+//当たったポリゴンの結果（複数球用）
+struct Result_Porygon_Group_Sphere
 {
 	int hitNum;
-	float dist;
+	unsigned int targetID;
 	const char *name;
 	const char *targetName;
 	Matrix worldMatrix;
 	Matrix localMatrix;
 	Matrix meshMatrix;
 	Result_Porygon_Sphere *pArray;
-	Result_Porygon_Group() :
+
+	Result_Porygon_Group_Sphere() :
 		hitNum(0),
-		dist(0.0f),
 		name("NoName"),
+		targetName(nullptr),
 		pArray(nullptr){};
-	~Result_Porygon_Group() {};
+	~Result_Porygon_Group_Sphere() {};
 };
 
 //コリジョン基底

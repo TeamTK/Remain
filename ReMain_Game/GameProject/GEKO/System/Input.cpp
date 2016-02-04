@@ -628,7 +628,7 @@ namespace Input
 	{
 		if (m_pXInputState->dwPacketNumber)
 		{
-			m_pXInputState->dwPacketNumber = 0;
+			//m_pXInputState->dwPacketNumber = 0;
 			return true;
 		}
 		return false;
