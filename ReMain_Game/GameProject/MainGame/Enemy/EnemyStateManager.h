@@ -7,7 +7,7 @@ public:
 	~EnemyStateManager();
 	static void LoadFileState(const char *fileName);
 	static void LoadFileSpawn(const char *fileName);
-	static void Generation(const char *stateName, const char *spawnName);
+	static void Generation(const char *stateName , const char *spawnName, const char* tracerouteName, bool isSearch);
 
 private:
 	EnemyStateManager();

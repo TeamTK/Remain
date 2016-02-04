@@ -17,6 +17,7 @@ class LineSegmentCollider;
 class LineSegment_vs_SphereCollider;
 class LineSegment_vs_CapsuleCollider;
 class LineSegment_vs_StaticMeshCollider;
+class LineSegment_Group_vs_StaticMeshCollider;
 
 //StaticMesh
 class StaticMesh_vs_LineSegmentCollider;
@@ -25,11 +26,13 @@ class StaticMesh;
 
 class Vector3D;
 
+//“–‚½‚è”»’èŒ‹‰Ê
 struct SphereHitData;
 struct CapsuleHitData;
 struct LineSegmentHitData;
+struct Result_Porygon_Group_LineSegment;
 struct Result_Porygon;
-struct Result_Porygon_Group;
+struct Result_Porygon_Group_Sphere;
 
 class ColliderManager
 {
@@ -49,6 +52,7 @@ class ColliderManager
 	friend LineSegment_vs_SphereCollider;
 	friend LineSegment_vs_CapsuleCollider;
 	friend LineSegment_vs_StaticMeshCollider;
+	friend LineSegment_Group_vs_StaticMeshCollider;
 
 	//StaticMesh
 	friend StaticMesh_vs_LineSegmentCollider;
@@ -83,6 +87,7 @@ private:
 	void Add(LineSegment_vs_SphereCollider *pLineSegment);
 	void Add(LineSegment_vs_CapsuleCollider *pLineSegment);
 	void Add(LineSegment_vs_StaticMeshCollider *pLineSegment);
+	void Add(LineSegment_Group_vs_StaticMeshCollider *pLineSegment);
 
 	//StaticMesh
 	void Add(StaticMesh_vs_LineSegmentCollider *pStaticMesh);
@@ -104,11 +109,13 @@ private:
 	void Clear(LineSegment_vs_SphereCollider *pLineSegment);
 	void Clear(LineSegment_vs_CapsuleCollider *pLineSegment);
 	void Clear(LineSegment_vs_StaticMeshCollider *pLineSegment);
+	void Clear(LineSegment_Group_vs_StaticMeshCollider *pLineSegment);
 
 	//StaticMesh
 	void Clear(StaticMesh_vs_LineSegmentCollider *pStaticMesh);
 	void Clear(StaticMesh_vs_SphereCollider *pStaticMesh);
 
+	//“–‚½‚è”»’è
 	void CheckSphere();
 	void CheckSphere_vs_Capsule();
 	void CheckSphere_vs_LineSegment();
@@ -116,7 +123,10 @@ private:
 	void CheckCapsule_vs_LineSegment();
 	void CheckLineSegment();
 	void CheckStaitcMesh_vs_LineSegment();
+	void CheckStaitcMesh_vs_LineSegment_Group();
 	void CheckStaitcMesh_vs_Sphere();
+
+	//“–‚½‚è”»’èŒvŽZ
 	bool HitCheckSphere(SphereHitData &pHitData1, SphereHitData &pHitData2);
 	bool HitCheckSphere_vs_Capsule(SphereHitData &pHitData1, CapsuleHitData &pHitData2);
 	bool HitCheckSphere_vs_LineSegment(SphereHitData &pHitData1, LineSegmentHitData &pHitData2);
@@ -125,8 +135,9 @@ private:
 	bool HitCheckLineSegment(LineSegmentHitData &pHitData1, LineSegmentHitData &pHitData2);
 	//bool HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, LineSegmentHitData &hitData2, Result_Porygon *pory);
 	bool HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, Vector3D *normal, LineSegmentHitData &hitData2, Result_Porygon *pory);
+	bool HitCheckStaticMesh_vs_LineSegment_Group(StaticMesh &hitData1, Vector3D *normal, LineSegmentHitData &hitData2, Result_Porygon_Group_LineSegment *pory);
 	//bool HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, SphereHitData &hitData2, Result_Porygon_Group *pory);
-	bool HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, Vector3D *normal, SphereHitData &hitData2, Result_Porygon_Group *pory);
+	bool HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, Vector3D *normal, SphereHitData &hitData2, Result_Porygon_Group_Sphere *pory);
 
 private:
 	class ColliderListPimpl;

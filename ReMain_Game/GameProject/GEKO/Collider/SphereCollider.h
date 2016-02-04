@@ -62,12 +62,12 @@ public:
 	friend ColliderManager;
 
 public:
-	Sphere_vs_StaticMeshCollider(Vector3D *pPos, float *pRadius, std::function<void(Result_Porygon_Group &)> func);
+	Sphere_vs_StaticMeshCollider(Vector3D *pPos, float *pRadius, std::function<void(Result_Porygon_Group_Sphere &)> func);
 	~Sphere_vs_StaticMeshCollider();
 
 private:
 	SphereHitData m_HitData;
-	std::function<void(Result_Porygon_Group &)> m_Func;
+	std::function<void(Result_Porygon_Group_Sphere &)> m_Func;
 };
 
 #endif

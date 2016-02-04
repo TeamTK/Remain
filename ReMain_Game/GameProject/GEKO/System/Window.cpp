@@ -56,8 +56,8 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 		//ウインドウ更新
 		RECT rc;
 		GetClientRect(m_hWnd, &rc);
-		m_WinSize.sWidth = rc.right;
-		m_WinSize.sHeight = rc.bottom;
+		m_WinSize.width = rc.right;
+		m_WinSize.height = rc.bottom;
 
 		break;
 	}
@@ -66,10 +66,10 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 HRESULT Window::InitWindow(LPCSTR Winname, INT WinWidth, INT WinHeight)
 {
-	m_WinSize.sWidth = WinWidth;
-	m_WinSize.sHeight = WinHeight;
-	m_OriginWinSize.sWidth = WinWidth;
-	m_OriginWinSize.sHeight = WinHeight;
+	m_WinSize.width = WinWidth;
+	m_WinSize.height = WinHeight;
+	m_OriginWinSize.width = WinWidth;
+	m_OriginWinSize.height = WinHeight;
 
 	MSG msg = { 0 };
 	ZeroMemory(&msg, sizeof(msg));
@@ -146,12 +146,12 @@ HWND Window::GetWindowHandle() const
 	return m_hWnd;
 }
 
-WindowSize *Window::GetWindowSize()
+const WindowSize *Window::GetWindowSize() const
 {
 	return &m_WinSize;
 }
 
-WindowSize *Window::GetWindowOriginSize()
+const WindowSize *Window::GetWindowOriginSize() const
 {
 	return &m_OriginWinSize;
 }

@@ -1,8 +1,8 @@
 #include "Direct3D11.h"
 #include "Window.h"
 
-#define SAMPLE_COUNT 2.9f
-#define SAMPLE_QUALITY 0.9f
+#define SAMPLE_COUNT 1
+#define SAMPLE_QUALITY 0
 
 #include "Debug.h"
 
@@ -181,7 +181,6 @@ void Direct3D11::SetResolution_And_RefreshRate(int width, int height, int refres
 {
 	m_ResolutionWidth = width;
 	m_ResolutionHeight = height;
-
 	/*
 	DXGI_MODE_DESC desc;
 	desc.Width = width;
@@ -193,7 +192,6 @@ void Direct3D11::SetResolution_And_RefreshRate(int width, int height, int refres
 	desc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	m_pSwapChain->ResizeTarget(&desc);
 	*/
-
 	ChangeWindowSize();
 }
 

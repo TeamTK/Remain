@@ -3,7 +3,6 @@
 
 #include "WeaponBase.h"
 
-
 class Handgun :public WeaponBase
 {
 public:

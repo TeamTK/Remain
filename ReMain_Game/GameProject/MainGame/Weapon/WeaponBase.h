@@ -1,8 +1,8 @@
 #ifndef WEAPON_BASE_H
 #define WEAPON_BASE_H
 
-#include "../../GEKO/GEKO.h"
-#include "../enums.h"
+#include "WeaponInfo.h"
+#include "../Player/PlayerInfo.h"
 
 #define AMMO_LOADED_SHOTGUN 6	//最大装弾数ショットガン
 #define AMMO_LOADED_HANDGUN 6	//最大装弾数ハンドガン

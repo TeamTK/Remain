@@ -10,13 +10,18 @@
 #include "System\Input.h"
 #include "System\Debug.h"
 #include "System\Change.h"
+#include "System\Timer.h"
 #include "System\Collision.h"
 #include "Figure\Fiqure.h"
+#include "Figure\Billboard.h"
 #include "Collider\Collider.h"
 #include "Collider\ColliderManager.h"
 #include "Task\RenderTask.h"
 #include "Task\FunctionTask.h"
-#include "System\Timer.h"
+#include "Task\CommandTask.h"
+#include "AI\TracerouteManager.h"
+#include "AI\TracerouteSearch.h"
+#include "AI\TracerouteTarget.h"
 
 namespace GEKO
 {
@@ -35,6 +40,7 @@ namespace GEKO
 	void ChangeFps(int fps);
 	void LoopEnd();
 	void End();
+	const WindowSize *GetWindowSize();
 }
 
 #endif

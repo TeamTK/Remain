@@ -50,34 +50,34 @@ void Bullet::HitMap(Result_Porygon& r)
 	effectData.imageName = "MapHit";
 	effectData.num = 15;
 	effectData.pos = contactPos;
-	effectData.scale = Vector3D(0.1f, 0.1f, 0.1f);
+	effectData.size = 0.1f;
 	effectData.speed = 0.1f;
 	effectData.time = 60;
 
 	if (r.targetName == "Tree_1")
 	{
-		std::cout << "–Ø" << "\n";
+		//std::cout << "–Ø" << "\n";
 	}
 
 	if (r.targetName == "Tree_2")
 	{
-		std::cout << "–Ø2" << "\n";
+		//std::cout << "–Ø2" << "\n";
 	}
 
 	if (r.targetName == "Cabin")
 	{
-		std::cout << "‰Æ" << "\n";
+		//std::cout << "‰Æ" << "\n";
 	}
 
 	if (r.targetName == "Ground")
 	{
-		std::cout << "’n–Ê" << "\n";
+		//std::cout << "’n–Ê" << "\n";
 		effectData.imageName = "GunEffect";
 	}
 
 	if (r.targetName == "RockWall")
 	{
-		std::cout << "•Ç" << "\n";
+		//std::cout << "•Ç" << "\n";
 		effectData.imageName = "GunEffect";
 	}
 

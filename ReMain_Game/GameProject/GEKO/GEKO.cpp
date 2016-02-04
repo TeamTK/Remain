@@ -1,6 +1,7 @@
 #include "GEKO.h"
 #include "System//Fps.h"
-#include "Collider\ColliderManager.h"
+#include "Figure\FiqureShaderManager.h"
+#include "Shader\CopmuteShader\BaseCopmute.h"
 
 namespace GEKO
 {
@@ -14,6 +15,8 @@ namespace GEKO
 			{
 				Direct3D11::GetInstance()->Clear(0.4f, 0.4f, 1.0f);
 
+				CopmuteManager::GetInstance()->Init();
+				FiqureShaderManager::GetInstance()->Init();
 				Input::KeyManagement::Get().Init();
 				SoundManagement::Get()->Init();
 				return true;
@@ -110,6 +113,7 @@ namespace GEKO
 		TaskManager::AllClear();
 		RenderManager::AllClear();
 		ColliderManager::GetInstance()->AllClear();
+		CopmuteManager::GetInstance()->Release();
 		WorldMatrixManager::GetInstance()->AllClear();
 		ImageAsset::AllClear();
 		SoundAsset::AllClear();
@@ -119,4 +123,9 @@ namespace GEKO
 		Input::KeyManagement::Get().End();
 		OutputDebugString(TEXT("GEKO_System‚ª³í‚ÉI—¹‚µ‚Ü‚µ‚½\n"));
 	};
+
+	const WindowSize* GetWindowSize()
+	{
+		return Window::Get()->GetWindowSize();
+	}
 }

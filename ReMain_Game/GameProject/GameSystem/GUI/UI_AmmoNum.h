@@ -1,7 +1,6 @@
 #ifndef UI_AMMONUM_H
 #define UI_AMMONUM_H
 
-#include "../../GEKO/GEKO.h"
 #include "../../GameSystem/GUI/Number.h"
 
 class UI_AmmoNum : public Task

@@ -5,6 +5,8 @@
 #include "../GameSystem/FiveSenses/Auditory.h"
 #include "../GameSystem/FiveSenses/SightSystem.h"
 
+class Gravity;
+
 class Character : public Task
 {
 public:
@@ -13,10 +15,11 @@ public:
 	virtual ~Character();
 	virtual void Update();
 	void Render();
-	void HitMap(Result_Porygon_Group& r);
+	void HitMap(Result_Porygon_Group_Sphere& r);
 	void PushBody(Result_Sphere &data);
 
 protected:
+	bool m_IsGravity;
 	int m_JudgementAnim;
 	float m_Hp;
 	Vector3D m_pos;
@@ -32,6 +35,7 @@ protected:
 	float m_BodyRadius;
 
 	RenderTask m_RenderTask;
+	Gravity *m_pGravity;
 };
 
 #endif

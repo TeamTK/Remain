@@ -1,9 +1,10 @@
 EnemyState Normal_Monster_A
-Flinch: 4
-HitPoint: 10
+Flinch: 15
+HitPoint: 20
 WalkSpeed: 0.03
 RunSpeed: 0.07
 MapHitRadius: 0.5
 BodyRadius: 0.5
 SightAngle: 60
 SightDistance: 10
+TopographyName: Chapter_1_1_Traceroute

@@ -19,7 +19,7 @@ Monster_A::Monster_A(EnemyState &enemyState) :
 
 	//ƒ_ƒ[ƒW”{—¦•”ˆÊ‚²‚Æ
 	m_DamageMagnification.push_back(2.0f); //“ª
-	m_DamageMagnification.push_back(2.0f); //“·‘Ì
+	m_DamageMagnification.push_back(1.0f); //“·‘Ì
 	m_DamageMagnification.push_back(0.5f); //¶˜r
 	m_DamageMagnification.push_back(0.5f); //‰E˜r
 	m_DamageMagnification.push_back(0.5f); //¶‘«
@@ -53,8 +53,16 @@ Monster_A::Monster_A(EnemyState &enemyState) :
 	m_FuncTask.Regist("HitDamage", REGIST_FUNC_TASK(Monster_A::HitDamage));
 	m_FuncTask.Regist("Die", REGIST_FUNC_TASK(Monster_A::Die));
 
+	//Œo˜H’Tõ”»’f
 	m_FuncTask.AllStop();
-	m_FuncTask.Start("Idle");
+	if (enemyState.isSearch)
+	{
+		m_FuncTask.Start("Chase");
+	}
+	else
+	{
+		m_FuncTask.Start("Idle");
+	}
 
 	m_JudgementAnim = 20;
 }

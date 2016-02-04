@@ -1,5 +1,5 @@
 #include "Shotgun.h"
-#include "../enums.h"
+#include "../Player/PlayerInfo.h"
 
 Shotgun* g_pShotgun;
 
@@ -40,7 +40,7 @@ void Shotgun::Update()
 	else
 	{
 		//Œ¨‚É‚©‚¯‚Ä‚¢‚éó‘Ô
-		m_Model.SetTranselate(0.2f, 0.14f, 0.0f);
+		m_Model.SetTranselate(0.22f, 0.2f, 0.0f);
 		m_Model.SetRotationDegree(65, 0, 12);
 	}
 }
@@ -51,17 +51,9 @@ void Shotgun::Reload()
 	//ŽèŽ‚¿’e”‚ª0‚æ‚è‘å‚«‚¢•e‚É“ü‚Á‚Ä‚¢‚é’e”‚ªÅ‘å‘•’e”‚æ‚è¬‚³‚¢
 	if (m_Ammo > 0 && m_LoadedAmmo < AMMO_LOADED_SHOTGUN)
 	{
-		if (m_Ammo < 6)
-		{
-			m_LoadedAmmo += m_Ammo;
-			m_Ammo = 0;
-		}
-		else
-		{
-			int num = AMMO_LOADED_SHOTGUN - m_LoadedAmmo;
-			m_LoadedAmmo += num;
-			m_Ammo -= num;
-			if (m_Ammo < 0)m_Ammo = 0;
-		}
+		int num = AMMO_LOADED_SHOTGUN - m_LoadedAmmo;
+		m_LoadedAmmo += num;
+		m_Ammo -= num;
+		if (m_Ammo < 0)m_Ammo = 0;
 	}
 }

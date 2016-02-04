@@ -64,7 +64,7 @@ void Collider::Regist_S_vs_L(Vector3D *pPos, float *pRadius, std::function<void(
 }
 
 //球対StaticMeshの当たり判定
-void Collider::Regist_S_vs_SMesh(Vector3D *pPos, float *pRadius, std::function<void(Result_Porygon_Group &)> func)
+void Collider::Regist_S_vs_SMesh(Vector3D *pPos, float *pRadius, std::function<void(Result_Porygon_Group_Sphere &)> func)
 {
 	assert((m_pBaseCollider == nullptr) && "Colliderにすでに登録されています");
 	m_pBaseCollider = new Sphere_vs_StaticMeshCollider(pPos, pRadius, func);
@@ -112,16 +112,24 @@ void Collider::Regist_L_vs_C(Vector3D *pStart, Vector3D *pEnd, std::function<voi
 	m_pBaseCollider = new LineSegment_vs_CapsuleCollider(pStart, pEnd, func);
 }
 
+//線分対スタティックメッシュの当たり判定
 void Collider::Regist_L_vs_SMesh(Vector3D *pStart, Vector3D *pEnd, std::function<void(Result_Porygon &)> func)
 {
 	assert((m_pBaseCollider == nullptr) && "Colliderにすでに登録されています");
 	m_pBaseCollider = new LineSegment_vs_StaticMeshCollider(pStart, pEnd, func);
 }
 
-void Collider::Regist_SMesh_vs_L(StaticMesh *pStaticMesh)
+//線分対スタティックメッシュの当たり判定（複数の結果）
+void Collider::Regist_LGroup_vs_SMesh(Vector3D *pStart, Vector3D *pEnd, std::function<void(Result_Porygon_Group_LineSegment &)> func)
 {
 	assert((m_pBaseCollider == nullptr) && "Colliderにすでに登録されています");
-	m_pBaseCollider = new StaticMesh_vs_LineSegmentCollider(pStaticMesh);
+	m_pBaseCollider = new LineSegment_Group_vs_StaticMeshCollider(pStart, pEnd, func);
+}
+
+void Collider::Regist_SMesh_vs_L(StaticMesh *pStaticMesh, bool isGPU)
+{
+	assert((m_pBaseCollider == nullptr) && "Colliderにすでに登録されています");
+	m_pBaseCollider = new StaticMesh_vs_LineSegmentCollider(pStaticMesh, isGPU);
 }
 
 void Collider::Regist_SMesh_vs_S(StaticMesh *pStaticMesh)

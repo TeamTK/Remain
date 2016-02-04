@@ -148,12 +148,12 @@ void Image::SetCenter(int x, int y)
 	m_CenterY = y;
 }
 
-void Image::SetDrawPos(int x, int y, int width, int height)
+void Image::SetDrawPos(int leftX, int leftY, int rightX, int rightY)
 {
-	m_UvSize.top = y;
-	m_UvSize.left = x;
-	m_UvSize.right = width;
-	m_UvSize.bottom = height;
+	m_UvSize.top = leftY;
+	m_UvSize.left = leftX;
+	m_UvSize.right = rightX;
+	m_UvSize.bottom = rightY;
 }
 
 void Image::Draw(int x, int y)
@@ -213,9 +213,100 @@ void Image::Draw(int x, int y)
 		//cb.ViewPortHeight = (float)Window::Get()->GetWindowHeight();
 
 		//ビューポートサイズを渡す（クライアント領域の横と縦）
-		WindowSize *OriginSize = Window::Get()->GetWindowOriginSize();
-		cb.ViewPortWidth = (float)OriginSize->sWidth;
-		cb.ViewPortHeight = (float)OriginSize->sHeight;
+		const WindowSize *OriginSize = Window::Get()->GetWindowOriginSize();
+
+		cb.ViewPortWidth = (float)OriginSize->width;
+		cb.ViewPortHeight = (float)OriginSize->height;
+
+		//RGBAを渡す
+		cb.Color = D3DXVECTOR4(m_RGBA.sRed, m_RGBA.sGreen, m_RGBA.sBlue, m_RGBA.sAlpha);
+
+		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));
+		pDeviceContext->Unmap(data->pConstantBuffer, 0);
+	}
+
+	//このコンスタントバッファーをどのシェーダーで使うか
+	pDeviceContext->VSSetConstantBuffers(0, 1, &data->pConstantBuffer);
+	pDeviceContext->PSSetConstantBuffers(0, 1, &data->pConstantBuffer);
+
+	//バーテックスバッファーをセット
+	UINT stride = sizeof(Vertex);
+	UINT offset = 0;
+	pDeviceContext->IASetVertexBuffers(0, 1, &data->pVertexBuffer, &stride, &offset);
+
+	//頂点インプットレイアウトをセット
+	//プリミティブ・トポロジーをセット
+	pDeviceContext->IASetInputLayout(data->pVertexLayout);
+	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	//テクスチャーをシェーダーに渡す
+	pDeviceContext->PSSetSamplers(0, 1, &data->pSampler);
+	pDeviceContext->PSSetShaderResources(0, 1, &data->pTexture);
+
+	pDeviceContext->Draw(4, 0); //プリミティブをレンダリング
+}
+
+void Image::Draw(const Vector2D &pos)
+{
+	InitModel(m_CenterX, m_CenterY);
+
+	ID3D11DeviceContext *pDeviceContext;
+	pDeviceContext = Direct3D11::GetInstance()->GetID3D11DeviceContext();
+
+	ImageInfo *data = m_pImageData->GetImageInfo();
+
+	D3DXMATRIX World;
+
+	//Z回転
+	Matrix RZ;
+	RZ.RotationRadianZ(Math::ChangeToRadian((float)m_Angle));
+
+	Matrix temp;
+
+	temp._11 = 1.0f * RZ._11;
+	temp._12 = 1.0f * RZ._12;
+	temp._13 = 1.0f * RZ._13;
+	temp._14 = 0.0f;
+
+	temp._21 = 1.0f * RZ._21;
+	temp._22 = 1.0f * RZ._22;
+	temp._23 = 1.0f * RZ._23;
+	temp._24 = 0.0f;
+
+	temp._31 = 1.0f * RZ._31;
+	temp._32 = 1.0f * RZ._32;
+	temp._33 = 1.0f * RZ._33;
+	temp._34 = 0.0f;
+
+	temp._41 = pos.x;
+	temp._42 = pos.y;
+	temp._43 = 0.0f;
+	temp._44 = 1.0f;
+
+	World = temp;
+
+	//使用するシェーダーのセット
+	pDeviceContext->VSSetShader(data->pVertexShader, NULL, 0);
+	pDeviceContext->PSSetShader(data->pPixelShader, NULL, 0);
+
+	//シェーダーのコンスタントバッファーに各種データを渡す
+	D3D11_MAPPED_SUBRESOURCE pData;
+	SHADER_CONSTANT_BUFFER cb;
+	if (SUCCEEDED(pDeviceContext->Map(data->pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+	{
+		//ワールド行列を渡す
+		cb.mW = World;
+		D3DXMatrixTranspose(&cb.mW, &cb.mW);
+
+		//ビューポートサイズを渡す（クライアント領域の横と縦）
+		//cb.ViewPortWidth = (float)Window::Get()->GetWindowWidth();
+		//cb.ViewPortHeight = (float)Window::Get()->GetWindowHeight();
+
+		//ビューポートサイズを渡す（クライアント領域の横と縦）
+		const WindowSize *OriginSize = Window::Get()->GetWindowOriginSize();
+
+		cb.ViewPortWidth = (float)OriginSize->width;
+		cb.ViewPortHeight = (float)OriginSize->height;
 
 		//RGBAを渡す
 		cb.Color = D3DXVECTOR4(m_RGBA.sRed, m_RGBA.sGreen, m_RGBA.sBlue, m_RGBA.sAlpha);

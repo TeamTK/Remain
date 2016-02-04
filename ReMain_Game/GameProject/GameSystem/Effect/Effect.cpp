@@ -1,4 +1,5 @@
 #include "Effect.h"
+#include "..\..\GEKO\Figure\Billboard.h"
 
 EffectPart::EffectPart(float x, float y, float z, const Vector3D &pos)
 {
@@ -18,23 +19,23 @@ void EffectPart::SetDirection(const Vector3D &direction)
 	m_Direction = direction;
 }
 
-void EffectPart::Render(const Vector3D &sclae, float speed, int time, const std::string &name)
+void EffectPart::Render(float size, float speed, int time, const std::string &name)
 {
 	m_Pos += (m_Direction * speed);
-	Fiqure::RenderBillboard(m_Pos, sclae / (float)time, name);
+	Fiqure::RenderBillboard(m_Pos, size / (float)time, name);
 };
 
 Effect::Effect(const EffectInfo &info, const char* effectName) :
 	m_TimeCnt(0),
 	m_AllTime(0),
 	m_Speed(1.0f),
-	m_Scale(1.0f, 1.0f, 1.0f),
+	m_Size(1.0f),
 	m_ImageName("NULL"),
 	Task(effectName, 0)
 {
 	m_Speed = info.speed;
 	m_ImageName = info.imageName;
-	m_Scale = info.scale;
+	m_Size = info.size;
 	m_AllTime = info.time;
 
 	m_RenderTask.Regist(0, REGIST_RENDER_FUNC(Effect::Render));
@@ -53,11 +54,9 @@ void Effect::SetSpeed(float speed)
 	m_Speed = speed;
 }
 
-void Effect::SetScale(float x, float y, float z)
+void Effect::SetSize(float size)
 {
-	m_Scale.x = x;
-	m_Scale.y = y;
-	m_Scale.z = z;
+	m_Size = size;
 }
 
 void Effect::Update()
@@ -78,5 +77,5 @@ void Effect::Update()
 
 void Effect::Render()
 {
-	for (auto& i : m_list) i.Render(m_Scale, m_Speed, m_TimeCnt, m_ImageName);
+	for (auto& i : m_list) i.Render(m_Size, m_Speed, m_TimeCnt, m_ImageName);
 };

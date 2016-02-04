@@ -48,7 +48,6 @@ public:
 	void Render();
 	void ClearList();
 	static StageObjectManager* GetInstance();
-	static void ClearInstance();
 
 private:
 	int m_cnt;
@@ -60,7 +59,6 @@ private:
 	std::vector<XYZ> m_Rotation;
 	std::vector<XYZ> m_Scale;
 	std::list<MapObject> m_MapObjectList;
-	static StageObjectManager* m_Instance;
 };
 
 class MapObject
@@ -85,8 +83,8 @@ public:
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
-		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
-		m_BulletHit.SetID(eHITID3, eHITID2);
+		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
+		m_BulletHit.SetID(eHITID4, eHITID2);
 		m_BulletHit.SetName("Tree_1");
 	}
 	~Tree_1(){}
@@ -104,7 +102,7 @@ public:
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
-		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
+		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
 		m_BulletHit.SetID(eHITID4, eHITID2);
 		m_BulletHit.SetName("Tree_2");
 	}
@@ -150,12 +148,13 @@ public:
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
 
 		//弾の当たり判定
-		m_BulletHit.Regist_SMesh_vs_L(&m_HitMesh);
+		m_BulletHit.Regist_SMesh_vs_L(&m_HitMesh, true);
 		m_BulletHit.SetID(eHITID5, eHITID2);
 		m_BulletHit.SetName("Cabin");
 
-		m_CameraHIt.Regist_SMesh_vs_L(&m_HitMesh);
-		m_CameraHIt.SetID(eHITID1, eHITID0);
+		//カメラとの当たり判定
+		m_CameraHIt.Regist_SMesh_vs_L(&m_HitMesh, true);
+		m_CameraHIt.SetID(eHITID3, eHITID2);
 	}
 	~Cabin(){}
 
@@ -175,13 +174,12 @@ public:
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2 | eHITID3);
 
-		m_CameraHit.Regist_SMesh_vs_L(&m_Object);
+		m_CameraHit.Regist_SMesh_vs_L(&m_Object, true);
 		m_CameraHit.SetID(eHITID1, eHITID0);
 
-		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
+		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
 		m_BulletHit.SetID(eHITID6, eHITID2);
 		m_BulletHit.SetName("Ground");
-
 	}
 	~Ground() {}
 
@@ -198,6 +196,7 @@ public:
 		StageObject(pos, rot, sca, name) 
 	{
 		//当たり判定用のメッシュ初期化
+		//m_HitMesh.SetAsset("RockWall");
 		m_HitMesh.SetAsset("Wall_Collision");
 		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
 		m_HitMesh.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
@@ -208,11 +207,11 @@ public:
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2 | eHITID3);
 
 		//カメラと壁の当たり判定
-		m_CameraHit.Regist_SMesh_vs_L(&m_HitMesh);
+		m_CameraHit.Regist_SMesh_vs_L(&m_HitMesh, true);
 		m_CameraHit.SetID(eHITID1, eHITID0);
 
 		//弾と壁の当たり判定
-		m_BulletHit.Regist_SMesh_vs_L(&m_HitMesh);
+		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
 		m_BulletHit.SetID(eHITID7, eHITID2);
 		m_BulletHit.SetName("RockWall");
 	}
@@ -324,7 +323,7 @@ public:
 		//プレイヤーの判定は仮
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
-		m_BulletHit.Regist_SMesh_vs_L(&m_Object);
+		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
 		m_BulletHit.SetID(eHITID3, eHITID2);
 		m_BulletHit.SetName("WoodBox");
 	}

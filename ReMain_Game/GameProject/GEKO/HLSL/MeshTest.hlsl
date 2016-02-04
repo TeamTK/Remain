@@ -42,7 +42,7 @@ BaseColor g_BaseColor;
 //フォンシェーディング
 class PhongShading : BaseColor
 {
-	float4 g_EyePos; //視点座標
+	//float4 g_EyePos; //視点座標
 
 	float4 GetColor(VS_OUTPUT input)
 	{

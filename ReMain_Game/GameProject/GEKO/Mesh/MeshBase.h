@@ -19,6 +19,7 @@ public:
 	void SetAmbient(int r, int g, int b, int materialIndex);
 	void SetAlpha(int alpha, int materialIndex);
 	void SetAlphaAll(int alpha);
+	void WorldMatrixBuilding();
 	Vector3D GetScale() const;
 	Vector3D GetRotation() const;
 	Vector3D GetTranselate() const;

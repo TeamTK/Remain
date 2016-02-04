@@ -323,6 +323,7 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 			//テクスチャーを作成
 			if (FAILED(D3DX11CreateShaderResourceViewFromFile(pDevice, material[i].TextureName.c_str(), NULL, NULL, &m_MeshInfo.m_pMaterial[i].pTexture, NULL)))
 			{
+				Relese();
 				MessageBoxA(NULL, TEXT("テクスチャーの読み込みに失敗しました"), NULL, MB_OK);
 				return E_FAIL;
 			}
@@ -396,6 +397,8 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 			//内部用頂点
 			pVertexData[i].pos = coordinate[i];
 			pVertexData[i].normal = normal[normalIndex[i]];
+			pVertexData[i].uv.x = 0.0f;
+			pVertexData[i].uv.y = 0.0f;
 		}
 	}
 

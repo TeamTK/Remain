@@ -2,10 +2,15 @@
 #include "ColliderManager.h"
 #include "..\Mesh\StaticMesh.h"
 
-StaticMesh_vs_LineSegmentCollider::StaticMesh_vs_LineSegmentCollider(StaticMesh *pStaticMeshHitInfo)
+StaticMesh_vs_LineSegmentCollider::StaticMesh_vs_LineSegmentCollider(StaticMesh *pStaticMeshHitInfo, bool isGPU) :
+	m_pNormal(nullptr),
+	m_isGPU(false)
 {
 	m_pStaticMeshInfo = pStaticMeshHitInfo;
 	pStaticMeshHitInfo->WorldMatrixBuilding();
+
+	//当たり判定に使う法線
+	if (m_pNormal != nullptr) delete[] m_pNormal;
 	m_pNormal = new Vector3D[pStaticMeshHitInfo->GetFaceAllNum()];
 
 	Vector3D pos[3];
@@ -25,19 +30,27 @@ StaticMesh_vs_LineSegmentCollider::StaticMesh_vs_LineSegmentCollider(StaticMesh 
 		m_pNormal[i] = Vector3D::Cross(pos[2] - pos[0], pos[1] - pos[0]).GetNormalize();
 	}
 
+	m_isGPU = isGPU;
+	if (m_isGPU) m_Copmute.Init(*pStaticMeshHitInfo, m_pNormal);
+	
 	ColliderManager::GetInstance()->Add(this);
 }
 
 StaticMesh_vs_LineSegmentCollider::~StaticMesh_vs_LineSegmentCollider()
 {
-	if (m_pNormal) delete[] m_pNormal;
+	if (m_pNormal != nullptr) delete[] m_pNormal;
+	m_Copmute.Release();
 	ColliderManager::GetInstance()->Clear(this);
 }
 
-StaticMesh_vs_SphereCollider::StaticMesh_vs_SphereCollider(StaticMesh *pStaticMeshHitInfo)
+StaticMesh_vs_SphereCollider::StaticMesh_vs_SphereCollider(StaticMesh *pStaticMeshHitInfo) :
+	m_pNormal(nullptr)
 {
 	m_pStaticMeshInfo = pStaticMeshHitInfo;
 	pStaticMeshHitInfo->WorldMatrixBuilding();
+
+	//当たり判定に使う法線
+	if (m_pNormal != nullptr) delete[] m_pNormal;
 	m_pNormal = new Vector3D[pStaticMeshHitInfo->GetFaceAllNum()];
 
 	Vector3D pos[3];
@@ -62,6 +75,6 @@ StaticMesh_vs_SphereCollider::StaticMesh_vs_SphereCollider(StaticMesh *pStaticMe
 
 StaticMesh_vs_SphereCollider::~StaticMesh_vs_SphereCollider()
 {
-	if (m_pNormal) delete[] m_pNormal;
+	if (m_pNormal != nullptr) delete[] m_pNormal;
 	ColliderManager::GetInstance()->Clear(this);
 }

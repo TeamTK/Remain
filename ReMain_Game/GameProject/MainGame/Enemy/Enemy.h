@@ -2,13 +2,13 @@
 #define _ENEMY_H_
 
 #include "../Character.h"
-#include "../../GEKO/Task/FunctionTask.h"
 
 #define ENEMY_NORMAL_SPEED 30.0f
 
 //敵のステータス
 struct EnemyState
 {
+	bool isSearch;
 	int flinch;
 	float hp;
 	float walkSpeed;
@@ -17,6 +17,7 @@ struct EnemyState
 	float bodyRadius;
 	float sightAngle;
 	float sightDistance;
+	const char* topographyName;
 	Vector3D posSpawn;
 	Vector3D rotation;
 };
@@ -51,6 +52,7 @@ protected:
 	void Chase();
 	void HitDamage();
 	void Die();
+	void Wanderings();
 
 private:
 	void HitSight(const Vector3D *pPos);
@@ -91,6 +93,10 @@ protected:
 
 	Collider *m_pHitAttack; //プレイヤーへの攻撃の当たり判定
 	FunctionTask m_FuncTask; //AI管理
+
+	TracerouteSearch m_Search; //経路探索
+
+	int m_SearchCnt; //経路探索間隔カウント
 };
 
 #endif

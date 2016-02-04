@@ -7,10 +7,11 @@
  
 #define WINDOW_FIXING WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX
 
+//ウインドウのクライアント領域のサイズ
 struct WindowSize
 {
-	int sWidth;
-	int sHeight;
+	int width;
+	int height;
 };
 
 class Window
@@ -69,7 +70,7 @@ public:
 	/// <returns>
 	/// ウィンドウのクライアント領域サイズ
 	/// </returns>
-	WindowSize *GetWindowSize();
+	const WindowSize *GetWindowSize() const;
 
 	/// <summary>
 	/// ウィンドウのクライアント領域サイズを渡す(最初に設定したサイズ)
@@ -77,7 +78,7 @@ public:
 	/// <returns>
 	/// ウィンドウのクライアント領域サイズ(最初に設定したサイズ)
 	/// </returns>
-	WindowSize *GetWindowOriginSize();
+	const WindowSize *GetWindowOriginSize() const;
 
 	void SetScreenColor(float red, float green, float blue);
 

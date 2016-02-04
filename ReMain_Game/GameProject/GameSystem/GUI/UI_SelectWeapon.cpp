@@ -1,4 +1,5 @@
 #include "UI_SelectWeapon.h"
+#include "../../MainGame/Weapon/WeaponInfo.h"
 
 enum EState
 {

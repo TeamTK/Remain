@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <string>
 
+//“G‚Ìİ’èî•ñ
 struct EnemyStateInfo
 {
 	int flinch;
@@ -19,6 +20,7 @@ struct EnemyStateInfo
 	float sightDistance;
 };
 
+//“G‚ÌoŒ»î•ñ
 struct EnemySpawnInfo
 {
 	Vector3D pos;
@@ -36,6 +38,7 @@ public:
 	std::map<std::string, std::map<std::string, std::vector<EnemySpawnInfo>>> mapSpawn;
 };
 
+//“G‚Ìİ’èŠÇ—
 EnemyStateManager::EnemyStateManager()
 {
 	m_pEnemyStatePimpl = new EnemyStatePimpl;
@@ -236,11 +239,12 @@ void EnemyStateManager::LoadFileSpawn(const char *fileName)
 	}
 }
 
-void EnemyStateManager::Generation(const char *stateName, const char *spawnName)
+void EnemyStateManager::Generation(const char *stateName, const char *spawnName, const char* tracerouteName, bool isSearch)
 {
 	EnemyStateInfo stateinfo = GetInstance()->m_pEnemyStatePimpl->mapState[stateName];
 
 	EnemyState state;
+	state.isSearch = isSearch;
 	state.flinch = stateinfo.flinch;
 	state.hp = stateinfo.hp;
 	state.walkSpeed = stateinfo.walkSpeed;
@@ -249,6 +253,7 @@ void EnemyStateManager::Generation(const char *stateName, const char *spawnName)
 	state.bodyRadius = stateinfo.bodyRadius;
 	state.sightAngle = stateinfo.sightAngle;
 	state.sightDistance = stateinfo.sightDistance;
+	state.topographyName = tracerouteName;
 
 	//w’è”‚Ì“G‚ğ¶¬‚µ‚Äƒpƒ‰ƒ[ƒ^[‚ğŠ„‚è“–‚Ä
 	auto it = GetInstance()->m_pEnemyStatePimpl->mapSpawn[spawnName].begin();

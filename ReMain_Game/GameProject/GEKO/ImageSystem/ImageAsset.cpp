@@ -193,10 +193,10 @@ void ImageAsset::LoadAsset(std::string filmeName, std::string name)
 	}
 }
 
-void ImageAsset::LoadFile(const std::string filmeName)
+void ImageAsset::LoadFile(const std::string fileName)
 {
-	std::ifstream ifs(filmeName);
-	std::string str = filmeName;
+	std::ifstream ifs(fileName);
+	std::string str = fileName;
 	str += "ÇÃì«Ç›çûÇ›Ç…é∏îsÇµÇ‹ÇµÇΩ";
 	if (ifs.fail()) MessageBoxA(0, str.c_str(), NULL, MB_OK);
 

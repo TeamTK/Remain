@@ -17,6 +17,11 @@ Fps* const Fps::GetInstance()
 	return &fps;
 }
 
+float Fps::GetFPS()
+{
+	return GetInstance()->m_Fps;
+}
+
 void Fps::SetFps(int fps)
 {
 	Fps* p_Fps = GetInstance();

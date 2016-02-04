@@ -106,9 +106,9 @@ void Camera::Update()
 	D3DXMatrixLookAtLH(&pInstance->m_View, &pInstance->m_EyePt, &pInstance->m_LookatPt, &pInstance->m_UpVec);
 
 	//射影行列更新
-	WindowSize *winSize = Window::Get()->GetWindowSize();
-	FLOAT Width = (FLOAT)winSize->sWidth;
-	FLOAT Height = (FLOAT)winSize->sHeight;
+	const WindowSize *winSize = Window::Get()->GetWindowSize();
+	FLOAT Width = (FLOAT)winSize->width;
+	FLOAT Height = (FLOAT)winSize->height;
 
 	// 希望するクライアント領域のサイズを持つウィンドウサイズを計算
 	D3DXMatrixPerspectiveFovLH(&pInstance->m_Proj, (FLOAT)pInstance->m_ViewAngle, Width / Height, (FLOAT)pInstance->m_Near, (FLOAT)pInstance->m_Far);

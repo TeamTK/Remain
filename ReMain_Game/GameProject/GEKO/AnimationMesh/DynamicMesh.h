@@ -20,6 +20,8 @@ public:
 	void SetTime(float animTime);	   //指定のアニメーション時間に設定
 	void SetPartTime(int bornIndex, float animTime);	   //指定のアニメーション時間に設定
 	void SetPartRangeTime(int bornStart, int bornEnd, float animTime);	   //指定のアニメーション時間に設定
+	void StartAnimation();
+	void StopAnimation();
 	const SkinVertexInfo *GetVertex() const; 
 	float GetPlayTime(int bornIndex) const;
 	int GetPlayAnimation(int bornIndex) const;
@@ -43,6 +45,7 @@ private:
 	void ReleseCopyBornTree(CopyBorn *pBornCopy) const;
 
 private:
+	bool m_IsAnimUpdate;
 	SkinMeshData *m_pSkinMeshData;
 	CopyBorn m_Born;
 	std::vector<CopyBorn*> m_CopyBornArray;

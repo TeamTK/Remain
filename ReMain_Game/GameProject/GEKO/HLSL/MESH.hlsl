@@ -44,13 +44,37 @@ VS_OUTPUT VS(float4 Pos : POSITION , float4 Normal : NORMAL, float2 Tex : TEXCOO
 	output.Normal = mul(Normal, (float3x3)g_mW);
 
 	//ディレクショナルライト
-	output.Light = g_vLightDir.xyz;
+	output.Light = -g_vLightDir.xyz;
 
 	//視線ベクトル　ワールド空間上での頂点から視点へ向かうベクトル
 	float4 PosWorld = mul(Pos, g_mW);
-	output.EyeVector = normalize(g_vEye - PosWorld).xyz;
+	output.EyeVector = normalize(PosWorld - g_vEye).xyz;
 	output.Tex = Tex;
 	return output;
+}
+
+//ピクセルシェーダー
+float4 PS(VS_OUTPUT input) : SV_Target
+{
+	//環境光　項
+	float4 ambient = g_Ambient;
+
+	//拡散反射光　項
+	float NL = max(dot(input.Normal, input.Light), 0.0f);
+	float Half = NL * 0.5f + 0.5f;
+	float4 diffuse = g_Diffuse * (Half * Half);
+
+	//鏡面反射光　項
+	float3 reflect = normalize(2 * NL * input.Normal - input.Light);
+	float4 specular = pow(max(dot(reflect, input.EyeVector), 0.0f), 4) * g_Specular;
+
+	//フォンモデル最終色　３つの項の合計
+	float4 matrial = ambient + diffuse + specular;
+	float4 color = g_texColor.Sample(g_samLinear, input.Tex);
+	color.rgb *= matrial.rgb * g_fIntensity.rgb * g_fIntensity.w;
+	color.a *= g_Diffuse.w; //アルファ値反映
+
+	return color;
 }
 
 //バーテックスシェーダー
@@ -65,37 +89,13 @@ VS_OUTPUT VS_NoTeX(float4 Pos : POSITION, float4 Normal : NORMAL)
 	output.Normal = mul(Normal, (float3x3)g_mW);
 
 	//ディレクショナルライト
-	output.Light = g_vLightDir.xyz;
+	output.Light = -g_vLightDir.xyz;
 
 	//視線ベクトル　ワールド空間上での頂点から視点へ向かうベクトル
 	float4 PosWorld = mul(Pos, g_mW);
-	output.EyeVector = normalize(g_vEye - PosWorld).xyz;
+	output.EyeVector = normalize(PosWorld - g_vEye).xyz;
 
 	return output;
-}
-
-//ピクセルシェーダー
-float4 PS( VS_OUTPUT input ) : SV_Target
-{
-	//環境光　項
-	float4 ambient = g_Ambient;
-
-	//拡散反射光　項
-	float NL = saturate(dot(input.Normal, input.Light));
-	float Half = NL * 0.5f + 0.5f;
-	float4 diffuse = g_Diffuse * (Half * Half);
-
-	//鏡面反射光　項
-	float3 reflect = normalize(2 * NL * input.Normal - input.Light);
-	float4 specular = pow(saturate(dot(reflect, input.EyeVector)), 4) * g_Specular;
-
-	//フォンモデル最終色　３つの項の合計
-	float4 matrial = ambient + diffuse + specular;
-	float4 color = g_texColor.Sample(g_samLinear, input.Tex);
-	color.rgb *= matrial.rgb * g_fIntensity.rgb * g_fIntensity.w;
-	color.a *= g_Diffuse.w; //アルファ値反映
-
-	return color;
 }
 
 //ピクセルシェーダー
@@ -105,12 +105,13 @@ float4 PS_NoTex( VS_OUTPUT input ) : SV_Target
 	float4 ambient = g_Ambient;
 
 	//拡散反射光　項
-	float NL = saturate(dot(input.Normal, input.Light));
-	float4 diffuse = (g_Diffuse / 2 + g_texColor.Sample(g_samLinear, input.Tex) / 2) * NL;
+	float NL = max(dot(input.Normal, input.Light), 0.0f);
+	float Half = NL * 0.5f + 0.5f;
+	float4 diffuse = g_Diffuse * (Half * Half);
 
 	//鏡面反射光　項
 	float3 reflect = normalize(2 * NL*input.Normal - input.Light);
-	float4 specular = pow(saturate(dot(reflect, input.EyeVector)), 4) * g_Specular;
+	float4 specular = pow(max(dot(reflect, input.EyeVector), 0.0f), 4) * g_Specular;
 
 	//フォンモデル最終色　３つの項の合計
 	float4 color = ambient + diffuse + specular;

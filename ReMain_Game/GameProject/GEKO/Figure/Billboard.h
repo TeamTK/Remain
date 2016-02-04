@@ -3,22 +3,68 @@
 
 #include "FiqureBase.h"
 
-struct BillboradVertex
+//ビルボードの頂点情報
+struct VertexBillboardInfo
 {
-	D3DXVECTOR3 pos;
-	D3DXVECTOR2 tex;
+	//頂点座標
+	Vector3D leftTopPos;	 //左上の座標
+	Vector3D leftDwonPos;	 //左下の座標
+	Vector3D rightTopPos;	 //右上の座標
+	Vector3D rightDwonPos;	 //右下の座標
+
+	//テクスチャUV座標
+	Vector2D leftTopUV;	 //左上UV座標
+	Vector2D leftDwonUV;	 //左下UV座標
+	Vector2D rightTopUV;	 //右上UV座標
+	Vector2D rightDwonUV;	 //右下UV座標
+
+	VertexBillboardInfo() :
+		leftTopPos(-1.0, 1.0, 0.0f),
+		leftDwonPos(-1.0, -1.0, 0.0f),
+		rightTopPos(1.0, 1.0, 0.0f),
+		rightDwonPos(1.0, -1.0, 0.0f),
+		leftTopUV(0.0f, 0.0f),
+		leftDwonUV(0.0f, 1.0f),
+		rightTopUV(1.0f, 0.0f),
+		rightDwonUV(1.0f, 1.0f)
+	{
+	}
 };
 
-class Billboard : public FiqureBase
+//ビルボード
+class Billboard
 {
 public:
 	Billboard();
 	~Billboard();
-	void Render(const Vector3D &pos, const Vector3D &scale, const std::string &name);
+	void ChangeVertex(const VertexBillboardInfo& info);
+	void Render(const Vector3D &pos, float size, const std::string &name);
 
 private:
-	HRESULT InitShader();
-	HRESULT InitVertex();
+	ID3D11Buffer* m_pVertexBuffer; //頂点バッファー
+
+};
+
+//ビルボードアニメーション
+class BillboardAnimation
+{
+public:
+	BillboardAnimation();
+	BillboardAnimation(const std::string &assetName, int frameNum, int sizeW, int sizeH);
+	~BillboardAnimation();
+	bool GetIsEnd() const;
+	void FrameDivision(const std::string &assetName, int frameNum, int sizeW, int sizeH);
+	void PlayFrame(float frame);
+	void Render(const Vector3D &pos, float size);
+	void DebugFrame();
+
+private:
+	bool m_IsEnd;
+	int m_FrameNum;
+	int m_FrameAllNum;
+	float m_Speed;
+	Billboard *m_pBillboard;
+	std::string m_Name;
 };
 
 #endif

@@ -32,8 +32,9 @@ public:
 	void SetRGB(int red, int green, int blue);
 	void SetSize(int w, int h);
 	void SetCenter(int x, int y);
-	void SetDrawPos(int x, int y, int width, int height);
+	void SetDrawPos(int leftX, int leftY, int rightX, int rightY);
 	void Draw(int x, int y);
+	void Draw(const Vector2D &pos);
 
 private:
 	void InitModel(int centerX, int centerY);

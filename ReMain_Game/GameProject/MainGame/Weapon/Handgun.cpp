@@ -1,5 +1,5 @@
 #include "Handgun.h"
-#include "../enums.h"
+#include "../Player/PlayerInfo.h"
 
 Handgun* g_pHandgun;
 
@@ -50,17 +50,9 @@ void Handgun::Reload()
 	//ŽèŽ‚¿’e”‚ª0‚æ‚è‘å‚«‚¢•e‚É“ü‚Á‚Ä‚¢‚é’e”‚ªÅ‘å‘•’e”‚æ‚è¬‚³‚¢
 	if (m_Ammo > 0 && m_LoadedAmmo < AMMO_LOADED_HANDGUN)
 	{
-		if (m_Ammo < 6)
-		{
-			m_LoadedAmmo += m_Ammo;
-			m_Ammo = 0;
-		}
-		else
-		{
-			int temp = AMMO_LOADED_SHOTGUN - m_LoadedAmmo;
-			m_LoadedAmmo += temp;
-			m_Ammo -= temp;
-			if (m_Ammo < 0)m_Ammo = 0;
-		}
+		int temp = AMMO_LOADED_SHOTGUN - m_LoadedAmmo;
+		m_LoadedAmmo += temp;
+		m_Ammo -= temp;
+		if (m_Ammo < 0)m_Ammo = 0;
 	}
 }

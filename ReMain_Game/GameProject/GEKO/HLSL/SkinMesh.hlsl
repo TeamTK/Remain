@@ -78,36 +78,13 @@ VS_OUTPUT VS(float4 Pos : POSITION, float4 Normal : NORMAL, float2 tex : TEXCOOR
 	output.Normal = normalize(mul(vSkinned.Normal, (float3x3)g_mW));
 
 	//ディレクショナルライト
-	output.Light = g_vLightDir;
+	output.Light = -g_vLightDir;
 
 	//視線ベクトル　ワールド空間上での頂点から視点へ向かうベクトル
 	float3 PosWorld = mul(output.Pos, g_mW);
-	output.EyeVector = normalize(g_vEye - PosWorld);
+	output.EyeVector = normalize(PosWorld - g_vEye);
 
 	output.Tex = tex; //テクスチャ格納
-	return output;
-}
-
-//バーテックスシェーダー
-VS_OUTPUT VS_NoTeX(float4 Pos : POSITION, float4 Normal : NORMAL, uint4  Bones : BONE_INDEX, float4 Weights : BONE_WEIGHT)
-{
-	VS_OUTPUT output = (VS_OUTPUT)0;
-
-	Skin vSkinned = SkinVert(Pos, Normal, Bones, Weights);
-
-	//射影変換（ワールド→ビュー→プロジェクション）
-	output.Pos = mul(vSkinned.Pos, g_mWVP);
-
-	//法線をモデルの姿勢に合わせる(モデルが回転すれば法線も回転させる）
-	output.Normal = normalize(mul(vSkinned.Normal, (float3x3)g_mW));
-
-	//ディレクショナルライト
-	output.Light = g_vLightDir;
-
-	//視線ベクトル　ワールド空間上での頂点から視点へ向かうベクトル
-	float3 PosWorld = mul(output.Pos, g_mW);
-	output.EyeVector = normalize(g_vEye - PosWorld);
-
 	return output;
 }
 
@@ -135,6 +112,29 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	return color;
 }
 
+//バーテックスシェーダー
+VS_OUTPUT VS_NoTeX(float4 Pos : POSITION, float4 Normal : NORMAL, uint4  Bones : BONE_INDEX, float4 Weights : BONE_WEIGHT)
+{
+	VS_OUTPUT output = (VS_OUTPUT)0;
+
+	Skin vSkinned = SkinVert(Pos, Normal, Bones, Weights);
+
+	//射影変換（ワールド→ビュー→プロジェクション）
+	output.Pos = mul(vSkinned.Pos, g_mWVP);
+
+	//法線をモデルの姿勢に合わせる(モデルが回転すれば法線も回転させる）
+	output.Normal = normalize(mul(vSkinned.Normal, (float3x3)g_mW));
+
+	//ディレクショナルライト
+	output.Light = -g_vLightDir;
+
+	//視線ベクトル　ワールド空間上での頂点から視点へ向かうベクトル
+	float3 PosWorld = mul(output.Pos, g_mW);
+	output.EyeVector = normalize(PosWorld - g_vEye);
+
+	return output;
+}
+
 //ピクセルシェーダー
 float4 PS_NoTex(VS_OUTPUT input) : SV_Target
 {
@@ -143,10 +143,10 @@ float4 PS_NoTex(VS_OUTPUT input) : SV_Target
 
 	//拡散反射光　項
 	float NL = saturate(dot(input.Normal, input.Light));
-	float4 diffuse = (g_Diffuse / 2 + g_texColor.Sample(g_samLinear, input.Tex) / 2) * NL;
+	float4 diffuse = g_Diffuse * NL;
 
 	//鏡面反射光　項
-	float3 reflect = normalize(2 * NL*input.Normal - input.Light);
+	float3 reflect = normalize(2 * NL * input.Normal - input.Light);
 	float4 specular = pow(saturate(dot(reflect, input.EyeVector)), 4) * g_Specular;
 
 	//フォンモデル最終色　３つの項の合計

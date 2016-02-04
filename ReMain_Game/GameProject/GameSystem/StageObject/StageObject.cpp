@@ -60,8 +60,6 @@ void StageObject::Render()
 //	  StageObjectManager	*
 //***************************
 
-StageObjectManager* StageObjectManager::m_Instance = nullptr;
-
 StageObjectManager::StageObjectManager() :
 	m_cnt(0), m_number(0), m_num(0)
 {
@@ -70,7 +68,6 @@ StageObjectManager::StageObjectManager() :
 
 StageObjectManager::~StageObjectManager()
 {
-
 }
 
 void StageObjectManager::LoadObject(char* filepath)
@@ -179,34 +176,22 @@ void StageObjectManager::Render()
 
 void StageObjectManager::ClearList()
 {
-	int a = m_MapObjectList.size();
-
-	auto it = m_MapObjectList.begin();
-	for (; it != m_MapObjectList.end();)
+	for (auto& i : m_MapObjectList)
 	{
-		it->Relese();
-		it = m_MapObjectList.erase(it);
+		i.Relese();
 	}
+
 	m_MapObjectList.clear();
 }
 
 StageObjectManager* StageObjectManager::GetInstance()
 {
-	if (m_Instance == nullptr)
-		m_Instance = new StageObjectManager();
-
-	return m_Instance;
+	static StageObjectManager instance;
+	return &instance;
 }
 
-void StageObjectManager::ClearInstance()
-{
-	if (m_Instance != nullptr)
-		delete (m_Instance);
-
-	m_Instance = nullptr;
-}
-
-MapObject::MapObject()
+MapObject::MapObject() :
+	mp_StageObject(nullptr)
 {
 
 }
@@ -302,5 +287,5 @@ void MapObject::Render()
 
 void MapObject::Relese()
 {
-	delete mp_StageObject;
+	if (mp_StageObject != nullptr) delete mp_StageObject;
 }

@@ -3,7 +3,8 @@
 #include "..\System\DirectionalLight.h"
 #include <assert.h>
 
-DynamicMesh::DynamicMesh()
+DynamicMesh::DynamicMesh() :
+	m_IsAnimUpdate(true)
 {
 }
 
@@ -108,6 +109,16 @@ void DynamicMesh::SetPartRangeTime(int bornStart, int bornEnd, float animTime)
 		m_CopyBornArray[cnt]->animFrame = animTime;
 		cnt++;
 	}
+}
+
+void DynamicMesh::StartAnimation()
+{
+	m_IsAnimUpdate = true;
+}
+
+void DynamicMesh::StopAnimation()
+{
+	m_IsAnimUpdate = false;
 }
 
 const SkinVertexInfo *DynamicMesh::GetVertex() const
@@ -332,7 +343,10 @@ void DynamicMesh::RenderFunc(Matrix &matrix)
 	pDeviceContext->PSSetConstantBuffers(0, 1, &data->m_pConstantBuffer0);
 
 	//アニメーション更新
-	m_pSkinMeshData->Update(&m_Born);
+	if (m_IsAnimUpdate)
+	{
+		m_pSkinMeshData->Update(&m_Born);
+	}
 
 	//ボーン情報格納
 	if (SUCCEEDED(pDeviceContext->Map(data->m_pConstantBufferBone, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))

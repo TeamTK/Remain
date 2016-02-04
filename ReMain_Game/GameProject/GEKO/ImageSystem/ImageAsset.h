@@ -42,8 +42,8 @@ class ImageAsset
 public:
 	~ImageAsset();
 	static ImageData* GetImage(std::string name);
-	static void LoadAsset(std::string filmeName, std::string name);
-	static void LoadFile(std::string filmeName);
+	static void LoadAsset(std::string fileName, std::string name);
+	static void LoadFile(std::string fileName);
 	static void PartClear(std::string name);
 	static void AllClear();
 	static void DebugDraw();
