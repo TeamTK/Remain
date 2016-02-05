@@ -3,6 +3,8 @@
 
 #include "../Character.h"
 
+#define DeadValue 0.1f	//パッド入力のデッド値
+
 //プレイヤーのアニメーション
 enum EPlayerAnim
 {

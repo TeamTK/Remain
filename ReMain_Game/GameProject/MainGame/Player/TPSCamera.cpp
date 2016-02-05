@@ -42,8 +42,15 @@ void TPSCamera::Update()
 	if (Input::XInputPad1.GetIsConnection())
 	{
 		//コントローラー入力
-		m_Horizontal += (Input::XInputPad1.ThumbRightX() - 128) * m_CamSpeed;
-		m_Vertical += (Input::XInputPad1.ThumbRightY() - 128) * m_CamSpeed;
+		Vector3D PadDir = Vector3D((float)Input::XInputPad1.ThumbRightX(), 0.0f, (float)Input::XInputPad1.ThumbRightY());
+		PadDir = (PadDir - Vector3D(128, 0.0f, 128)) / 32767;
+		if (abs(PadDir.x) < DeadValue && abs(PadDir.z) < DeadValue)
+		{
+			PadDir = Vector3D(0.0f, 0.0f, 0.0f);
+		}
+
+		m_Horizontal += PadDir.x * m_CamSpeed;
+		m_Vertical += PadDir.z * m_CamSpeed;
 	}
 	else
 	{
@@ -60,7 +67,7 @@ void TPSCamera::Update()
 	//銃を構えているときのカメラ位置
 	if (*info->pSetupWeapon && (*info->pState != EPlayerState::eState_Reload))
 	{
-		m_CamSpeed = 0.0000007f;
+		m_CamSpeed = 0.03f;
 		if (m_Vertical >= 0.55f) m_Vertical = 0.55f;	//カメラ角度上限
 		if (m_Vertical <= -0.5f) m_Vertical = -0.5f;	//カメラ角度下限
 
@@ -83,7 +90,7 @@ void TPSCamera::Update()
 	//通常状態のカメラ位置
 	else
 	{
-		m_CamSpeed = 0.000002f;
+		m_CamSpeed = 0.06f;
 		if (m_Vertical >= 0.45f) m_Vertical = 0.45f;	//カメラ角度下限
 		if (m_Vertical <= -0.9f) m_Vertical = -0.9f;	//カメラ角度上限
 

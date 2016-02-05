@@ -28,6 +28,7 @@ private:
 	StaticMesh m_Cabin;
 	StaticMesh m_ShotGun;
 	StaticMesh m_HandGun;
+	StaticMesh m_AmmoBox;
 	Vector2D m_SelectPos;
 	Select m_Select;
 	ScreenTransfer_In m_Transfer;

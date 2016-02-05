@@ -13,7 +13,8 @@ Enemy::Enemy(const char* name, EnemyState &enemyState) :
 	Character(10, name, 1),
 	m_FlinchCnt(0.0f),
 	m_AnimSpeed(ENEMY_NORMAL_SPEED),
-	m_SearchCnt(0)
+	m_SearchCnt(0),
+	m_OneFlameTime(0)
 {
 	//各種設定値割り当て
 	m_SphereMap.radius = enemyState.mapHitRadius; //マップとの半径
@@ -96,7 +97,7 @@ void Enemy::Chase()
 	//攻撃判断(経路探索でゴールしたら)
 	if (m_Search.GetIsGoal())
 	{
-		m_pos += m_Distance.GetNormalize() * m_RunSpeed * GEKO::GetOneFps();
+		m_pos += m_Distance.GetNormalize() * m_RunSpeed * m_OneFlameTime;
 		m_rot = Vector3D(0.0f, atan2f(m_Distance.x, m_Distance.z), 0.0);
 
 		if (leng < 3)
@@ -112,7 +113,7 @@ void Enemy::Chase()
 		m_Search.StartMove();
 		m_Search.StartSerch();
 
-		m_pos += *m_Search.GetTargetDirection() * m_WalkSpeed * GEKO::GetOneFps();
+		m_pos += *m_Search.GetTargetDirection() * m_WalkSpeed * m_OneFlameTime;
 		m_rot = Vector3D(0.0f, atan2f(m_Search.GetTargetDirection()->x, m_Search.GetTargetDirection()->z), 0.0);
 	}
 }
@@ -166,6 +167,7 @@ void Enemy::Wanderings()
 
 void Enemy::Update()
 {
+	m_OneFlameTime = GEKO::GetOneFps();
 	//攻撃される側の当たり判定更新
 	unsigned int bornNum = m_BoneCapsule.size();
 	for (unsigned int i = 0; i < bornNum; i++)
@@ -185,7 +187,7 @@ void Enemy::Update()
 	m_SightVec = m_Model.GetAxisZ(1.0f);
 
 	//アニメーション切り替えと速度
-	m_Model.SetPlayTime(m_AnimSpeed);
+	m_Model.SetPlayTime(m_AnimSpeed * m_OneFlameTime);
 	m_Model.ChangeAnimation(m_AnimType);
 
 	m_FuncTask.Update();

@@ -13,6 +13,7 @@ public:
 
 private:
 	Number m_Num;
+	Image m_Slash;
 	RenderTask m_RenderTask;
 };
 #endif

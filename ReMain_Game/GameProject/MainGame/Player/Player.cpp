@@ -7,11 +7,12 @@
 #include "../../GameSystem/GUI/UI_Reticle.h"
 #include "../../GameSystem/GUI/UI_AmmoNum.h"
 #include "../../GameSystem/Effect/EffectAnimation.h"
+#include "../../GameSystem/ScreenBlood.h"
 
-#define WALK_SPEED 0.05f			  //歩くスピード
-#define RUN_SPEED 0.12f				  //走るスピード
-#define CROUCH_WALK_SPPED 0.02f		  //しゃがみ歩きスピード
-#define	SETUPWEAPON_MOVE_SPEED 0.03f; //武器を構えた時の移動速度
+#define WALK_SPEED 3.0f			  //歩くスピード
+#define RUN_SPEED 6.0f				  //走るスピード
+#define CROUCH_WALK_SPPED 1.0f		  //しゃがみ歩きスピード
+#define	SETUPWEAPON_MOVE_SPEED 1.0f; //武器を構えた時の移動速度
 #define MAP_HIT_RADIUS 0.4f			  //マップとの当たり判定の半径
 #define MAP_HIT_RADIUS_SETWEAPON 0.8f //マップとの当たり判定の半径(武器構え時)
 
@@ -37,27 +38,28 @@ Player::Player(Vector3D pos) :
 	Character(100.0f, "Player", 0),
 	m_LookPos(-47.9f, 1.7f, -11.4f),
 	m_KeyDir(0.0f, 0.0f, 0.0f),
-	m_MoveSpeed(0.0f), 
+	m_MoveSpeed(0.0f),
 	m_AnimSpeed(30.0f),
-	m_Radius(0.5f), 
+	m_Radius(0.5f),
 	m_Phase(0),
-	m_isCrouch(false), 
+	m_OneFlameTime(0),
+	m_isCrouch(false),
 	m_isAttack(false),
-	m_isTakeWeapon(false), 
+	m_isTakeWeapon(false),
 	m_isMove(false),
-	m_isRun(false), 
+	m_isRun(false),
 	m_SetupWeapon(false),
-	m_ToggleCrouch(false), 
+	m_ToggleCrouch(false),
 	m_isShiftCrouch(false),
-	m_isReload(false), 
-	m_isHit(false), 
-	m_isShot(false), 
+	m_isReload(false),
+	m_isHit(false),
+	m_isShot(false),
 	m_ChangeTakeWeapon(false),
-	m_isSteAttack(false), 
+	m_isSteAttack(false),
 	m_ChangePutBackWeapon(false),
 	m_isDead(false),
 	m_IsStop(false),
-	m_State(EPlayerState::eState_Idle), 
+	m_State(EPlayerState::eState_Idle),
 	m_SelectedWeapon(EWeapons::eShotgun)
 {
 	//プレイヤーモデル初期化
@@ -132,6 +134,9 @@ Player::~Player()
 
 void Player::Update()
 {
+	//1フレームタイム
+	m_OneFlameTime = GEKO::GetOneFps();
+
 	//プレイヤーが死んでいない時の処理
 	if (!m_isDead)
 	{
@@ -200,7 +205,12 @@ void Player::Move()
 	{
 		//コントローラー入力
 		Vector3D PadDir = Vector3D((float)Input::XInputPad1.ThumbLeftX(), 0.0f, (float)Input::XInputPad1.ThumbLeftY());
-		m_KeyDir = (PadDir - Vector3D(128, 128, 128)) / 32767;
+		PadDir = (PadDir - Vector3D(128, 128, 128)) / 32767;
+		if (abs(PadDir.x) < DeadValue && abs(PadDir.z) < DeadValue)
+		{
+			PadDir = Vector3D(0.0f, 0.0f, 0.0f);
+		}
+		m_KeyDir = PadDir;
 	}
 	else
 	{
@@ -252,8 +262,8 @@ void Player::Move()
 		if (m_SetupWeapon)
 		{
 			//武器を構えた状態の移動
-			m_pos += m_Model.GetAxisX(1.0f) * m_KeyDir.x * m_MoveSpeed;
-			m_pos += m_Model.GetAxisZ(1.0f) * m_KeyDir.z * m_MoveSpeed;
+			m_pos += m_Model.GetAxisX(1.0f) * m_KeyDir.x * m_MoveSpeed * m_OneFlameTime;
+			m_pos += m_Model.GetAxisZ(1.0f) * m_KeyDir.z * m_MoveSpeed * m_OneFlameTime;
 			//プレイヤーの上下移動
 			m_Phase++;
 			m_pos.y += sinf(m_Phase * (PI * 10) / 150.0f) / 120.0f;
@@ -262,7 +272,7 @@ void Player::Move()
 		{
 			//通常状態の移動
 			Vector3D pos(sinf(m_Model.GetRotation().y), 0.0f, cosf(m_Model.GetRotation().y));
-			m_pos += pos * m_MoveSpeed;
+			m_pos += (pos * m_MoveSpeed) * m_OneFlameTime;
 		}
 	}
 }
@@ -331,7 +341,7 @@ void Player::Attack()
 
 	//発砲　(マウス左クリック, 右ショルダボタン)
 	if (Input::Mouse.LClicked() || Input::XInputPad1.ShoulderRightClicked())
-	{ 
+	{
 		if (m_SetupWeapon && !m_isShot && !m_isReload)
 		{
 			m_Model.StartAnimation();
@@ -418,6 +428,9 @@ void Player::Animation()
 {
 	m_SphereMap.radius = MAP_HIT_RADIUS;
 
+	printf("A%d\n", m_Anim);
+	printf("S%d\n", m_State);
+
 	switch (m_State)
 	{
 	case EPlayerState::eState_Idle:
@@ -463,8 +476,12 @@ void Player::Animation()
 		break;
 	}
 
-	m_Model.SetPlayTime(m_AnimSpeed);
+	m_Model.SetPlayTime(m_AnimSpeed * m_OneFlameTime);
 	m_Model.ChangeAnimation(m_Anim);
+
+
+	printf("A_%d\n", m_Anim);
+	printf("S_%d\n", m_State);
 }
 
 void Player::Idle()
@@ -486,7 +503,7 @@ void Player::Idle()
 		}
 	}
 	//待機
-	else if(!m_isTakeWeapon)
+	else if (!m_isTakeWeapon)
 	{
 		m_Anim = EPlayerAnim::eAnim_Idle;
 		m_AnimSpeed = HALF_ANIM_SPEED;
@@ -752,7 +769,7 @@ void Player::Recoil()
 		break;
 	case eHandgun:
 		m_Anim = EPlayerAnim::eAnim_RecoilHandgun;
-		m_AnimSpeed = TWICE_ANIM_SPEED;
+		m_AnimSpeed = DEFAULT_ANIM_SPEED;
 		break;
 	}
 	//アニメーション終了
@@ -800,8 +817,6 @@ void Player::Reload()
 	if (m_Model.GetPlayTime(m_JudgementAnim) > 28)
 	{
 		m_isReload = false;
-		m_Model.SetTime(0);
-
 		//装弾数を増やす
 		switch (m_SelectedWeapon)
 		{
@@ -856,18 +871,17 @@ void Player::HitAmmoBox(Result_Sphere& r)
 {
 	//取った弾の種類によって取得する弾薬数が決まる
 	if (r.targetID & eHITID2)
-	{	
+	{
 		if (r.targetName == "AmmoBox_Shotgun_12") g_pShotgun->AddAmmo(12);
 	}
 	else if (r.targetID & eHITID3)
 	{
-		if(r.targetName == "AmmoBox_Handgun_12") g_pHandgun->AddAmmo(12);
+		if (r.targetName == "AmmoBox_Handgun_12") g_pHandgun->AddAmmo(12);
 	}
 }
 
 void Player::HitEnemyAttack(Result_Capsule &hitData)
 {
-	m_isHit = true;
 	//血しぶきのエフェクト
 	EffectInfo effectData;
 	effectData.imageName = "Blood";
@@ -884,6 +898,11 @@ void Player::HitEnemyAttack(Result_Capsule &hitData)
 
 	//体力減少（仮）
 	m_Hp -= 10;
+
+	//画面に血しぶき
+	new ScreenBlood();
+
+	m_isHit = true;
 
 	//HPがゼロならゲームオーバー演出とplayerを消去
 	if (m_Hp <= 0)

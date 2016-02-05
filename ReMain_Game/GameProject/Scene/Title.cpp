@@ -22,6 +22,7 @@ Title::Title() :
 	m_Cabin.SetAsset("Cabin");
 	m_ShotGun.SetAsset("Shotgun");
 	m_HandGun.SetAsset("Handgun");
+	m_AmmoBox.SetAsset("AmmoBox");
 
 	//選択画像設定
 	m_SelectImage.SetSize(m_SelectImage.GetWidth() / 4, m_SelectImage.GetHeight() / 5);
@@ -30,8 +31,11 @@ Title::Title() :
 	//3Dオブジェクト回転と平行移動
 	m_ShotGun.SetRotationDegree(240, 0, 90);
 	m_HandGun.SetRotationDegree(220, 0, 90);
+	m_AmmoBox.SetRotationDegree(0, 200, 0);
 	m_ShotGun.SetTranselate(-1.5f, 1.0f, -3.0f);
 	m_HandGun.SetTranselate(-1.5f, 1.0f, -2.8f);
+	m_AmmoBox.SetTranselate(-1.7f, 1.0f, -3.1f);
+	m_AmmoBox.SetScale(0.5f, 0.5f, 0.5f);
 
 	m_Render.Regist(0, REGIST_RENDER_FUNC(Title::Render));
 
@@ -92,6 +96,7 @@ void Title::Render()
 	m_Cabin.Render();
 	m_ShotGun.Render();
 	m_HandGun.Render();
+	m_AmmoBox.Render();
 
 	//2Dオブジェクト
 	m_TitleImage.Draw(TITLE_POS);

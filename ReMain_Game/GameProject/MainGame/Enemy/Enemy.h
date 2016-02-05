@@ -66,6 +66,7 @@ protected:
 	float m_RunSpeed; //走る速度
 	float m_AnimSpeed; //アニメーションの速度
 	float m_AnimEndTime; //アニメーションの終わり時間
+	float m_OneFlameTime;	//1フレームの時間
 
 	//敵の視界
 	EnemySight m_Sight; //視界システム
