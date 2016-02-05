@@ -54,6 +54,7 @@ private:
 	PlayerSightInfo m_PlayerSightInfo; //プレイヤーの視界情報
 	AuditoryObject m_AuditoryObject; //聴覚対象
 	Timer m_Timer;					//ダメージを食らった後の無敵時間
+	Timer m_NoActionTime;			//ロード時の無操作時間
 	TracerouteTarget m_Target;		//経路探索対象
 	Sound m_HandGunFire;			//ハンドガンの発砲音
 	Sound m_ShotGunFire;			//ショットガンの発砲音
