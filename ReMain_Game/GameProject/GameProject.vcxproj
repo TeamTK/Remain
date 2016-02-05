@@ -97,6 +97,8 @@
     <ClCompile Include="MainGame\Weapon\Knife.cpp" />
     <ClCompile Include="MainGame\Weapon\Shotgun.cpp" />
     <ClCompile Include="MainGame\Weapon\WeaponBase.cpp" />
+    <ClCompile Include="Scene\EventScene\Chapter_1_1_Maraud.cpp" />
+    <ClCompile Include="Scene\EventScene\EventSceneBase.cpp" />
     <ClCompile Include="Scene\GameOvar.cpp" />
     <ClCompile Include="Scene\MainGame.cpp" />
     <ClCompile Include="Scene\NowLoading.cpp" />
@@ -274,6 +276,8 @@
     <ClInclude Include="MainGame\Weapon\Shotgun.h" />
     <ClInclude Include="MainGame\Weapon\WeaponBase.h" />
     <ClInclude Include="MainGame\Weapon\WeaponInfo.h" />
+    <ClInclude Include="Scene\EventScene\Chapter_1_1_Maraud.h" />
+    <ClInclude Include="Scene\EventScene\EventSceneBase.h" />
     <ClInclude Include="Scene\GameOvar.h" />
     <ClInclude Include="Scene\MainGame.h" />
     <ClInclude Include="Scene\NowLoading.h" />
