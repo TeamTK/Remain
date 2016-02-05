@@ -31,7 +31,7 @@ private:
 	//bool CheckPolyMove(const char* TopographyName, const Vector3D& startPos, const Vector3D& targetPos);
 	//bool CheckPolyMoveWidth(const char* TopographyName, const Vector3D& startPos, const Vector3D& targetPos, float width);
 	int CheckOnPolyIndex(TracerouteInfo *pInfo, const Vector3D &pos); //’Tõ—pƒ|ƒŠƒSƒ“‚Ì‚Ç‚±‚Ìƒ|ƒŠƒSƒ“‚É‚¢‚é‚©”»’è
-	static void SetupPathPlanning(const char* name, TracerouteSearch *pSearch, const Vector3D &goalPos); //Œo˜H’TõŠJn
+	static void SetupPathPlanning(TracerouteSearch *pSearch, const Vector3D &goalPos); //Œo˜H’TõŠJn
 	static void PathPlanningFunc(PathPlanningUnit *pUnit, PathPlanningUnit *pUintPrev, int idx, TracerouteInfo *pInfo, PathPlanning *pPathPlanning);
 	static void AddSearch(TracerouteSearch *pSearch);
 	static void AddTarget(TracerouteTarget *pTarget);

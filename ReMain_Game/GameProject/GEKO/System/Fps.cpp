@@ -35,7 +35,7 @@ void Fps::Update()
 	//1フレーム目なら時刻を記憶
 	if (p_Fps->m_Count == 0) p_Fps->m_StartTime = timeGetTime();
 
-	//60フレーム目なら平均を計算する
+	//指定のフレーム目なら平均を計算する
 	if (p_Fps->m_Count == p_Fps->N)
 	{ 
 		int t = timeGetTime();

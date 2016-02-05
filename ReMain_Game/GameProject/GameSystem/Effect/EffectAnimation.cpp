@@ -25,6 +25,5 @@ void EffectAnimation::Update()
 
 void EffectAnimation::Render()
 {
-	m_Anim.DebugFrame();
 	m_Anim.Render(m_Pos, m_Size);
 }
