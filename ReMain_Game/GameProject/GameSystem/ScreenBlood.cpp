@@ -1,7 +1,5 @@
 #include "ScreenBlood.h"
 
-
-
 ScreenBlood::ScreenBlood() :
 	Task("ScreenBlood", 1),
 	m_Alpha(255)

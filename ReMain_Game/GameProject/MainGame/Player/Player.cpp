@@ -125,6 +125,8 @@ Player::Player(Vector3D pos) :
 	//プレイヤーUI
 	new UI_Reticle();
 	new UI_AmmoNum();
+
+	m_NoActionTime.Start();
 }
 
 Player::~Player()
@@ -134,6 +136,7 @@ Player::~Player()
 
 void Player::Update()
 {
+
 	//1フレームタイム
 	m_OneFlameTime = GEKO::GetOneFps();
 
@@ -200,6 +203,7 @@ void Player::Move()
 	m_isRun = false;
 
 	if (m_SelectWeapon.isSelected()) return;
+	if (m_NoActionTime.GetSecond() < 2.0f)	return;
 
 	if (Input::XInputPad1.GetIsConnection())
 	{
