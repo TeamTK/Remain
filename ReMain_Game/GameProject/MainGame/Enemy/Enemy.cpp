@@ -96,7 +96,7 @@ void Enemy::Chase()
 	//çUåÇîªíf(åoòHíTçıÇ≈ÉSÅ[ÉãÇµÇΩÇÁ)
 	if (m_Search.GetIsGoal())
 	{
-		m_pos += m_Distance.GetNormalize() * m_RunSpeed;
+		m_pos += m_Distance.GetNormalize() * m_RunSpeed * GEKO::GetOneFps();
 		m_rot = Vector3D(0.0f, atan2f(m_Distance.x, m_Distance.z), 0.0);
 
 		if (leng < 3)
@@ -112,7 +112,7 @@ void Enemy::Chase()
 		m_Search.StartMove();
 		m_Search.StartSerch();
 
-		m_pos += *m_Search.GetTargetDirection() * m_WalkSpeed;
+		m_pos += *m_Search.GetTargetDirection() * m_WalkSpeed * GEKO::GetOneFps();
 		m_rot = Vector3D(0.0f, atan2f(m_Search.GetTargetDirection()->x, m_Search.GetTargetDirection()->z), 0.0);
 	}
 }
@@ -221,7 +221,7 @@ void Enemy::HitBullet(Result_Sphere& r)
 	float GunPower = 1.0f;
 	if (r.targetName == "HandGun")
 	{
-		GunPower = 3.0f;
+		GunPower = 2.0f;
 	}
 	else if (r.targetName == "ShotGun")
 	{

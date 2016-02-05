@@ -128,4 +128,14 @@ namespace GEKO
 	{
 		return Window::Get()->GetWindowSize();
 	}
+
+	float GetNowFps()
+	{
+		return Fps::GetFPS();
+	}
+
+	float GetOneFps()
+	{
+		return 1 / Fps::GetFPS();
+	}
 }

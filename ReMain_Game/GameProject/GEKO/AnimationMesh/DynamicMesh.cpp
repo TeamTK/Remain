@@ -67,25 +67,34 @@ void DynamicMesh::PartRangeChangeAnimation(int bornStart, int bornEnd, unsigned 
 
 void DynamicMesh::SetPlayTime(float animSpeed)
 {
-	float ainmFrame = Math::VelocityToFrameM(animSpeed);
-	for (auto& i : m_CopyBornArray) i->animFrame += ainmFrame;
+	if (m_IsAnimUpdate)
+	{
+		//float ainmFrame = Math::VelocityToFrameM(animSpeed);
+		//for (auto& i : m_CopyBornArray) i->animFrame += ainmFrame;
+		for (auto& i : m_CopyBornArray) i->animFrame += animSpeed;
+	}
 }
 
 void DynamicMesh::SetPartPlayTime(int bornIndex, float animSpeed)
 {
-	float ainmFrame = Math::VelocityToFrameM(animSpeed);
-	m_CopyBornArray[bornIndex]->animFrame += ainmFrame;
+	if (m_IsAnimUpdate)
+	{
+		//float ainmFrame = Math::VelocityToFrameM(animSpeed);
+		//m_CopyBornArray[bornIndex]->animFrame += ainmFrame;
+		m_CopyBornArray[bornIndex]->animFrame += animSpeed;
+	}
 }
 
 void DynamicMesh::SetPartRangePlayTime(int bornStart, int bornEnd, float animSpeed)
 {
-	float ainmFrame = Math::VelocityToFrameM(animSpeed);
+	//float ainmFrame = Math::VelocityToFrameM(animSpeed);
 
 	int cnt = bornStart;
 	for (auto& i : m_CopyBornArray)
 	{
 		if (cnt > bornEnd) break;
-		m_CopyBornArray[cnt]->animFrame += ainmFrame;
+		//m_CopyBornArray[cnt]->animFrame += ainmFrame;
+		m_CopyBornArray[cnt]->animFrame += animSpeed;
 		cnt++;
 	}
 }

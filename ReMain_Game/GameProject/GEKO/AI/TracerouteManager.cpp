@@ -255,7 +255,9 @@ void TracerouteManager::Update()
 			//探索側が探索対象の名前と一致したら経路探索開始
 			if (i->m_NameTarget == j->m_Name)
 			{
-				SetupPathPlanning(i->m_NameTopography, i, *j->m_pPosition);
+				//if(i->m_PathPlanning.pGoalUnit == i->m_PathPlanning.pPrevGoalUnit) break;
+
+				SetupPathPlanning(i, *j->m_pPosition);
 				//i.first->m_IsSerch = false;
 				i->m_PathMoveInfo.pNowPathPlanningUnit = i->m_PathPlanning.pStartUnit;
 				i->m_PathMoveInfo.pTargetPathPlanningUnit = i->m_PathPlanning.pStartUnit;
@@ -303,9 +305,8 @@ void TracerouteManager::Update()
 		}
 		
 		//次の経路の中心座標に進む方角取得
-		Vector3D goal = pInfo->pPoryLinkInfo[i->m_PathPlanning.pGoalUnit->polyIndex].centerPosition;
 		Vector3D center = pInfo->pPoryLinkInfo[pMove->pTargetPathPlanningUnit->polyIndex].centerPosition;
-		pMove->MoveDirection = (center - *pMove->pNowPosition) + (goal - *pMove->pNowPosition);
+		pMove->MoveDirection = (center - *pMove->pNowPosition);
 		pMove->MoveDirection.SetNormalize();
 	}
 }
@@ -368,6 +369,34 @@ int TracerouteManager::CheckOnPolyIndex(TracerouteInfo *pInfo, const Vector3D &p
 {
 	assert(pInfo->pStaticMesh && "経路探索用の地形データがありません");
 
+	//モデルの逆行列算出
+	Matrix world = *pInfo->pStaticMesh->GetWorldMatrix();
+	Matrix local = *pInfo->pStaticMesh->GetLocalMatrix();
+	Matrix mat = local * world;
+	Matrix inverse = mat.GetInverse();
+
+	//ポリゴン情報
+	const VertexInfo *pVertex = pInfo->pStaticMesh->GetVertex();
+	const IndexInfo *index = pInfo->pStaticMesh->GetIndex();
+	const int polyNum = pInfo->pStaticMesh->GetFaceAllNum();
+
+	TriangleInfo triangle;
+	Vector3D point = pos * inverse;
+
+	//当たったポリゴン番号を返す
+	for (int i = 0; i < polyNum; i++)
+	{
+		triangle.v1 = pVertex[index[i].vertexIndex[0]].pos;
+		triangle.v2 = pVertex[index[i].vertexIndex[1]].pos;
+		triangle.v3 = pVertex[index[i].vertexIndex[2]].pos;
+
+		if (CollisionMath::TriangleIntersect(point, triangle, pInfo->pNormal[i]))
+		{
+			return i;
+		}	
+	}
+
+	/*
 	//線の当たり判定情報
 	Vector3D linePosStart(pos.x, 1000.0f, pos.z);
 	Vector3D linePosEnd(pos.x, -1000.0f, pos.z);
@@ -413,14 +442,14 @@ int TracerouteManager::CheckOnPolyIndex(TracerouteInfo *pInfo, const Vector3D &p
 		}
 
 	}
-
+	*/
 	return -1;
 }
 
-void TracerouteManager::SetupPathPlanning(const char* name, TracerouteSearch *pSearch, const Vector3D &goalPos)
+void TracerouteManager::SetupPathPlanning(TracerouteSearch *pSearch, const Vector3D &goalPos)
 {
 	auto *pTraceroute = GetInstance()->m_pTraceroutePimpl;
-	auto *pInfo = &pTraceroute->tracerouteInfo[name];
+	auto *pInfo = &pTraceroute->tracerouteInfo[pSearch->m_NameTopography];
 	auto *pPath = &pSearch->m_PathPlanning;
 
 	assert(pInfo->pStaticMesh && "経路探索用の地形データがありません");
@@ -441,7 +470,6 @@ void TracerouteManager::SetupPathPlanning(const char* name, TracerouteSearch *pS
 	pPath->pUnitArray = new PathPlanningUnit[polyNum];
 
 	//経路探索用情報の初期化
-	pUnit = pPath->pUnitArray;
 	for (int i = 0; i < polyNum; i++)
 	{
 		pPath->pUnitArray[i].polyIndex = i;

@@ -41,6 +41,8 @@ namespace GEKO
 	void LoopEnd();
 	void End();
 	const WindowSize *GetWindowSize();
+	float GetNowFps();
+	float GetOneFps();
 }
 
 #endif

@@ -18,6 +18,8 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 	DirectionalLight::SetIntensity(0.6f);
 	DirectionalLight::SetDirection(0.0f, 45.0f);
 
+	GEKO::ChangeFps(30);
+
 	ImageAsset::LoadFile("TextData\\Image.txt");
 	StaticMeshAsset::LoadFile("TextData\\StaticMesh.txt");
 
