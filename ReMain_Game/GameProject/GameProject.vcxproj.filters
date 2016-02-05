@@ -121,6 +121,7 @@
     <ClCompile Include="GEKO\Shader\CopmuteShader\SphereTriangleCopmute.cpp" />
     <ClCompile Include="MainGame\Player\TPSCamera.cpp" />
     <ClCompile Include="GameSystem\Effect\EffectAnimation.cpp" />
+    <ClCompile Include="GameSystem\ScreenBlood.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -316,6 +317,7 @@
     <ClInclude Include="MainGame\Player\PlayerInfo.h" />
     <ClInclude Include="MainGame\Weapon\WeaponInfo.h" />
     <ClInclude Include="GameSystem\Effect\EffectAnimation.h" />
+    <ClInclude Include="GameSystem\ScreenBlood.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

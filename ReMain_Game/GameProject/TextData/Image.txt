@@ -17,4 +17,4 @@ Image media\ImageData\YouAreDead.png YouAreDead
 Image media\ImageData\Transfer_Black.png Transfer_Black
 Image media\ImageData\BloodAnim.png BloodAnim
 Image media\ImageData\MuzzleFlash.png MuzzleFlash
-
+Image media\ImageData\ScreenBlood.png ScreenBlood

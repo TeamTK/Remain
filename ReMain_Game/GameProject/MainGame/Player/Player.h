@@ -71,6 +71,7 @@ private:
 	float m_AnimSpeed;		//アニメーションスピード
 	float m_PlayAnimTime;	//武器に渡す用
 	float m_Radius;			//弾薬箱との当たり判定の半径
+	float m_OneFlameTime;	//1フレームの時間
 
 	bool m_ChangeTakeWeapon;		//銃を持つ
 	bool m_ChangePutBackWeapon;		//銃をしまう
