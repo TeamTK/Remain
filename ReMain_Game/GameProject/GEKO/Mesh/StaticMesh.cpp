@@ -2,15 +2,22 @@
 #include "..\System\Camera.h"
 #include "..\System\DirectionalLight.h"
 #include "..\Figure\Fiqure.h"
+#include "..\Shader\StaticMeshShader\StaticMeshShader.h"
+#include "..\Shader\ShadowMap\ShaderShadowMap.h"
 
 StaticMesh::StaticMesh() :
 	m_pMeshData(nullptr)
 {
 }
 
-StaticMesh::StaticMesh(const std::string &meshName)
+StaticMesh::StaticMesh(const std::string &meshName, bool isLightInterrupted)
 {
 	AllocationMeshData(meshName);
+	if (isLightInterrupted)
+	{
+		ShaderShadowMap::GetInstance()->Clear(this);
+		ShaderShadowMap::GetInstance()->Add(this);
+	}
 }
 
 StaticMesh::~StaticMesh()
@@ -18,9 +25,14 @@ StaticMesh::~StaticMesh()
 	m_pMeshData = nullptr;
 }
 
-void StaticMesh::SetAsset(const std::string &meshName)
+void StaticMesh::SetAsset(const std::string &meshName, bool isLightInterrupted)
 {
 	AllocationMeshData(meshName);
+	if (isLightInterrupted)
+	{
+		ShaderShadowMap::GetInstance()->Clear(this);
+		ShaderShadowMap::GetInstance()->Add(this);
+	}
 }
 
 const IndexInfo *StaticMesh::GetIndex() const
@@ -53,14 +65,14 @@ const int StaticMesh::GetMaterialAllNum() const
 	return m_pMeshData->GetMeshInfo()->materialNumAll;
 }
 
-void StaticMesh::Render() const
+void StaticMesh::Render(bool isShadow) const
 {
-	RenderFunc(m_pMeshData->GetMeshInfo()->m_LocalMat * m_Matrix);
+	RenderFunc(m_pMeshData->GetMeshInfo()->m_LocalMat * m_Matrix, isShadow);
 }
 
-void StaticMesh::RenderMatrix(Matrix &matrix) const
+void StaticMesh::RenderMatrix(Matrix &matrix, bool isShadow) const
 {
-	RenderFunc(m_pMeshData->GetMeshInfo()->m_LocalMat * matrix);
+	RenderFunc(m_pMeshData->GetMeshInfo()->m_LocalMat * matrix, isShadow);
 }
 
 void StaticMesh::DebugNormal() const
@@ -140,7 +152,7 @@ void StaticMesh::AllocationMeshData(const std::string &meshName)
 	}
 }
 
-void StaticMesh::RenderFunc(Matrix &matrix) const
+void StaticMesh::RenderFunc(Matrix &matrix, bool isShadow) const
 {
 	ID3D11DeviceContext *pDeviceContext = Direct3D11::GetInstance()->GetID3D11DeviceContext();
 
@@ -150,47 +162,11 @@ void StaticMesh::RenderFunc(Matrix &matrix) const
 
 	D3DXMATRIX World = matrix; //ワールド行列格納
 
-	//使用するシェーダーの登録
-	pDeviceContext->VSSetShader(data->m_pVertexShader, NULL, 0);
-	pDeviceContext->PSSetShader(data->m_pPixelShader, NULL, 0);
+	StaticMeshShader::GetInstance()->BaseConstantBuffer(pDeviceContext, World, isShadow);
 
-	//シェーダーのコンスタントバッファーに各種データを渡す
-	D3D11_MAPPED_SUBRESOURCE pData;
-	if (SUCCEEDED(pDeviceContext->Map(
-		data->m_pConstantBuffer0, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
-	{
-		ConstantBuffer0 sg;
-
-		//ワールド行列を渡す
-		sg.mW = World;
-		D3DXMatrixTranspose(&sg.mW, &sg.mW);
-
-		//ワールド、カメラ、射影行列を渡す
-		sg.mWVP = World * (*Camera::GetView()) * (*Camera::GetProjection());
-		D3DXMatrixTranspose(&sg.mWVP, &sg.mWVP);
-
-		//ライトの方向を渡す
-		D3DXVec4Normalize(&sg.LightDir, DirectionalLight::GetDirection());
-		sg.fIntensity = DirectionalLight::GetLightColor()->Change();
-
-		//視点位置を渡す
-		D3DXVECTOR3 EyePos(Camera::GetEyePositionD3D());
-		sg.eyePos = D3DXVECTOR4(EyePos.x, EyePos.y, EyePos.z, 0);
-
-		memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(ConstantBuffer0));
-		pDeviceContext->Unmap(data->m_pConstantBuffer0, 0);
-	}
-
-	//このコンスタントバッファーを使うシェーダーの登録
-	pDeviceContext->VSSetConstantBuffers(0, 1, &data->m_pConstantBuffer0);
-	pDeviceContext->PSSetConstantBuffers(0, 1, &data->m_pConstantBuffer0);
-
-	//頂点インプットレイアウトをセット
-	//プリミティブ・トポロジーをセット
-	pDeviceContext->IASetInputLayout(data->m_pVertexLayout);
-	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	//属性ごとにレンダリング
+	StaticMeshShader::GetInstance()->SetVertexShader(pDeviceContext, data->m_IsTexture, isShadow);
+	StaticMeshShader::GetInstance()->SetPixelShader(pDeviceContext, data->m_IsTexture, isShadow);
+	StaticMeshShader::GetInstance()->SetInputLayout(pDeviceContext, data->m_IsTexture);
 
 	//バーテックスバッファーをセット
 	UINT Stride = sizeof(VertexInfo);
@@ -224,19 +200,7 @@ void StaticMesh::RenderFunc(Matrix &matrix) const
 		ambient.z = m_Ambient[i].z;
 		ambient.w = m_Diffuse[i].w;
 
-		D3D11_MAPPED_SUBRESOURCE pData;
-		if (SUCCEEDED(pDeviceContext->Map(data->m_pConstantBuffer1, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
-		{
-			ConstantBuffer1 sg;
-			sg.diffuse = diffuse;   //ディフューズカラーをシェーダーに渡す
-			sg.specular = specular; //スペキュラーをシェーダーに渡す
-			sg.ambient = ambient;   //アンビエントををシェーダーに渡す
-
-			memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(ConstantBuffer1));
-			pDeviceContext->Unmap(data->m_pConstantBuffer1, 0);
-		}
-		pDeviceContext->VSSetConstantBuffers(1, 1, &data->m_pConstantBuffer1);
-		pDeviceContext->PSSetConstantBuffers(1, 1, &data->m_pConstantBuffer1);
+		StaticMeshShader::GetInstance()->MaterialConstantBuffer(pDeviceContext, diffuse, specular, ambient);
 
 		//テクスチャーをシェーダーに渡す
 		if (data->m_pMaterial[i].pTexture)

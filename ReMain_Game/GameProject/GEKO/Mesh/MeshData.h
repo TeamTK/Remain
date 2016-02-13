@@ -6,24 +6,6 @@
 #include <assert.h>
 #include <vector>
 
-//シェーダーに渡す用(変換行列など)
-struct ConstantBuffer0
-{
-	D3DXMATRIX  mW;			//ワールド行列
-	D3DXMATRIX  mWVP;		//ワールドから射影までの変換行列
-	D3DXVECTOR4 LightDir;	//ライト方向
-	D3DXVECTOR4 fIntensity; //ライトの明るさ
-	D3DXVECTOR4 eyePos;		//カメラ位置
-};
-
-//シェーダーに渡す用（マテリアル）
-struct ConstantBuffer1
-{
-	D3DXVECTOR4 ambient;	//アンビエント光
-	D3DXVECTOR4 diffuse;	//ディフューズ色
-	D3DXVECTOR4 specular;	//鏡面反射
-};
-
 //マテリアル構造体
 struct MaterialInfo
 {
@@ -65,16 +47,10 @@ struct IndexInfo
 //メッシュの情報
 struct MeshInfo
 {
-	ID3D11InputLayout*	 m_pVertexLayout;	 //頂点レイアウト
-	ID3D11VertexShader*  m_pVertexShader;	 //頂点シェーダー
-	ID3D11PixelShader*	 m_pPixelShader;	 //ピクセルシェーダー
-	ID3D11Buffer*		 m_pConstantBuffer0; //コンスタントバッファー（変換行列）
-	ID3D11Buffer*		 m_pConstantBuffer1; //コンスタントバッファー（マテリアル）
 	ID3D11Buffer*		 m_pVertexBuffer;	 //頂点バッファー
 	ID3D11Buffer**		 m_ppIndexBuffer;	 //インデックスバッファー
 	ID3D11SamplerState*  m_pSampleLinear;	 //テクスチャーのサンプラー
 	MaterialInfo*		 m_pMaterial;		 //マテリアル情報
-	ID3D11ShaderResourceView* m_Nothing;     //テクスチャーがない場合使用
 	bool m_IsTexture;						 //テクスチャー判断
 	VertexInfo* pVertex;					 //頂点情報
 	IndexInfo* pIndex;

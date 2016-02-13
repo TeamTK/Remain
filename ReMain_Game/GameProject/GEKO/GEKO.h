@@ -33,6 +33,8 @@ namespace GEKO
 	void WindowFixing();
 	void FullScreen(bool isFullScreen);
 	void SetResolution_And_RefreshRate(int width, int height, int refreshRateNum);
+	void SetShadowResolution(float width, float height);
+	void SetShadowPosition(float x, float y, float z);
 	void NoWindowFrame();
 	void MouseErasure();
 	void DrawFps();

@@ -160,6 +160,8 @@ void Image::Draw(int x, int y)
 {
 	InitModel(m_CenterX, m_CenterY);
 
+	Direct3D11::GetInstance()->ChangeBlendState2D();
+
 	ID3D11DeviceContext *pDeviceContext;
 	pDeviceContext = Direct3D11::GetInstance()->GetID3D11DeviceContext();
 
@@ -244,10 +246,14 @@ void Image::Draw(int x, int y)
 	pDeviceContext->PSSetShaderResources(0, 1, &data->pTexture);
 
 	pDeviceContext->Draw(4, 0); //プリミティブをレンダリング
+
+	Direct3D11::GetInstance()->ChangeBlendState3D();
 }
 
 void Image::Draw(const Vector2D &pos)
 {
+	Direct3D11::GetInstance()->ChangeBlendState2D();
+
 	InitModel(m_CenterX, m_CenterY);
 
 	ID3D11DeviceContext *pDeviceContext;
@@ -334,4 +340,6 @@ void Image::Draw(const Vector2D &pos)
 	pDeviceContext->PSSetShaderResources(0, 1, &data->pTexture);
 
 	pDeviceContext->Draw(4, 0); //プリミティブをレンダリング
+
+	Direct3D11::GetInstance()->ChangeBlendState3D();
 }
