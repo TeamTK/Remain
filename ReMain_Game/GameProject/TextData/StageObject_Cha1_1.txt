@@ -9,8 +9,8 @@ scale
 1.0,1.0,1.0
 
 number 1
-class Ground
-name Ground
+class Ground_1_1
+name Ground_1_1
 position
 0.0,0.0,0.0
 rotation
@@ -19,8 +19,8 @@ scale
 1.0,1.0,1.0
 
 number 1
-class RockWall
-name RockWall
+class RockWall_1_1
+name RockWall_1_1
 position
 0.0,0.0,0.0
 rotation

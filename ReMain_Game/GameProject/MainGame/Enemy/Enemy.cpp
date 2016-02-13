@@ -204,7 +204,7 @@ void Enemy::Update()
 		m_SearchCnt++;
 	}
 	Character::Update();
-	//m_Search.DebugMigrationPath();
+	m_Search.DebugMigrationPath();
 }
 
 void Enemy::HitBullet(Result_Sphere& r)

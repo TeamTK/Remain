@@ -62,7 +62,7 @@ void UI_SelectWeapon::Update()
 		{
 		case eOpen:
 			//円のサイズ変更
-			if (m_CircleSize < CIRCLE_SIZE) m_CircleSize += 32;
+			if (m_CircleSize < CIRCLE_SIZE) m_CircleSize += 48;
 			m_Circle.SetCenter(m_CircleSize / 2, m_CircleSize / 2);
 			m_Circle.SetSize(m_CircleSize, m_CircleSize);
 			//各武器UIのサイズ変更
@@ -80,12 +80,6 @@ void UI_SelectWeapon::Update()
 			break;
 		case eSelect:
 			//武器選択(方向キー、十字キー)
-			/*
-			if (Input::KeyDown.Clicked() || Input::XInputPad1.DownClicked())	m_Selected = 0;
-			if (Input::KeyUp.Clicked() || Input::XInputPad1.UpClicked())		m_Selected = 1;
-			if (Input::KeyLeft.Clicked() || Input::XInputPad1.LeftClicked())	m_Selected = 2;
-			if (Input::KeyRight.Clicked() || Input::XInputPad1.RightClicked())	m_Selected = 3;
-			*/
 			if (Input::KeyS.Clicked() || Input::XInputPad1.DownClicked())	m_Selected = 0;
 			if (Input::KeyW.Clicked() || Input::XInputPad1.UpClicked())		m_Selected = 1;
 			if (Input::KeyA.Clicked() || Input::XInputPad1.LeftClicked())	m_Selected = 2;

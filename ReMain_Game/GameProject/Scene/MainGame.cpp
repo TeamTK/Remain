@@ -7,10 +7,8 @@
 MainGame::MainGame() :
 	Task("MainGame", 0)
 {
-	//アッセットtxt読み込み
-	StageObjectManager::GetInstance()->LoadObject("TextData\\StageObject_Cha1_1.txt");
 
-	new Chapter_1_1();
+	new Chapter_1_2();
 }
 
 MainGame::~MainGame()

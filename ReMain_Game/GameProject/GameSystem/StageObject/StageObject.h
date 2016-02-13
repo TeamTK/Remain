@@ -83,6 +83,7 @@ public:
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
 		m_BulletHit.SetID(eHITID4, eHITID2);
 		m_BulletHit.SetName("Tree_1");
@@ -102,6 +103,7 @@ public:
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
 		m_BulletHit.SetID(eHITID4, eHITID2);
 		m_BulletHit.SetName("Tree_2");
@@ -164,11 +166,11 @@ private:
 	Collider m_CameraHIt;
 };
 
-//地面
-class Ground : public StageObject
+//地面_1_1
+class Ground_1_1 : public StageObject
 {
 public:
-	Ground(XYZ pos, XYZ rot, XYZ sca, std::string name) :
+	Ground_1_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
 		StageObject(pos, rot, sca, name) 
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
@@ -179,25 +181,48 @@ public:
 
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
 		m_BulletHit.SetID(eHITID6, eHITID2);
-		m_BulletHit.SetName("Ground");
+		m_BulletHit.SetName("Ground_1_1");
 	}
-	~Ground() {}
+	~Ground_1_1() {}
+
+private:
+	Collider m_CameraHit;
+	Collider m_BulletHit;
+};
+//地面_1_2
+class Ground_1_2 : public StageObject
+{
+public:
+	Ground_1_2(XYZ pos, XYZ rot, XYZ sca, std::string name) :
+		StageObject(pos, rot, sca, name)
+	{
+		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
+		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2 | eHITID3);
+
+		m_CameraHit.Regist_SMesh_vs_L(&m_Object, true);
+		m_CameraHit.SetID(eHITID1, eHITID0);
+
+		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
+		m_BulletHit.SetID(eHITID6, eHITID2);
+		m_BulletHit.SetName("Ground_1_2");
+	}
+	~Ground_1_2() {}
 
 private:
 	Collider m_CameraHit;
 	Collider m_BulletHit;
 };
 
-//壁
-class RockWall : public StageObject
+//壁_1_1
+class RockWall_1_1 : public StageObject
 {
 public:
-	RockWall(XYZ pos, XYZ rot, XYZ sca, std::string name) :
+	RockWall_1_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
 		StageObject(pos, rot, sca, name) 
 	{
 		//当たり判定用のメッシュ初期化
 		//m_HitMesh.SetAsset("RockWall");
-		m_HitMesh.SetAsset("Wall_Collision");
+		m_HitMesh.SetAsset("Wall_Collision_1_1");
 		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
 		m_HitMesh.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
 		m_HitMesh.SetScale(sca.x, sca.y, sca.z);
@@ -213,9 +238,9 @@ public:
 		//弾と壁の当たり判定
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
 		m_BulletHit.SetID(eHITID7, eHITID2);
-		m_BulletHit.SetName("RockWall");
+		m_BulletHit.SetName("RockWall_1_1");
 	}
-	~RockWall() {}
+	~RockWall_1_1() {}
 
 private:
 	StaticMesh m_HitMesh;
@@ -223,6 +248,40 @@ private:
 	Collider m_BulletHit;
 };
 
+//壁_1_2
+class RockWall_1_2 : public StageObject
+{
+public:
+	RockWall_1_2(XYZ pos, XYZ rot, XYZ sca, std::string name) :
+		StageObject(pos, rot, sca, name)
+	{
+		//当たり判定用のメッシュ初期化
+		//m_HitMesh.SetAsset("RockWall");
+		m_HitMesh.SetAsset("Wall_Collision_1_2");
+		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
+		m_HitMesh.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
+		m_HitMesh.SetScale(sca.x, sca.y, sca.z);
+
+		//キャラクタと壁の当たり判定
+		m_CharacterHit.Regist_SMesh_vs_S(&m_HitMesh);
+		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2 | eHITID3);
+
+		//カメラと壁の当たり判定
+		m_CameraHit.Regist_SMesh_vs_L(&m_HitMesh, true);
+		m_CameraHit.SetID(eHITID1, eHITID0);
+
+		//弾と壁の当たり判定
+		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
+		m_BulletHit.SetID(eHITID7, eHITID2);
+		m_BulletHit.SetName("RockWall_1_2");
+	}
+	~RockWall_1_2() {}
+
+private:
+	StaticMesh m_HitMesh;
+	Collider m_CameraHit;
+	Collider m_BulletHit;
+};
 //空
 class SkyDome : public StageObject
 {
@@ -264,8 +323,20 @@ class Fence : public StageObject
 {
 public:
 	Fence(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name) {}
+		StageObject(pos, rot, sca, name)
+	{
+		m_HitMesh.SetAsset("Fence_Collision");
+		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
+		m_HitMesh.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
+		m_HitMesh.SetScale(sca.x, sca.y, sca.z);
+
+		//キャラクタと壁の当たり判定
+		m_CharacterHit.Regist_SMesh_vs_S(&m_HitMesh);
+		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+	}
 	~Fence() {}
+private:
+	StaticMesh m_HitMesh;
 };
 
 //石A
@@ -273,8 +344,25 @@ class Stone_A : public StageObject
 {
 public:
 	Stone_A(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name) {}
+		StageObject(pos, rot, sca, name)
+	{
+		m_HitMesh.SetAsset("Stone_A_Collision");
+		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
+		m_HitMesh.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
+		m_HitMesh.SetScale(sca.x, sca.y, sca.z);
+
+		//キャラクタと壁の当たり判定
+		m_CharacterHit.Regist_SMesh_vs_S(&m_HitMesh);
+		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2 | eHITID3);
+
+		//カメラと壁の当たり判定
+		m_CameraHit.Regist_SMesh_vs_L(&m_HitMesh, true);
+		m_CameraHit.SetID(eHITID1, eHITID0);
+	}
 	~Stone_A() {}
+private:
+	StaticMesh m_HitMesh;
+	Collider m_CameraHit;
 };
 
 //落ち葉

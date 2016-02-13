@@ -6,6 +6,7 @@
 
 #define AMMO_LOADED_SHOTGUN 6	//最大装弾数ショットガン
 #define AMMO_LOADED_HANDGUN 6	//最大装弾数ハンドガン
+#define DEFAULT_BULLET_HAVE 6	//初期装弾数
 
 class WeaponBase : public Task
 {

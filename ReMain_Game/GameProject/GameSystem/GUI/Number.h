@@ -24,7 +24,7 @@ public:
 	/// <param name="y">
 	/// •`‰æ‚µ‚½‚¢”š
 	/// </param>
-	void NumDraw(Vector2D pos, int num);
+	void NumDraw(const Vector2D pos, int number, const bool leftShift);
 
 private:
 	Image m_Img;

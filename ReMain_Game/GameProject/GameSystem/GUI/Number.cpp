@@ -11,17 +11,12 @@ Number::~Number()
 
 }
 
-void Number::NumDraw(Vector2D pos, int num)
+void Number::NumDraw(const Vector2D pos, int number, const bool leftShift)
 {
-	m_Num = num;
+	if (number < 0) number = 0;
+	if (9999999 < number) number = 9999999;
 
-	if (m_Num <= 0)m_Num = 0;
-	if (m_Num >= 99999999) m_Num = 99999999;
-
-	//åÖêî
-	int digits = (int)log10((double)m_Num) + 1;
-
-	if (num == 0)
+	if (number == 0)
 	{
 		m_Img.SetDrawPos(0, 0, NUM_WIDTH, NUM_HEIGHT);
 		m_Img.SetSize(NUM_WIDTH, NUM_HEIGHT);
@@ -29,16 +24,37 @@ void Number::NumDraw(Vector2D pos, int num)
 		return;
 	}
 
-	m_x = (int)pos.x + (digits - 1) * NUM_WIDTH;
-	for (int i = 0; i < digits; i++)
+	if (leftShift)
 	{
-		int DrawNum = m_Num % 10;
+		bool shift = false;
 
-		m_Img.SetDrawPos(DrawNum * NUM_WIDTH, 0, (DrawNum + 1) * NUM_WIDTH, NUM_HEIGHT);
-		m_Img.SetSize(NUM_WIDTH, NUM_HEIGHT);
-		m_Img.Draw(m_x, (int)pos.y);
-		m_x -= NUM_WIDTH;
-		m_Num /= 10;
+		for (int i = 7; 0 <= i; i--)
+		{
+			int num = (int)(number / std::pow(10, i)) % 10;
 
+			if (num == 0 && !shift) continue;
+			else shift = true;
+
+			m_Img.SetDrawPos(NUM_WIDTH * num, 0, NUM_WIDTH * num + NUM_WIDTH, NUM_HEIGHT);
+			m_Img.SetSize(NUM_WIDTH, NUM_HEIGHT);
+			m_Img.Draw(((int)pos.x - NUM_WIDTH * 8) + NUM_WIDTH * (8 - i), (int)pos.y);
+		}
 	}
+	else
+	{
+		int shift = -1;
+
+		for (int i = 7; 0 <= i; i--)
+		{
+			int num = (int)(number / std::pow(10, i)) % 10;
+
+			if (num == 0 && shift == -1) continue;
+			else shift++;
+
+			m_Img.SetDrawPos(NUM_WIDTH * num, 0, NUM_WIDTH * num + NUM_WIDTH, NUM_HEIGHT);
+			m_Img.SetSize(NUM_WIDTH, NUM_HEIGHT);
+			m_Img.Draw((int)pos.x + NUM_WIDTH * shift, (int)pos.y);
+		}
+	}
+
 }
