@@ -8,7 +8,7 @@ Shotgun::Shotgun(int* anim, float* frame, bool* take, EWeapons* weapon, Matrix* 
 {
 	m_Model.SetAsset("Shotgun");
 
-	m_Ammo = 6;
+	m_Ammo = DEFAULT_BULLET_HAVE;
 	m_Weapon = weapon;
 	m_LoadedAmmo = AMMO_LOADED_SHOTGUN;
 }

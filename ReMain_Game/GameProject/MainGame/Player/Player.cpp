@@ -84,6 +84,9 @@ Player::Player(Vector3D pos) :
 	m_CameraInfo.pState = &m_State;
 	new TPSCamera(&m_CameraInfo);
 
+	g_pShotgun = new Shotgun(&m_PlayAnim, &m_PlayAnimTime, &m_isTakeWeapon, &m_SelectedWeapon, &m_MatrixS);
+	g_pHandgun = new Handgun(&m_PlayAnim, &m_PlayAnimTime, &m_isTakeWeapon, &m_SelectedWeapon, &m_MatrixH);
+
 	//弾薬箱の当たり判定
 	m_HitAmmoBox.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::HitAmmoBox));
 	m_HitAmmoBox.SetID(eHITID1, eHITID2 | eHITID3);
@@ -92,8 +95,9 @@ Player::Player(Vector3D pos) :
 	m_HitEnemyAttack.Regist_C_vs_C(&m_pos, &m_SightPos, &m_Radius, REGIST_FUNC(Player::HitEnemyAttack));
 	m_HitEnemyAttack.SetID(eHITID0, eHITID1);
 
-	g_pShotgun = new Shotgun(&m_PlayAnim, &m_PlayAnimTime, &m_isTakeWeapon, &m_SelectedWeapon, &m_MatrixS);
-	g_pHandgun = new Handgun(&m_PlayAnim, &m_PlayAnimTime, &m_isTakeWeapon, &m_SelectedWeapon, &m_MatrixH);
+	//敵を出現
+	m_MapCol.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::HitMap));
+	m_MapCol.SetID(eHITID1, eHITID5);
 
 	m_SphereMap.radius = MAP_HIT_RADIUS;
 
@@ -136,7 +140,7 @@ Player::~Player()
 
 void Player::Update()
 {
-
+	m_Model.GetTranselate().DebugDraw("");
 	//1フレームタイム
 	m_OneFlameTime = GEKO::GetOneFps();
 
@@ -193,6 +197,8 @@ void Player::Update()
 
 	m_PlayAnim = m_Model.GetPlayAnimation(m_JudgementAnim);
 	m_PlayAnimTime = m_Model.GetPlayTime(m_JudgementAnim);
+
+	//m_Model.GetTranselate().DebugDraw("");
 }
 
 void Player::Move()
@@ -432,8 +438,8 @@ void Player::Animation()
 {
 	m_SphereMap.radius = MAP_HIT_RADIUS;
 
-	printf("A%d\n", m_Anim);
-	printf("S%d\n", m_State);
+	//printf("A%d\n", m_Anim);
+	//printf("S%d\n", m_State);
 
 	switch (m_State)
 	{
@@ -483,9 +489,8 @@ void Player::Animation()
 	m_Model.SetPlayTime(m_AnimSpeed * m_OneFlameTime);
 	m_Model.ChangeAnimation(m_Anim);
 
-
-	printf("A_%d\n", m_Anim);
-	printf("S_%d\n", m_State);
+	//printf("A_%d\n", m_Anim);
+	//printf("S_%d\n", m_State);
 }
 
 void Player::Idle()
@@ -756,7 +761,7 @@ void Player::SetupWeapon()
 	//構え状態で停止
 	if ((m_Anim == EPlayerAnim::eAnim_SetupGun ||
 		m_Anim == EPlayerAnim::eAnim_SetupHandgun) &&
-		m_Model.GetPlayTime(m_JudgementAnim) >= 28)
+		m_Model.GetPlayTime(m_JudgementAnim) >= 28.0)
 	{
 		m_SphereMap.radius = MAP_HIT_RADIUS_SETWEAPON;
 		m_Model.StopAnimation();
@@ -777,10 +782,10 @@ void Player::Recoil()
 		break;
 	}
 	//アニメーション終了
-	if (m_Model.GetPlayTime(m_JudgementAnim) > 20)
+	if (m_Model.GetPlayTime(m_JudgementAnim) > 20.0)
 	{
 		m_isShot = false;
-		m_Model.SetTime(28);
+		m_Model.SetTime(28.0);
 	}
 }
 
@@ -925,4 +930,9 @@ void Player::HitEnemyAttack(Result_Capsule &hitData)
 		Camera::SetEye(m_pos + (z + x + y) * 3.0f);
 		Camera::SetLookat(m_pos + z);
 	}
+}
+
+void Player::HitMap(Result_Sphere &data)
+{
+
 }

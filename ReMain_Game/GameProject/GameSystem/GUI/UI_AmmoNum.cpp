@@ -22,18 +22,19 @@ void UI_AmmoNum::Update()
 
 void UI_AmmoNum::Draw()
 {
+	m_Slash.SetDrawPos(219, 0, 259, 31);
+	m_Slash.SetSize(41, 32);
+	m_Slash.Draw(110, 41);
+
 	//’e–ò”‚ð•\Ž¦
 	if (g_pShotgun->GetSelect() == EWeapons::eShotgun)
 	{
-		m_Num.NumDraw(Vector2D(44, 90), g_pShotgun->GetAmmo());
-		m_Num.NumDraw(Vector2D(0, 90), g_pShotgun->GetLoadedAmmo());
+		m_Num.NumDraw(Vector2D(130, 60), g_pShotgun->GetAmmo(), true);
+		m_Num.NumDraw(Vector2D(130, 19), g_pShotgun->GetLoadedAmmo(), true);
 	}
 	else if (g_pHandgun->GetSelect() == EWeapons::eHandgun)
 	{
-		m_Num.NumDraw(Vector2D(44, 90), g_pHandgun->GetAmmo());
-		m_Num.NumDraw(Vector2D(0, 90), g_pHandgun->GetLoadedAmmo());
+		m_Num.NumDraw(Vector2D(130, 60), g_pHandgun->GetAmmo(), true);
+		m_Num.NumDraw(Vector2D(130, 19), g_pHandgun->GetLoadedAmmo(), true);
 	}
-	m_Slash.SetDrawPos(220, 0, 239, 31);
-	m_Slash.SetSize(20, 32);
-	m_Slash.Draw(22, 90);
 }

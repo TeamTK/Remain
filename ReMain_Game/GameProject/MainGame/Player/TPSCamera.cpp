@@ -114,8 +114,8 @@ void TPSCamera::Update()
 	}
 	else
 	{
-		m_CameraPos = Vector3D::Lerp(OldCameraPos, m_CameraPos, 0.3f);
-		*info->pLookPos = Vector3D::Lerp(OldLookPos, *info->pLookPos, 0.3f);
+		m_CameraPos = Vector3D::Lerp(OldCameraPos, m_CameraPos, 0.4f);
+		*info->pLookPos = Vector3D::Lerp(OldLookPos, *info->pLookPos, 0.4f);
 	}
 
 	//ƒJƒƒ‰‚Ì“–‚½‚è”»’èˆÊ’u
