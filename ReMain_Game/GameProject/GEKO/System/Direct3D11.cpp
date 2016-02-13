@@ -9,6 +9,7 @@
 Direct3D11::Direct3D11()
 {
 	INIT_NULLPOINTR(m_pBlendState);
+	INIT_NULLPOINTR(m_pBlendState2D);
 	INIT_NULLPOINTR(m_pSwapChain);
 	INIT_NULLPOINTR(m_pRenderTargetView);
 	INIT_NULLPOINTR(m_pDepthStencilView);
@@ -72,7 +73,6 @@ HRESULT Direct3D11::InitD3D11(INT Width, INT Height)
 	}
 
 	//各種テクスチャーと、それに付帯する各種ビューを作成
-
 	if(FAILED(InitBackBuffer())) return FALSE;
 
 	//ラスタライズ設定
@@ -112,8 +112,29 @@ HRESULT Direct3D11::InitD3D11(INT Width, INT Height)
 		return FALSE;
 	}
 
-	UINT mask = 0xffffffff;
-	m_pDeviceContext->OMSetBlendState(m_pBlendState, NULL, mask);
+	// OMにブレンド・ステート・オブジェクトを設定
+	FLOAT BlendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	m_pDeviceContext->OMSetBlendState(m_pBlendState, BlendFactor, 0xffffffff);
+
+	////アルファブレンド用ブレンドステート作成2D用
+	D3D11_BLEND_DESC bd2D;
+	ZeroMemory(&bd2D, sizeof(D3D11_BLEND_DESC));
+	bd2D.IndependentBlendEnable = false;
+	bd2D.AlphaToCoverageEnable = false;
+	bd2D.RenderTarget[0].BlendEnable = true;
+	bd2D.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	bd2D.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	bd2D.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	bd2D.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	bd2D.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	bd2D.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	bd2D.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	if (FAILED(m_pDevice->CreateBlendState(&bd2D, &m_pBlendState2D)))
+	{
+		return FALSE;
+	}
+	
 
 	return S_OK;
 }
@@ -162,6 +183,20 @@ HRESULT Direct3D11::InitBackBuffer()
 	m_pDeviceContext->RSSetViewports(1, &vp);
 
 	return S_OK;
+}
+
+void Direct3D11::ChangeBlendState3D()
+{
+	// OMにブレンド・ステート・オブジェクトを設定
+	FLOAT BlendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	m_pDeviceContext->OMSetBlendState(m_pBlendState, BlendFactor, 0xffffffff);
+}
+
+void Direct3D11::ChangeBlendState2D()
+{
+	// OMにブレンド・ステート・オブジェクトを設定
+	FLOAT BlendFactor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	m_pDeviceContext->OMSetBlendState(m_pBlendState2D, BlendFactor, 0xffffffff);
 }
 
 void Direct3D11::ChangeWindowSize()
@@ -234,6 +269,16 @@ D3D11_VIEWPORT *Direct3D11::GetViewportD3D11()
 	return &m_Viewport;
 }
 
+int Direct3D11::GetResolutionWidth() const
+{
+	return m_ResolutionWidth;
+}
+
+int Direct3D11::GetResolutionHeight() const
+{
+	return m_ResolutionHeight;
+}
+
 void Direct3D11::Clear(float r, float g, float b)
 {
 	//画面クリア
@@ -245,6 +290,12 @@ void Direct3D11::Clear(float r, float g, float b)
 void Direct3D11::Present()
 {
 	m_pSwapChain->Present(0, 0); //画面更新（バックバッファをフロントバッファに)
+}
+
+void Direct3D11::RederTarget()
+{
+	//レンダーターゲットビューとデプスステンシルビューをパイプラインにセット
+	m_pDeviceContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_pDepthStencilView);
 }
 
 void Direct3D11::FullScreen(bool isFullScreen)
@@ -271,6 +322,7 @@ void Direct3D11::DestroyD3D11()
 	if(m_pDeviceContext) m_pDeviceContext->ClearState();
 
 	SAFE_RELEASE(m_pBlendState);
+	SAFE_RELEASE(m_pBlendState2D);
 	SAFE_RELEASE(m_pSwapChain);
 	SAFE_RELEASE(m_pRenderTargetView);
 	SAFE_RELEASE(m_pDepthStencilView);

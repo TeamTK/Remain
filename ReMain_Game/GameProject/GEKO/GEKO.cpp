@@ -2,6 +2,8 @@
 #include "System//Fps.h"
 #include "Figure\FiqureShaderManager.h"
 #include "Shader\CopmuteShader\BaseCopmute.h"
+#include "Shader\StaticMeshShader\StaticMeshShader.h"
+#include "Shader\ShadowMap\ShaderShadowMap.h"
 
 namespace GEKO
 {
@@ -14,11 +16,23 @@ namespace GEKO
 			if (SUCCEEDED(Direct3D11::GetInstance()->InitD3D11(resolutionWidth, resolutionHeight)))
 			{
 				Direct3D11::GetInstance()->Clear(0.4f, 0.4f, 1.0f);
-
 				CopmuteManager::GetInstance()->Init();
 				FiqureShaderManager::GetInstance()->Init();
 				Input::KeyManagement::Get().Init();
 				SoundManagement::Get()->Init();
+
+				if (!StaticMeshShader::GetInstance()->Init())
+				{
+					GEKO::LoopEnd();
+					return false;
+				}
+
+				if (!ShaderShadowMap::GetInstance()->Init())
+				{
+					GEKO::LoopEnd();
+					return false;
+				}
+
 				return true;
 			}
 		}
@@ -76,6 +90,16 @@ namespace GEKO
 		Direct3D11::GetInstance()->SetResolution_And_RefreshRate(width, height, refreshRateNum);
 	}
 
+	void SetShadowResolution(float width, float height)
+	{
+		ShaderShadowMap::GetInstance()->SetResolution(width, height);
+	}
+
+	void SetShadowPosition(float x, float y, float z)
+	{
+		ShaderShadowMap::GetInstance()->SetPosition(x, y, z);
+	}
+
 	void DrawFps()
 	{
 		Window::Get()->DrawFps();
@@ -119,6 +143,8 @@ namespace GEKO
 		SoundAsset::AllClear();
 		DynamicMeshAsset::AllClear();
 		StaticMeshAsset::AllClear();
+		StaticMeshShader::GetInstance()->Release();
+		ShaderShadowMap::GetInstance()->Release();
 		Direct3D11::GetInstance()->DestroyD3D11();
 		Input::KeyManagement::Get().End();
 		OutputDebugString(TEXT("GEKO_System‚ª³í‚ÉI—¹‚µ‚Ü‚µ‚½\n"));

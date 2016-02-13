@@ -449,13 +449,6 @@ void LoadXStatic::Relese()
 		SAFE_DELETE_ARRAY(m_MeshInfo.pVertex);
 		SAFE_DELETE_ARRAY(m_MeshInfo.m_pMaterial);
 		SAFE_DELETE_ARRAY(m_MeshInfo.m_ppIndexBuffer);
-		SAFE_RELEASE(m_MeshInfo.m_Nothing);
-		SAFE_RELEASE(m_MeshInfo.m_pConstantBuffer0);
-		SAFE_RELEASE(m_MeshInfo.m_pConstantBuffer1);
-		SAFE_RELEASE(m_MeshInfo.m_pVertexShader);
-		SAFE_RELEASE(m_MeshInfo.m_pPixelShader);
-		SAFE_RELEASE(m_MeshInfo.m_pVertexBuffer);
-		SAFE_RELEASE(m_MeshInfo.m_pVertexLayout);
 		SAFE_RELEASE(m_MeshInfo.m_pSampleLinear);
 	}
 }

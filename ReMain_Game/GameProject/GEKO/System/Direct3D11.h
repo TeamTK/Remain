@@ -47,6 +47,10 @@ public:
 
 	HRESULT InitBackBuffer();
 
+	void ChangeBlendState3D();
+
+	void ChangeBlendState2D();
+
 	void ChangeWindowSize();
 
 	void SetResolution_And_RefreshRate(int width, int height, int refreshRateNum);
@@ -73,6 +77,10 @@ public:
 
 	D3D11_VIEWPORT* GetViewportD3D11();
 
+	int GetResolutionWidth() const;
+
+	int GetResolutionHeight() const;
+
 	/// <summary>
 	///　画面クリアのRGBを指定
 	/// </summary>
@@ -97,6 +105,8 @@ public:
 	/// なし
 	/// </returns>
 	void Present();
+
+	void RederTarget();
 
 	/// <summary>
 	/// 画面をフルスクリーンで表示
@@ -148,7 +158,8 @@ private:
 	ID3D11Texture2D*		m_pDepthStencil;		//深度・ステンシルを作るテクスチャー
 	ID3D11RenderTargetView* m_pRenderTargetView;	//レンダーターゲットビュー
 	ID3D11DepthStencilView* m_pDepthStencilView;	//深度・ステンシル・ビュー
-	ID3D11BlendState*		m_pBlendState;			//ブレンド設定
+	ID3D11BlendState*		m_pBlendState;			//ブレンド設定3D
+	ID3D11BlendState*		m_pBlendState2D;		//ブレンド設定2D
 	D3D11_VIEWPORT			m_Viewport;				//ビューポート
 	int m_ResolutionWidth;							//解像度幅
 	int m_ResolutionHeight;							//解像度高さ

@@ -102,7 +102,6 @@
     <ClCompile Include="GEKO\AI\TracerouteManager.cpp" />
     <ClCompile Include="GEKO\AI\TracerouteSearch.cpp" />
     <ClCompile Include="GEKO\AI\TracerouteTarget.cpp" />
-    <ClCompile Include="GEKO\Mesh\StaticMeshShader.cpp" />
     <ClCompile Include="MainGame\Weapon\Knife.cpp" />
     <ClCompile Include="GEKO\System\Timer.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_AmmoNum.cpp" />
@@ -123,6 +122,11 @@
     <ClCompile Include="GameSystem\Effect\EffectAnimation.cpp" />
     <ClCompile Include="Scene\EventScene\Chapter_1_1_Maraud.cpp" />
     <ClCompile Include="Scene\EventScene\EventSceneBase.cpp" />
+    <ClCompile Include="GEKO\Shader\StaticMeshShader\StaticMesh_VertexInit.cpp" />
+    <ClCompile Include="GEKO\Shader\StaticMeshShader\StaticMeshShader.cpp" />
+    <ClCompile Include="GEKO\Shader\StaticMeshShader\StaticMesh_PixelInit.cpp" />
+    <ClCompile Include="GEKO\Shader\ShadowMap\ShaderShadowMap.cpp" />
+    <ClCompile Include="GameSystem\ScreenBlood.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -296,7 +300,6 @@
     <ClInclude Include="GEKO\AI\TracerouteManager.h" />
     <ClInclude Include="GEKO\AI\TracerouteSearch.h" />
     <ClInclude Include="GEKO\AI\TracerouteTarget.h" />
-    <ClInclude Include="GEKO\Mesh\StaticMeshShader.h" />
     <ClInclude Include="MainGame\Weapon\Knife.h" />
     <ClInclude Include="GEKO\System\Timer.h" />
     <ClInclude Include="GameSystem\GUI\UI_AmmoNum.h" />
@@ -320,6 +323,9 @@
     <ClInclude Include="GameSystem\Effect\EffectAnimation.h" />
     <ClInclude Include="Scene\EventScene\Chapter_1_1_Maraud.h" />
     <ClInclude Include="Scene\EventScene\EventSceneBase.h" />
+    <ClInclude Include="GEKO\Shader\StaticMeshShader\StaticMeshShader.h" />
+    <ClInclude Include="GEKO\Shader\ShadowMap\ShaderShadowMap.h" />
+    <ClInclude Include="GameSystem\ScreenBlood.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "Direct3D11.h"
 #include "Fps.h"
+#include "../Shader/ShadowMap/ShaderShadowMap.h"
 #include <stdio.h>
 
 #pragma warning(disable : 4302)
@@ -216,6 +217,9 @@ bool Window::Loop()
 
 	//裏画面を描画
 	Direct3D11::GetInstance()->Present();
+
+	//デプスバッファ構築
+	ShaderShadowMap::GetInstance()->Update();
 
 	//画面更新
 	Direct3D11::GetInstance()->Clear(m_Red, m_Green, m_Blue);

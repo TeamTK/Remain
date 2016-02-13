@@ -32,6 +32,21 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 		StageObjectManager::GetInstance()->Render();
 		TaskManager::Update();
 		RenderManager::Render();
+
+		static float x = 0.0f;
+		static float y = 0.0f;
+		static float z = 0.0f;
+
+		if (Input::KeyY.Pressed()) x--;
+		if (Input::KeyU.Pressed()) x++;
+
+		if (Input::KeyH.Pressed()) y--;
+		if (Input::KeyJ.Pressed()) y++;
+
+		if (Input::KeyN.Pressed()) z--;
+		if (Input::KeyM.Pressed()) z++;
+
+		GEKO::SetShadowPosition(x, y, z);
 	}
 
 	GEKO::End();
