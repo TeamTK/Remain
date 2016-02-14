@@ -51,6 +51,16 @@ int WeaponBase::GetAllAmmo()
 	return	m_Ammo + m_LoadedAmmo;
 }
 
+void WeaponBase::SetAmmo(int num)
+{
+	m_Ammo = num;
+}
+
+void WeaponBase::SetLoadedAmmo(int num)
+{
+	m_LoadedAmmo = num;
+}
+
 bool WeaponBase::CanShot()
 {
 	return m_LoadedAmmo > 0 ? true : false;

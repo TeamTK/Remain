@@ -201,8 +201,6 @@ void Player::Update()
 
 	m_PlayAnim = m_Model.GetPlayAnimation(m_JudgementAnim);
 	m_PlayAnimTime = m_Model.GetPlayTime(m_JudgementAnim);
-
-	m_Model.GetTranselate().DebugDraw("");
 }
 
 void Player::Move()
@@ -952,8 +950,6 @@ void Player::StageChange(Result_Sphere &data)
 	playerData.Handgun_Ammo = g_pHandgun->GetAmmo();
 
 	PlayerData::SetData(playerData);
-	
-	TaskManager::Kill("Player");
-	TaskManager::Kill("UI_AmmoNum");
-	TaskManager::Kill("UI_Reticle");
+
+	Task::SetKill();
 }

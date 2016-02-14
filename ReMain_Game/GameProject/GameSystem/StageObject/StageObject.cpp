@@ -77,6 +77,9 @@ void StageObjectManager::LoadObject(char* filepath)
 {
 	std::ifstream ifs(filepath);
 	std::string str;
+	m_number = 0;
+	m_cnt = 0;
+	m_num = 0;
 
 	while (!ifs.eof())
 	{

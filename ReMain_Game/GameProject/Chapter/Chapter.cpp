@@ -85,7 +85,6 @@ void Chapter_1_1::HitPlayer(Result_Sphere &data)
 
 void Chapter_1_1::StageChange(Result_Sphere &data)
 {
-	Task::SetKill();
 	new Chapter_1_2();
 	TaskManager::Kill("UI_Reticle");
 	TaskManager::Kill("UI_AmmoNum");
@@ -112,7 +111,7 @@ Chapter_1_2::Chapter_1_2() :
 {
 	GEKO::SetShadowPosition(-7.0f, 340.0f, -209.0f);
 
-	new Player(Vector3D(0.0f, 1.0f, 0.0f));
+	new Player(Vector3D(-20.0f, 0.05f, -84.0f));
 
 	//Œo˜H’Tõƒf[ƒ^“Ç‚İ‚İ‚Æ\’z
 	StaticMeshAsset::LoadMesh("media\\Traceroute_1_2.x", "Chapter_1_2_Traceroute");
