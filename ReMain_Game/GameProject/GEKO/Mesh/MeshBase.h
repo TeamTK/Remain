@@ -4,6 +4,8 @@
 #include "StaticMeshAsset.h"
 #include "WorldMatrixManager.h"
 
+class Image;
+
 class MeshBase
 {
 public:
@@ -19,6 +21,7 @@ public:
 	void SetAmbient(int r, int g, int b, int materialIndex);
 	void SetAlpha(int alpha, int materialIndex);
 	void SetAlphaAll(int alpha);
+	void SetTexture(Image *pImage);
 	void WorldMatrixBuilding();
 	Vector3D GetScale() const;
 	Vector3D GetRotation() const;
@@ -46,6 +49,7 @@ protected:
 	std::vector<Vector4D> m_Diffuse;
 	std::vector<Vector3D> m_Specular;
 	std::vector<Vector3D> m_Ambient;
+	Image *m_pImage;
 };
 
 #endif

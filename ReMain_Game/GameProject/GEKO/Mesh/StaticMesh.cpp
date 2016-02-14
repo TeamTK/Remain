@@ -4,6 +4,7 @@
 #include "..\Figure\Fiqure.h"
 #include "..\Shader\StaticMeshShader\StaticMeshShader.h"
 #include "..\Shader\ShadowMap\ShaderShadowMap.h"
+#include "..\ImageSystem\Image.h"
 
 StaticMesh::StaticMesh() :
 	m_pMeshData(nullptr)
@@ -22,6 +23,7 @@ StaticMesh::StaticMesh(const std::string &meshName, bool isLightInterrupted)
 
 StaticMesh::~StaticMesh()
 {
+	ShaderShadowMap::GetInstance()->Clear(this);
 	m_pMeshData = nullptr;
 }
 
@@ -160,13 +162,17 @@ void StaticMesh::RenderFunc(Matrix &matrix, bool isShadow) const
 
 	MeshInfo *data = m_pMeshData->GetMeshInfo();
 
-	D3DXMATRIX World = matrix; //ワールド行列格納
-
-	StaticMeshShader::GetInstance()->BaseConstantBuffer(pDeviceContext, World, isShadow);
+	StaticMeshShader::GetInstance()->BaseConstantBuffer(pDeviceContext, matrix, isShadow);
 
 	StaticMeshShader::GetInstance()->SetVertexShader(pDeviceContext, data->m_IsTexture, isShadow);
 	StaticMeshShader::GetInstance()->SetPixelShader(pDeviceContext, data->m_IsTexture, isShadow);
 	StaticMeshShader::GetInstance()->SetInputLayout(pDeviceContext, data->m_IsTexture);
+
+	//マルチテクスチャ
+	if (m_pImage != nullptr)
+	{
+		pDeviceContext->PSSetShaderResources(2, 1, &m_pImage->m_pImageData->GetImageInfo()->pTexture);
+	}
 
 	//バーテックスバッファーをセット
 	UINT Stride = sizeof(VertexInfo);
@@ -212,4 +218,10 @@ void StaticMesh::RenderFunc(Matrix &matrix, bool isShadow) const
 		//プリミティブをレンダリング
 		pDeviceContext->DrawIndexed(data->m_pMaterial[i].dwNumFace * 3, 0, 0);
 	}
+
+	//テクスチャリソース初期化
+	ID3D11ShaderResourceView* pShaderResource = nullptr;
+	pDeviceContext->PSSetShaderResources(0, 1, &pShaderResource);
+	pDeviceContext->PSSetShaderResources(1, 1, &pShaderResource);
+	pDeviceContext->PSSetShaderResources(2, 1, &pShaderResource);
 }

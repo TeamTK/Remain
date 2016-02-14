@@ -1,10 +1,12 @@
 #include "MeshBase.h"
 #include "..\System\Math.h"
 #include "..\Figure\Fiqure.h"
+#include "..\ImageSystem\Image.h"
 #include <cassert>
 
 MeshBase::MeshBase() :
-	m_Scale(1.0f, 1.0f, 1.0f)
+	m_Scale(1.0f, 1.0f, 1.0f),
+	m_pImage(nullptr)
 {
 	m_WorldMatrixInfo.pMatrix = &m_Matrix;
 	m_WorldMatrixInfo.pRotation = &m_Rotation;
@@ -23,6 +25,8 @@ MeshBase::~MeshBase()
 	m_Specular.clear();
 	m_Specular.clear();
 
+	m_pImage = nullptr;
+	
 	m_WorldMatrixInfo.pMatrix = nullptr;
 	m_WorldMatrixInfo.pRotation = nullptr;
 	m_WorldMatrixInfo.pScale = nullptr;
@@ -85,6 +89,11 @@ void MeshBase::SetAlphaAll(int alpha)
 {
 	float a = ((float)alpha * RGB);
 	for (unsigned int i = 0; i < m_Diffuse.size(); i++) m_Diffuse[i].w = a;
+}
+
+void MeshBase::SetTexture(Image *pImage)
+{
+	m_pImage = pImage;
 }
 
 void MeshBase::WorldMatrixBuilding()

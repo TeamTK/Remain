@@ -14,13 +14,13 @@ struct ShadowInfo
 class ShaderShadowMap::ShadowMapPimpl
 {
 public:
-	ID3D11Texture2D*		pTexture2D;		//
-	ID3D11RenderTargetView* pRenderTargetView;	//
-	ID3D11DepthStencilView* pStencilView;	//
-	ID3D11Texture2D*		pTexture2D_DepthStencil;		//
+	ID3D11Texture2D*		  pTexture2D;		//
+	ID3D11RenderTargetView*   pRenderTargetView;	//
+	ID3D11DepthStencilView*   pStencilView;	//
+	ID3D11Texture2D*		  pTexture2D_DepthStencil;		//
 	ID3D11ShaderResourceView* pShaderResourceView;
-	ID3D11Buffer *pBuffer;
-	ID3D11SamplerState*  pSampleLinear;	 //テクスチャーのサンプラー
+	ID3D11Buffer*             pBuffer;
+	ID3D11SamplerState*       pSampleLinear;	 //テクスチャーのサンプラー
 
 	ID3D11VertexShader*  pVertexShader;				 //頂点シェーダー
 	//ID3D11VertexShader* pVertexShader_NoTexture;    //テクスチャーなし頂点シェーダー
@@ -35,8 +35,8 @@ public:
 };
 
 ShaderShadowMap::ShaderShadowMap() :
-	m_Width(1920.0f),
-	m_Height(1080.0f),
+	m_Width(3840.0f),
+	m_Height(2160.0f),
 	m_x(0.0f),
 	m_y(0.0f),
 	m_z(0.0f)
@@ -241,7 +241,7 @@ void ShaderShadowMap::Update()
 	D3DXMatrixLookAtLH(&m_pShadowMaPimpl->m_View, &vEyePt, &vLookatPt, &vUpVec);
 
 	// プロジェクショントランスフォーム（射影変換）
-	D3DXMatrixPerspectiveFovLH(&m_pShadowMaPimpl->m_Proj, (FLOAT)D3DX_PI / 4, (FLOAT)m_Width / (FLOAT)m_Height, 1.0f, 4000.0f);
+	D3DXMatrixPerspectiveFovLH(&m_pShadowMaPimpl->m_Proj, (FLOAT)D3DX_PI / 6, (FLOAT)m_Width / (FLOAT)m_Height, 1.0f, 4000.0f);
 
 	Direct3D11::GetInstance()->SetRasterizer(D3D11_CULL_NONE, D3D11_FILL_SOLID);
 

@@ -127,6 +127,9 @@
     <ClCompile Include="GEKO\Shader\StaticMeshShader\StaticMesh_PixelInit.cpp" />
     <ClCompile Include="GEKO\Shader\ShadowMap\ShaderShadowMap.cpp" />
     <ClCompile Include="GameSystem\ScreenBlood.cpp" />
+    <ClCompile Include="GEKO\Shader\DynamicMeshShader\DynamicMesh_VertexInit.cpp" />
+    <ClCompile Include="GEKO\Shader\DynamicMeshShader\DynamicMeshShader.cpp" />
+    <ClCompile Include="GEKO\Shader\DynamicMeshShader\DynamicMesh_PixelInit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -326,6 +329,7 @@
     <ClInclude Include="GEKO\Shader\StaticMeshShader\StaticMeshShader.h" />
     <ClInclude Include="GEKO\Shader\ShadowMap\ShaderShadowMap.h" />
     <ClInclude Include="GameSystem\ScreenBlood.h" />
+    <ClInclude Include="GEKO\Shader\DynamicMeshShader\DynamicMeshShader.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

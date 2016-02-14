@@ -51,6 +51,9 @@
     <ClCompile Include="GEKO\Shader\CopmuteShader\BaseCopmute.cpp" />
     <ClCompile Include="GEKO\Shader\CopmuteShader\LineTriangleCopmute.cpp" />
     <ClCompile Include="GEKO\Shader\CopmuteShader\SphereTriangleCopmute.cpp" />
+    <ClCompile Include="GEKO\Shader\DynamicMeshShader\DynamicMeshShader.cpp" />
+    <ClCompile Include="GEKO\Shader\DynamicMeshShader\DynamicMesh_PixelInit.cpp" />
+    <ClCompile Include="GEKO\Shader\DynamicMeshShader\DynamicMesh_VertexInit.cpp" />
     <ClCompile Include="GEKO\Shader\ShadowMap\ShaderShadowMap.cpp" />
     <ClCompile Include="GEKO\Shader\StaticMeshShader\StaticMeshShader.cpp" />
     <ClCompile Include="GEKO\Shader\StaticMeshShader\StaticMesh_PixelInit.cpp" />
@@ -228,6 +231,7 @@
     <ClInclude Include="GEKO\Shader\CopmuteShader\CopmuteInfo.h" />
     <ClInclude Include="GEKO\Shader\CopmuteShader\LineTriangleCopmute.h" />
     <ClInclude Include="GEKO\Shader\CopmuteShader\SphereTriangleCopmute.h" />
+    <ClInclude Include="GEKO\Shader\DynamicMeshShader\DynamicMeshShader.h" />
     <ClInclude Include="GEKO\Shader\ShadowMap\ShaderShadowMap.h" />
     <ClInclude Include="GEKO\Shader\StaticMeshShader\StaticMeshShader.h" />
     <ClInclude Include="GEKO\SoundSystem\SoundAsset.h" />

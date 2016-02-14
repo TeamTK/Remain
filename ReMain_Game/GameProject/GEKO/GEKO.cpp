@@ -3,6 +3,7 @@
 #include "Figure\FiqureShaderManager.h"
 #include "Shader\CopmuteShader\BaseCopmute.h"
 #include "Shader\StaticMeshShader\StaticMeshShader.h"
+#include "Shader\DynamicMeshShader\DynamicMeshShader.h"
 #include "Shader\ShadowMap\ShaderShadowMap.h"
 
 namespace GEKO
@@ -22,6 +23,12 @@ namespace GEKO
 				SoundManagement::Get()->Init();
 
 				if (!StaticMeshShader::GetInstance()->Init())
+				{
+					GEKO::LoopEnd();
+					return false;
+				}
+
+				if (!DynamicMeshShader::GetInstance()->Init())
 				{
 					GEKO::LoopEnd();
 					return false;
@@ -144,6 +151,7 @@ namespace GEKO
 		DynamicMeshAsset::AllClear();
 		StaticMeshAsset::AllClear();
 		StaticMeshShader::GetInstance()->Release();
+		DynamicMeshShader::GetInstance()->Release();
 		ShaderShadowMap::GetInstance()->Release();
 		Direct3D11::GetInstance()->DestroyD3D11();
 		Input::KeyManagement::Get().End();

@@ -27,12 +27,13 @@ class StageObject
 {
 public:
 	StageObject();
-	StageObject(XYZ pos, XYZ rot, XYZ sca, std::string name);
+	StageObject(XYZ pos, XYZ rot, XYZ sca, std::string name, bool isShadow = false, bool isLightInterrupted = false);
 	virtual ~StageObject();
 	void Update();
 	void Render();
 
 protected:
+	bool m_IsShadow;
 	StaticMesh m_Object;
 	Collider m_CharacterHit;
 
@@ -79,7 +80,7 @@ class Tree_1 : public StageObject
 {
 public:
 	Tree_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos,rot,sca,name)
+		StageObject(pos,rot,sca,name, true, true)
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
@@ -99,7 +100,7 @@ class Tree_2 : public StageObject
 {
 public:
 	Tree_2(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name)
+		StageObject(pos, rot, sca, name, true, true)
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
@@ -119,7 +120,7 @@ class Grass_1 : public StageObject
 {
 public:
 	Grass_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name){}
+		StageObject(pos, rot, sca, name, false, true){}
 	~Grass_1(){}
 };
 
@@ -128,7 +129,7 @@ class Grass_2 : public StageObject
 {
 public:
 	Grass_2(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name){}
+		StageObject(pos, rot, sca, name, false, true){}
 	~Grass_2(){}
 };
 
@@ -137,7 +138,7 @@ class Cabin : public StageObject
 {
 public:
 	Cabin(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name)
+		StageObject(pos, rot, sca, name, true, true)
 	{
 		//当たり判定用メッシュ
 		m_HitMesh.SetAsset("Cabin_Collision");
@@ -171,7 +172,7 @@ class Ground_1_1 : public StageObject
 {
 public:
 	Ground_1_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name) 
+		StageObject(pos, rot, sca, name, true) 
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2 | eHITID3);
@@ -194,7 +195,7 @@ class Ground_1_2 : public StageObject
 {
 public:
 	Ground_1_2(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name)
+		StageObject(pos, rot, sca, name, true)
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2 | eHITID3);
@@ -218,7 +219,7 @@ class RockWall_1_1 : public StageObject
 {
 public:
 	RockWall_1_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name) 
+		StageObject(pos, rot, sca, name, true) 
 	{
 		//当たり判定用のメッシュ初期化
 		//m_HitMesh.SetAsset("RockWall");
@@ -253,7 +254,7 @@ class RockWall_1_2 : public StageObject
 {
 public:
 	RockWall_1_2(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name)
+		StageObject(pos, rot, sca, name, true)
 	{
 		//当たり判定用のメッシュ初期化
 		//m_HitMesh.SetAsset("RockWall");
@@ -296,7 +297,7 @@ class Bush : public StageObject
 {
 public:
 	Bush(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name) {}
+		StageObject(pos, rot, sca, name, true, false) {}
 	~Bush() {}
 };
 
@@ -305,7 +306,7 @@ class Clover : public StageObject
 {
 public:
 	Clover(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name) {}
+		StageObject(pos, rot, sca, name, true, false) {}
 	~Clover() {}
 };
 
@@ -314,7 +315,7 @@ class Fern : public StageObject
 {
 public:
 	Fern(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name) {}
+		StageObject(pos, rot, sca, name, true, true) {}
 	~Fern() {}
 };
 
@@ -323,7 +324,7 @@ class Fence : public StageObject
 {
 public:
 	Fence(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name)
+		StageObject(pos, rot, sca, name, true, true)
 	{
 		m_HitMesh.SetAsset("Fence_Collision");
 		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
@@ -344,7 +345,7 @@ class Stone_A : public StageObject
 {
 public:
 	Stone_A(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name)
+		StageObject(pos, rot, sca, name, true, true)
 	{
 		m_HitMesh.SetAsset("Stone_A_Collision");
 		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
@@ -370,7 +371,7 @@ class Fallen_leaves : public StageObject
 {
 public:
 	Fallen_leaves(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name) {}
+		StageObject(pos, rot, sca, name, true) {}
 	~Fallen_leaves() {}
 };
 
@@ -379,7 +380,7 @@ class Tree_1_Trunk : public StageObject
 {
 public:
 	Tree_1_Trunk(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name) {}
+		StageObject(pos, rot, sca, name, false, true) {}
 	~Tree_1_Trunk() {}
 };
 
@@ -388,7 +389,7 @@ class Shrub : public StageObject
 {
 public:
 	Shrub(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name) {}
+		StageObject(pos, rot, sca, name, false, true) {}
 	~Shrub() {}
 };
 
@@ -397,7 +398,7 @@ class Weeds : public StageObject
 {
 public:
 	Weeds(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name) {}
+		StageObject(pos, rot, sca, name, false, true) {}
 	~Weeds() {}
 };
 
@@ -406,7 +407,7 @@ class WoodBox : public StageObject
 {
 public:
 	WoodBox(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name)
+		StageObject(pos, rot, sca, name, true, true)
 	{
 		//プレイヤーの判定は仮
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);

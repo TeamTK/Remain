@@ -98,20 +98,16 @@ float4 MatrialColor(float4 ambient, float4 diffuse, float4 specular, float2 uv)
 {
 	float4 matrial = ambient + diffuse + specular;
 	float4 color;
-	float4 TexColor1 = g_texColor.Sample(g_samLinear, uv);
-	float4 TexColor2 = g_Texture.Sample(g_samLinear, uv);;
-
-	color = TexColor1 * (1 - TexColor2.a) + TexColor2 * TexColor2.a;
-
 	color.rgb *= matrial.rgb * g_Intensity.rgb * g_Intensity.w;
 	color.a *= g_Diffuse.w; //アルファ値反映
 	return color;
 }
 
 //バーテックスシェーダー
-VS_OUTPUT VS(float4 Pos : POSITION, float4 Normal : NORMAL, float2 tex : TEXCOORD, uint4  Bones : BONE_INDEX, float4 Weights : BONE_WEIGHT)
+VS_OUTPUT VS_NoTexture(float4 Pos : POSITION, float4 Normal : NORMAL, uint4  Bones : BONE_INDEX, float4 Weights : BONE_WEIGHT)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
+
 	Skin vSkinned = SkinVert(Pos, Normal, Bones, Weights);
 
 	//射影変換（ワールド→ビュー→プロジェクション）
@@ -127,12 +123,11 @@ VS_OUTPUT VS(float4 Pos : POSITION, float4 Normal : NORMAL, float2 tex : TEXCOOR
 	float3 PosWorld = mul(output.Pos, g_mW);
 	output.EyeVector = normalize(PosWorld - g_vEye);
 
-	output.uv = tex; //テクスチャ格納
 	return output;
 }
 
 //ピクセルシェーダー
-float4 PS(VS_OUTPUT input) : SV_Target
+float4 PS_NoTexture(VS_OUTPUT input) : SV_Target
 {
 	//環境光　項
 	float4 ambient = g_Ambient;
@@ -145,47 +140,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float4 specular = g_Specular * BlinnPhong(input.Normal, input.Light, input.EyeVector);
 
 	//モデル最終色　３つの項の合計
-	return MatrialColor(ambient, diffuse, specular, input.uv);
-}
-
-//バーテックスシェーダー
-VS_OUTPUT VS_NoTeX(float4 Pos : POSITION, float4 Normal : NORMAL, uint4  Bones : BONE_INDEX, float4 Weights : BONE_WEIGHT)
-{
-	VS_OUTPUT output = (VS_OUTPUT)0;
-
-	Skin vSkinned = SkinVert(Pos, Normal, Bones, Weights);
-
-	//射影変換（ワールド→ビュー→プロジェクション）
-	output.Pos = mul(vSkinned.Pos, g_mWVP);
-
-	//法線をモデルの姿勢に合わせる(モデルが回転すれば法線も回転させる）
-	output.Normal = normalize(mul(vSkinned.Normal, (float3x3)g_mW));
-
-	//ディレクショナルライト
-	output.Light = -g_vLightDir;
-
-	//視線ベクトル　ワールド空間上での頂点から視点へ向かうベクトル
-	float3 PosWorld = mul(output.Pos, g_mW);
-	output.EyeVector = normalize(PosWorld - g_vEye);
-
-	return output;
-}
-
-//ピクセルシェーダー
-float4 PS_NoTex(VS_OUTPUT input) : SV_Target
-{
-	//環境光　項
-	float4 ambient = g_Ambient;
-
-	//拡散反射光　項
-	float NL = saturate(dot(input.Normal, input.Light));
-	float4 diffuse = g_Diffuse * NL;
-
-	//鏡面反射光　項
-	float3 reflect = normalize(2 * NL * input.Normal - input.Light);
-	float4 specular = pow(saturate(dot(reflect, input.EyeVector)), 4) * g_Specular;
-
-	//フォンモデル最終色　３つの項の合計
 	float4 color = ambient + diffuse + specular;
 
 	color.rgb *= g_Intensity.rgb; //ライトの色反映

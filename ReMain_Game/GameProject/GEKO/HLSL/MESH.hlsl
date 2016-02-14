@@ -3,6 +3,7 @@
 //テクスチャー
 Texture2D g_texColor : register(t0); //モデルのテクスチャ
 Texture2D g_ShadowMapTexture : register(t1); //深度テクスチャ
+Texture2D g_Texture : register(t2); //深度テクスチャ
 SamplerState g_samLinear : register(s0); //モデルのサンプラー
 SamplerState g_ShadowMapSamLinear : register(s1); //深度のサンプラー
 
@@ -77,7 +78,7 @@ float4 BlinnPhong(float3 n, float3 l, float3 v)
 float4 MatrialColor(float4 ambient, float4 diffuse, float4 specular, float2 uv)
 {
 	float4 matrial = ambient + diffuse + specular;
-	float4 color = g_texColor.Sample(g_samLinear, uv);
+	float4 color = g_texColor.Sample(g_samLinear, uv) + g_Texture.Sample(g_samLinear, uv);
 	color.rgb *= matrial.rgb * g_Intensity.rgb * g_Intensity.w;
 	color.a *= g_Diffuse.w; //アルファ値反映
 	return color;
@@ -143,7 +144,7 @@ float4 ShadowMap_PS(float4 lightTexCoord, float4 color)
 	else
 	{
 		float sm = g_ShadowMapTexture.Sample(g_ShadowMapSamLinear, TexCoord).r;
-		if (sm == 0.0f) return color;
+		if (sm <= 0.0f) return color;
 
 		if (ZValue < sm + 0.005f)
 		{

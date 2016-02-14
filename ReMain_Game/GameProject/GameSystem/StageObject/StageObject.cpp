@@ -31,12 +31,13 @@ StageObject::StageObject()
 
 }
 
-StageObject::StageObject(XYZ pos, XYZ rot, XYZ sca, std::string name)
+StageObject::StageObject(XYZ pos, XYZ rot, XYZ sca, std::string name, bool isShadow, bool isLightInterrupted)
 {
-	m_Object.SetAsset(name);
+	m_Object.SetAsset(name, isLightInterrupted);
 	m_Object.SetTranselate(pos.x, pos.y, pos.z);
 	m_Object.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
 	m_Object.SetScale(sca.x, sca.y, sca.z);
+	m_IsShadow = isShadow;
 }
 
 StageObject::~StageObject()
@@ -52,7 +53,7 @@ void StageObject::Update()
 void StageObject::Render()
 {
 	m_Object.SetAlphaAll(255);
-	m_Object.Render();
+	m_Object.Render(m_IsShadow);
 }
 
 

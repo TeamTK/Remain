@@ -438,17 +438,10 @@ void LoadXDynamic::Relese()
 			m_MeshInfo.m_ppIndexBuffer[i]->Release();
 		}
 
-		SAFE_RELEASE(m_MeshInfo.m_pConstantBufferBone);
 		SAFE_DELETE_ARRAY(m_MeshInfo.pvVertex);
 		SAFE_DELETE_ARRAY(m_MeshInfo.m_pMaterial);
 		SAFE_DELETE_ARRAY(m_MeshInfo.m_ppIndexBuffer);
-		SAFE_RELEASE(m_MeshInfo.m_Nothing);
-		SAFE_RELEASE(m_MeshInfo.m_pConstantBuffer0);
-		SAFE_RELEASE(m_MeshInfo.m_pConstantBuffer1);
-		SAFE_RELEASE(m_MeshInfo.m_pVertexShader);
-		SAFE_RELEASE(m_MeshInfo.m_pPixelShader);
 		SAFE_RELEASE(m_MeshInfo.m_pVertexBuffer);
-		SAFE_RELEASE(m_MeshInfo.m_pVertexLayout);
 		SAFE_RELEASE(m_MeshInfo.m_pSampleLinear);
 	}
 }
