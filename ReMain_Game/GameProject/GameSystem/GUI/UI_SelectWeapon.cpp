@@ -28,7 +28,7 @@ UI_SelectWeapon::UI_SelectWeapon() :
 	m_isSelected(false), m_CircleSize(0), m_WeponUISize(0),
 	m_Selected(1), m_ScPos(400.0f, 155.0f, 0.0f)
 {
-	m_RenderTask.Regist(0, REGIST_RENDER_FUNC(UI_SelectWeapon::Draw));
+	m_RenderTask.Regist(4, REGIST_RENDER_FUNC(UI_SelectWeapon::Draw));
 	State = eOpen;
 	m_Circle.SetAsset("SelectCircle");
 	m_SelectedCursor.SetAsset("SelectedCursor");
@@ -133,14 +133,14 @@ EWeapons UI_SelectWeapon::Select()
 
 void UI_SelectWeapon::Draw()
 {
-	//カーソル
-	if (State == eSelect)
-		m_SelectedCursor.Draw((int)m_ScPos.x, (int)m_ScPos.y);
-
 	//各武器UI
 	for (int i = 0; i < 4; i++)	{
 		m_WeaponUI[i].Draw((int)m_UIPos[i].x, (int)m_UIPos[i].y);
 	}
+
+	//カーソル
+	if (State == eSelect)
+		m_SelectedCursor.Draw((int)m_ScPos.x, (int)m_ScPos.y);
 
 	//円
 	m_Circle.Draw(400, 300);

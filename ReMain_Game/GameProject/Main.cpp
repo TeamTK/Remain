@@ -48,7 +48,7 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 		if (Input::KeyM.Pressed()) z++;
 		*/
 
-		GEKO::SetShadowPosition(-7.0f, 340.0f, -209.0f);
+		//GEKO::SetShadowPosition(-7.0f, 340.0f, -209.0f);
 		//GEKO::SetShadowResolution();
 	}
 

@@ -4,7 +4,7 @@ ScreenBlood::ScreenBlood() :
 	Task("ScreenBlood", 1),
 	m_Alpha(255)
 {
-	m_RenderTask.Regist(0, REGIST_RENDER_FUNC(ScreenBlood::Draw));
+	m_RenderTask.Regist(6, REGIST_RENDER_FUNC(ScreenBlood::Draw));
 	m_Blood.SetAsset("ScreenBlood");
 	m_Timer.Start();
 }

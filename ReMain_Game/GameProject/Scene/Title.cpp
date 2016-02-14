@@ -9,6 +9,8 @@ bool g_isResource = false;
 
 Title::Title() :
 	Task("Title", 0),
+	m_IsTransferStart(false),
+	m_IsTransferEnd(false),
 	m_SelectPos(-100, -100),
 	m_Select(Select::eNo)
 {
@@ -65,7 +67,7 @@ void Title::Update()
 	}
 
 	//決定ボタン
-	if (Input::KeyEnter.Clicked() || Input::XInputPad1.AClicked())
+	if ((Input::KeyEnter.Clicked() || Input::XInputPad1.AClicked()) && !m_IsTransferStart)
 	{
 		switch (m_Select)
 		{
@@ -73,11 +75,8 @@ void Title::Update()
 			break;
 
 		case Select::eStart:
-			SetKill();
-			m_Render.Sleep();
-			new NowLoading(g_isResource);
-			g_isResource = true;
-
+			m_Transfer.Start(3.0f);
+			m_IsTransferStart = true;
 			break;
 
 		case Select::eExit:
@@ -88,6 +87,18 @@ void Title::Update()
 			break;
 		}
 	}
+
+	if (m_Transfer.GetIsEndTransfer() && !m_IsTransferEnd)
+	{
+		m_IsTransferEnd = true;
+
+		SetKill();
+		m_Render.Sleep();
+		new NowLoading(g_isResource);
+		g_isResource = true;
+	}
+
+	m_Transfer.Update();
 }
 
 void Title::Render()
@@ -98,9 +109,15 @@ void Title::Render()
 	m_HandGun.Render();
 	m_AmmoBox.Render();
 
+	if (m_IsTransferStart)
+	{
+		m_Transfer.Render();
+	}
+
 	//2Dオブジェクト
 	m_TitleImage.Draw(TITLE_POS);
 	m_StartImage.Draw(START_POS);
 	m_ExitImage.Draw(EXIT_POS);
 	m_SelectImage.Draw(m_SelectPos);
+
 }

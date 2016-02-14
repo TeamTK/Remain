@@ -16,8 +16,7 @@ public:
 
 private:
 	bool m_IsStart;
-	int m_AlphaNum;
-	float m_AlphaCnt;
+	float m_AlphaNum;
 	float m_TransferSpeed;
 	Image m_BlackImage;
 };
@@ -35,7 +34,7 @@ public:
 
 private:
 	bool m_IsStart;
-	float m_AlphaCnt;
+	float m_AlphaNum;
 	float m_TransferSpeed;
 	Image m_BlackImage;
 };
