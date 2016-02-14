@@ -37,6 +37,7 @@ private:
 	void HitAmmoBox(Result_Sphere& r);
 	void HitEnemyAttack(Result_Capsule &hitData);
 	void HitMap(Result_Sphere &data);
+	void StageChange(Result_Sphere &data);
 
 private:
 	Vector3D m_KeyDir;		//キー入力軸
@@ -45,19 +46,22 @@ private:
 	Matrix m_MatrixS;		//ショットガン用プレイヤーの行列
 	Matrix m_MatrixH;		//ハンドガン用プレイヤーの行列
 	Matrix m_MatrixK;		//ナイフ用プレイヤーの行列
-	UI_SelectWeapon m_SelectWeapon;
 	EPlayerState m_State;	//プレイヤーの状態
 	EPlayerAnim m_Anim;		//プレイヤーのアニメーション
 	EWeapons m_SelectedWeapon; //選択している銃
-	Collider m_Bullet;		//弾の当たり判定
-	Collider m_HitAmmoBox;	//弾薬箱の当たり判定
-	Collider m_HitEnemyAttack; //敵からの攻撃の当たり判定
-	Collider m_MapCol;		//敵
+	UI_SelectWeapon m_SelectWeapon;
 	PlayerSightInfo m_PlayerSightInfo; //プレイヤーの視界情報
 	AuditoryObject m_AuditoryObject; //聴覚対象
 	Timer m_Timer;					//ダメージを食らった後の無敵時間
 	Timer m_NoActionTime;			//ロード時の無操作時間
 	TracerouteTarget m_Target;		//経路探索対象
+
+	Collider m_Bullet;		//弾の当たり判定
+	Collider m_HitAmmoBox;	//弾薬箱の当たり判定
+	Collider m_HitEnemyAttack; //敵からの攻撃の当たり判定
+	Collider m_MapCol;		//敵
+	Collider m_StageChange;		//ステージ移動用
+
 	Sound m_HandGunFire;			//ハンドガンの発砲音
 	Sound m_ShotGunFire;			//ショットガンの発砲音
 	Sound m_GunEmpty;			    //弾が弾切れになった時の音

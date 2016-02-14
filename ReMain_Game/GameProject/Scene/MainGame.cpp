@@ -8,7 +8,7 @@ MainGame::MainGame() :
 	Task("MainGame", 0)
 {
 
-	new Chapter_1_2();
+	new Chapter_1_1();
 }
 
 MainGame::~MainGame()
