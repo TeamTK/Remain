@@ -20,6 +20,8 @@ private:
 		eExit
 	};
 
+	bool m_IsTransferStart;
+	bool m_IsTransferEnd;
 	RenderTask m_Render;
 	Image m_TitleImage;
 	Image m_StartImage;

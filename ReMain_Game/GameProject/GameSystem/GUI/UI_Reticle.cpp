@@ -4,7 +4,7 @@
 UI_Reticle::UI_Reticle() :
 	Task("UI_Reticle", 1)
 {
-	m_RenderTask.Regist(0, REGIST_RENDER_FUNC(UI_Reticle::Draw));
+	m_RenderTask.Regist(5, REGIST_RENDER_FUNC(UI_Reticle::Draw));
 
 	m_Reticle.SetAsset("Reticle");
 	m_Reticle.SetCenter(32, 32);

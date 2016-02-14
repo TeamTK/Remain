@@ -26,7 +26,6 @@ NowLoading::NowLoading(bool isResource) :
 
 		auto func2 = []
 		{
-			float cnt = 0.0f;
 			for (;;)
 			{
 				if (g_isLoad) break;
@@ -43,10 +42,8 @@ NowLoading::NowLoading(bool isResource) :
 		t1.join();
 		t2.join();
 	}
-
-	new MainGame;
-
-	Task::SetKill();
+	m_Render.Regist(6, REGIST_RENDER_FUNC(NowLoading::Render));
+	m_Transfer.Start(3.0f);
 }
 
 NowLoading::~NowLoading()
@@ -55,5 +52,15 @@ NowLoading::~NowLoading()
 
 void NowLoading::Update()
 {
-	
+	if (m_Transfer.GetIsEndTransfer())
+	{
+		new MainGame;
+		Task::SetKill();
+	}
+	m_Transfer.Update();
+}
+
+void NowLoading::Render()
+{
+	m_Transfer.Render();
 }
