@@ -3,6 +3,9 @@
 
 #include "ImageAsset.h"
 
+class StaticMesh;
+class DynamicMesh;
+
 //í∏ì_ÇÃç\ë¢ëÃ
 struct Vertex
 {
@@ -19,7 +22,10 @@ struct RGBA
 };
 
 class Image
-{
+{ 
+	friend StaticMesh;
+	friend DynamicMesh;
+
 public:
 	Image();
 	Image(const std::string name);

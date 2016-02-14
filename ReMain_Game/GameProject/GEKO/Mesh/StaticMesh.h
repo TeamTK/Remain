@@ -30,7 +30,6 @@ private:
 
 private:
 	MeshData *m_pMeshData;
-
 };
 
 #endif

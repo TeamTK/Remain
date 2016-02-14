@@ -1,10 +1,13 @@
 #include "DynamicMesh.h"
 #include "..\System\Camera.h"
 #include "..\System\DirectionalLight.h"
+#include "..\Shader\DynamicMeshShader\DynamicMeshShader.h"
+#include "..\ImageSystem\Image.h"
 #include <assert.h>
 
 DynamicMesh::DynamicMesh() :
-	m_IsAnimUpdate(true)
+	m_IsAnimUpdate(true),
+	m_pSkinMeshData(nullptr)
 {
 }
 
@@ -16,7 +19,9 @@ DynamicMesh::~DynamicMesh()
 	m_CopyBornArray.shrink_to_fit();
 }
 
-DynamicMesh::DynamicMesh(const std::string &meshName)
+DynamicMesh::DynamicMesh(const std::string &meshName) :
+	m_IsAnimUpdate(true),
+	m_pSkinMeshData(nullptr)
 {
 	AllocationSkinMeshData(meshName);
 }
@@ -257,6 +262,20 @@ void DynamicMesh::BornDebug(eBornDebug eBornDebug) const
 		//(*it)->
 	}
 	*/
+
+	int cnt = 0;
+	for (auto& i : m_pSkinMeshData->GetBornInfo()->BornList)
+	{
+		printf("%s\n", i->BornName.c_str());
+
+		D3DXMATRIX m = m_CopyBornArray[cnt]->bornMat;
+		printf("%f %f %f %f\n", m._11, m._12, m._13, m._14);
+		printf("%f %f %f %f\n", m._21, m._22, m._23, m._24);
+		printf("%f %f %f %f\n", m._31, m._32, m._33, m._34);
+		printf("%f %f %f %f\n", m._41, m._42, m._43, m._44);
+
+		cnt++;
+	}
 }
 
 void DynamicMesh::AnimationDebug(int animNum) const
@@ -315,41 +334,11 @@ void DynamicMesh::RenderFunc(Matrix &matrix)
 
 	const SkinMeshInfo *data = m_pSkinMeshData->GetSkinMeshInfo();
 
-	D3DXMATRIX World = matrix; //ワールド行列格納
+	DynamicMeshShader::GetInstance()->SetVertexShader(pDeviceContext, data->m_IsTexture, false);
+	DynamicMeshShader::GetInstance()->SetPixelShader(pDeviceContext, data->m_IsTexture, false);
+	DynamicMeshShader::GetInstance()->SetInputLayout(pDeviceContext, data->m_IsTexture);
 
-	//使用するシェーダーの登録
-	pDeviceContext->VSSetShader(data->m_pVertexShader, NULL, 0);
-	pDeviceContext->PSSetShader(data->m_pPixelShader, NULL, 0);
-
-	//シェーダーのコンスタントバッファーに各種データを渡す
-	D3D11_MAPPED_SUBRESOURCE pData;
-	if (SUCCEEDED(pDeviceContext->Map(
-		data->m_pConstantBuffer0, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
-	{
-		SkinConstantBuffer0 sg;
-		
-		//ワールド行列を渡す
-		sg.mW = World;
-		D3DXMatrixTranspose(&sg.mW, &sg.mW);
-
-		//ワールド、カメラ、射影行列を渡す
-		sg.mWVP = World * (*Camera::GetView()) * (*Camera::GetProjection());
-		D3DXMatrixTranspose(&sg.mWVP, &sg.mWVP);
-
-		//ライトの方向を渡す
-		D3DXVec4Normalize(&sg.vLightDir, DirectionalLight::GetDirection());
-		sg.fIntensity = DirectionalLight::GetLightColor()->Change();
-
-		//視点位置を渡す
-		D3DXVECTOR3 EyePos(Camera::GetEyePositionD3D());
-		sg.vEye = D3DXVECTOR4(EyePos.x, EyePos.y, EyePos.z, 0);
-		memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(SkinConstantBuffer0));
-		pDeviceContext->Unmap(data->m_pConstantBuffer0, 0);
-	}
-
-	//コンスタントバッファーを使うシェーダーの登録
-	pDeviceContext->VSSetConstantBuffers(0, 1, &data->m_pConstantBuffer0);
-	pDeviceContext->PSSetConstantBuffers(0, 1, &data->m_pConstantBuffer0);
+	DynamicMeshShader::GetInstance()->SetBaseConstantBuffer(pDeviceContext, matrix, false);
 
 	//アニメーション更新
 	if (m_IsAnimUpdate)
@@ -357,28 +346,7 @@ void DynamicMesh::RenderFunc(Matrix &matrix)
 		m_pSkinMeshData->Update(&m_Born);
 	}
 
-	//ボーン情報格納
-	if (SUCCEEDED(pDeviceContext->Map(data->m_pConstantBufferBone, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
-	{
-		BornConstantBuffer sg;
-		for (int i = 0; i < GetBornAllNum(); i++)
-		{
-			D3DXMATRIX m = m_CopyBornArray[i]->bornMat;
-			D3DXMatrixTranspose(&m, &m);
-			sg.bornMat[i] = m;
-		}
-		memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(BornConstantBuffer));
-		pDeviceContext->Unmap(data->m_pConstantBufferBone, 0);
-	}
-
-	pDeviceContext->VSSetConstantBuffers(2, 1, &data->m_pConstantBufferBone);
-	pDeviceContext->PSSetConstantBuffers(2, 1, &data->m_pConstantBufferBone);
-
-	//頂点インプットレイアウトをセット
-	pDeviceContext->IASetInputLayout(data->m_pVertexLayout);
-
-	//プリミティブ・トポロジーをセット
-	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	DynamicMeshShader::GetInstance()->SetBornConstantBuffer(pDeviceContext, GetBornAllNum(), m_CopyBornArray);
 
 	//属性ごとにレンダリング
 
@@ -386,6 +354,12 @@ void DynamicMesh::RenderFunc(Matrix &matrix)
 	UINT Stride = sizeof(SkinVertexInfo);
 	UINT offset = 0;
 	pDeviceContext->IASetVertexBuffers(0, 1, &data->m_pVertexBuffer, &Stride, &offset);
+
+	//マルチテクスチャ
+	if (m_pImage != nullptr)
+	{
+		pDeviceContext->PSSetShaderResources(2, 1, &m_pImage->m_pImageData->GetImageInfo()->pTexture);
+	}
 
 	D3DXVECTOR4 diffuse;
 	D3DXVECTOR4 specular;
@@ -415,19 +389,7 @@ void DynamicMesh::RenderFunc(Matrix &matrix)
 		ambient.z = m_Ambient[i].z;
 		ambient.w = m_Diffuse[i].w;
 
-		//マテリアルの各要素をエフェクト（シェーダー）に渡す
-		D3D11_MAPPED_SUBRESOURCE pData;
-		if (SUCCEEDED(pDeviceContext->Map(data->m_pConstantBuffer1, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
-		{
-			SkinConstantBuffer1 sg;
-			sg.vDiffuse = diffuse;//ディフューズカラーをシェーダーに渡す
-			sg.vSpecular = specular;//スペキュラーをシェーダーに渡す
-			sg.vAmbient = ambient;//アンビエントををシェーダーに渡す
-			memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(SkinConstantBuffer1));
-			pDeviceContext->Unmap(data->m_pConstantBuffer1, 0);
-		}
-		pDeviceContext->VSSetConstantBuffers(1, 1, &data->m_pConstantBuffer1);
-		pDeviceContext->PSSetConstantBuffers(1, 1, &data->m_pConstantBuffer1);
+		DynamicMeshShader::GetInstance()->SetMaterialConstantBuffer(pDeviceContext, diffuse, specular, ambient);
 
 		//テクスチャーをシェーダーに渡す
 		if (data->m_pMaterial[i].pTexture)
@@ -435,14 +397,16 @@ void DynamicMesh::RenderFunc(Matrix &matrix)
 			pDeviceContext->PSSetSamplers(0, 1, &data->m_pSampleLinear);
 			pDeviceContext->PSSetShaderResources(0, 1, &data->m_pMaterial[i].pTexture);
 		}
-		else
-		{
-			pDeviceContext->PSSetShaderResources(0, 1, &data->m_Nothing);
-		}
 
 		//プリミティブをレンダリング
 		pDeviceContext->DrawIndexed(data->m_pMaterial[i].dwNumFace * 3, 0, 0);
 	}
+
+	//テクスチャリソース初期化
+	ID3D11ShaderResourceView* pShaderResource = nullptr;
+	pDeviceContext->PSSetShaderResources(0, 1, &pShaderResource);
+	pDeviceContext->PSSetShaderResources(1, 1, &pShaderResource);
+	pDeviceContext->PSSetShaderResources(2, 1, &pShaderResource);
 }
 
 void DynamicMesh::ReleseCopyBornTree(CopyBorn *pBornCopy) const

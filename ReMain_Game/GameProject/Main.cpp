@@ -15,7 +15,7 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 	Camera::SetEye(0.0f, 0.0f, 0.0f);
 	Camera::SetLookat(0.0f, 0.0f, 0.0f);
 
-	DirectionalLight::SetIntensity(0.6f);
+	DirectionalLight::SetIntensity(0.5f);
 	DirectionalLight::SetDirection(0.0f, 45.0f);
 
 	GEKO::ChangeFps(30);
@@ -33,6 +33,7 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 		TaskManager::Update();
 		RenderManager::Render();
 
+		/*
 		static float x = 0.0f;
 		static float y = 0.0f;
 		static float z = 0.0f;
@@ -45,8 +46,10 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 
 		if (Input::KeyN.Pressed()) z--;
 		if (Input::KeyM.Pressed()) z++;
+		*/
 
-		GEKO::SetShadowPosition(x, y, z);
+		GEKO::SetShadowPosition(-7.0f, 340.0f, -209.0f);
+		//GEKO::SetShadowResolution();
 	}
 
 	GEKO::End();
