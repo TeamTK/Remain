@@ -35,7 +35,7 @@
 
 Vector3D *g_pPlayerPos;
 
-Player::Player(Vector3D pos) :
+Player::Player(Vector3D pos, float horizontal, float vertical) :
 	Character(100.0f, "Player", 0),
 	m_LookPos(-47.9f, 1.7f, -11.4f),
 	m_KeyDir(0.0f, 0.0f, 0.0f),
@@ -83,7 +83,7 @@ Player::Player(Vector3D pos) :
 	m_CameraInfo.pRot = &m_rot;
 	m_CameraInfo.pSetupWeapon = &m_SetupWeapon;
 	m_CameraInfo.pState = &m_State;
-	new TPSCamera(&m_CameraInfo);
+	new TPSCamera(&m_CameraInfo, horizontal, vertical);
 
 	g_pShotgun = new Shotgun(&m_PlayAnim, &m_PlayAnimTime, &m_isTakeWeapon, &m_SelectedWeapon, &m_MatrixS);
 	g_pHandgun = new Handgun(&m_PlayAnim, &m_PlayAnimTime, &m_isTakeWeapon, &m_SelectedWeapon, &m_MatrixH);
@@ -140,7 +140,6 @@ Player::Player(Vector3D pos) :
 
 Player::~Player()
 {
-	TaskManager::Kill("TPSCamera");
 }
 
 void Player::Update()

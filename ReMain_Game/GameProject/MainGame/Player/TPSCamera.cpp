@@ -5,12 +5,12 @@
 #define CAMERA_HIT_HIGHT 1.5f;		  //カメラの当たり判定の高さ
 #define CAMERA_LENGE	2.0f		  //プレイヤーとカメラの距離
 
-TPSCamera::TPSCamera(CameraInfo *pCameraInfo) :
+TPSCamera::TPSCamera(CameraInfo *pCameraInfo, float horizontal, float vertical) :
 	Task("TPSCamera", 1),
-	m_Horizontal(Math::ChangeToRadian(64)),
-	m_Vertical(Math::ChangeToRadian(-2)),
+	m_Horizontal(Math::ChangeToRadian(horizontal)),
+	m_Vertical(Math::ChangeToRadian(vertical)),
 	m_CamSpeed(0.000002f),
-	m_CameraPos(-46.0f, 2.0f, -11.0f),
+	m_CameraPos(0.0f, 0.0f, 0.0f),
 	m_pCameraInfo(pCameraInfo)
 {
 	//カメラの当たり判定
@@ -124,6 +124,9 @@ void TPSCamera::Update()
 
 	Camera::SetEye(m_CameraPos);
 	Camera::SetLookat(*info->pLookPos);
+
+	printf("h = %f\n", Math::ChangeToDegree(m_Horizontal));
+	printf("v = %f\n", Math::ChangeToDegree(m_Vertical));
 }
 
 void TPSCamera::HitCamera(Result_Porygon &hitData)

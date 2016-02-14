@@ -5,6 +5,20 @@
 #include "../MainGame/Enemy/EnemyWave.h"
 #include "../MainGame/AmmoBox/AmmoBox_Shotgun.h"
 
+void Kill()
+{
+	TaskManager::Kill("TPSCamera");
+	TaskManager::Kill("UI_Reticle");
+	TaskManager::Kill("UI_AmmoNum");
+	TaskManager::Kill("AmmoBox_Shotgun");
+	TaskManager::Kill("AmmoBox_Handgun");
+	TaskManager::Kill("Monster_A");
+	TaskManager::Kill("Monster_B");
+	TaskManager::Kill("Handgun");
+	TaskManager::Kill("Shotgun");
+	TaskManager::Kill("ScreenBlood");
+}
+
 Chapter_1_1::Chapter_1_1() :
 	Task("Chapter_1_1", 0),
 	m_Radius(4.0f),
@@ -14,7 +28,7 @@ Chapter_1_1::Chapter_1_1() :
 {
 	GEKO::SetShadowPosition(20.0f, 200.0f, 0.0f);
 
-	new Player(Vector3D(-45.0f, 0.0f, -11.0f));
+	new Player(Vector3D(-45.0f, 0.0f, -11.0f), 64, -2);
 
 	//åoòHíTçıÉfÅ[É^ì«Ç›çûÇ›Ç∆ç\íz
 	StaticMeshAsset::LoadMesh("media\\Traceroute_1_1.x", "Chapter_1_1_Traceroute");
@@ -85,16 +99,9 @@ void Chapter_1_1::HitPlayer(Result_Sphere &data)
 
 void Chapter_1_1::StageChange(Result_Sphere &data)
 {
-	new Chapter_1_2();
-	TaskManager::Kill("UI_Reticle");
-	TaskManager::Kill("UI_AmmoNum");
-	TaskManager::Kill("AmmoBox_Shotgun");
-	TaskManager::Kill("AmmoBox_Handgun");
-	TaskManager::Kill("Monster_A");
-	TaskManager::Kill("Monster_B");
-	TaskManager::Kill("Handgun");
-	TaskManager::Kill("Shotgun");
+	Kill();
 	TaskManager::Kill("Chapter_1_1");
+	new Chapter_1_2();
 }
 
 
@@ -111,7 +118,7 @@ Chapter_1_2::Chapter_1_2() :
 {
 	GEKO::SetShadowPosition(-7.0f, 340.0f, -209.0f);
 
-	new Player(Vector3D(-20.0f, 0.05f, -84.0f));
+	new Player(Vector3D(-28.0f, 0.0f, -98.0f), 80, -2);
 
 	//åoòHíTçıÉfÅ[É^ì«Ç›çûÇ›Ç∆ç\íz
 	StaticMeshAsset::LoadMesh("media\\Traceroute_1_2.x", "Chapter_1_2_Traceroute");
@@ -136,6 +143,7 @@ Chapter_1_2::Chapter_1_2() :
 Chapter_1_2::~Chapter_1_2()
 {
 	TracerouteManager::ClearTopography("Chapter_1_2_Traceroute");
+	Kill();
 }
 
 void Chapter_1_2::Update()
