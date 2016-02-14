@@ -129,6 +129,8 @@ Player::Player(Vector3D pos, float horizontal, float vertical) :
 	m_GunADS.SetAseet("GunADS");
 	m_HitEnemyAttackSound.SetAseet("HitEnemyAttack");
 
+	m_DamegeBlood.SetAsset("Player_2");
+
 	m_BodyRadius = 0.7f;
 
 	//プレイヤーUI
@@ -161,7 +163,11 @@ void Player::Update()
 	Animation();
 	Character::Update();
 
-	if ((m_Timer.GetSecond() >= 1.5) && !m_isDead)	 m_HitEnemyAttack.Awake();
+	if ((m_Timer.GetSecond() >= 1.5) && !m_isDead)	 
+	{
+		m_HitEnemyAttack.Awake();
+		m_Model.SetTexture(nullptr);
+	}
 
 	m_SightPos = m_Model.GetBornPos(6); //頭のボーン位置
 	m_MatrixK = m_Model.GetBornMatrix(25, true);	//指のボーン位置
@@ -892,6 +898,7 @@ void Player::HitAmmoBox(Result_Sphere& r)
 
 void Player::HitEnemyAttack(Result_Capsule &hitData)
 {
+	/*
 	//血しぶきのエフェクト
 	EffectInfo effectData;
 	effectData.imageName = "Blood";
@@ -901,6 +908,20 @@ void Player::HitEnemyAttack(Result_Capsule &hitData)
 	effectData.speed = 0.1f;
 	effectData.time = 60;
 	new EffectParabola(effectData, "Blood", hitData.start.GetNormalize());
+	*/
+
+	//血しぶきのエフェクト
+	EffectAnimationInfo info;
+	info.frameNum = 8;
+	info.pos = hitData.end;
+	info.size = 2.0f;
+	info.sizeW = 256;
+	info.sizeH = 256;
+	info.speed = 32;
+	new EffectAnimation("BloodAnim", info);
+
+	m_Model.SetTexture(&m_DamegeBlood);
+
 	m_Timer.Start();
 	m_HitEnemyAttack.Sleep();
 

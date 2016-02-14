@@ -68,6 +68,8 @@ private:
 	Sound m_GunADS;					//e‚ğ\‚¦‚½‚Ì‰¹
 	Sound m_HitEnemyAttackSound;	//“G‚©‚çUŒ‚‚ğH‚ç‚Á‚½‰¹
 
+	Image m_DamegeBlood;
+
 	CameraInfo m_CameraInfo;
 
 	int m_Phase;

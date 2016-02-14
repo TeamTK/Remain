@@ -52,7 +52,7 @@ Chapter_1_1::Chapter_1_1() :
 
 	new AmmoBox_Shotgun(Vector3D(-9.5f, 0.0f, 14.4f), Vector3D(0.0f, 200.0f, 0.0f), 6);
 
-	m_BGM.SetAseet("Field1");
+	m_BGM.SetAseet("Field2");
 	m_BGM.SetLoop(true);
 	m_BGM.Play();
 }
