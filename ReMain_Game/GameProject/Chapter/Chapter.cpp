@@ -31,7 +31,6 @@ Chapter_1_1::Chapter_1_1() :
 	new Player(Vector3D(-45.0f, 0.0f, -11.0f), 64, -2);
 
 	//åoòHíTçıÉfÅ[É^ì«Ç›çûÇ›Ç∆ç\íz
-	StaticMeshAsset::LoadMesh("media\\Traceroute_1_1.x", "Chapter_1_1_Traceroute");
 	static StaticMesh mesh("Chapter_1_1_Traceroute");
 	TracerouteManager::RegistTopography(&mesh, "Chapter_1_1_Traceroute", false);
 
@@ -52,15 +51,21 @@ Chapter_1_1::Chapter_1_1() :
 	m_MapCol.SetID(eHITID5, eHITID1);
 
 	new AmmoBox_Shotgun(Vector3D(-9.5f, 0.0f, 14.4f), Vector3D(0.0f, 200.0f, 0.0f), 6);
+
+	m_BGM.SetAseet("Field1");
+	m_BGM.SetLoop(true);
+	m_BGM.Play();
 }
 
 Chapter_1_1::~Chapter_1_1()
 {
 	TracerouteManager::ClearTopography("Chapter_1_1_Traceroute");
+	m_BGM.Stop();
 }
 
 void Chapter_1_1::Update()
 {
+	/*
 	if (Input::KeyP.Clicked()) //ìGí«â¡(âº)
 	{
 		EnemyWaveInfo info;
@@ -78,6 +83,7 @@ void Chapter_1_1::Update()
 		TaskManager::Kill("Monster_A");
 		TaskManager::Kill("Monster_B");
 	}
+	*/
 }
 
 void Chapter_1_1::HitPlayer(Result_Sphere &data)
@@ -121,7 +127,6 @@ Chapter_1_2::Chapter_1_2() :
 	new Player(Vector3D(-28.0f, 0.0f, -98.0f), 80, -2);
 
 	//åoòHíTçıÉfÅ[É^ì«Ç›çûÇ›Ç∆ç\íz
-	StaticMeshAsset::LoadMesh("media\\Traceroute_1_2.x", "Chapter_1_2_Traceroute");
 	static StaticMesh mesh("Chapter_1_2_Traceroute");
 	TracerouteManager::RegistTopography(&mesh, "Chapter_1_2_Traceroute", false);
 
@@ -138,17 +143,22 @@ Chapter_1_2::Chapter_1_2() :
 	m_MapCol.SetID(eHITID5, eHITID1);
 
 	new AmmoBox_Shotgun(Vector3D(-9.5f, 0.0f, 14.4f), Vector3D(0.0f, 200.0f, 0.0f), 6);
+
+	m_BGM.SetAseet("Field1");
+	m_BGM.SetLoop(true);
+	m_BGM.Play();
 }
 
 Chapter_1_2::~Chapter_1_2()
 {
 	TracerouteManager::ClearTopography("Chapter_1_2_Traceroute");
 	Kill();
+	m_BGM.Stop();
 }
 
 void Chapter_1_2::Update()
 {
-
+	/*
 	if (Input::KeyP.Clicked()) //ìGí«â¡(âº)
 	{
 		EnemyWaveInfo info;
@@ -166,6 +176,7 @@ void Chapter_1_2::Update()
 		TaskManager::Kill("Monster_A");
 		TaskManager::Kill("Monster_B");
 	}
+	*/
 }
 
 void Chapter_1_2::HitPlayer(Result_Sphere &data)

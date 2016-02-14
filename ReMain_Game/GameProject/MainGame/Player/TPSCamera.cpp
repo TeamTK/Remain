@@ -124,9 +124,6 @@ void TPSCamera::Update()
 
 	Camera::SetEye(m_CameraPos);
 	Camera::SetLookat(*info->pLookPos);
-
-	printf("h = %f\n", Math::ChangeToDegree(m_Horizontal));
-	printf("v = %f\n", Math::ChangeToDegree(m_Vertical));
 }
 
 void TPSCamera::HitCamera(Result_Porygon &hitData)

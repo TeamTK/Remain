@@ -3,3 +3,4 @@ Sound media\SoundData\ShotGunFire.wav ShotGunFire
 Sound media\SoundData\GunEmpty.wav GunEmpty
 Sound media\SoundData\GunADS.wav GunADS
 Sound media\SoundData\HitEnemyAttack.wav HitEnemyAttack
+Sound media\SoundData\Field1.wav Field1
