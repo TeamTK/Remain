@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "YouAreDead.h"
 #include "TPSCamera.h"
+#include "PlayerData.h"
 #include "../../MainGame/Bullet/Bullet.h"
 #include "../../GameSystem/Effect/EffectSphere.h"
 #include "../../GameSystem/Effect/EffectParabola.h"
@@ -94,6 +95,10 @@ Player::Player(Vector3D pos) :
 	//“G‚ÌUŒ‚‚Ì“–‚½‚è”»’è
 	m_HitEnemyAttack.Regist_C_vs_C(&m_pos, &m_SightPos, &m_Radius, REGIST_FUNC(Player::HitEnemyAttack));
 	m_HitEnemyAttack.SetID(eHITID0, eHITID1);
+
+	//ƒXƒe[ƒWˆÚ“®—p
+	m_StageChange.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::StageChange));
+	m_StageChange.SetID(eHITID1, eHITID4);
 
 	//“G‚ðoŒ»
 	m_MapCol.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::HitMap));
@@ -197,7 +202,7 @@ void Player::Update()
 	m_PlayAnim = m_Model.GetPlayAnimation(m_JudgementAnim);
 	m_PlayAnimTime = m_Model.GetPlayTime(m_JudgementAnim);
 
-	//m_Model.GetTranselate().DebugDraw("");
+	m_Model.GetTranselate().DebugDraw("");
 }
 
 void Player::Move()
@@ -934,4 +939,21 @@ void Player::HitEnemyAttack(Result_Capsule &hitData)
 void Player::HitMap(Result_Sphere &data)
 {
 
+}
+
+
+void Player::StageChange(Result_Sphere &data)
+{
+	PData playerData;
+	playerData.HP = m_Hp;
+	playerData.Shotgun_LoadedAmmo = g_pShotgun->GetLoadedAmmo();
+	playerData.Shotgun_Ammo = g_pShotgun->GetAmmo();
+	playerData.Handgun_LoadedAmmo = g_pHandgun->GetLoadedAmmo();
+	playerData.Handgun_Ammo = g_pHandgun->GetAmmo();
+
+	PlayerData::SetData(playerData);
+	
+	TaskManager::Kill("Player");
+	TaskManager::Kill("UI_AmmoNum");
+	TaskManager::Kill("UI_Reticle");
 }

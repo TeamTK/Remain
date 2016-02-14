@@ -9,6 +9,7 @@ Chapter_1_1::Chapter_1_1() :
 	Task("Chapter_1_1", 0),
 	m_Radius(2.0f),
 	m_pos(-7.0f, 0.0f, 4.0f),
+	m_StageChangePos(40.0f, 0.0f, -17.0f),
 	m_isHit(false)
 {
 	new Player(Vector3D(-45.0f, 0.0f, -11.0f));
@@ -25,9 +26,14 @@ Chapter_1_1::Chapter_1_1() :
 	EnemyStateManager::LoadFileState("TextData\\EnemyState.txt");
 	EnemyStateManager::LoadFileSpawn("TextData\\EnemySpawn.txt");
 
+	//ステージ移動用
+	m_StageChange.Regist_S_vs_S(&m_StageChangePos, &m_Radius, REGIST_FUNC(Chapter_1_1::StageChange));
+	m_StageChange.SetID(eHITID4, eHITID1);
+
 	//敵を出現
 	m_MapCol.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Chapter_1_1::HitPlayer));
 	m_MapCol.SetID(eHITID5, eHITID1);
+
 
 	new AmmoBox_Shotgun(Vector3D(-9.5f, 0.0f, 14.4f), Vector3D(0.0f, 200.0f, 0.0f), 6);
 }
@@ -35,6 +41,7 @@ Chapter_1_1::Chapter_1_1() :
 Chapter_1_1::~Chapter_1_1()
 {
 	TracerouteManager::ClearTopography("Chapter_1_2_Traceroute");
+	StageObjectManager::GetInstance()->ClearList();
 }
 
 void Chapter_1_1::Update()
@@ -47,7 +54,7 @@ void Chapter_1_1::Update()
 		info.intervalTime = 1;
 		info.spawnName = "Chapter1-1";
 		info.stateName = "Normal_Monster_A";
-		info.tracerouteName = "Chapter_1_2_Traceroute";
+		info.tracerouteName = "Chapter_1_1_Traceroute";
 		new EnemyWave(info);
 	}
 
@@ -68,15 +75,23 @@ void Chapter_1_1::HitPlayer(Result_Sphere &data)
 		info.intervalTime = 1;
 		info.spawnName = "Chapter1-1";
 		info.stateName = "Normal_Monster_A";
-		info.tracerouteName = "Chapter_1_2_Traceroute";
+		info.tracerouteName = "Chapter_1_1_Traceroute";
 		new EnemyWave(info);
 
 		m_isHit = true;
 	}
 }
 
+void Chapter_1_1::StageChange(Result_Sphere &data)
+{
+	Task::SetKill();
+}
 
 
+
+//******************************************
+//				Chapter_1_2
+//******************************************
 
 Chapter_1_2::Chapter_1_2() :
 	Task("Chapter_1_2", 0),
