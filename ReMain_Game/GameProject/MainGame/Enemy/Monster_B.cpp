@@ -16,12 +16,12 @@ Monster_B::Monster_B(EnemyState &enemyState) :
 	m_BoneCapsule.emplace_back(0.5f, 21, 23, "Rgiht leg"); //右足
 
 	//ダメージ倍率部位ごと
-	m_DamageMagnification.push_back(2.0f); //頭
-	m_DamageMagnification.push_back(1.0f); //胴体
-	m_DamageMagnification.push_back(0.5f); //左腕
-	m_DamageMagnification.push_back(0.5f); //右腕
-	m_DamageMagnification.push_back(0.5f); //左足
-	m_DamageMagnification.push_back(0.5f); //右足
+	m_DamageMagnification.push_back(4.0f); //頭
+	m_DamageMagnification.push_back(2.5f); //胴体
+	m_DamageMagnification.push_back(1.0f); //左腕
+	m_DamageMagnification.push_back(1.0f); //右腕
+	m_DamageMagnification.push_back(1.0f); //左足
+	m_DamageMagnification.push_back(1.0f); //右足
 
 	//球（弾）との判定用
 	m_pHitAttackBody = new Collider[m_BoneCapsule.size()];

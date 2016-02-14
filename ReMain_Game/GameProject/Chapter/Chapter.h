@@ -1,7 +1,6 @@
 #ifndef _CHAPTER_H_
 #define _CHAPTER_H_
 
-#include "..\GEKO\Task\Task.h"
 #include "../GEKO/GEKO.h"
 
 class Chapter_1_1 : public Task
@@ -21,6 +20,7 @@ private:
 	Collider m_StageChange;	//ステージ移動用
 	Vector3D m_pos;
 	Vector3D m_StageChangePos;	//ステージ移動用当たり判定座標
+	Sound m_BGM;
 };
 
 
@@ -39,6 +39,7 @@ private:
 	bool m_isHit;
 	Collider m_MapCol;
 	Vector3D m_pos;
+	Sound m_BGM;
 };
 
 #endif

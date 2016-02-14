@@ -3,6 +3,7 @@
 #include "../MainGame/Player/Player.h"
 #include "../MainGame/Enemy/EnemyStateManager.h"
 #include "../Chapter/Chapter.h"
+#include "../Scene/Title.h"
 
 MainGame::MainGame() :
 	Task("MainGame", 0)
@@ -32,4 +33,11 @@ void MainGame::Update()
 	SightManager::GetInstance()->Update();
 	AuditoryManager::GetInstance()->Update();
 	TracerouteManager::Update();
+
+	//‰¼
+	if (Input::KeyP.Clicked())
+	{
+		TaskManager::AllKill();
+		new Title();
+	}
 }

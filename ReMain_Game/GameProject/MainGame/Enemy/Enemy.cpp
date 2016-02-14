@@ -7,7 +7,7 @@
 
 #define COMMON_BORN_ANIM_ENEMY 20
 #define SEARCH_INTERVAL 60 //経路探索開始間隔
-#define DROP_PROBABILITY 5 //アイテムドロップ率
+#define DROP_PROBABILITY 2 //アイテムドロップ率
 
 Enemy::Enemy(const char* name, EnemyState &enemyState) :
 	Character(10, name, 1),
@@ -136,7 +136,7 @@ void Enemy::Die()
 		std::uniform_int_distribution<> rand(0, 1);
 		std::uniform_int_distribution<> rand2(0, DROP_PROBABILITY);
 
-		//弾をドロップ（10分の1）
+		//弾をドロップ（5分の1）
 		if (rand2(mt) == 0)
 		{
 			switch (rand(mt))
