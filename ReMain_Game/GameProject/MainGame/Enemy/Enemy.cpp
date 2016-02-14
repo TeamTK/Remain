@@ -213,11 +213,13 @@ void Enemy::HitBullet(Result_Sphere& r)
 	EffectAnimationInfo info;
 	info.frameNum = 8;
 	info.pos = r.position;
-	info.size = 1.0f;
+	info.size = 2.0f;
 	info.sizeW = 256;
 	info.sizeH = 256;
 	info.speed = 32;
 	new EffectAnimation("BloodAnim", info);
+
+	m_Model.SetTexture(&m_DamegeBlood);
 
 	//èeÇÃéÌóﬁÇ≤Ç∆ÇÃà–óÕ
 	float GunPower = 1.0f;

@@ -98,6 +98,8 @@ protected:
 	TracerouteSearch m_Search; //Œo˜H’Tõ
 
 	int m_SearchCnt; //Œo˜H’TõŠÔŠuƒJƒEƒ“ƒg
+
+	Image m_DamegeBlood;
 };
 
 #endif

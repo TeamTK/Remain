@@ -18,3 +18,6 @@ Image media\ImageData\Transfer_Black.png Transfer_Black
 Image media\ImageData\BloodAnim.png BloodAnim
 Image media\ImageData\MuzzleFlash.png MuzzleFlash
 Image media\ImageData\ScreenBlood.png ScreenBlood
+Image media\ImageData\Monster_A_2.png Monster_A_2
+Image media\ImageData\Monster_B_2.png Monster_B_2
+Image media\ImageData\Player_2.png Player_2

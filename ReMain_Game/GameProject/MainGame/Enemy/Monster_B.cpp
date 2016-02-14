@@ -65,6 +65,8 @@ Monster_B::Monster_B(EnemyState &enemyState) :
 	}
 
 	m_JudgementAnim = 13;
+
+	m_DamegeBlood.SetAsset("Monster_B_2");
 }
 
 Monster_B::~Monster_B()
