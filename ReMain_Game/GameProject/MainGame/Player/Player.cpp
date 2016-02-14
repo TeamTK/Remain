@@ -140,7 +140,6 @@ Player::~Player()
 
 void Player::Update()
 {
-	m_Model.GetTranselate().DebugDraw("");
 	//1フレームタイム
 	m_OneFlameTime = GEKO::GetOneFps();
 
