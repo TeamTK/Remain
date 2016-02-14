@@ -33,23 +33,6 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 		TaskManager::Update();
 		RenderManager::Render();
 
-		/*
-		static float x = 0.0f;
-		static float y = 0.0f;
-		static float z = 0.0f;
-
-		if (Input::KeyY.Pressed()) x--;
-		if (Input::KeyU.Pressed()) x++;
-
-		if (Input::KeyH.Pressed()) y--;
-		if (Input::KeyJ.Pressed()) y++;
-
-		if (Input::KeyN.Pressed()) z--;
-		if (Input::KeyM.Pressed()) z++;
-		*/
-
-		//GEKO::SetShadowPosition(-7.0f, 340.0f, -209.0f);
-		//GEKO::SetShadowResolution();
 	}
 
 	GEKO::End();

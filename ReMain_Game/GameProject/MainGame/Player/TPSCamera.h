@@ -8,7 +8,7 @@ class Player;
 class TPSCamera : public Task
 {
 public:
-	TPSCamera(CameraInfo *pCameraInfo);
+	TPSCamera(CameraInfo *pCameraInfo, float horizontal, float vertical);
 	~TPSCamera();
 	void Update();
 
