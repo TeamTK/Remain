@@ -4,6 +4,7 @@
 #include "../MainGame/Player/Player.h"
 #include "../MainGame/Enemy/EnemyWave.h"
 #include "../MainGame/AmmoBox/AmmoBox_Shotgun.h"
+#include "../MainGame/Player/PlayerData.h"
 
 void Kill()
 {
@@ -28,7 +29,16 @@ Chapter_1_1::Chapter_1_1() :
 {
 	DirectionalLight::SetDistance(140.0f);
 
-	new Player(Vector3D(-45.0f, 0.0f, -11.0f), 64, -2);
+	PData data;
+	data.HP = 100.0f;
+	data.Shotgun_Ammo = 6;
+	data.Shotgun_LoadedAmmo = 6;
+	data.Handgun_Ammo = 6;
+	data.Handgun_LoadedAmmo = 6;
+	data.isTakeWeapon = false;
+	data.Weapon = eShotgun;
+
+	new Player(&data, Vector3D(-45.0f, 0.0f, -11.0f), 64, -2);
 
 	//åoòHíTçıÉfÅ[É^ì«Ç›çûÇ›Ç∆ç\íz
 	static StaticMesh mesh("Chapter_1_1_Traceroute");
@@ -120,7 +130,16 @@ Chapter_1_2::Chapter_1_2() :
 {
 	DirectionalLight::SetDistance(160.0f);
 
-	new Player(Vector3D(-28.0f, 0.0f, -98.0f), 80, -2);
+	PData data;
+	data.HP = PlayerData::GetData().HP;
+	data.Shotgun_Ammo = PlayerData::GetData().Shotgun_Ammo;
+	data.Shotgun_LoadedAmmo = PlayerData::GetData().Shotgun_LoadedAmmo;
+	data.Handgun_Ammo = PlayerData::GetData().Handgun_Ammo;
+	data.Handgun_LoadedAmmo = PlayerData::GetData().Handgun_LoadedAmmo;
+	data.isTakeWeapon = PlayerData::GetData().isTakeWeapon;
+	data.Weapon = PlayerData::GetData().Weapon;
+
+	new Player(&data, Vector3D(-28.0f, 0.0f, -98.0f), 80, -2);
 
 	//åoòHíTçıÉfÅ[É^ì«Ç›çûÇ›Ç∆ç\íz
 	static StaticMesh mesh("Chapter_1_2_Traceroute");

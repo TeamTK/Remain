@@ -36,19 +36,19 @@ void WeaponBase::Shot()
 
 }
 
-int *WeaponBase::GetAmmo()
+int WeaponBase::GetAmmo()
 {
-	return &m_Ammo;
+	return m_Ammo;
 }
 
-int *WeaponBase::GetLoadedAmmo()
+int WeaponBase::GetLoadedAmmo()
 {
-	return &m_LoadedAmmo;
+	return m_LoadedAmmo;
 }
 
-int *WeaponBase::GetAllAmmo()
+int WeaponBase::GetAllAmmo()
 {
-	return	&m_Ammo + m_LoadedAmmo;
+	return	m_Ammo + m_LoadedAmmo;
 }
 
 void WeaponBase::SetAmmo(int num)
