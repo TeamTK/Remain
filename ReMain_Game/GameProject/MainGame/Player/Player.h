@@ -6,13 +6,14 @@
 #include "../../MainGame/Weapon/Knife.h"
 #include "../../GameSystem/GUI/UI_SelectWeapon.h"
 #include "PlayerInfo.h"
+#include "PlayerData.h"
 
 extern Vector3D *g_pPlayerPos;
 
 class Player : public Character
 {
 public:
-	Player(Vector3D pos, float horizontal, float vertical);
+	Player(PData* data, Vector3D pos, float horizontal, float vertical);
 	~Player();
 	void Update();
 	void Move();

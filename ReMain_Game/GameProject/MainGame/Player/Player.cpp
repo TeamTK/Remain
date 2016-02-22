@@ -35,8 +35,8 @@
 
 Vector3D *g_pPlayerPos;
 
-Player::Player(Vector3D pos, float horizontal, float vertical) :
-	Character(100.0f, "Player", 0),
+Player::Player(PData* data, Vector3D pos, float horizontal, float vertical) :
+	Character(data->HP, "Player", 0),
 	m_LookPos(-47.9f, 1.7f, -11.4f),
 	m_KeyDir(0.0f, 0.0f, 0.0f),
 	m_MoveSpeed(0.0f),
@@ -46,7 +46,6 @@ Player::Player(Vector3D pos, float horizontal, float vertical) :
 	m_OneFlameTime(0),
 	m_isCrouch(false),
 	m_isAttack(false),
-	m_isTakeWeapon(false),
 	m_isMove(false),
 	m_isRun(false),
 	m_SetupWeapon(false),
@@ -60,8 +59,7 @@ Player::Player(Vector3D pos, float horizontal, float vertical) :
 	m_ChangePutBackWeapon(false),
 	m_isDead(false),
 	m_IsStop(false),
-	m_State(EPlayerState::eState_Idle),
-	m_SelectedWeapon(EWeapons::eShotgun)
+	m_State(EPlayerState::eState_Idle)
 {
 	//プレイヤーモデル初期化
 	m_Model.SetAsset("Player");
@@ -75,6 +73,9 @@ Player::Player(Vector3D pos, float horizontal, float vertical) :
 	m_pos = pos;
 	m_rot.y = 1.0f;
 
+	m_SelectedWeapon = data->Weapon;
+	m_isTakeWeapon = data->isTakeWeapon;
+
 	//カメラクラスを生成
 	m_CameraInfo.pIsStop = &m_IsStop;
 	m_CameraInfo.pLookPos = &m_LookPos;
@@ -87,6 +88,11 @@ Player::Player(Vector3D pos, float horizontal, float vertical) :
 
 	g_pShotgun = new Shotgun(&m_PlayAnim, &m_PlayAnimTime, &m_isTakeWeapon, &m_SelectedWeapon, &m_MatrixS);
 	g_pHandgun = new Handgun(&m_PlayAnim, &m_PlayAnimTime, &m_isTakeWeapon, &m_SelectedWeapon, &m_MatrixH);
+
+	g_pShotgun->SetAmmo(data->Shotgun_Ammo);
+	g_pShotgun->SetLoadedAmmo(data->Shotgun_LoadedAmmo);
+	g_pHandgun->SetAmmo(data->Handgun_Ammo);
+	g_pHandgun->SetLoadedAmmo(data->Handgun_LoadedAmmo);
 
 	//弾薬箱の当たり判定
 	m_HitAmmoBox.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::HitAmmoBox));
@@ -337,14 +343,14 @@ void Player::Attack()
 		if ((Input::KeyR.Clicked() || Input::XInputPad1.XClicked()) && m_isTakeWeapon && !m_isReload && !m_isShot)
 		{
 			if (m_SelectedWeapon == EWeapons::eShotgun &&
-				*g_pShotgun->GetLoadedAmmo() < AMMO_LOADED_SHOTGUN &&
+				g_pShotgun->GetLoadedAmmo() < AMMO_LOADED_SHOTGUN &&
 				g_pShotgun->GetAmmo() > 0)
 			{
 				m_isReload = true;
 				m_Model.SetTime(0);
 			}
 			else if (m_SelectedWeapon == EWeapons::eHandgun &&
-				*g_pHandgun->GetLoadedAmmo() < AMMO_LOADED_HANDGUN &&
+				g_pHandgun->GetLoadedAmmo() < AMMO_LOADED_HANDGUN &&
 				g_pHandgun->GetAmmo() > 0)
 			{
 				m_isReload = true;
@@ -960,11 +966,13 @@ void Player::HitMap(Result_Sphere &data)
 void Player::StageChange(Result_Sphere &data)
 {
 	PData playerData;
-	playerData.HP = &m_Hp;
+	playerData.HP = m_Hp;
 	playerData.Shotgun_LoadedAmmo = g_pShotgun->GetLoadedAmmo();
 	playerData.Shotgun_Ammo = g_pShotgun->GetAmmo();
 	playerData.Handgun_LoadedAmmo = g_pHandgun->GetLoadedAmmo();
 	playerData.Handgun_Ammo = g_pHandgun->GetAmmo();
+	playerData.isTakeWeapon = m_isTakeWeapon;
+	playerData.Weapon = m_SelectedWeapon;
 
 	PlayerData::SetData(&playerData);
 
