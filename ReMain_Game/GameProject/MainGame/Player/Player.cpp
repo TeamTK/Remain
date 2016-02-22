@@ -142,6 +142,7 @@ Player::Player(Vector3D pos, float horizontal, float vertical) :
 
 Player::~Player()
 {
+
 }
 
 void Player::Update()
@@ -163,7 +164,7 @@ void Player::Update()
 	Animation();
 	Character::Update();
 
-	if ((m_Timer.GetSecond() >= 1.5) && !m_isDead)	 
+	if ((m_Timer.GetSecond() >= 1.5) && !m_isDead)
 	{
 		m_HitEnemyAttack.Awake();
 		m_Model.SetTexture(nullptr);
@@ -336,14 +337,14 @@ void Player::Attack()
 		if ((Input::KeyR.Clicked() || Input::XInputPad1.XClicked()) && m_isTakeWeapon && !m_isReload && !m_isShot)
 		{
 			if (m_SelectedWeapon == EWeapons::eShotgun &&
-				g_pShotgun->GetLoadedAmmo() < AMMO_LOADED_SHOTGUN &&
+				*g_pShotgun->GetLoadedAmmo() < AMMO_LOADED_SHOTGUN &&
 				g_pShotgun->GetAmmo() > 0)
 			{
 				m_isReload = true;
 				m_Model.SetTime(0);
 			}
 			else if (m_SelectedWeapon == EWeapons::eHandgun &&
-				g_pHandgun->GetLoadedAmmo() < AMMO_LOADED_HANDGUN &&
+				*g_pHandgun->GetLoadedAmmo() < AMMO_LOADED_HANDGUN &&
 				g_pHandgun->GetAmmo() > 0)
 			{
 				m_isReload = true;
@@ -443,10 +444,10 @@ void Player::Attack()
 
 void Player::Animation()
 {
+	//当たり判定の半径
 	m_SphereMap.radius = MAP_HIT_RADIUS;
-
-	//printf("A%d\n", m_Anim);
-	//printf("S%d\n", m_State);
+	//アニメーションスピードを適応
+	m_Model.SetPlayTime(m_AnimSpeed * m_OneFlameTime);
 
 	switch (m_State)
 	{
@@ -492,12 +493,8 @@ void Player::Animation()
 	default:
 		break;
 	}
-
-	m_Model.SetPlayTime(m_AnimSpeed * m_OneFlameTime);
+	//アニメーションを適応
 	m_Model.ChangeAnimation(m_Anim);
-
-	//printf("A_%d\n", m_Anim);
-	//printf("S_%d\n", m_State);
 }
 
 void Player::Idle()
@@ -639,7 +636,7 @@ void Player::Crouch()
 void Player::StandUp()
 {
 	m_Anim = EPlayerAnim::eAnim_Crouch;
-	m_AnimSpeed = -DEFAULT_ANIM_SPEED;
+	m_AnimSpeed = -(TWICE_ANIM_SPEED - 25);
 
 	if (m_Anim == EPlayerAnim::eAnim_Crouch && m_Model.GetPlayTime(m_JudgementAnim) < 1)
 	{
@@ -963,13 +960,13 @@ void Player::HitMap(Result_Sphere &data)
 void Player::StageChange(Result_Sphere &data)
 {
 	PData playerData;
-	playerData.HP = m_Hp;
+	playerData.HP = &m_Hp;
 	playerData.Shotgun_LoadedAmmo = g_pShotgun->GetLoadedAmmo();
 	playerData.Shotgun_Ammo = g_pShotgun->GetAmmo();
 	playerData.Handgun_LoadedAmmo = g_pHandgun->GetLoadedAmmo();
 	playerData.Handgun_Ammo = g_pHandgun->GetAmmo();
 
-	PlayerData::SetData(playerData);
+	PlayerData::SetData(&playerData);
 
 	Task::SetKill();
 }

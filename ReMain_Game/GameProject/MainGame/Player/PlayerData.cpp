@@ -10,9 +10,9 @@ PlayerData::~PlayerData()
 
 }
 
-void PlayerData::SetData(PData d)
+void PlayerData::SetData(PData* d)
 {
-	GetInstance()->m_Data = d;
+	GetInstance()->m_Data = *d;
 }
 
 PData PlayerData::GetData()
