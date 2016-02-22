@@ -143,7 +143,7 @@ void DynamicMeshShader::SetBaseConstantBuffer(ID3D11DeviceContext *pDeviceContex
 		D3DXMatrixTranspose(&sg.mW, &sg.mW);
 
 		//ワールド、カメラ、射影行列を渡す
-		sg.mWVP = World * (*Camera::GetView()) * (*Camera::GetProjection());
+		sg.mWVP = World * *Camera::GetViewProjection();
 		D3DXMatrixTranspose(&sg.mWVP, &sg.mWVP);
 
 		/*

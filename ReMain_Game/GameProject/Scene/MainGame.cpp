@@ -26,6 +26,7 @@ MainGame::~MainGame()
 	TaskManager::Kill("Handgun");
 	TaskManager::Kill("Shotgun");
 	TaskManager::Kill("Chapter_1_1");
+	TaskManager::Kill("Chapter_1_2");
 }
 
 void MainGame::Update()

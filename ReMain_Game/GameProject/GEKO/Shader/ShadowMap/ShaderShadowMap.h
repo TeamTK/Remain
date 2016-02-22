@@ -2,6 +2,8 @@
 #define _SHADER_SHADOW_MAP_H_
 
 class StaticMesh;
+class DynamicMesh;
+class Vector3D;
 
 struct ID3D11Device;
 struct ID3D11DeviceContext;
@@ -12,30 +14,38 @@ class ShaderShadowMap
 public:
 	~ShaderShadowMap();
 	static ShaderShadowMap* GetInstance();
-	D3DXMATRIX *GetViewMatrix();
-	D3DXMATRIX *GetProjMatrix();
+	D3DXMATRIX *GetViewProjMatrix();
 	void SetShadowMap(ID3D11DeviceContext *pDeviceContext);
 	void SetResolution(float width, float height);
-	void SetPosition(float x, float y, float z);
+	void SetLookat(float x, float y, float z);
+	void SetLookat(const Vector3D &lookatPt);
+	void SetNearFar(float nearZ, float farZ);
+	void SetViewAngle(float viewAngle);
+	void SetDistance(float distance);
 	bool Init();
 	void Release();
 	void Update();
 	void Add(StaticMesh *pStaticMesh);
+	void Add(DynamicMesh *pDynamicMesh);
 	void Clear(StaticMesh *pStaticMesh);
+	void Clear(DynamicMesh *pDynamicMesh);
 
 private:
 	ShaderShadowMap();
 	bool InitVertexShader(ID3D11Device *pDevice);
 	bool InitPixelShader(ID3D11Device *pDevice);
+	void StaticMeshUpdate(ID3D11Device *pDevice, ID3D11DeviceContext *pDeviceContext);
+	void DynaimcMeshUpdate(ID3D11Device *pDevice, ID3D11DeviceContext *pDeviceContext);
 
 private:
 	class ShadowMapPimpl;
 	ShadowMapPimpl *m_pShadowMaPimpl;
 	float m_Width;
 	float m_Height;
-	float m_x;
-	float m_y;
-	float m_z;
+	float m_Near;			//カメラが描画する最小距離
+	float m_Far;			//カメラが描画する最大距離
+	float m_ViewAngle;		//視野角度（ラジアン）
+	float m_Distance;
 };
 
 #endif

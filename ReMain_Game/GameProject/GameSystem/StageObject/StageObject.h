@@ -219,7 +219,7 @@ class RockWall_1_1 : public StageObject
 {
 public:
 	RockWall_1_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true) 
+		StageObject(pos, rot, sca, name, true, true) 
 	{
 		//当たり判定用のメッシュ初期化
 		//m_HitMesh.SetAsset("RockWall");
@@ -254,7 +254,7 @@ class RockWall_1_2 : public StageObject
 {
 public:
 	RockWall_1_2(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true)
+		StageObject(pos, rot, sca, name, true, true)
 	{
 		//当たり判定用のメッシュ初期化
 		//m_HitMesh.SetAsset("RockWall");

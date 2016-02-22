@@ -2,6 +2,7 @@
 #include "..\System\Camera.h"
 #include "..\System\DirectionalLight.h"
 #include "..\Shader\DynamicMeshShader\DynamicMeshShader.h"
+#include "..\Shader\ShadowMap\ShaderShadowMap.h"
 #include "..\ImageSystem\Image.h"
 #include <assert.h>
 
@@ -13,22 +14,33 @@ DynamicMesh::DynamicMesh() :
 
 DynamicMesh::~DynamicMesh()
 {
+	ShaderShadowMap::GetInstance()->Clear(this);
 	ReleseCopyBornTree(&m_Born);
 	m_pSkinMeshData = nullptr;
 	m_CopyBornArray.clear();
 	m_CopyBornArray.shrink_to_fit();
 }
 
-DynamicMesh::DynamicMesh(const std::string &meshName) :
+DynamicMesh::DynamicMesh(const std::string &meshName, bool isLightInterrupted) :
 	m_IsAnimUpdate(true),
 	m_pSkinMeshData(nullptr)
 {
 	AllocationSkinMeshData(meshName);
+	if (isLightInterrupted)
+	{
+		ShaderShadowMap::GetInstance()->Clear(this);
+		ShaderShadowMap::GetInstance()->Add(this);
+	}
 }
 
-void DynamicMesh::SetAsset(const std::string &meshName)
+void DynamicMesh::SetAsset(const std::string &meshName, bool isLightInterrupted)
 {
 	AllocationSkinMeshData(meshName);
+	if (isLightInterrupted)
+	{
+		ShaderShadowMap::GetInstance()->Clear(this);
+		ShaderShadowMap::GetInstance()->Add(this);
+	}
 }
 
 void DynamicMesh::ChangeAnimation(unsigned int num)
@@ -74,8 +86,6 @@ void DynamicMesh::SetPlayTime(float animSpeed)
 {
 	if (m_IsAnimUpdate)
 	{
-		//float ainmFrame = Math::VelocityToFrameM(animSpeed);
-		//for (auto& i : m_CopyBornArray) i->animFrame += ainmFrame;
 		for (auto& i : m_CopyBornArray) i->animFrame += animSpeed;
 	}
 }
@@ -84,21 +94,16 @@ void DynamicMesh::SetPartPlayTime(int bornIndex, float animSpeed)
 {
 	if (m_IsAnimUpdate)
 	{
-		//float ainmFrame = Math::VelocityToFrameM(animSpeed);
-		//m_CopyBornArray[bornIndex]->animFrame += ainmFrame;
 		m_CopyBornArray[bornIndex]->animFrame += animSpeed;
 	}
 }
 
 void DynamicMesh::SetPartRangePlayTime(int bornStart, int bornEnd, float animSpeed)
 {
-	//float ainmFrame = Math::VelocityToFrameM(animSpeed);
-
 	int cnt = bornStart;
 	for (auto& i : m_CopyBornArray)
 	{
 		if (cnt > bornEnd) break;
-		//m_CopyBornArray[cnt]->animFrame += ainmFrame;
 		m_CopyBornArray[cnt]->animFrame += animSpeed;
 		cnt++;
 	}
@@ -182,7 +187,7 @@ std::string DynamicMesh::GetBornName(int bornIndex) const
 
 Matrix DynamicMesh::GetBornMatrix(int bornIndex, bool isWorld) const
 {
-	if (isWorld) return m_CopyBornArray[bornIndex]->ParentAndChildMat * m_LocalMatrix * m_Matrix;
+	if (isWorld) return m_CopyBornArray[bornIndex]->ParentAndChildMat * m_LocalMatrix * m_WorldMatrix;
 	return m_CopyBornArray[bornIndex]->ParentAndChildMat;
 }
 
@@ -195,7 +200,7 @@ Matrix DynamicMesh::GetBornMatrix(std::string name, bool isWorld) const
 	{
 		if (i->BornName == name)
 		{
-			if (isWorld) return m_CopyBornArray[cnt]->ParentAndChildMat * m_LocalMatrix * m_Matrix;
+			if (isWorld) return m_CopyBornArray[cnt]->ParentAndChildMat * m_LocalMatrix * m_WorldMatrix;
 			return m_CopyBornArray[cnt]->ParentAndChildMat;
 		}
 		cnt++;
@@ -207,7 +212,7 @@ Matrix DynamicMesh::GetBornMatrix(std::string name, bool isWorld) const
 Vector3D DynamicMesh::GetBornPos(int bornIndex) const
 {
 	Matrix m = m_CopyBornArray[bornIndex]->ParentAndChildMat;
-	return Vector3D(m._41, m._42, m._43) * m_LocalMatrix * m_Matrix;
+	return Vector3D(m._41, m._42, m._43) * m_LocalMatrix * m_WorldMatrix;
 }
 
 Vector3D DynamicMesh::GetBornPos(std::string name) const
@@ -220,7 +225,7 @@ Vector3D DynamicMesh::GetBornPos(std::string name) const
 		if (i->BornName == name)
 		{
 			Matrix m = m_CopyBornArray[cnt]->ParentAndChildMat;
-			return Vector3D(m._41, m._42, m._43) * m_LocalMatrix * m_Matrix;
+			return Vector3D(m._41, m._42, m._43) * m_LocalMatrix * m_WorldMatrix;
 		}
 		cnt++;
 	}
@@ -230,14 +235,14 @@ Vector3D DynamicMesh::GetBornPos(std::string name) const
 
 void DynamicMesh::Render()
 {
-	RenderFunc(m_LocalMatrix * m_Matrix);
+	RenderFunc(m_LocalMatrix * m_WorldMatrix);
 }
 
 void DynamicMesh::RenderOutline(float size = 1.0f)
 {
-	RenderFunc(m_Matrix);
+	RenderFunc(m_WorldMatrix);
 
-	Matrix m = m_Matrix;
+	Matrix m = m_WorldMatrix;
 	m._11 *= size;
 	//m._22 *= size;
 	m._33 *= size;

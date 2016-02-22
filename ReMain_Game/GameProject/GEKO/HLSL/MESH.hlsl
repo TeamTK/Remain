@@ -130,13 +130,22 @@ float4 PS(VS_OUTPUT input) : SV_Target
 float4 ShadowMap_PS(float4 lightTexCoord, float4 color)
 {
 	//ライトからみたZ値
-	float ZValue = lightTexCoord.xyz / lightTexCoord.w;
+	float ZValue = lightTexCoord.z / lightTexCoord.w;
 
 	//深度テクスチャを参照するUVを算出
 	float2 TexCoord;
 	TexCoord.x = (lightTexCoord.x / lightTexCoord.w + 1.0f) * 0.5f;
 	TexCoord.y = (-lightTexCoord.y / lightTexCoord.w + 1.0f) * 0.5f;
 
+	float sm = g_ShadowMapTexture.Sample(g_ShadowMapSamLinear, TexCoord).r;
+	if (sm <= 0.0f) return color;
+
+	if (ZValue + 0.005f > sm)
+	{
+		color.rgb *= 0.5f;
+	}
+
+	/*
 	if ((TexCoord.x < 0 || TexCoord.x > 1 || TexCoord.y < 0 || TexCoord.y > 1))
 	{
 
@@ -151,6 +160,7 @@ float4 ShadowMap_PS(float4 lightTexCoord, float4 color)
 			color.rgb *= 0.5f;
 		}
 	}
+	*/
 	return color;
 }
 

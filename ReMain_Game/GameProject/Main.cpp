@@ -1,7 +1,7 @@
 #include "GEKO\GEKO.h"
 #include "GameSystem\StageObject\StageObject.h"
-#include "Scene\MainGame.h"
 #include "Scene\Title.h"
+#include "GEKO\Shader\ShadowMap\ShaderShadowMap.h"
 
 INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 {
@@ -15,8 +15,8 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 	Camera::SetEye(0.0f, 0.0f, 0.0f);
 	Camera::SetLookat(0.0f, 0.0f, 0.0f);
 
-	DirectionalLight::SetIntensity(0.5f);
-	DirectionalLight::SetDirection(0.0f, 45.0f);
+	DirectionalLight::SetIntensity(0.4f);
+	DirectionalLight::SetDirection(0.0f, 30.0f);
 
 	GEKO::ChangeFps(30);
 

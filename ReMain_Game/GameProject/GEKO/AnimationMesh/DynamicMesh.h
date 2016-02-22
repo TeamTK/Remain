@@ -4,13 +4,17 @@
 #include "..\Mesh\MeshBase.h"
 #include "DynamicMeshAsset.h"
 
+class ShaderShadowMap;
+
 class DynamicMesh : public MeshBase
 {
 public:
+	friend ShaderShadowMap;
+
 	DynamicMesh();
-	DynamicMesh(const std::string &meshName);
+	DynamicMesh(const std::string &meshName, bool isLightInterrupted = false);
 	~DynamicMesh();
-	void SetAsset(const std::string &meshName);
+	void SetAsset(const std::string &meshName, bool isLightInterrupted = false);
 	void ChangeAnimation(unsigned int num); //アニメーションを変更
 	void PartChangeAnimation(int bornIndex, unsigned int num); //アニメーションを変更
 	void PartRangeChangeAnimation(int bornStart, int bornEnd, unsigned int num); //アニメーションを変更

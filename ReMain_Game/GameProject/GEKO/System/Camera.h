@@ -21,6 +21,12 @@ public:
 	const static D3DXMATRIX* GetProjection();
 
 	/**
+	* @brief ビュー行列 × 射影行列を取得
+	* @return D3DXMATRIX型のビュー行列 × 射影行列のポインタ
+	*/
+	const static D3DXMATRIX* GetViewProjection();
+
+	/**
 	* @brief ビューポート行列を取得
 	* @return D3DXMATRIX型のビューポート行列のポインタ
 	*/
@@ -45,6 +51,10 @@ public:
 	*/
 	static void SetNearFar(float Near, float Far);
 
+	/**
+	* @brief カメラの視野角を設定
+	* @param[in] 視野角
+	*/
 	static void SetViewAngle(float viewAngle);
 
 	/**
@@ -55,6 +65,10 @@ public:
 	*/
 	static void	SetEye(float x, float y, float z);
 
+	/**
+	* @brief カメラの位置を設定(Vector3D版)
+	* @param[in] XYX座標
+	*/
 	static void	SetEye(const Vector3D &eyePos);
 
 	/**
@@ -100,6 +114,7 @@ private:
 private:
 	D3DXMATRIX m_View;		//カメラ行列
 	D3DXMATRIX m_Proj;		//射影行列
+	D3DXMATRIX m_ViewProj;	//カメラビュー行列 × 射影行列
 	D3DXMATRIX m_Viewport;	//ビューポート行列
 	D3DXVECTOR3 m_EyePt;	//視点位置
 	D3DXVECTOR3 m_LookatPt;	//注視点位置

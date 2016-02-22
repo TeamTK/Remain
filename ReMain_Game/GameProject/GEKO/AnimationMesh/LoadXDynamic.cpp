@@ -397,6 +397,9 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	fseek(fp, 0, SEEK_SET);
 	LoadAnimation(fp, m_MeshInfo.pvVertex); //アニメーションとスキンウェイト読み込み
 
+	//ローカル行列格納
+	//m_MeshInfo.m_LocalMat = m_BornInfo.BornList[0]->initMat *m_BornInfo.BornList[m_BornInfo.BornList.size() - 1]->initMat;
+
 	//バーテックスバッファーを作成
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.ByteWidth = sizeof(SkinVertexInfo) * m_MeshInfo.vertexNumAll;
@@ -538,7 +541,6 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 
 	while (!feof(fp))
 	{
-
 		fscanf_s(fp, "%s", key, sizeof(key));
 
 		if (strcmp(key, "//") == 0) for (int i = 0; i < 4; i++) fscanf_s(fp, "%s", key, sizeof(key));

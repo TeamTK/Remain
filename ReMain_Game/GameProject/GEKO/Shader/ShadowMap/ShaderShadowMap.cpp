@@ -2,51 +2,75 @@
 #include "../../System/Direct3D11.h"
 #include "../../System/Window.h"
 #include "../../Mesh/StaticMesh.h"
+#include "../../AnimationMesh/DynamicMesh.h"
 #include "../../System/Camera.h"
+#include "../../System/DirectionalLight.h"
 #include <list>
 
 struct ShadowInfo
 {
 	D3DXMATRIX lightWVP;
-	D3DXMATRIX lightWVTP;
+};
+
+struct ShadowSkinInfo
+{
+	D3DXMATRIX lightWVP;
+	D3DXMATRIX bornMat[MAX_BONES];
+	ShadowSkinInfo()
+	{
+		for (int i = 0; i < MAX_BONES; i++)
+		{
+			D3DXMatrixIdentity(&bornMat[i]);
+		}
+	}
 };
 
 class ShaderShadowMap::ShadowMapPimpl
 {
 public:
-	ID3D11Texture2D*		  pTexture2D;		//
-	ID3D11RenderTargetView*   pRenderTargetView;	//
-	ID3D11DepthStencilView*   pStencilView;	//
-	ID3D11Texture2D*		  pTexture2D_DepthStencil;		//
+	ID3D11Texture2D*		pTexture2D;		//
+	ID3D11RenderTargetView* pRenderTargetView;	//
+	ID3D11DepthStencilView* pStencilView;	//
+	ID3D11Texture2D*		pTexture2D_DepthStencil;		//
 	ID3D11ShaderResourceView* pShaderResourceView;
-	ID3D11Buffer*             pBuffer;
-	ID3D11SamplerState*       pSampleLinear;	 //テクスチャーのサンプラー
+	ID3D11Buffer *pBuffer;
+	ID3D11Buffer *pSkinBuffer;
+	ID3D11SamplerState*  pSampleLinear;	 //テクスチャーのサンプラー
 
 	ID3D11VertexShader*  pVertexShader;				 //頂点シェーダー
+	ID3D11VertexShader*  pVertexSkinShader;				 //頂点シェーダー
 	//ID3D11VertexShader* pVertexShader_NoTexture;    //テクスチャーなし頂点シェーダー
 	ID3D11PixelShader*	 pPixelShader;				 //ピクセルシェーダー
+	ID3D11PixelShader*	 pPixelSkinShader;				 //ピクセルシェーダー
 	//ID3D11PixelShader* pPixelShader_NoTexture;	 //テクスチャーなしピクセルシェーダー
 	ID3D11InputLayout*	 pVertexLayout;				 //頂点レイアウト
+	ID3D11InputLayout*	 pVertexSkinLayout;				 //頂点レイアウト
 	//ID3D11InputLayout* m_pVertexLayout_NoTexture;	 //テクスチャーなし頂点レイアウト
 
-	std::list<StaticMesh*> ShadowMapList;
-	D3DXMATRIX m_View;
-	D3DXMATRIX m_Proj;
+	std::list<StaticMesh*> staticMeshList;
+	std::list<DynamicMesh*> dynamicMeshList;
+	D3DXMATRIX view;
+	D3DXMATRIX proj;
+	D3DXMATRIX vpMat;
+	Vector3D pos;
+	Vector3D lookatPt;
 };
 
 ShaderShadowMap::ShaderShadowMap() :
-	m_Width(3840.0f),
-	m_Height(2160.0f),
-	m_x(0.0f),
-	m_y(0.0f),
-	m_z(0.0f)
+	m_Width(1920.0f),
+	m_Height(1080.0f),
+	m_Near(1.0f),
+	m_Far(4000.0f),
+	m_ViewAngle(Math::ChangeToRadian(45.0f)),
+	m_Distance(0.0f)
 {
 	m_pShadowMaPimpl = new ShadowMapPimpl;
 }
 
 ShaderShadowMap::~ShaderShadowMap()
 {
-	m_pShadowMaPimpl->ShadowMapList.clear();
+	m_pShadowMaPimpl->staticMeshList.clear();
+	m_pShadowMaPimpl->dynamicMeshList.clear();
 	Release();
 	delete m_pShadowMaPimpl;
 }
@@ -57,14 +81,9 @@ ShaderShadowMap* ShaderShadowMap::GetInstance()
 	return &shaderShadowMap;
 }
 
-D3DXMATRIX *ShaderShadowMap::GetViewMatrix()
+D3DXMATRIX *ShaderShadowMap::GetViewProjMatrix()
 {
-	return &m_pShadowMaPimpl->m_View;
-}
-
-D3DXMATRIX *ShaderShadowMap::GetProjMatrix()
-{
-	return &m_pShadowMaPimpl->m_Proj;
+	return &m_pShadowMaPimpl->vpMat;
 }
 
 void ShaderShadowMap::SetShadowMap(ID3D11DeviceContext *pDeviceContext)
@@ -79,11 +98,32 @@ void ShaderShadowMap::SetResolution(float width, float height)
 	m_Height = height;
 }
 
-void ShaderShadowMap::SetPosition(float x, float y, float z)
+void ShaderShadowMap::SetLookat(const Vector3D &lookatPt)
 {
-	m_x = x;
-	m_y = y;
-	m_z = z;
+	m_pShadowMaPimpl->lookatPt = lookatPt;
+}
+
+void ShaderShadowMap::SetLookat(float x, float y, float z)
+{
+	m_pShadowMaPimpl->lookatPt.x = x;
+	m_pShadowMaPimpl->lookatPt.y = y;
+	m_pShadowMaPimpl->lookatPt.z = z;
+}
+
+void ShaderShadowMap::SetNearFar(float nearZ, float farZ)
+{
+	m_Near = nearZ;
+	m_Far = farZ;
+}
+
+void ShaderShadowMap::SetViewAngle(float viewAngle)
+{
+	m_ViewAngle = Math::ChangeToRadian(viewAngle);
+}
+
+void ShaderShadowMap::SetDistance(float distance)
+{
+	m_Distance = distance;
 }
 
 bool ShaderShadowMap::Init()
@@ -152,7 +192,7 @@ bool ShaderShadowMap::Init()
 	SamDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
 	SamDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
 	SamDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-	SamDesc.MaxAnisotropy = 2;
+	SamDesc.MaxAnisotropy = 1;
 	SamDesc.MipLODBias = 0.0f;
 	SamDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 	SamDesc.BorderColor[0] = 1.0f;
@@ -163,7 +203,6 @@ bool ShaderShadowMap::Init()
 	SamDesc.MaxLOD = FLT_MAX;
 
 	pDevice->CreateSamplerState(&SamDesc, &m_pShadowMaPimpl->pSampleLinear);
-
 
 	//頂点シェーダー初期化
 	if (!InitVertexShader(pDevice))
@@ -192,6 +231,19 @@ bool ShaderShadowMap::Init()
 		return false;
 	}
 
+	//コンスタントバッファー作成　変換行列渡し用(ボーン版)
+	D3D11_BUFFER_DESC cbSkin;
+	cbSkin.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbSkin.ByteWidth = sizeof(ShadowSkinInfo);
+	cbSkin.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cbSkin.MiscFlags = 0;
+	cbSkin.Usage = D3D11_USAGE_DYNAMIC;
+	if (FAILED(pDevice->CreateBuffer(&cbSkin, NULL, &m_pShadowMaPimpl->pSkinBuffer)))
+	{
+		MessageBox(0, TEXT("コンスタントバッファー作成失敗"), NULL, MB_OK);
+		return false;
+	}
+
 	return true;
 }
 
@@ -199,9 +251,13 @@ void ShaderShadowMap::Release()
 {
 	SAFE_RELEASE(m_pShadowMaPimpl->pSampleLinear);
 	SAFE_RELEASE(m_pShadowMaPimpl->pBuffer);
+	SAFE_RELEASE(m_pShadowMaPimpl->pSkinBuffer);
 	SAFE_RELEASE(m_pShadowMaPimpl->pVertexShader);
+	SAFE_RELEASE(m_pShadowMaPimpl->pVertexSkinShader);
 	SAFE_RELEASE(m_pShadowMaPimpl->pPixelShader);
+	SAFE_RELEASE(m_pShadowMaPimpl->pPixelSkinShader);
 	SAFE_RELEASE(m_pShadowMaPimpl->pVertexLayout);
+	SAFE_RELEASE(m_pShadowMaPimpl->pVertexSkinLayout);
 	SAFE_RELEASE(m_pShadowMaPimpl->pTexture2D);
 	SAFE_RELEASE(m_pShadowMaPimpl->pTexture2D_DepthStencil);
 	SAFE_RELEASE(m_pShadowMaPimpl->pShaderResourceView);
@@ -214,13 +270,6 @@ void ShaderShadowMap::Update()
 	ID3D11Device *pDevice = Direct3D11::GetInstance()->GetID3D11Device();
 	ID3D11DeviceContext *pDeviceContext = Direct3D11::GetInstance()->GetID3D11DeviceContext();
 
-	//ID3D11ShaderResourceView *nullView = NULL;
-	//pDeviceContext->PSSetShaderResources(1, 1, &nullView);
-
-	//このパスで使用するシェーダーの登録
-	pDeviceContext->VSSetShader(m_pShadowMaPimpl->pVertexShader, NULL, 0);
-	pDeviceContext->PSSetShader(m_pShadowMaPimpl->pPixelShader, NULL, 0);
-	pDeviceContext->IASetInputLayout(m_pShadowMaPimpl->pVertexLayout);
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//ビューポートの設定
@@ -233,59 +282,28 @@ void ShaderShadowMap::Update()
 	pDeviceContext->ClearRenderTargetView(m_pShadowMaPimpl->pRenderTargetView, ClearColor);//画面クリア
 	pDeviceContext->ClearDepthStencilView(m_pShadowMaPimpl->pStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);//深度バッファクリア
 
-	// ビュートランスフォーム（視点座標変換）
-	D3DXVECTOR3 vEyePt(m_x, m_y, m_z); //カメラ（視点）位置
-	D3DXVECTOR3 vLookatPt(0.0f, 0.0f, 0.0f);//注視位置
-	D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f);//上方位置
+	const Vector4D *v = DirectionalLight::GetDirection();
+	//m_pShadowMaPimpl->lookatPt = Camera::GetEyePosition();
+	//m_pShadowMaPimpl->pos = m_pShadowMaPimpl->lookatPt + (Vector3D(-v->x, -v->y, -v->z).GetNormalize() * m_Distance);
 
-	D3DXMatrixLookAtLH(&m_pShadowMaPimpl->m_View, &vEyePt, &vLookatPt, &vUpVec);
+	//m_pShadowMaPimpl->lookatPt = Vector3D(0.0f, 0.0f, 0.0f);
+	m_pShadowMaPimpl->pos = m_pShadowMaPimpl->lookatPt + (Vector3D(-v->x, -v->y, -v->z).GetNormalize() * m_Distance);
+
+	// ビュートランスフォーム（視点座標変換）
+	D3DXVECTOR3 upVec(0.0f, 1.0f, 0.0f); //上方位置
+	D3DXMatrixLookAtLH(&m_pShadowMaPimpl->view, &m_pShadowMaPimpl->pos, &m_pShadowMaPimpl->lookatPt, &upVec);
 
 	// プロジェクショントランスフォーム（射影変換）
-	D3DXMatrixPerspectiveFovLH(&m_pShadowMaPimpl->m_Proj, (FLOAT)D3DX_PI / 6, (FLOAT)m_Width / (FLOAT)m_Height, 1.0f, 4000.0f);
+	D3DXMatrixPerspectiveFovLH(&m_pShadowMaPimpl->proj, (FLOAT)m_ViewAngle, (FLOAT)m_Width / (FLOAT)m_Height, m_Near, m_Far);
+	m_pShadowMaPimpl->vpMat = m_pShadowMaPimpl->view * m_pShadowMaPimpl->proj;
 
-	Direct3D11::GetInstance()->SetRasterizer(D3D11_CULL_NONE, D3D11_FILL_SOLID);
+	Direct3D11::GetInstance()->SetRasterizer(D3D11_CULL_FRONT, D3D11_FILL_SOLID);
 
-	//フレームバッファに書き込む
-	for(auto& i : m_pShadowMaPimpl->ShadowMapList)
-	{
-		D3D11_MAPPED_SUBRESOURCE pData;
-		if (SUCCEEDED(pDeviceContext->Map(m_pShadowMaPimpl->pBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
-		{
-			ShadowInfo sg;
+	//フレームバッファに深度情報を書き込む(staticMesh)
+	StaticMeshUpdate(pDevice, pDeviceContext);
 
-			sg.lightWVP = i->m_pMeshData->GetMeshInfo()->m_LocalMat * i->m_Matrix * m_pShadowMaPimpl->m_View * m_pShadowMaPimpl->m_Proj;
-			D3DXMatrixTranspose(&sg.lightWVP, &sg.lightWVP);
-
-			memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(ShadowInfo));
-			pDeviceContext->Unmap(m_pShadowMaPimpl->pBuffer, 0);
-		}
-		pDeviceContext->VSSetConstantBuffers(0, 1, &m_pShadowMaPimpl->pBuffer);
-		pDeviceContext->PSSetConstantBuffers(0, 1, &m_pShadowMaPimpl->pBuffer);
-
-		//バーテックスバッファーをセット
-		UINT Stride = sizeof(VertexInfo);
-		UINT offset = 0;
-		pDeviceContext->IASetVertexBuffers(0, 1, &i->m_pMeshData->GetMeshInfo()->m_pVertexBuffer, &Stride, &offset);
-
-		int num = i->m_pMeshData->GetMeshInfo()->materialNumAll;
-		for (int j = 0; j < num; j++)
-		{
-			//使用されていないマテリアル対策
-			if (i->m_pMeshData->GetMeshInfo()->m_pMaterial[j].dwNumFace == 0) continue;
-			//インデックスバッファーをセット
-			pDeviceContext->IASetIndexBuffer(i->m_pMeshData->GetMeshInfo()->m_ppIndexBuffer[j], DXGI_FORMAT_R32_UINT, 0);
-
-			//テクスチャーをシェーダーに渡す
-			if (i->m_pMeshData->GetMeshInfo()->m_pMaterial[j].pTexture)
-			{
-				pDeviceContext->PSSetSamplers(0, 1, &i->m_pMeshData->GetMeshInfo()->m_pSampleLinear);
-				pDeviceContext->PSSetShaderResources(0, 1, &i->m_pMeshData->GetMeshInfo()->m_pMaterial[j].pTexture);
-			}
-
-			//プリミティブをレンダリング
-			pDeviceContext->DrawIndexed(i->m_pMeshData->GetMeshInfo()->m_pMaterial[j].dwNumFace * 3, 0, 0);
-		}
-	}
+	//フレームバッファに深度情報を書き込む(dynaimcMesh)
+	DynaimcMeshUpdate(pDevice, pDeviceContext);
 
 	Direct3D11::GetInstance()->SetRasterizer(D3D11_CULL_BACK, D3D11_FILL_SOLID);
 
@@ -300,19 +318,39 @@ void ShaderShadowMap::Update()
 
 void ShaderShadowMap::Add(StaticMesh *pStaticMesh)
 {
-	m_pShadowMaPimpl->ShadowMapList.push_back(pStaticMesh);
+	m_pShadowMaPimpl->staticMeshList.push_back(pStaticMesh);
+}
+
+void ShaderShadowMap::Add(DynamicMesh *pDynamicMesh)
+{
+	m_pShadowMaPimpl->dynamicMeshList.push_back(pDynamicMesh);
 }
 
 void ShaderShadowMap::Clear(StaticMesh *pStaticMesh)
 {
-	auto it = m_pShadowMaPimpl->ShadowMapList.begin();
-	auto itEnd = m_pShadowMaPimpl->ShadowMapList.end();
+	auto it = m_pShadowMaPimpl->staticMeshList.begin();
+	auto itEnd = m_pShadowMaPimpl->staticMeshList.end();
 
 	for (; it != itEnd; it++)
 	{
 		if (*it == pStaticMesh)
 		{
-			it = m_pShadowMaPimpl->ShadowMapList.erase(it);
+			it = m_pShadowMaPimpl->staticMeshList.erase(it);
+			break;
+		}
+	}
+}
+
+void ShaderShadowMap::Clear(DynamicMesh *pDynamicMesh)
+{
+	auto it = m_pShadowMaPimpl->dynamicMeshList.begin();
+	auto itEnd = m_pShadowMaPimpl->dynamicMeshList.end();
+
+	for (; it != itEnd; it++)
+	{
+		if (*it == pDynamicMesh)
+		{
+			it = m_pShadowMaPimpl->dynamicMeshList.erase(it);
 			break;
 		}
 	}
@@ -324,7 +362,7 @@ bool ShaderShadowMap::InitVertexShader(ID3D11Device *pDevice)
 	ID3D10Blob *pCompiledShader = nullptr;
 	ID3D10Blob *pErrors = nullptr;
 
-	//ブロブからバーテックスシェーダー作成
+	//ブロブからバーテックスシェーダー作成(staticMesh)
 	if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\ShadowMap.hlsl"), NULL, NULL, "VS", "vs_5_0",
 									 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 	{
@@ -363,6 +401,46 @@ bool ShaderShadowMap::InitVertexShader(ID3D11Device *pDevice)
 		return false;
 	}
 
+	//ブロブからバーテックスシェーダー作成(dynamicMesh)
+	if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\ShadowMap.hlsl"), NULL, NULL, "VS_Skin", "vs_5_0",
+		0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+	{
+		SAFE_RELEASE(pCompiledShader);
+		SAFE_RELEASE(pErrors);
+		return false;
+	}
+
+	if (FAILED(pDevice->CreateVertexShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(),
+		NULL, &m_pShadowMaPimpl->pVertexSkinShader)))
+	{
+		SAFE_RELEASE(pCompiledShader);
+		SAFE_RELEASE(pErrors);
+		return false;
+	}
+
+	//頂点インプットレイアウトを定義(dynamicMesh)
+	D3D11_INPUT_ELEMENT_DESC layoutSkin[5];
+	D3D11_INPUT_ELEMENT_DESC tmpSkin[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BONE_INDEX", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BONE_WEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+	numElements = 5;
+	memcpy(layoutSkin, tmpSkin, sizeof(D3D11_INPUT_ELEMENT_DESC) * numElements);
+
+	//頂点インプットレイアウトを作成
+	if (FAILED(pDevice->CreateInputLayout(
+		layoutSkin, numElements, pCompiledShader->GetBufferPointer(),
+		pCompiledShader->GetBufferSize(), &m_pShadowMaPimpl->pVertexSkinLayout)))
+	{
+		SAFE_RELEASE(pCompiledShader);
+		SAFE_RELEASE(pErrors);
+		return false;
+	}
+
 	SAFE_RELEASE(pCompiledShader);
 	SAFE_RELEASE(pErrors);
 
@@ -392,7 +470,143 @@ bool ShaderShadowMap::InitPixelShader(ID3D11Device *pDevice)
 		return false;
 	}
 
+	//ブロブからピクセルシェーダー作成
+	if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\ShadowMap.hlsl"), NULL, NULL, "PS_Skin", "ps_5_0",
+		0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+	{
+		SAFE_RELEASE(pCompiledShader);
+		SAFE_RELEASE(pErrors);
+		return false;
+	}
+
+	if (FAILED(pDevice->CreatePixelShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(),
+		NULL, &m_pShadowMaPimpl->pPixelSkinShader)))
+	{
+		SAFE_RELEASE(pCompiledShader);
+		SAFE_RELEASE(pErrors);
+		return false;
+	}
+
 	SAFE_RELEASE(pCompiledShader);
 	SAFE_RELEASE(pErrors);
 	return true;
+}
+
+void ShaderShadowMap::StaticMeshUpdate(ID3D11Device *pDevice, ID3D11DeviceContext *pDeviceContext)
+{
+	//このパスで使用するシェーダーの登録
+	pDeviceContext->VSSetShader(m_pShadowMaPimpl->pVertexShader, NULL, 0);
+	pDeviceContext->PSSetShader(m_pShadowMaPimpl->pPixelShader, NULL, 0);
+	pDeviceContext->IASetInputLayout(m_pShadowMaPimpl->pVertexLayout);
+
+	//リストにあるstaticMesh分書き込む
+	for (auto& i : m_pShadowMaPimpl->staticMeshList)
+	{
+		//ライトから見た視点の行列を格納
+		D3D11_MAPPED_SUBRESOURCE pData;
+		if (SUCCEEDED(pDeviceContext->Map(m_pShadowMaPimpl->pBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+		{
+			ShadowInfo sg;
+			
+			sg.lightWVP = i->m_pMeshData->GetMeshInfo()->m_LocalMat * i->m_WorldMatrix * m_pShadowMaPimpl->vpMat;
+			D3DXMatrixTranspose(&sg.lightWVP, &sg.lightWVP);
+
+			memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(ShadowInfo));
+			pDeviceContext->Unmap(m_pShadowMaPimpl->pBuffer, 0);
+		}
+		pDeviceContext->VSSetConstantBuffers(0, 1, &m_pShadowMaPimpl->pBuffer);
+		pDeviceContext->PSSetConstantBuffers(0, 1, &m_pShadowMaPimpl->pBuffer);
+
+		//バーテックスバッファーをセット
+		UINT Stride = sizeof(VertexInfo);
+		UINT offset = 0;
+		pDeviceContext->IASetVertexBuffers(0, 1, &i->m_pMeshData->GetMeshInfo()->m_pVertexBuffer, &Stride, &offset);
+
+		//マテリアルごとにレンダリング
+		int num = i->m_pMeshData->GetMeshInfo()->materialNumAll;
+		for (int j = 0; j < num; j++)
+		{
+			//使用されていないマテリアル対策
+			if (i->m_pMeshData->GetMeshInfo()->m_pMaterial[j].dwNumFace == 0) continue;
+			//インデックスバッファーをセット
+			pDeviceContext->IASetIndexBuffer(i->m_pMeshData->GetMeshInfo()->m_ppIndexBuffer[j], DXGI_FORMAT_R32_UINT, 0);
+
+			//テクスチャーをシェーダーに渡す
+			if (i->m_pMeshData->GetMeshInfo()->m_pMaterial[j].pTexture)
+			{
+				pDeviceContext->PSSetSamplers(0, 1, &i->m_pMeshData->GetMeshInfo()->m_pSampleLinear);
+				pDeviceContext->PSSetShaderResources(0, 1, &i->m_pMeshData->GetMeshInfo()->m_pMaterial[j].pTexture);
+			}
+
+			//プリミティブをレンダリング
+			pDeviceContext->DrawIndexed(i->m_pMeshData->GetMeshInfo()->m_pMaterial[j].dwNumFace * 3, 0, 0);
+		}
+
+		//テクスチャリソース初期化
+		ID3D11ShaderResourceView* pShaderResource = nullptr;
+		pDeviceContext->PSSetShaderResources(0, 1, &pShaderResource);
+	}
+}
+
+void ShaderShadowMap::DynaimcMeshUpdate(ID3D11Device *pDevice, ID3D11DeviceContext *pDeviceContext)
+{
+	//このパスで使用するシェーダーの登録
+	pDeviceContext->VSSetShader(m_pShadowMaPimpl->pVertexSkinShader, NULL, 0);
+	pDeviceContext->PSSetShader(m_pShadowMaPimpl->pPixelSkinShader, NULL, 0);
+	pDeviceContext->IASetInputLayout(m_pShadowMaPimpl->pVertexSkinLayout);
+	ShadowSkinInfo sg;
+
+	for (auto& i : m_pShadowMaPimpl->dynamicMeshList)
+	{
+		D3D11_MAPPED_SUBRESOURCE pData;
+		if (SUCCEEDED(pDeviceContext->Map(m_pShadowMaPimpl->pSkinBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+		{
+			//ライトから見た視点の行列を格納
+			sg.lightWVP = i->m_LocalMatrix * i->m_WorldMatrix * m_pShadowMaPimpl->vpMat;
+			D3DXMatrixTranspose(&sg.lightWVP, &sg.lightWVP);
+
+			//ボーン行列格納
+			int bornNum = i->GetBornAllNum();
+			for (int j = 0; j < bornNum; j++)
+			{
+				D3DXMATRIX m = i->m_CopyBornArray[j]->bornMat;
+				D3DXMatrixTranspose(&m, &m);
+				sg.bornMat[j] = m;
+			}
+
+			memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(ShadowSkinInfo));
+			pDeviceContext->Unmap(m_pShadowMaPimpl->pSkinBuffer, 0);
+		}
+		pDeviceContext->VSSetConstantBuffers(0, 1, &m_pShadowMaPimpl->pSkinBuffer);
+		pDeviceContext->PSSetConstantBuffers(0, 1, &m_pShadowMaPimpl->pSkinBuffer);
+
+		//バーテックスバッファーをセット
+		UINT Stride = sizeof(SkinVertexInfo);
+		UINT offset = 0;
+		pDeviceContext->IASetVertexBuffers(0, 1, &i->m_pSkinMeshData->GetSkinMeshInfo()->m_pVertexBuffer, &Stride, &offset);
+
+		//マテリアルごとにレンダリング
+		int num = i->m_pSkinMeshData->GetSkinMeshInfo()->materialNumAll;
+		for (int j = 0; j < num; j++)
+		{
+			//使用されていないマテリアル対策
+			if (i->m_pSkinMeshData->GetSkinMeshInfo()->m_pMaterial[j].dwNumFace == 0) continue;
+			//インデックスバッファーをセット
+			pDeviceContext->IASetIndexBuffer(i->m_pSkinMeshData->GetSkinMeshInfo()->m_ppIndexBuffer[j], DXGI_FORMAT_R32_UINT, 0);
+
+			//テクスチャーをシェーダーに渡す
+			if (i->m_pSkinMeshData->GetSkinMeshInfo()->m_pMaterial[j].pTexture)
+			{
+				pDeviceContext->PSSetSamplers(0, 1, &i->m_pSkinMeshData->GetSkinMeshInfo()->m_pSampleLinear);
+				pDeviceContext->PSSetShaderResources(0, 1, &i->m_pSkinMeshData->GetSkinMeshInfo()->m_pMaterial[j].pTexture);
+			}
+
+			//プリミティブをレンダリング
+			pDeviceContext->DrawIndexed(i->m_pSkinMeshData->GetSkinMeshInfo()->m_pMaterial[j].dwNumFace * 3, 0, 0);
+		}
+
+		//テクスチャリソース初期化
+		ID3D11ShaderResourceView* pShaderResource = nullptr;
+		pDeviceContext->PSSetShaderResources(0, 1, &pShaderResource);
+	}
 }

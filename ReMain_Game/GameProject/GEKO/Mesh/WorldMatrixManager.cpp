@@ -70,7 +70,7 @@ void WorldMatrixManager::Update()
 		mat._42 = i->pTranselate->y;
 		mat._43 = i->pTranselate->z;
 
-		*i->pMatrix = mat;
+		*i->pWorldMatrix = mat;
 	}
 }
 
@@ -80,7 +80,7 @@ void WorldMatrixManager::Clear()
 	for (; it != m_pListPimpl->m_List.end(); it++)
 	{
 		//ワールド行列がなかったらリストから除外
-		if ((*it)->pMatrix == nullptr)
+		if ((*it)->pWorldMatrix == nullptr)
 		{
 			it = m_pListPimpl->m_List.erase(it);
 			break;

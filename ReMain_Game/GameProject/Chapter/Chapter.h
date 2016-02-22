@@ -15,7 +15,6 @@ public:
 
 private:
 	float m_Radius;
-	bool m_isHit;
 	Collider m_MapCol;
 	Collider m_StageChange;	//ステージ移動用
 	Vector3D m_pos;
@@ -36,7 +35,6 @@ public:
 
 private:
 	float m_Radius;
-	bool m_isHit;
 	Collider m_MapCol;
 	Vector3D m_pos;
 	Sound m_BGM;

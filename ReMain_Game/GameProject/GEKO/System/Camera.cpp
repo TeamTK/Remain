@@ -35,6 +35,11 @@ const D3DXMATRIX* Camera::GetProjection()
 	return &GetInstance()->m_Proj;
 }
 
+const D3DXMATRIX* Camera::GetViewProjection()
+{
+	return &GetInstance()->m_ViewProj;
+}
+
 const D3DXMATRIX* Camera::GetViewport()
 {
 	return &GetInstance()->m_Viewport;
@@ -112,6 +117,8 @@ void Camera::Update()
 
 	// 希望するクライアント領域のサイズを持つウィンドウサイズを計算
 	D3DXMatrixPerspectiveFovLH(&pInstance->m_Proj, (FLOAT)pInstance->m_ViewAngle, Width / Height, (FLOAT)pInstance->m_Near, (FLOAT)pInstance->m_Far);
+
+	pInstance->m_ViewProj = pInstance->m_View * pInstance->m_Proj;
 
 	//ビューポート更新
 	D3D11_VIEWPORT *viewport = Direct3D11::GetInstance()->GetViewportD3D11();
