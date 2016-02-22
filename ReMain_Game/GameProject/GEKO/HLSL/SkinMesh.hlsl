@@ -38,8 +38,8 @@ struct VS_OUTPUT
 	float3 Normal : TEXCOORD1;
 	float3 EyeVector : TEXCOORD2;
 	float2 uv : TEXCOORD3;
-	uint4  Bones : BONE_INDEX;//ボーンのインデックス
-	float4 Weights : BONE_WEIGHT;//ボーンの重み
+	//uint4  Bones : BONE_INDEX;//ボーンのインデックス
+	//float4 Weights : BONE_WEIGHT;//ボーンの重み
 };
 
 //スキニング後の頂点・法線が入る

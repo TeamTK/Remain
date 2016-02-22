@@ -130,16 +130,13 @@ void StaticMeshShader::BaseConstantBuffer(ID3D11DeviceContext *pDeviceContext, c
 		D3DXMatrixTranspose(&sg.mW, &sg.mW);
 
 		//ワールド、カメラ、射影行列を渡す
-		sg.mWVP = World * (*Camera::GetView()) * (*Camera::GetProjection());
+		sg.mWVP = World * *Camera::GetViewProjection();
 		D3DXMatrixTranspose(&sg.mWVP, &sg.mWVP);
 
 		//ライトの視点からのカメラの行列
 		if (isShadow)
 		{
-			D3DXMATRIX v = *ShaderShadowMap::GetInstance()->GetViewMatrix();
-			D3DXMATRIX p = *ShaderShadowMap::GetInstance()->GetProjMatrix();
-
-			sg.mWLP = World * v * p;
+			sg.mWLP = World * *ShaderShadowMap::GetInstance()->GetViewProjMatrix();
 			D3DXMatrixTranspose(&sg.mWLP, &sg.mWLP);
 		}
 

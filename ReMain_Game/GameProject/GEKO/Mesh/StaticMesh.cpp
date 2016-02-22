@@ -69,7 +69,7 @@ const int StaticMesh::GetMaterialAllNum() const
 
 void StaticMesh::Render(bool isShadow) const
 {
-	RenderFunc(m_pMeshData->GetMeshInfo()->m_LocalMat * m_Matrix, isShadow);
+	RenderFunc(m_pMeshData->GetMeshInfo()->m_LocalMat * m_WorldMatrix, isShadow);
 }
 
 void StaticMesh::RenderMatrix(Matrix &matrix, bool isShadow) const
@@ -81,7 +81,7 @@ void StaticMesh::DebugNormal() const
 {
 	Vector3D v1, v2, v3;
 	Vector3D normal1, normal2, normal3;
-	Matrix m = m_pMeshData->GetMeshInfo()->m_LocalMat * m_Matrix;
+	Matrix m = m_pMeshData->GetMeshInfo()->m_LocalMat * m_WorldMatrix;
 	VertexInfo *vertex = m_pMeshData->GetMeshInfo()->pVertex;
 	IndexInfo *index = m_pMeshData->GetMeshInfo()->pIndex;
 	int polyNum = m_pMeshData->GetMeshInfo()->faceNumAll;
@@ -106,7 +106,7 @@ void StaticMesh::DebugNormal() const
 void StaticMesh::DebugPolygon() const
 {
 	Vector3D v1, v2, v3;
-	Matrix m = m_pMeshData->GetMeshInfo()->m_LocalMat * m_Matrix;
+	Matrix m = m_pMeshData->GetMeshInfo()->m_LocalMat * m_WorldMatrix;
 	VertexInfo *vertex = m_pMeshData->GetMeshInfo()->pVertex;
 	IndexInfo *index = m_pMeshData->GetMeshInfo()->pIndex;
 	int polyNum = m_pMeshData->GetMeshInfo()->faceNumAll;

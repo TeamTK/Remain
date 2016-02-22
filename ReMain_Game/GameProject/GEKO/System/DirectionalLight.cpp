@@ -1,4 +1,5 @@
 #include "DirectionalLight.h"
+#include "../Shader/ShadowMap/ShaderShadowMap.h"
 
 DirectionalLight::DirectionalLight() :
 	m_Direction(0.0f, -1.0f, 0.0f, 0.0f),
@@ -16,7 +17,7 @@ DirectionalLight* DirectionalLight::GetInstance()
 	return &directionalLight;
 }
 
-const D3DXVECTOR4* DirectionalLight::GetDirection()
+const Vector4D* DirectionalLight::GetDirection()
 {
 	return &GetInstance()->m_Direction;
 }
@@ -58,4 +59,34 @@ void DirectionalLight::SetColor(int r, int g, int b)
 	temp->m_LightColor.x = (float)r * RGB;
 	temp->m_LightColor.y = (float)g * RGB;
 	temp->m_LightColor.z = (float)b * RGB;
+}
+
+void DirectionalLight::SetResolution(float width, float height)
+{
+	ShaderShadowMap::GetInstance()->SetResolution(width, height);
+}
+
+void DirectionalLight::SetLookat(float x, float y, float z)
+{
+	ShaderShadowMap::GetInstance()->SetLookat(x, y, z);
+}
+
+void DirectionalLight::SetLookat(const Vector3D &lookatPt)
+{
+	ShaderShadowMap::GetInstance()->SetLookat(lookatPt);
+}
+
+void DirectionalLight::SetNearFar(float nearZ, float farZ)
+{
+	ShaderShadowMap::GetInstance()->SetNearFar(nearZ, farZ);
+}
+
+void DirectionalLight::SetViewAngle(float viewAngle)
+{
+	ShaderShadowMap::GetInstance()->SetViewAngle(viewAngle);
+}
+
+void DirectionalLight::SetDistance(float distance)
+{
+	ShaderShadowMap::GetInstance()->SetDistance(distance);
 }

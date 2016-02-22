@@ -26,7 +26,7 @@ Enemy::Enemy(const char* name, EnemyState &enemyState) :
 	m_AuditoryRange = 10.0f;
 	m_pos = enemyState.posSpawn;
 	m_rot = enemyState.rotation;
-	m_Model.SetAsset(name);
+	m_Model.SetAsset(name, true);
 
 	//Ž‹ŠEƒVƒXƒeƒ€
 	m_SightData.angle = enemyState.sightAngle;

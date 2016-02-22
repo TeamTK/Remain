@@ -124,7 +124,7 @@ public:
 	void DebugDraw(const char *name) const;
 };
 
-class Vector4D : public SVector4D
+class Vector4D : public D3DXVECTOR4
 {
 public:
 	Vector4D();

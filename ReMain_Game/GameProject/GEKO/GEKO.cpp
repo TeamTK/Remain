@@ -97,16 +97,6 @@ namespace GEKO
 		Direct3D11::GetInstance()->SetResolution_And_RefreshRate(width, height, refreshRateNum);
 	}
 
-	void SetShadowResolution(float width, float height)
-	{
-		ShaderShadowMap::GetInstance()->SetResolution(width, height);
-	}
-
-	void SetShadowPosition(float x, float y, float z)
-	{
-		ShaderShadowMap::GetInstance()->SetPosition(x, y, z);
-	}
-
 	void DrawFps()
 	{
 		Window::Get()->DrawFps();

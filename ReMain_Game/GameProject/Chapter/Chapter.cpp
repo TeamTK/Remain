@@ -17,16 +17,16 @@ void Kill()
 	TaskManager::Kill("Handgun");
 	TaskManager::Kill("Shotgun");
 	TaskManager::Kill("ScreenBlood");
+	StageObjectManager::GetInstance()->ClearList();
 }
 
 Chapter_1_1::Chapter_1_1() :
 	Task("Chapter_1_1", 0),
 	m_Radius(4.0f),
 	m_pos(-7.0f, 0.0f, 4.0f),
-	m_StageChangePos(40.0f, 0.0f, -17.0f),
-	m_isHit(false)
+	m_StageChangePos(40.0f, 0.0f, -17.0f)
 {
-	GEKO::SetShadowPosition(20.0f, 200.0f, 0.0f);
+	DirectionalLight::SetDistance(140.0f);
 
 	new Player(Vector3D(-45.0f, 0.0f, -11.0f), 64, -2);
 
@@ -60,6 +60,7 @@ Chapter_1_1::Chapter_1_1() :
 Chapter_1_1::~Chapter_1_1()
 {
 	TracerouteManager::ClearTopography("Chapter_1_1_Traceroute");
+	new Chapter_1_2();
 	m_BGM.Stop();
 }
 
@@ -88,26 +89,22 @@ void Chapter_1_1::Update()
 
 void Chapter_1_1::HitPlayer(Result_Sphere &data)
 {
-	if (!m_isHit)
-	{
-		EnemyWaveInfo info;
-		info.isSearch = true;
-		info.waveAllNum = 1;
-		info.intervalTime = 1;
-		info.spawnName = "Chapter1-1";
-		info.stateName = "Normal_Monster_A";
-		info.tracerouteName = "Chapter_1_1_Traceroute";
-		new EnemyWave(info);
+	EnemyWaveInfo info;
+	info.isSearch = true;
+	info.waveAllNum = 1;
+	info.intervalTime = 1;
+	info.spawnName = "Chapter1-1";
+	info.stateName = "Normal_Monster_A";
+	info.tracerouteName = "Chapter_1_1_Traceroute";
+	new EnemyWave(info);
 
-		m_isHit = true;
-	}
+	m_MapCol.Sleep();
 }
 
 void Chapter_1_1::StageChange(Result_Sphere &data)
 {
 	Kill();
-	TaskManager::Kill("Chapter_1_1");
-	new Chapter_1_2();
+	SetKill();
 }
 
 
@@ -119,10 +116,9 @@ void Chapter_1_1::StageChange(Result_Sphere &data)
 Chapter_1_2::Chapter_1_2() :
 	Task("Chapter_1_2", 0),
 	m_Radius(2.0f),
-	m_pos(-7.0f, 0.0f, 4.0f),
-	m_isHit(false)
+	m_pos(-7.0f, 0.0f, 4.0f)
 {
-	GEKO::SetShadowPosition(-7.0f, 340.0f, -209.0f);
+	DirectionalLight::SetDistance(160.0f);
 
 	new Player(Vector3D(-28.0f, 0.0f, -98.0f), 80, -2);
 
@@ -181,17 +177,14 @@ void Chapter_1_2::Update()
 
 void Chapter_1_2::HitPlayer(Result_Sphere &data)
 {
-	if (!m_isHit)
-	{
-		EnemyWaveInfo info;
-		info.isSearch = true;
-		info.waveAllNum = 1;
-		info.intervalTime = 1;
-		info.spawnName = "Chapter1-1";
-		info.stateName = "Normal_Monster_A";
-		info.tracerouteName = "Chapter_1_2_Traceroute";
-		new EnemyWave(info);
+	EnemyWaveInfo info;
+	info.isSearch = true;
+	info.waveAllNum = 1;
+	info.intervalTime = 1;
+	info.spawnName = "Chapter1-1";
+	info.stateName = "Normal_Monster_A";
+	info.tracerouteName = "Chapter_1_2_Traceroute";
+	new EnemyWave(info);
 
-		m_isHit = true;
-	}
+	m_MapCol.Sleep();
 }

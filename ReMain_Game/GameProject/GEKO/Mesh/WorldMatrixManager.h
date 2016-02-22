@@ -5,7 +5,7 @@
 
 struct WorldMatrixInfo
 {
-	Matrix *pMatrix;
+	Matrix *pWorldMatrix;
 	Vector3D *pRotation;
 	Vector3D *pScale;
 	Vector3D *pTranselate;
