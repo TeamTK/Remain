@@ -62,7 +62,7 @@ Player::Player(PData* data, Vector3D pos, float horizontal, float vertical) :
 	m_State(EPlayerState::eState_Idle)
 {
 	//プレイヤーモデル初期化
-	m_Model.SetAsset("Player");
+	m_Model.SetAsset("Player", true);
 	m_Model.SetScale(1.0f, 1.0f, 1.0f);
 	m_Model.SetTranselate(pos);
 	m_Model.SetRotationRadian(0.0f, m_rot.y, 0.0f);
@@ -137,10 +137,10 @@ Player::Player(PData* data, Vector3D pos, float horizontal, float vertical) :
 
 	m_DamegeBlood.SetAsset("Player_2");
 
-	m_BodyRadius = 0.7f;
+	m_BodyRadius = 0.5f;
 
 	//プレイヤーUI
-	new UI_Reticle();
+	new UI_Reticle(&m_SetupWeapon);
 	new UI_AmmoNum();
 
 	m_NoActionTime.Start();
@@ -170,7 +170,7 @@ void Player::Update()
 	Animation();
 	Character::Update();
 
-	if ((m_Timer.GetSecond() >= 1.5) && !m_isDead)
+	if ((m_Timer.GetSecond() >= 1.2) && !m_isDead)
 	{
 		m_HitEnemyAttack.Awake();
 		m_Model.SetTexture(nullptr);
@@ -264,6 +264,8 @@ void Player::Move()
 	{
 		m_isShiftCrouch = true;
 		m_ToggleCrouch = !m_ToggleCrouch;
+		if (m_isCrouch)
+			m_Model.SetTime(28);
 	}
 
 	if (m_ToggleCrouch)
@@ -613,7 +615,7 @@ void Player::Crouch()
 		if (!m_isCrouch)
 		{
 			m_Anim = EPlayerAnim::eAnim_Crouch;
-			m_AnimSpeed = TWICE_ANIM_SPEED - 25;
+			m_AnimSpeed = TWICE_ANIM_SPEED;
 		}
 
 		//しゃがみ待機
@@ -642,7 +644,7 @@ void Player::Crouch()
 void Player::StandUp()
 {
 	m_Anim = EPlayerAnim::eAnim_Crouch;
-	m_AnimSpeed = -(TWICE_ANIM_SPEED - 25);
+	m_AnimSpeed = -TWICE_ANIM_SPEED;
 
 	if (m_Anim == EPlayerAnim::eAnim_Crouch && m_Model.GetPlayTime(m_JudgementAnim) < 1)
 	{
@@ -761,11 +763,11 @@ void Player::SetupWeapon()
 	{
 	case eShotgun:
 		m_Anim = EPlayerAnim::eAnim_SetupGun;
-		m_AnimSpeed = TWICE_ANIM_SPEED;
+		m_AnimSpeed = TWICE_ANIM_SPEED * 2;
 		break;
 	case eHandgun:
 		m_Anim = EPlayerAnim::eAnim_SetupHandgun;
-		m_AnimSpeed = TWICE_ANIM_SPEED;
+		m_AnimSpeed = TWICE_ANIM_SPEED * 2;
 		break;
 	}
 	//構え状態で停止
