@@ -1,5 +1,6 @@
 StaticMesh media\Tree_1.x Tree_1
 StaticMesh media\Tree_2.x Tree_2
+StaticMesh media\Tree_1_Trunk.x Tree_1_Trunk
 StaticMesh media\Grass_1.x Grass_1
 StaticMesh media\Grass_2.x Grass_2
 StaticMesh media\Cabin.x Cabin
@@ -7,8 +8,6 @@ StaticMesh media\Ground_1_1.x Ground_1_1
 StaticMesh media\Ground_1_2.x Ground_1_2
 StaticMesh media\RockWall_1_1.x RockWall_1_1
 StaticMesh media\RockWall_1_2.x RockWall_1_2
-StaticMesh media\Wall_Collision_1_1.x Wall_Collision_1_1
-StaticMesh media\Wall_Collision_1_2.x Wall_Collision_1_2
 StaticMesh media\SkyDome.x SkyDome
 StaticMesh media\Shrub.x Bush
 StaticMesh media\Shrub.x Shrub
@@ -19,11 +18,11 @@ StaticMesh media\Stone_A.x Stone_A
 StaticMesh media\Weeds.x Weeds
 StaticMesh media\WoodBox.x WoodBox
 StaticMesh media\Fallen_leaves.x Fallen_leaves
-StaticMesh media\Tree_1_Trunk.x Tree_1_Trunk
+StaticMesh media\Wall_Collision_1_1.x Wall_Collision_1_1
+StaticMesh media\Wall_Collision_1_2.x Wall_Collision_1_2
 StaticMesh media\Cabin_Collision.x Cabin_Collision
 StaticMesh media\Stone_A_Collision.x Stone_A_Collision
 StaticMesh media\Fence_Collision.x Fence_Collision
 StaticMesh media\Shotgun.x Shotgun
 StaticMesh media\Handgun.x Handgun
 StaticMesh media\AmmoBox.x AmmoBox
-StaticMesh media\Traceroute_1_2.x Traceroute_1_2

@@ -19,6 +19,7 @@ void Kill()
 	TaskManager::Kill("Shotgun");
 	TaskManager::Kill("ScreenBlood");
 	StageObjectManager::GetInstance()->ClearList();
+	new Chapter_1_2();
 }
 
 Chapter_1_1::Chapter_1_1() :
@@ -70,7 +71,6 @@ Chapter_1_1::Chapter_1_1() :
 Chapter_1_1::~Chapter_1_1()
 {
 	TracerouteManager::ClearTopography("Chapter_1_1_Traceroute");
-	new Chapter_1_2();
 	m_BGM.Stop();
 }
 

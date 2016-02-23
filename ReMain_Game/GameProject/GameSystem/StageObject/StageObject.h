@@ -115,6 +115,26 @@ private:
 	Collider m_BulletHit;
 };
 
+//åÕÇÍñÿ
+class Tree_1_Trunk : public StageObject
+{
+public:
+	Tree_1_Trunk(XYZ pos, XYZ rot, XYZ sca, std::string name) :
+		StageObject(pos, rot, sca, name, false, true)
+	{
+		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
+		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
+
+		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
+		m_BulletHit.SetID(eHITID4, eHITID2);
+		m_BulletHit.SetName("Tree_1_Trunk");
+	}
+	~Tree_1_Trunk() {}
+
+private:
+	Collider m_BulletHit;
+};
+
 //ëê1
 class Grass_1 : public StageObject
 {
@@ -375,14 +395,7 @@ public:
 	~Fallen_leaves() {}
 };
 
-//åÕÇÍñÿ
-class Tree_1_Trunk : public StageObject
-{
-public:
-	Tree_1_Trunk(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, false, true) {}
-	~Tree_1_Trunk() {}
-};
+
 
 //í·ñÿ
 class Shrub : public StageObject
