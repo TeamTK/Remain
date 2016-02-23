@@ -60,7 +60,7 @@ ShaderShadowMap::ShaderShadowMap() :
 	m_Width(1920.0f),
 	m_Height(1080.0f),
 	m_Near(1.0f),
-	m_Far(4000.0f),
+	m_Far(1000.0f),
 	m_ViewAngle(Math::ChangeToRadian(45.0f)),
 	m_Distance(0.0f)
 {
@@ -138,7 +138,7 @@ bool ShaderShadowMap::Init()
 	tdesc.MipLevels = 1;
 	tdesc.ArraySize = 1;
 	tdesc.MiscFlags = 0;
-	tdesc.Format = DXGI_FORMAT_R32_FLOAT;
+	tdesc.Format = DXGI_FORMAT_R16_FLOAT;
 	tdesc.SampleDesc.Count = 1;
 	tdesc.SampleDesc.Quality = 0;
 	tdesc.Usage = D3D11_USAGE_DEFAULT;
@@ -149,7 +149,7 @@ bool ShaderShadowMap::Init()
 
 	//深度マップテクスチャー用　レンダーターゲットビュー作成
 	D3D11_RENDER_TARGET_VIEW_DESC DescRT;
-	DescRT.Format = DXGI_FORMAT_R32_FLOAT;
+	DescRT.Format = DXGI_FORMAT_R16_FLOAT;
 	DescRT.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	DescRT.Texture2D.MipSlice = 0;
 
@@ -161,7 +161,7 @@ bool ShaderShadowMap::Init()
 	descDepth.Height = (UINT)m_Height;
 	descDepth.MipLevels = 1;
 	descDepth.ArraySize = 1;
-	descDepth.Format = DXGI_FORMAT_R32_FLOAT;
+	descDepth.Format = DXGI_FORMAT_R16_FLOAT;
 	descDepth.SampleDesc.Count = 1;
 	descDepth.SampleDesc.Quality = 0;
 	descDepth.Usage = D3D11_USAGE_DEFAULT;
@@ -177,7 +177,7 @@ bool ShaderShadowMap::Init()
 	//深度マップテクスチャ用　シェーダーリソースビュー(SRV)作成	
 	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
 	ZeroMemory(&SRVDesc, sizeof(SRVDesc));
-	SRVDesc.Format = DXGI_FORMAT_R32_FLOAT;
+	SRVDesc.Format = DXGI_FORMAT_R16_FLOAT;
 	SRVDesc.ViewDimension = D3D_SRV_DIMENSION_TEXTURE2D;
 	SRVDesc.Texture2D.MostDetailedMip = 0;
 	SRVDesc.Texture2D.MipLevels = 1;

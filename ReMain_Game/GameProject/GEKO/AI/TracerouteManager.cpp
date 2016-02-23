@@ -269,9 +269,20 @@ void TracerouteManager::Update()
 	//決められた経路を進む
 	for (auto& i : *pPathPlanning)
 	{
-		if (!i->m_IsSerchMove) continue;
-		if (i->m_PathPlanning.pGoalUnit == nullptr) continue;
-		if (i->m_PathPlanning.pStartUnit == nullptr) continue;
+		//if (!i->m_IsSerchMove) continue;
+		//if (i->m_PathPlanning.pGoalUnit == nullptr) continue;
+		//if (i->m_PathPlanning.pStartUnit == nullptr) continue;
+
+		//探索移動がなかったりゴールかスタート地点がない場合は方向0
+		if ((!i->m_IsSerchMove) ||
+			(i->m_PathPlanning.pGoalUnit == nullptr) ||
+			(i->m_PathPlanning.pStartUnit == nullptr))
+		{
+			i->m_PathMoveInfo.MoveDirection.x = 0.0f;
+			i->m_PathMoveInfo.MoveDirection.y = 0.0f;
+			i->m_PathMoveInfo.MoveDirection.z = 0.0f;
+			continue;
+		}
 
 		pMove = &i->m_PathMoveInfo;
 		
@@ -369,6 +380,7 @@ int TracerouteManager::CheckOnPolyIndex(TracerouteInfo *pInfo, const Vector3D &p
 {
 	assert(pInfo->pStaticMesh && "経路探索用の地形データがありません");
 
+	/*
 	//モデルの逆行列算出
 	Matrix world = *pInfo->pStaticMesh->GetWorldMatrix();
 	Matrix local = *pInfo->pStaticMesh->GetLocalMatrix();
@@ -395,8 +407,8 @@ int TracerouteManager::CheckOnPolyIndex(TracerouteInfo *pInfo, const Vector3D &p
 			return i;
 		}	
 	}
+	*/
 
-	/*
 	//線の当たり判定情報
 	Vector3D linePosStart(pos.x, 1000.0f, pos.z);
 	Vector3D linePosEnd(pos.x, -1000.0f, pos.z);
@@ -442,7 +454,7 @@ int TracerouteManager::CheckOnPolyIndex(TracerouteInfo *pInfo, const Vector3D &p
 		}
 
 	}
-	*/
+
 	return -1;
 }
 
@@ -479,7 +491,11 @@ void TracerouteManager::SetupPathPlanning(TracerouteSearch *pSearch, const Vecto
 
 	//スタートの位置にあるポリゴン番号を取得して、ポリゴンの経路探索処理用の構造体のアドレスを保存
 	polyIndex = TracerouteManager::GetInstance()->CheckOnPolyIndex(pInfo, *pSearch->m_PathMoveInfo.pNowPosition);
-	if (polyIndex == -1) return;
+	if (polyIndex == -1)
+	{
+		pPath->pStartUnit = nullptr;
+		return;
+	}
 	pPath->pStartUnit = &pPath->pUnitArray[polyIndex];
 
 	//経路探索処理対象のポリゴンとしてスタート地点にあるポリゴンを登録する
@@ -487,7 +503,11 @@ void TracerouteManager::SetupPathPlanning(TracerouteSearch *pSearch, const Vecto
 
 	//ゴールの位置にあるポリゴン番号を取得して、ポリゴンの経路探索処理用の構造体のアドレスを保存
 	polyIndex = TracerouteManager::GetInstance()->CheckOnPolyIndex(pInfo, goalPos);
-	if (polyIndex == -1) return;
+	if (polyIndex == -1)
+	{
+		pPath->pGoalUnit = nullptr;
+		return;
+	}
 	pPath->pGoalUnit = &pPath->pUnitArray[polyIndex];
 
 	//すでにゴールしていたら終了

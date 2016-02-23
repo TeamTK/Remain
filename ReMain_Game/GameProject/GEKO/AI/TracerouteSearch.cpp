@@ -29,7 +29,7 @@ bool TracerouteSearch::GetIsGoal() const
 
 bool TracerouteSearch::GetIsGoalExist() const
 {
-	if (m_PathPlanning.pGoalUnit) return true;
+	if (m_PathPlanning.pGoalUnit != nullptr) return true;
 	return false;
 }
 
