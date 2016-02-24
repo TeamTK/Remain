@@ -5,9 +5,10 @@
 #include "../AmmoBox/AmmoBox_Handgun.h"
 #include <random>
 
-#define COMMON_BORN_ANIM_ENEMY 20
 #define SEARCH_INTERVAL 60 //経路探索開始間隔
 #define DROP_PROBABILITY 2 //アイテムドロップ率
+#define GUN_POWER_HANDGUN 2.0f //ショットガンの威力
+#define GUN_POWER_SHOTGUN 5.0f //拳銃の威力
 
 Enemy::Enemy(const char* name, EnemyState &enemyState) :
 	Character(10, name, 1),
@@ -225,11 +226,11 @@ void Enemy::HitBullet(Result_Sphere& r)
 	float GunPower = 1.0f;
 	if (r.targetName == "HandGun")
 	{
-		GunPower = 2.0f;
+		GunPower = GUN_POWER_HANDGUN;
 	}
 	else if (r.targetName == "ShotGun")
 	{
-		GunPower = 5.0f;
+		GunPower = GUN_POWER_SHOTGUN;
 	}
 
 	//当たり判定停止（弾からの）

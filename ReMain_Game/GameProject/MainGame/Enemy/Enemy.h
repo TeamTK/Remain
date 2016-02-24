@@ -4,6 +4,7 @@
 #include "../Character.h"
 
 #define ENEMY_NORMAL_SPEED 30.0f
+#define COMMON_BORN_ANIM_ENEMY 20
 
 //敵のステータス
 struct EnemyState
@@ -75,10 +76,7 @@ protected:
 	Vector3D m_SightVec; //視界の方向
 
 	//聴覚探知
-	enum
-	{
-		eOblivious = 1, eCaution = 2, eDiscovery = 3
-	};
+	enum {eOblivious = 1, eCaution = 2, eDiscovery = 3};
 	float m_AuditoryRange; //探知範囲
 	AuditorySense m_AuditorySense; //探知クラス
 
@@ -94,12 +92,9 @@ protected:
 
 	Collider *m_pHitAttack; //プレイヤーへの攻撃の当たり判定
 	FunctionTask m_FuncTask; //AI管理
-
 	TracerouteSearch m_Search; //経路探索
-
 	int m_SearchCnt; //経路探索間隔カウント
-
-	Image m_DamegeBlood;
+	Image m_DamegeBlood; //攻撃を受けた時の血の演出用
 };
 
 #endif

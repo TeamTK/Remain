@@ -8,6 +8,7 @@
 
 void Kill()
 {
+	TaskManager::Kill("Player");
 	TaskManager::Kill("TPSCamera");
 	TaskManager::Kill("UI_Reticle");
 	TaskManager::Kill("UI_AmmoNum");
@@ -19,7 +20,6 @@ void Kill()
 	TaskManager::Kill("Shotgun");
 	TaskManager::Kill("ScreenBlood");
 	StageObjectManager::GetInstance()->ClearList();
-	new Chapter_1_2();
 }
 
 Chapter_1_1::Chapter_1_1() :
@@ -61,6 +61,8 @@ Chapter_1_1::Chapter_1_1() :
 	m_MapCol.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Chapter_1_1::HitPlayer));
 	m_MapCol.SetID(eHITID5, eHITID1);
 
+	m_Render.Regist(6, REGIST_RENDER_FUNC(Chapter_1_1::Render));
+
 	new AmmoBox_Shotgun(Vector3D(-9.5f, 0.0f, 14.4f), Vector3D(0.0f, 200.0f, 0.0f), 6);
 
 	m_BGM.SetAseet("Field2");
@@ -76,6 +78,14 @@ Chapter_1_1::~Chapter_1_1()
 
 void Chapter_1_1::Update()
 {
+	m_Transfer_In.Update();
+
+	if (m_Transfer_In.GetIsEndTransfer())
+	{
+		Kill();
+		SetKill();
+		new Chapter_1_2();
+	}
 	/*
 	if (Input::KeyP.Clicked()) //“G’Ç‰Á(‰¼)
 	{
@@ -97,6 +107,11 @@ void Chapter_1_1::Update()
 	*/
 }
 
+void Chapter_1_1::Render()
+{
+	m_Transfer_In.Render();
+}
+
 void Chapter_1_1::HitPlayer(Result_Sphere &data)
 {
 	EnemyWaveInfo info;
@@ -113,8 +128,8 @@ void Chapter_1_1::HitPlayer(Result_Sphere &data)
 
 void Chapter_1_1::StageChange(Result_Sphere &data)
 {
-	Kill();
-	SetKill();
+	m_StageChange.Sleep();
+	m_Transfer_In.Start(3);
 }
 
 

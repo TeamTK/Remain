@@ -909,18 +909,6 @@ void Player::HitAmmoBox(Result_Sphere& r)
 
 void Player::HitEnemyAttack(Result_Capsule &hitData)
 {
-	/*
-	//血しぶきのエフェクト
-	EffectInfo effectData;
-	effectData.imageName = "Blood";
-	effectData.num = 30;
-	effectData.pos = hitData.end;
-	effectData.size = 1.0f;
-	effectData.speed = 0.1f;
-	effectData.time = 60;
-	new EffectParabola(effectData, "Blood", hitData.start.GetNormalize());
-	*/
-
 	//血しぶきのエフェクト
 	EffectAnimationInfo info;
 	info.frameNum = 8;
@@ -987,5 +975,5 @@ void Player::StageChange(Result_Sphere &data)
 
 	PlayerData::SetData(&playerData);
 
-	Task::SetKill();
+	Task::Stop();
 }
