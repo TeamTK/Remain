@@ -4,7 +4,6 @@
 #include "../../MainGame/Weapon/Shotgun.h"
 #include "../../MainGame/Weapon/Handgun.h"
 #include "../../MainGame/Weapon/Knife.h"
-#include "../../GameSystem/GUI/UI_SelectWeapon.h"
 #include "PlayerInfo.h"
 #include "PlayerData.h"
 
@@ -50,7 +49,6 @@ private:
 	EPlayerState m_State;	//プレイヤーの状態
 	EPlayerAnim m_Anim;		//プレイヤーのアニメーション
 	EWeapons m_SelectedWeapon; //選択している銃
-	UI_SelectWeapon m_SelectWeapon;
 	PlayerSightInfo m_PlayerSightInfo; //プレイヤーの視界情報
 	AuditoryObject m_AuditoryObject; //聴覚対象
 	Timer m_Timer;					//ダメージを食らった後の無敵時間

@@ -4,7 +4,7 @@
 #include "../../MainGame/Player/PlayerInfo.h"
 #include "../../MainGame/Weapon/WeaponInfo.h"
 
-class UI_SelectWeapon
+class UI_SelectWeapon : public Task
 {
 public:
 	UI_SelectWeapon();
@@ -26,4 +26,5 @@ private:
 	int m_Selected;
 	bool m_isSelected;
 };
+extern UI_SelectWeapon* g_pUI_SelectWeapon;
 #endif

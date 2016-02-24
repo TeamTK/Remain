@@ -8,6 +8,7 @@
 #include "../../GameSystem/GUI/UI_Reticle.h"
 #include "../../GameSystem/GUI/UI_AmmoNum.h"
 #include "../../GameSystem/Effect/EffectAnimation.h"
+#include "../../GameSystem/GUI/UI_SelectWeapon.h"
 #include "../../GameSystem/ScreenBlood.h"
 
 #define WALK_SPEED 3.0f			  //歩くスピード
@@ -140,6 +141,7 @@ Player::Player(PData* data, Vector3D pos, float horizontal, float vertical) :
 	m_BodyRadius = 0.5f;
 
 	//プレイヤーUI
+	g_pUI_SelectWeapon = new UI_SelectWeapon();
 	new UI_Reticle(&m_SetupWeapon);
 	new UI_AmmoNum();
 
@@ -161,9 +163,9 @@ void Player::Update()
 	{
 		Move();
 		Attack();
-		m_SelectWeapon.Update();
+		g_pUI_SelectWeapon->Update();
 
-		if (m_SelectWeapon.isSelected()) m_IsStop = true;
+		if (g_pUI_SelectWeapon->isSelected()) m_IsStop = true;
 		else m_IsStop = false;
 	}
 
@@ -213,6 +215,9 @@ void Player::Update()
 
 	m_PlayAnim = m_Model.GetPlayAnimation(m_JudgementAnim);
 	m_PlayAnimTime = m_Model.GetPlayTime(m_JudgementAnim);
+
+	m_Model.GetTranselate().DebugDraw("");
+
 }
 
 void Player::Move()
@@ -222,7 +227,7 @@ void Player::Move()
 	m_isMove = false;
 	m_isRun = false;
 
-	if (m_SelectWeapon.isSelected()) return;
+	if (g_pUI_SelectWeapon->isSelected()) return;
 	if (m_NoActionTime.GetSecond() < 2.0f)	return;
 
 	if (Input::XInputPad1.GetIsConnection())
@@ -308,10 +313,10 @@ void Player::Attack()
 	//武器の切り替え(ホイールクリック, 方向キー左右)
 	if ((Input::Mouse.WheelClicked() || Input::XInputPad1.ThumbRightClicked()))
 	{
-		m_SelectedWeapon = m_SelectWeapon.Select();
+		m_SelectedWeapon = g_pUI_SelectWeapon->Select();
 	}
 
-	if (m_SelectWeapon.isSelected()) return;
+	if (g_pUI_SelectWeapon->isSelected()) return;
 
 	//武器をとる
 	if ((Input::KeyF.Clicked() || Input::XInputPad1.BClicked()) && !m_isCrouch && !m_SetupWeapon)
@@ -508,7 +513,6 @@ void Player::Animation()
 
 void Player::Idle()
 {
-	printf("Idle\n");
 	//武器を持って待機
 	if (m_isTakeWeapon)
 	{
@@ -535,7 +539,6 @@ void Player::Idle()
 
 void Player::Walk()
 {
-	printf("Walk\n");
 	m_MoveSpeed = WALK_SPEED;
 	m_Volume = VOLUME_WALK;
 
@@ -563,7 +566,6 @@ void Player::Walk()
 
 void Player::Run()
 {
-	printf("Run\n");
 	m_MoveSpeed = RUN_SPEED;
 	m_Volume = VOLUME_RUN;
 
@@ -591,7 +593,6 @@ void Player::Run()
 
 void Player::Crouch()
 {
-	printf("Crouch\n");
 	m_Volume = VOLUME_CROUCH;
 
 	//武器を持っている時は武器をしまってからしゃがむ
@@ -648,7 +649,6 @@ void Player::Crouch()
 
 void Player::StandUp()
 {
-	printf("StandUp\n");
 	m_Anim = EPlayerAnim::eAnim_Crouch;
 	m_AnimSpeed = -TWICE_ANIM_SPEED;
 
@@ -661,7 +661,6 @@ void Player::StandUp()
 
 void Player::TakeWeapon()
 {
-	printf("TakeWeapon\n");
 	switch (m_SelectedWeapon)
 	{
 	case eShotgun:
@@ -737,7 +736,6 @@ void Player::TakeWeapon()
 
 void Player::PutBackWeapon()
 {
-	printf("PutBackWeapon\n");
 	switch (m_SelectedWeapon)
 	{
 	case eShotgun:
@@ -765,7 +763,6 @@ void Player::PutBackWeapon()
 
 void Player::SetupWeapon()
 {
-	printf("SetupWeapon\n");
 	m_MoveSpeed = SETUPWEAPON_MOVE_SPEED;
 
 	switch (m_SelectedWeapon)
@@ -791,7 +788,6 @@ void Player::SetupWeapon()
 
 void Player::Recoil()
 {
-	printf("Recoil\n");
 	switch (m_SelectedWeapon)
 	{
 	case eShotgun:
@@ -813,7 +809,6 @@ void Player::Recoil()
 
 void Player::Reload()
 {
-	printf("Reload\n");
 	m_MoveSpeed = WALK_SPEED;
 
 	if (m_isMove)
@@ -955,11 +950,14 @@ void Player::HitEnemyAttack(Result_Capsule &hitData)
 	if (m_Hp <= 0)
 	{
 		//死亡状態に移行
-		new YouAreDead(10);
+		new YouAreDead(7);
 		m_State = EPlayerState::eState_Die;
 		m_isDead = true;
 		m_Model.SetTime(0);
 		TaskManager::Stop("TPSCamera");
+		TaskManager::Kill("UI_AmmoNum");
+		TaskManager::Kill("ScreenBlood");
+		TaskManager::Kill("UI_SelectWeapon");
 
 		//プレイヤーから右斜め上にカメラを設置して注視点はプレイヤーの前方に設置
 		Vector3D z = m_Model.GetAxisZ(*m_Model.GetWorldMatrix(), 1.0f);
