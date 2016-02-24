@@ -79,7 +79,7 @@ void TPSCamera::Update()
 
 		Matrix mat = info->pModel->GetBornMatrix(6, true);
 		Vector4D eye = Vector4D(-0.25f, 0.15f, -0.1f, 1.0f) * mat;
-		Vector4D at = Vector4D(-0.25f, 0.15f, 0.5f, 1.0f) *  mat;
+		Vector4D at = Vector4D(-0.25f, 0.2f, 0.2f, 1.0f) *  mat;
 		m_CameraPos = Vector3D(eye.x, eye.y, eye.z);
 		*info->pLookPos = Vector3D(at.x, at.y, at.z);
 
@@ -109,11 +109,13 @@ void TPSCamera::Update()
 	//ƒJƒƒ‰•âŠ®ˆÚ“®
 	if (info->pSetupWeapon)
 	{
+		//•Ší‚ð\‚¦‚Ä‚¢‚é
 		m_CameraPos = Vector3D::Lerp(OldCameraPos, m_CameraPos, 0.8f);
 		*info->pLookPos = Vector3D::Lerp(OldLookPos, *info->pLookPos, 0.8f);
 	}
 	else
 	{
+		//•Ší‚ð\‚¦‚Ä‚¢‚È‚¢
 		m_CameraPos = Vector3D::Lerp(OldCameraPos, m_CameraPos, 0.4f);
 		*info->pLookPos = Vector3D::Lerp(OldLookPos, *info->pLookPos, 0.4f);
 	}

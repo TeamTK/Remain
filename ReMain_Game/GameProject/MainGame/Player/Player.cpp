@@ -319,7 +319,7 @@ void Player::Attack()
 		if (m_isTakeWeapon && !m_ChangePutBackWeapon && !m_ChangeTakeWeapon)
 		{
 			m_ChangePutBackWeapon = true;
-			m_Model.SetTime(29);
+			m_Model.SetTime(28);
 		}
 		else if (!m_isTakeWeapon && !m_ChangePutBackWeapon && !m_ChangeTakeWeapon)
 		{
@@ -329,16 +329,17 @@ void Player::Attack()
 	}
 
 	//銃を持っているときに銃を構える(マウス右クリック, 左ショルダー)
-	if ((Input::Mouse.RPressed() || Input::XInputPad1.ShoulderLeftPressed()) && (m_isTakeWeapon && !m_isReload))
+	if ((Input::Mouse.RPressed() || Input::XInputPad1.ShoulderLeftPressed()) &&
+		(m_isTakeWeapon && !m_isReload && !m_isHit))
 	{
 		if (!m_SetupWeapon) m_GunADS.Play(); //構え音
-		m_AnimSpeed = 30;
 		m_State = EPlayerState::eState_SetupWeapon;
 		m_SetupWeapon = true;
 	}
 	else
 	{
-		m_SetupWeapon = false;
+		if (!m_isShot)
+			m_SetupWeapon = false;
 		m_Model.StartAnimation();
 
 		//リロード
@@ -507,6 +508,7 @@ void Player::Animation()
 
 void Player::Idle()
 {
+	printf("Idle\n");
 	//武器を持って待機
 	if (m_isTakeWeapon)
 	{
@@ -533,6 +535,7 @@ void Player::Idle()
 
 void Player::Walk()
 {
+	printf("Walk\n");
 	m_MoveSpeed = WALK_SPEED;
 	m_Volume = VOLUME_WALK;
 
@@ -560,6 +563,7 @@ void Player::Walk()
 
 void Player::Run()
 {
+	printf("Run\n");
 	m_MoveSpeed = RUN_SPEED;
 	m_Volume = VOLUME_RUN;
 
@@ -587,6 +591,7 @@ void Player::Run()
 
 void Player::Crouch()
 {
+	printf("Crouch\n");
 	m_Volume = VOLUME_CROUCH;
 
 	//武器を持っている時は武器をしまってからしゃがむ
@@ -643,6 +648,7 @@ void Player::Crouch()
 
 void Player::StandUp()
 {
+	printf("StandUp\n");
 	m_Anim = EPlayerAnim::eAnim_Crouch;
 	m_AnimSpeed = -TWICE_ANIM_SPEED;
 
@@ -655,6 +661,7 @@ void Player::StandUp()
 
 void Player::TakeWeapon()
 {
+	printf("TakeWeapon\n");
 	switch (m_SelectedWeapon)
 	{
 	case eShotgun:
@@ -730,6 +737,7 @@ void Player::TakeWeapon()
 
 void Player::PutBackWeapon()
 {
+	printf("PutBackWeapon\n");
 	switch (m_SelectedWeapon)
 	{
 	case eShotgun:
@@ -757,6 +765,7 @@ void Player::PutBackWeapon()
 
 void Player::SetupWeapon()
 {
+	printf("SetupWeapon\n");
 	m_MoveSpeed = SETUPWEAPON_MOVE_SPEED;
 
 	switch (m_SelectedWeapon)
@@ -782,6 +791,7 @@ void Player::SetupWeapon()
 
 void Player::Recoil()
 {
+	printf("Recoil\n");
 	switch (m_SelectedWeapon)
 	{
 	case eShotgun:
@@ -803,6 +813,7 @@ void Player::Recoil()
 
 void Player::Reload()
 {
+	printf("Reload\n");
 	m_MoveSpeed = WALK_SPEED;
 
 	if (m_isMove)

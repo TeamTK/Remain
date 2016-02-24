@@ -14,6 +14,6 @@ public:
 private:
 	Image m_Reticle;
 	RenderTask m_RenderTask;
-	bool m_isSetupWeapon;	//プレイヤーが武器を構えているか
+	bool* m_isSetupWeapon;	//プレイヤーが武器を構えているか
 };
 #endif
