@@ -2,6 +2,7 @@
 #define _YOU_ARE_DEAD_H_
 
 #include "..\..\GEKO\GEKO.h"
+#include "..\..\GameSystem\ScreenTransfer.h"
 
 class YouAreDead : public Task
 {
@@ -17,6 +18,7 @@ private:
 	RenderTask m_Render;
 	Timer m_Timer;
 	Image m_YouAreDeadImage;
+	ScreenTransfer_In m_Transfer_In;
 };
 
 #endif

@@ -1,5 +1,6 @@
 #include "Monster_B.h"
 
+#define MONSTAR_B_BORN_ANIM_ENEMY 13
 #define MONSTER_B_ATTACK_ENDTIME 29
 #define MONSTER_B_HITDAMAGE_ENDTIME 29
 #define MONSTER_B_DIE_ENDTIME 29
@@ -64,7 +65,7 @@ Monster_B::Monster_B(EnemyState &enemyState) :
 		m_FuncTask.Start("Idle");
 	}
 
-	m_JudgementAnim = 13;
+	m_JudgementAnim = MONSTAR_B_BORN_ANIM_ENEMY;
 
 	m_DamegeBlood.SetAsset("Monster_B_2");
 }

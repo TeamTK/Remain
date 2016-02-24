@@ -64,7 +64,7 @@ Monster_A::Monster_A(EnemyState &enemyState) :
 		m_FuncTask.Start("Idle");
 	}
 
-	m_JudgementAnim = 20;
+	m_JudgementAnim = COMMON_BORN_ANIM_ENEMY;
 
 	m_DamegeBlood.SetAsset("Monster_A_2");
 }
