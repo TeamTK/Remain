@@ -215,9 +215,6 @@ void Player::Update()
 
 	m_PlayAnim = m_Model.GetPlayAnimation(m_JudgementAnim);
 	m_PlayAnimTime = m_Model.GetPlayTime(m_JudgementAnim);
-
-	m_Model.GetTranselate().DebugDraw("");
-
 }
 
 void Player::Move()

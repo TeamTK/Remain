@@ -8,7 +8,7 @@ enum EWeapons
 	eShotgun,
 	eHandgun,
 	eNone,
-	WeaponAll
+	eWeaponAll
 };
 
 #endif
