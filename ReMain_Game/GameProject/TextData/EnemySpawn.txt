@@ -8,6 +8,9 @@ Begin
   rotation 2
   0.0, 0.0, 0.0
   0.0, 0.0, 0.0
+  wandering 2
+  Chapter_1_1_Monstar_A_1
+  Chapter_1_1_Monstar_A_1
  }
  EnemyName Monster_B
  {
@@ -17,5 +20,8 @@ Begin
   rotation 2
   0.0, 0.0, 0.0
   0.0, 0.0, 0.0
+  wandering 2
+  Chapter_1_1_Monstar_B_1
+  Chapter_1_1_Monstar_B_1
  }
 End

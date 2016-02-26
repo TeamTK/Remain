@@ -60,6 +60,9 @@ Enemy::Enemy(const char* name, EnemyState &enemyState) :
 		m_Search.StopSerch();
 		m_Search.StopMove();
 	}
+
+	//œpœj‰Šú‰»
+	m_Wandering.Init(enemyState.wanderingName, &m_Search, &m_pos, &m_rot);
 }
 
 Enemy::~Enemy()
@@ -161,9 +164,9 @@ void Enemy::Die()
 	}
 }
 
-void Enemy::Wanderings()
+void Enemy::Wandering()
 {
-
+	m_Wandering.Update();
 }
 
 void Enemy::Update()
@@ -192,7 +195,8 @@ void Enemy::Update()
 	m_Model.ChangeAnimation(m_AnimType);
 
 	m_FuncTask.Update();
-	
+	m_FuncTask.RunningDraw();
+
 	//Œo˜H’Tõ‚ð‚·‚éŠÔŠu
 	if (m_SearchCnt >= SEARCH_INTERVAL && m_Sight.GetSleep())
 	{
@@ -274,6 +278,7 @@ void Enemy::HitBullet(Result_Sphere& r)
 			m_AuditorySense.Stop();
 			m_Search.StartSerch();
 			m_Search.StartMove();
+			m_Wandering.Stop();
 		}
 	}
 	else
@@ -284,6 +289,7 @@ void Enemy::HitBullet(Result_Sphere& r)
 		m_FuncTask.Start("Die");
 		m_Sight.Sleep();
 		m_AuditorySense.Stop();
+		m_Wandering.Stop();
 	}
 }
 
@@ -302,6 +308,7 @@ void Enemy::HitSight(const Vector3D *pPos)
 	m_AuditorySense.Stop();
 	m_Search.StartSerch();
 	m_Search.StartMove();
+	m_Wandering.Stop();
 }
 
 void Enemy::Auditory(int volume)
@@ -322,6 +329,7 @@ void Enemy::Auditory(int volume)
 		m_AuditorySense.Stop();
 		m_Search.StartSerch();
 		m_Search.StartMove();
+		m_Wandering.Stop();
 		break;
 
 	default:

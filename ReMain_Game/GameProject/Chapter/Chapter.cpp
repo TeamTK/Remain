@@ -5,6 +5,7 @@
 #include "../MainGame/Enemy/EnemyWave.h"
 #include "../MainGame/AmmoBox/AmmoBox_Shotgun.h"
 #include "../MainGame/Player/PlayerData.h"
+#include "../MainGame/Enemy/Wanderings.h"
 
 void Kill()
 {
@@ -49,6 +50,9 @@ Chapter_1_1::Chapter_1_1() :
 	StageObjectManager::GetInstance()->ClearList();
 	StageObjectManager::GetInstance()->LoadObject("TextData\\StageObject_Cha1_1.txt");
 
+	//“Gœpœjƒpƒ^[ƒ““Ç‚İ‚İ
+	WanderingsManager::LoadFile("TextData\\Wandering_Chapter_1_1.txt");
+
 	//“G¶¬
 	EnemyStateManager::LoadFileState("TextData\\EnemyState.txt");
 	EnemyStateManager::LoadFileSpawn("TextData\\EnemySpawn.txt");
@@ -61,6 +65,8 @@ Chapter_1_1::Chapter_1_1() :
 	m_MapCol.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Chapter_1_1::HitPlayer));
 	m_MapCol.SetID(eHITID5, eHITID1);
 
+	m_MapCol.Sleep();
+
 	m_Render.Regist(6, REGIST_RENDER_FUNC(Chapter_1_1::Render));
 
 	new AmmoBox_Shotgun(Vector3D(-9.5f, 0.0f, 14.4f), Vector3D(0.0f, 200.0f, 0.0f), 6);
@@ -68,6 +74,8 @@ Chapter_1_1::Chapter_1_1() :
 	m_BGM.SetAseet("Field2");
 	m_BGM.SetLoop(true);
 	m_BGM.Play();
+
+	EnemyStateManager::Generation("Normal_Monster_A", "Chapter1-1", "Chapter_1_1_Traceroute", true);
 }
 
 Chapter_1_1::~Chapter_1_1()
@@ -105,6 +113,12 @@ void Chapter_1_1::Update()
 		TaskManager::Kill("Monster_B");
 	}
 	*/
+
+	if (Input::KeyO.Clicked()) //“Gíœ
+	{
+		TaskManager::Kill("Monster_A");
+		TaskManager::Kill("Monster_B");
+	}
 }
 
 void Chapter_1_1::Render()
