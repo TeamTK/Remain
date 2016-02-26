@@ -23,6 +23,7 @@ static SData WeaponData[] =
 
 #define CIRCLE_SIZE 260
 #define WEAPONUI_SIZE 192
+#define CURSOR_VALUE 0.7f
 
 UI_SelectWeapon* g_pUI_SelectWeapon;
 
@@ -85,27 +86,27 @@ void UI_SelectWeapon::Update()
 			}
 			break;
 		case eSelect:
-			//武器選択(方向キー、十字キー)
+			//武器選択(方向キー、右パッド)
 			if (Input::XInputPad1.GetIsConnection())
 			{
 				//コントローラー入力
 				Vector3D PadDir = Vector3D((float)Input::XInputPad1.ThumbRightX(), (float)Input::XInputPad1.ThumbRightY(), 0.0f);
 				PadDir = (PadDir - Vector3D(128, 0.0f, 128)) / 32767;
-				if (abs(PadDir.x) < DeadValue && abs(PadDir.z) < DeadValue)
+				if (abs(PadDir.x) < DeadValue && abs(PadDir.y) < DeadValue)
 				{
 					PadDir = Vector3D(0.0f, 0.0f, 0.0f);
 				}
-				if (PadDir.y < DeadValue)	m_Selected = 0;
-				if (PadDir.y > DeadValue)	m_Selected = 1;
-				if (PadDir.x < DeadValue)	m_Selected = 2;
-				if (PadDir.y > DeadValue)	m_Selected = 3;
+				//if (PadDir.y < -CURSOR_VALUE)	m_Selected = 0;
+				if (PadDir.y > CURSOR_VALUE)	m_Selected = 1;
+				if (PadDir.x < -CURSOR_VALUE)	m_Selected = 2;
+				//if (PadDir.x > CURSOR_VALUE)	m_Selected = 3;
 			}
 			else
 			{
-				if (Input::KeyS.Clicked())	m_Selected = 0;
+				//if (Input::KeyS.Clicked())	m_Selected = 0;
 				if (Input::KeyW.Clicked())	m_Selected = 1;
 				if (Input::KeyA.Clicked())	m_Selected = 2;
-				if (Input::KeyD.Clicked())	m_Selected = 3;
+				//if (Input::KeyD.Clicked())	m_Selected = 3;
 			}
 
 			//カーソル移動
@@ -158,9 +159,8 @@ EWeapons UI_SelectWeapon::Select()
 void UI_SelectWeapon::Draw()
 {
 	//各武器UI
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 4; i++)
 		m_WeaponUI[i].Draw((int)m_UIPos[i].x, (int)m_UIPos[i].y);
-	}
 
 	//カーソル
 	if (State == eSelect)
@@ -173,4 +173,12 @@ void UI_SelectWeapon::Draw()
 bool UI_SelectWeapon::isSelected()
 {
 	return m_isSelected;
+}
+
+bool UI_SelectWeapon::HitCheck(Vector3D pos1, Vector3D pos2, float radius1, float radius2)
+{
+	if (((pos1.x - pos2.x) * (pos1.x - pos2.x)) + ((pos1.y - pos2.y) * (pos1.y - pos2.y))
+		<= (radius1 + radius2) * (radius1 + radius2))
+		return true;
+	return false;
 }
