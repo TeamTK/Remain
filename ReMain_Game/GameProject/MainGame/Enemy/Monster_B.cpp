@@ -53,12 +53,14 @@ Monster_B::Monster_B(EnemyState &enemyState) :
 	m_FuncTask.Regist("Chase", REGIST_FUNC_TASK(Monster_B::Chase));
 	m_FuncTask.Regist("HitDamage", REGIST_FUNC_TASK(Monster_B::HitDamage));
 	m_FuncTask.Regist("Die", REGIST_FUNC_TASK(Monster_B::Die));
+	m_FuncTask.Regist("Wandering", REGIST_FUNC_TASK(Monster_B::Wandering));
 
 	//åoòHíTçıîªíf
 	m_FuncTask.AllStop();
 	if (enemyState.isSearch)
 	{
-		m_FuncTask.Start("Chase");
+		m_FuncTask.Start("Wandering");
+		//m_FuncTask.Start("Chase");
 	}
 	else
 	{
@@ -123,6 +125,12 @@ void Monster_B::Die()
 	m_AnimEndTime = MONSTER_B_DIE_ENDTIME;
 	m_AnimSpeed = ENEMY_NORMAL_SPEED;
 	Enemy::Die();
+}
+
+void Monster_B::Wandering()
+{
+	m_AnimType = eAnimationTrot;
+	Enemy::Wandering();
 }
 
 void Monster_B::Update()

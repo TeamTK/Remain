@@ -2,6 +2,7 @@
 #define _ENEMY_H_
 
 #include "../Character.h"
+#include "Wanderings.h"
 
 #define ENEMY_NORMAL_SPEED 30.0f
 #define COMMON_BORN_ANIM_ENEMY 20
@@ -19,6 +20,7 @@ struct EnemyState
 	float sightAngle;
 	float sightDistance;
 	const char* topographyName;
+	std::string wanderingName;
 	Vector3D posSpawn;
 	Vector3D rotation;
 };
@@ -53,7 +55,7 @@ protected:
 	void Chase();
 	void HitDamage();
 	void Die();
-	void Wanderings();
+	void Wandering();
 
 private:
 	void HitSight(const Vector3D *pPos);
@@ -83,6 +85,8 @@ protected:
 	//追跡用
 	Vector3D m_Distance; //敵とプレイヤーとの距離
 	const Vector3D *m_pPlayerPos; //プレイヤーの位置のポインタ
+
+	Wanderings m_Wandering; //敵を指定した場所に徘徊
 
 	//プレイヤーからの攻撃された時の当たり判定
 	Collider *m_pHitAttackBody;

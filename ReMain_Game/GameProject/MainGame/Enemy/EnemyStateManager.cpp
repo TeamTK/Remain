@@ -25,10 +25,12 @@ struct EnemySpawnInfo
 {
 	Vector3D pos;
 	Vector3D rotation;
+	std::string wanderingName;
 
-	EnemySpawnInfo(const Vector3D &pos, const Vector3D &rotation) :
+	EnemySpawnInfo(const Vector3D &pos, const Vector3D &rotation, std::string wanderingName) :
 		pos(pos),
-		rotation(rotation) {}
+		rotation(rotation),
+		wanderingName(wanderingName){}
 };
 
 class EnemyStateManager::EnemyStatePimpl
@@ -163,6 +165,7 @@ void EnemyStateManager::LoadFileSpawn(const char *fileName)
 
 	std::vector<Vector3D> position;
 	std::vector<Vector3D> rotation;
+	std::vector<std::string> wanderingName;
 
 	while (!feof(fp))
 	{
@@ -218,21 +221,38 @@ void EnemyStateManager::LoadFileSpawn(const char *fileName)
 						rotation.emplace_back(x, y, z);
 					}
 
+					fscanf_s(fp, "%s", key, sizeof(key));
+
+					//úpújÉpÉ^Å[ÉìÇÃñºëOÇÃêî
+					fscanf_s(fp, "%s", key, sizeof(key));
+					cnt = std::stoi(key);
+
+					//úpújÉpÉ^Å[ÉìÇÃñºëOì«Ç›çûÇ›
+					fgets(key, sizeof(key), fp);
+					for (int i = 0; i < cnt; i++)
+					{
+						fscanf_s(fp, "%s", key, sizeof(key));
+						wanderingName.emplace_back(key);
+					}
+
 					unsigned int posNum = position.size();
 					unsigned int rotNum = rotation.size();
+					unsigned int nameNum = wanderingName.size();
 					assert(posNum == rotNum && "à íuÇ∆âÒì]ÇÃçáåvÇ™àÍívÇµÇ‹ÇπÇÒ");
 
 					//äiî[
 					EnemyStatePimpl * p = GetInstance()->m_pEnemyStatePimpl;
 					for (int i = 0; i < cnt; i++)
 					{
-						p->mapSpawn[enemySpawnName][enemyName].emplace_back(position[i], rotation[i]);
+						p->mapSpawn[enemySpawnName][enemyName].emplace_back(position[i], rotation[i], wanderingName[i]);
 					}
 
 					position.shrink_to_fit();
 					position.clear();
 					rotation.shrink_to_fit();
 					rotation.clear();
+					wanderingName.shrink_to_fit();
+					wanderingName.clear();
 				}
 			}	
 		}
@@ -267,6 +287,7 @@ void EnemyStateManager::Generation(const char *stateName, const char *spawnName,
 			{
 				state.posSpawn = it->second[i].pos;
 				state.rotation = it->second[i].rotation;
+				state.wanderingName = it->second[i].wanderingName;
 				new Monster_A(state);
 			}
 		}
@@ -277,6 +298,7 @@ void EnemyStateManager::Generation(const char *stateName, const char *spawnName,
 			{
 				state.posSpawn = it->second[i].pos;
 				state.rotation = it->second[i].rotation;
+				state.wanderingName = it->second[i].wanderingName;
 				new Monster_B(state);
 			}
 		}

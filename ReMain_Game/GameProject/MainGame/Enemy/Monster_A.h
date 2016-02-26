@@ -24,6 +24,7 @@ public:
 	void Chase();
 	void HitDamage();
 	void Die();
+	void Wandering();
 	void Update();
 
 private:
