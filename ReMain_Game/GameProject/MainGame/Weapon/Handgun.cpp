@@ -1,5 +1,6 @@
 #include "Handgun.h"
 #include "../Player/PlayerInfo.h"
+#include "../../GameSystem/Effect/EffectAnimation.h"
 
 Handgun* g_pHandgun;
 
@@ -26,7 +27,7 @@ void Handgun::Update()
 	{
 		//\‚¦ó‘Ô
 		m_Model.SetTranselate(0.03f, 0.1f, 0.05f);
-		m_Model.SetRotationDegree(180, -90, 8);
+		m_Model.SetRotationDegree(180, -90, -2);
 	}
 	else if ((*m_PlayerAnim == eAnim_TakeHandgun  && *m_PlayerAnimFrame >= 15) ||
 		*m_PlayerAnim == eAnim_IdleTakeHandgun || *m_PlayerAnim == eAnim_WalkTakeHandgun ||

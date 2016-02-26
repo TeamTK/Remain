@@ -78,7 +78,7 @@ void TPSCamera::Update()
 		info->pModel->SetRotationRadian(info->pRot->x, info->pRot->y, info->pRot->z);
 
 		Matrix mat = info->pModel->GetBornMatrix(6, true);
-		Vector4D eye = Vector4D(-0.25f, 0.15f, -0.1f, 1.0f) * mat;
+		Vector4D eye = Vector4D(-0.25f, 0.15f, -0.2f, 1.0f) * mat;
 		Vector4D at = Vector4D(-0.25f, 0.2f, 0.2f, 1.0f) *  mat;
 		m_CameraPos = Vector3D(eye.x, eye.y, eye.z);
 		*info->pLookPos = Vector3D(at.x, at.y, at.z);

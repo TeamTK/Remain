@@ -86,10 +86,28 @@ void UI_SelectWeapon::Update()
 			break;
 		case eSelect:
 			//武器選択(方向キー、十字キー)
-			if (Input::KeyS.Clicked() || Input::XInputPad1.DownClicked())	m_Selected = 0;
-			if (Input::KeyW.Clicked() || Input::XInputPad1.UpClicked())		m_Selected = 1;
-			if (Input::KeyA.Clicked() || Input::XInputPad1.LeftClicked())	m_Selected = 2;
-			if (Input::KeyD.Clicked() || Input::XInputPad1.RightClicked())	m_Selected = 3;
+			if (Input::XInputPad1.GetIsConnection())
+			{
+				//コントローラー入力
+				Vector3D PadDir = Vector3D((float)Input::XInputPad1.ThumbRightX(), (float)Input::XInputPad1.ThumbRightY(), 0.0f);
+				PadDir = (PadDir - Vector3D(128, 0.0f, 128)) / 32767;
+				if (abs(PadDir.x) < DeadValue && abs(PadDir.z) < DeadValue)
+				{
+					PadDir = Vector3D(0.0f, 0.0f, 0.0f);
+				}
+				if (PadDir.y < DeadValue)	m_Selected = 0;
+				if (PadDir.y > DeadValue)	m_Selected = 1;
+				if (PadDir.x < DeadValue)	m_Selected = 2;
+				if (PadDir.y > DeadValue)	m_Selected = 3;
+			}
+			else
+			{
+				if (Input::KeyS.Clicked())	m_Selected = 0;
+				if (Input::KeyW.Clicked())	m_Selected = 1;
+				if (Input::KeyA.Clicked())	m_Selected = 2;
+				if (Input::KeyD.Clicked())	m_Selected = 3;
+			}
+
 			//カーソル移動
 			m_ScPos = Vector3D::Lerp(m_ScPos, WeaponData[m_Selected].pos, 0.6f);
 
@@ -140,7 +158,7 @@ EWeapons UI_SelectWeapon::Select()
 void UI_SelectWeapon::Draw()
 {
 	//各武器UI
-	for (int i = 0; i < 4; i++)	{
+	for (int i = 0; i < 4; i++) {
 		m_WeaponUI[i].Draw((int)m_UIPos[i].x, (int)m_UIPos[i].y);
 	}
 

@@ -417,7 +417,6 @@ void Player::Attack()
 				effectData.time = 30;
 				new EffectParabola(effectData, "GunEffect", dir);
 				*/
-
 				EffectAnimationInfo info;
 				info.frameNum = 8;
 				info.pos = m_Model.GetBornPos(24) + m_Model.GetAxisZ(0.9f);
