@@ -29,13 +29,6 @@ Vector4D *DirectionalLight::GetLightColor()
 
 void DirectionalLight::SetDirection(float x, float y)
 {
-	//D3DXMATRIX RotX, RotZ;
-	//D3DXMatrixRotationX(&RotX, Math::ChangeToRadian(x));
-	//D3DXMatrixRotationZ(&RotZ, Math::ChangeToRadian(z));
-
-	//D3DXMATRIX all = RotX * RotZ;
-	//D3DXVec4Transform(&GetInstance()->m_Direction, &D3DXVECTOR4(0, 1, 0, 0), &all);
-
 	Matrix RX, RY;
 	RX.RotationDegreeX(x);
 	RY.RotationDegreeZ(y);

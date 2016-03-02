@@ -4,9 +4,9 @@
 #include "Input.h"
 
 Camera::Camera() : 
-	m_EyePt(D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
-	m_LookatPt(D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
-	m_UpVec(D3DXVECTOR3(0.0f, 1.0f, 0.0f)),
+	m_EyePt(),
+	m_LookatPt(),
+	m_UpVec(0.0f, 1.0f, 0.0f),
 	m_Near(0.1f),
 	m_Far(1000.0f),
 	m_ViewAngle(Math::ChangeToRadian(45)),
@@ -25,29 +25,24 @@ Camera* Camera::GetInstance()
 	return &camera;
 }
 
-const D3DXMATRIX* Camera::GetView()
+const Matrix* Camera::GetView()
 {
 	return &GetInstance()->m_View;
 }
 
-const D3DXMATRIX* Camera::GetProjection()
+const Matrix* Camera::GetProjection()
 {
 	return &GetInstance()->m_Proj;
 }
 
-const D3DXMATRIX* Camera::GetViewProjection()
+const Matrix* Camera::GetViewProjection()
 {
 	return &GetInstance()->m_ViewProj;
 }
 
-const D3DXMATRIX* Camera::GetViewport()
+const Matrix* Camera::GetViewport()
 {
 	return &GetInstance()->m_Viewport;
-}
-
-const D3DXVECTOR3 Camera::GetEyePositionD3D()
-{
-	return GetInstance()->m_EyePt;
 }
 
 const Vector3D Camera::GetEyePosition()
@@ -70,32 +65,38 @@ void Camera::SetViewAngle(float viewAngle)
 
 void Camera::SetEye(float x, float y, float z)
 {
-	GetInstance()->m_EyePt = D3DXVECTOR3(x, y, z);
+	GetInstance()->m_EyePt.x = x;
+	GetInstance()->m_EyePt.y = y;
+	GetInstance()->m_EyePt.z = z;
 }
 
 void Camera::SetEye(const Vector3D &eyePos)
 {
-	GetInstance()->m_EyePt = D3DXVECTOR3(eyePos.x, eyePos.y, eyePos.z);
+	GetInstance()->m_EyePt = eyePos;
 }
 
 void Camera::SetLookat(float x, float y, float z)
 {
-	GetInstance()->m_LookatPt = D3DXVECTOR3(x, y, z);
+	GetInstance()->m_LookatPt.x = x;
+	GetInstance()->m_LookatPt.y = y;
+	GetInstance()->m_LookatPt.z = z;
 }
 
 void Camera::SetLookat(const Vector3D &look)
 {
-	GetInstance()->m_LookatPt = D3DXVECTOR3(look.x, look.y, look.z);
+	GetInstance()->m_LookatPt = look;
 }
 
 void Camera::SetUpVec(float x, float y, float z)
 {
-	GetInstance()->m_UpVec = D3DXVECTOR3(x, y, z);
+	GetInstance()->m_UpVec.x = x;
+	GetInstance()->m_UpVec.y = y;
+	GetInstance()->m_UpVec.z = z;
 }
 
 void Camera::SetUpVec(const Vector3D &upVec)
 {
-	GetInstance()->m_UpVec = D3DXVECTOR3(upVec.x, upVec.y, upVec.z);
+	GetInstance()->m_UpVec = upVec;
 }
 
 void Camera::SetDrawArea(float width, float height, float x, float y)

@@ -109,15 +109,14 @@ void Title::Render()
 	m_HandGun.Render();
 	m_AmmoBox.Render();
 
-	if (m_IsTransferStart)
-	{
-		m_Transfer.Render();
-	}
-
 	//2Dオブジェクト
 	m_TitleImage.Draw(TITLE_POS);
 	m_StartImage.Draw(START_POS);
 	m_ExitImage.Draw(EXIT_POS);
 	m_SelectImage.Draw(m_SelectPos);
 
+	if (m_IsTransferStart)
+	{
+		m_Transfer.Render();
+	}
 }

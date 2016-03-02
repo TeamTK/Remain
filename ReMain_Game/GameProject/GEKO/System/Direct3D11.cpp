@@ -83,6 +83,10 @@ HRESULT Direct3D11::InitD3D11(INT Width, INT Height)
 	//rdc.CullMode = D3D11_CULL_FRONT;
 	rdc.FillMode = D3D11_FILL_SOLID;
 	//rdc.FillMode = D3D11_FILL_WIREFRAME;
+	rdc.DepthBias = 0;
+	rdc.DepthBiasClamp = 0.0f;
+	rdc.SlopeScaledDepthBias = 0.0f;
+	rdc.DepthClipEnable = true;
 	rdc.FrontCounterClockwise = false;
 	rdc.MultisampleEnable = true;
 	rdc.AntialiasedLineEnable = false;
@@ -135,6 +139,39 @@ HRESULT Direct3D11::InitD3D11(INT Width, INT Height)
 		return FALSE;
 	}
 	
+	//深度・ステンシルステートオブジェクト作成
+	D3D11_DEPTH_STENCIL_DESC depthStencil;
+	depthStencil.DepthEnable = true;
+	depthStencil.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencil.DepthFunc = D3D11_COMPARISON_LESS;
+	depthStencil.StencilEnable = false;
+	depthStencil.StencilReadMask = D3D10_DEFAULT_STENCIL_READ_MASK;
+	depthStencil.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+
+	//面が表を向いている時の設定
+	depthStencil.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencil.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencil.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencil.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	//面が裏を向いている時の設定
+	depthStencil.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencil.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencil.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencil.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	//デプステストONで作成
+	if (FAILED(m_pDevice->CreateDepthStencilState(&depthStencil, &m_pDepthStencilState_DepthOn)))
+	{
+		return FALSE;
+	}
+
+	//デプステストOFFで作成
+	depthStencil.DepthEnable = false;
+	if (FAILED(m_pDevice->CreateDepthStencilState(&depthStencil, &m_pDepthStencilState_DepthOff)))
+	{
+		return FALSE;
+	}
 
 	return S_OK;
 }
@@ -207,7 +244,7 @@ void Direct3D11::ChangeWindowSize()
 	SAFE_RELEASE(m_pDepthStencilView);					    // 深度/ステンシル ビューの解放
 	SAFE_RELEASE(m_pDepthStencil);						    // 深度/ステンシル テクスチャの解放
 
-	m_pSwapChain->ResizeBuffers(1, m_ResolutionWidth, m_ResolutionHeight, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
+	m_pSwapChain->ResizeBuffers(2, m_ResolutionWidth, m_ResolutionHeight, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
 
 	InitBackBuffer();
 }
@@ -237,6 +274,10 @@ void Direct3D11::SetRasterizer(D3D11_CULL_MODE cullMode, D3D11_FILL_MODE fillMod
 	ZeroMemory(&rdc, sizeof(rdc));
 	rdc.CullMode = cullMode;
 	rdc.FillMode = fillMode;
+	rdc.DepthBias = 0;
+	rdc.DepthBiasClamp = 0.0f;
+	rdc.SlopeScaledDepthBias = 0.0f;
+	rdc.DepthClipEnable = true;
 	rdc.FrontCounterClockwise = false;
 	rdc.MultisampleEnable = true;
 	rdc.AntialiasedLineEnable = false;
@@ -292,10 +333,20 @@ void Direct3D11::Present()
 	m_pSwapChain->Present(0, 0); //画面更新（バックバッファをフロントバッファに)
 }
 
-void Direct3D11::RederTarget()
+void Direct3D11::RenderTarget()
 {
 	//レンダーターゲットビューとデプスステンシルビューをパイプラインにセット
 	m_pDeviceContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_pDepthStencilView);
+}
+
+void Direct3D11::DepthOn()
+{
+	m_pDeviceContext->OMSetDepthStencilState(m_pDepthStencilState_DepthOn, 0);
+}
+
+void Direct3D11::DepthOff()
+{
+	m_pDeviceContext->OMSetDepthStencilState(m_pDepthStencilState_DepthOff, 0);
 }
 
 void Direct3D11::FullScreen(bool isFullScreen)

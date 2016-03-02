@@ -4,15 +4,18 @@
 #include "MainGame.h"
 #include <thread>
 
-#define NOW_LOADING_POS 550, 500
+#define NOW_LOADING_POS 500, 500
 
-Image g_NowLodingImage;
+ImageAnimation g_NowLodingImage;
+//Image g_NowLodingImage;
 bool g_isLoad = false;
 
 NowLoading::NowLoading(bool isResource) :
 	Task("NowLoading", 0)
 {
-	g_NowLodingImage.SetAsset("NowLoading");
+	//g_NowLodingImage.SetAsset("NowLoading");
+
+	g_NowLodingImage.FrameDivision("NowLoading", 12, 256, 80);
 
 	//リソース読み込み既に読み込んでいたら実行しない
 	if (!isResource)
@@ -32,7 +35,8 @@ NowLoading::NowLoading(bool isResource) :
 				GEKO::ScreenUpdate();
 				GEKO::ClearColor(10, 10, 10);
 
-				g_NowLodingImage.Draw(NOW_LOADING_POS);
+				g_NowLodingImage.PlayFrame(0.01f);
+				g_NowLodingImage.Draw(Vector2D(NOW_LOADING_POS));
 			}
 		};
 

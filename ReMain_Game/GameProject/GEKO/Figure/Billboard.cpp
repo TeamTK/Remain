@@ -56,8 +56,7 @@ void Billboard::Render(const Vector3D &pos, float size, const std::string &name)
 	pDeviceContext->VSSetShader(pInfo->pVertexShader, NULL, 0);
 	pDeviceContext->PSSetShader(pInfo->pPixelShader, NULL, 0);
 
-	D3DXMATRIX world;
-	D3DXMatrixIdentity(&world);
+	Matrix world;
 
 	//平行移動
 	world._41 = pos.x;
@@ -69,7 +68,7 @@ void Billboard::Render(const Vector3D &pos, float size, const std::string &name)
 	world._22 = size;
 	world._33 = size;
 
-	D3DXMATRIX CancelRotation = (*Camera::GetView());
+	Matrix CancelRotation = (*Camera::GetView());
 	CancelRotation._41 = CancelRotation._42 = CancelRotation._43 = 0.0f;
 	D3DXMatrixInverse(&CancelRotation, NULL, &CancelRotation);
 	world = CancelRotation * world;
@@ -80,9 +79,8 @@ void Billboard::Render(const Vector3D &pos, float size, const std::string &name)
 	if (SUCCEEDED(pDeviceContext->Map(pInfo->pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
 		//ワールド、カメラ、射影行列を渡す
-		D3DXMATRIX m = world * (*Camera::GetView()) * (*Camera::GetProjection());
-		D3DXMatrixTranspose(&m, &m);
-		cb.mWVP = m;
+		Matrix m = world * *Camera::GetViewProjection();
+		D3DXMatrixTranspose(&cb.mWVP, &m);
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));
 		pDeviceContext->Unmap(pInfo->pConstantBuffer, 0);
@@ -122,9 +120,7 @@ BillboardAnimation::BillboardAnimation() :
 
 }
 
-BillboardAnimation::BillboardAnimation(const std::string &assetName, int frameNum, int sizeW, int sizeH) :
-	m_IsEnd(false),
-	m_Speed(0.0f)
+BillboardAnimation::BillboardAnimation(const std::string &assetName, int frameNum, int sizeW, int sizeH)
 {
 	FrameDivision(assetName, frameNum, sizeW, sizeH);
 }
@@ -142,6 +138,9 @@ bool BillboardAnimation::GetIsEnd() const
 void BillboardAnimation::FrameDivision(const std::string &assetName, int frameNum, int sizeW, int sizeH)
 {
 	ImageInfo *pImage = ImageAsset::GetImage(assetName)->GetImageInfo();
+	m_IsEnd = false;
+	m_FrameNum = 0;
+	m_Speed = 0.0f;
 
 	if (m_pBillboard != nullptr)
 	{
@@ -174,7 +173,7 @@ void BillboardAnimation::FrameDivision(const std::string &assetName, int frameNu
 		float uvLeft = cntSizeW / (float)pImage->Width;
 		float uvRight = (cntSizeW + sizeW) / (float)pImage->Width;
 		float uvTop = cntSizeH / (float)pImage->Height;
-		float uvBotton = (cntSizeH + sizeW) / (float)pImage->Height;
+		float uvBotton = (cntSizeH + sizeH) / (float)pImage->Height;
 
 		info.leftTopUV = Vector2D(uvLeft, uvTop);
 		info.leftDwonUV = Vector2D(uvLeft, uvBotton);
@@ -207,7 +206,8 @@ void BillboardAnimation::FrameDivision(const std::string &assetName, int frameNu
 
 void BillboardAnimation::PlayFrame(float frame)
 {
-	m_Speed += Math::VelocityToFrameM(frame);
+	//m_Speed += Math::VelocityToFrameM(frame);
+	m_Speed += frame;
 }
 
 void BillboardAnimation::Render(const Vector3D &pos, float size)
@@ -228,5 +228,5 @@ void BillboardAnimation::Render(const Vector3D &pos, float size)
 
 void BillboardAnimation::DebugFrame()
 {
-	std::cout << m_FrameNum << "\n";
+	printf("%d\n", m_FrameNum);
 }

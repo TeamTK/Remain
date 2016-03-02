@@ -5,16 +5,16 @@
 
 struct MaterialX
 {
-	D3DXVECTOR3 Ambient;	//アンビエント
-	D3DXVECTOR4 Diffuse;	//ディフューズ
-	D3DXVECTOR3 Specular;	//スペキュラー
-	std::string TextureName;//テクスチャーファイル名
+	Vector3D ambient;	//アンビエント
+	Vector4D diffuse;	//ディフューズ
+	Vector3D specular;	//スペキュラー
+	std::string textureName;//テクスチャーファイル名
 
-	MaterialX(D3DXVECTOR4 &Diffuse, D3DXVECTOR3 &Specular, D3DXVECTOR3 &Ambient, const std::string &TextureName) :
-		Diffuse(Diffuse),
-		Specular(Specular),
-		Ambient(Ambient),
-		TextureName(TextureName)
+	MaterialX(Vector4D &Diffuse, Vector3D &Specular, Vector3D &Ambient, const std::string &textureName) :
+		diffuse(Diffuse),
+		specular(Specular),
+		ambient(Ambient),
+		textureName(textureName)
 	{
 	}
 };

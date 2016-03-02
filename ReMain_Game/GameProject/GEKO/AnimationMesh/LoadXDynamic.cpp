@@ -1,26 +1,20 @@
 #include "LoadXDynamic.h"
 #include "..\Mesh\LoadXStatic.h"
 #include "..\System\Window.h"
-#include <sstream>
-#include <chrono>
 
 struct SkinWeightInfo
 {
 	int listNumAll;
 	std::vector<int> weightList;
 	std::vector<float> weight;
-	D3DXMATRIX offsetMat;
-	SkinWeightInfo()
-	{
-		D3DXMatrixIdentity(&offsetMat);
-	}
+	Matrix offsetMat;
 };
 
 struct AnimationInfo
 {
-	std::vector<D3DXVECTOR4> rotation;
-	std::vector<D3DXVECTOR3> scale;
-	std::vector<D3DXVECTOR3> position;
+	std::vector<Vector4D> rotation;
+	std::vector<Vector3D> scale;
+	std::vector<Vector3D> position;
 };
 
 LoadXDynamic::LoadXDynamic(std::string fileName) :
@@ -75,9 +69,9 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 
 	std::vector<int> face;
 	std::vector<int> normalIndex;
-	std::vector<D3DXVECTOR3> coordinate;
-	std::vector<D3DXVECTOR3> normal;
-	std::vector<D3DXVECTOR2> uv;
+	std::vector<Vector3D> coordinate;
+	std::vector<Vector3D> normal;
+	std::vector<Vector2D> uv;
 	std::vector<MaterialX> material;
 	std::vector<int> materialList;
 
@@ -234,10 +228,10 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 
 			fgets(str, sizeof(str), fp);
 
-			D3DXVECTOR4 kd(0.0f, 0.0f, 0.0f, 0.0f);
+			Vector4D kd(0.0f, 0.0f, 0.0f, 0.0f);
 			float sp = 0.0f;
-			D3DXVECTOR3 ks(0.0f, 0.0f, 0.0f);
-			D3DXVECTOR3 ka(0.0f, 0.0f, 0.0f);
+			Vector3D ks(0.0f, 0.0f, 0.0f);
+			Vector3D ka(0.0f, 0.0f, 0.0f);
 			std::string textureName;
 
 			//マテリアル成分読み込み
@@ -305,9 +299,9 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	assert(material.size() != 0 && "Xファイルのマテリアルがありません");
 
 	//マテリアルとインデックスバッファー動的作成
-	m_MeshInfo.m_pMaterial = new SkinMaterialInfo[m_MeshInfo.materialNumAll];
-	m_MeshInfo.m_ppIndexBuffer = new ID3D11Buffer*[m_MeshInfo.materialNumAll];
-	m_MeshInfo.pvVertex = new SkinVertexInfo[m_MeshInfo.vertexNumAll];
+	m_MeshInfo.pMaterial = new SkinMaterialInfo[m_MeshInfo.materialNumAll];
+	m_MeshInfo.ppIndexBuffer = new ID3D11Buffer*[m_MeshInfo.materialNumAll];
+	m_MeshInfo.pVertex = new SkinVertexInfo[m_MeshInfo.vertexNumAll];
 
 	D3D11_BUFFER_DESC bd;
 	D3D11_SUBRESOURCE_DATA InitData;
@@ -321,20 +315,20 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 		count = 0;
 
 		//マテリアル割り当て
-		m_MeshInfo.m_pMaterial[i].Ambient = material[i].Ambient;
-		m_MeshInfo.m_pMaterial[i].Diffuse = material[i].Diffuse;
-		m_MeshInfo.m_pMaterial[i].Specular = material[i].Specular;
+		m_MeshInfo.pMaterial[i].ambient = material[i].ambient;
+		m_MeshInfo.pMaterial[i].diffuse = material[i].diffuse;
+		m_MeshInfo.pMaterial[i].specular = material[i].specular;
 
-		m_MeshInfo.m_pMaterial[i].TextureName = material[i].TextureName;
+		m_MeshInfo.pMaterial[i].textureName = material[i].textureName;
 
-		if (material[i].TextureName == "NoTexture")
+		if (material[i].textureName == "NoTexture")
 		{
-			m_MeshInfo.m_IsTexture = false;
+			m_MeshInfo.isTexture = false;
 		}
 		else
 		{
 			//テクスチャーを作成
-			if (FAILED(D3DX11CreateShaderResourceViewFromFile(pDevice, material[i].TextureName.c_str(), NULL, NULL, &m_MeshInfo.m_pMaterial[i].pTexture, NULL)))
+			if (FAILED(D3DX11CreateShaderResourceViewFromFile(pDevice, material[i].textureName.c_str(), NULL, NULL, &m_MeshInfo.pMaterial[i].pTexture, NULL)))
 			{
 				MessageBoxA(NULL, "テクスチャーの読み込みに失敗しました", NULL, MB_OK);
 				return E_FAIL;
@@ -349,7 +343,7 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 				faceBuffer[count] = face[j * 3];
 				faceBuffer[count + 1] = face[j * 3 + 1];
 				faceBuffer[count + 2] = face[j * 3 + 2];
-				m_MeshInfo.m_pMaterial[i].dwNumFace += 1;
+				m_MeshInfo.pMaterial[i].numPolygon += 1;
 				count += 3;
 			}
 		}
@@ -357,12 +351,12 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 
 		//インデックスバッファーを作成
 		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth = sizeof(int) * m_MeshInfo.m_pMaterial[i].dwNumFace * 3;
+		bd.ByteWidth = sizeof(int) * m_MeshInfo.pMaterial[i].numPolygon * 3;
 		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		bd.CPUAccessFlags = 0;
 		bd.MiscFlags = 0;
 		InitData.pSysMem = faceBuffer;
-		if (FAILED(pDevice->CreateBuffer(&bd, &InitData, &m_MeshInfo.m_ppIndexBuffer[i])))
+		if (FAILED(pDevice->CreateBuffer(&bd, &InitData, &m_MeshInfo.ppIndexBuffer[i])))
 			return FALSE;
 
 		delete[] faceBuffer;
@@ -376,9 +370,9 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 		//uv有りバージョン
 		for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
 		{
-			m_MeshInfo.pvVertex[i].vPos = coordinate[i];
-			m_MeshInfo.pvVertex[face[i]].vNormal = normal[normalIndex[i]];
-			m_MeshInfo.pvVertex[i].vTex = uv[i];
+			m_MeshInfo.pVertex[i].pos = coordinate[i];
+			m_MeshInfo.pVertex[face[i]].normal = normal[normalIndex[i]];
+			m_MeshInfo.pVertex[i].uv = uv[i];
 		}
 	}
 	else
@@ -386,8 +380,8 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 		//uvなしバージョン
 		for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
 		{
-			m_MeshInfo.pvVertex[i].vPos = coordinate[i];
-			m_MeshInfo.pvVertex[face[i]].vNormal = normal[normalIndex[i]];
+			m_MeshInfo.pVertex[i].pos = coordinate[i];
+			m_MeshInfo.pVertex[face[i]].normal = normal[normalIndex[i]];
 		}
 	}
 
@@ -395,7 +389,7 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	AddBoneHierarchy(&m_BornInfo.sBorn, fp, 0); //ボーン階層構造読み込み
 
 	fseek(fp, 0, SEEK_SET);
-	LoadAnimation(fp, m_MeshInfo.pvVertex); //アニメーションとスキンウェイト読み込み
+	LoadAnimation(fp, m_MeshInfo.pVertex); //アニメーションとスキンウェイト読み込み
 
 	//ローカル行列格納
 	//m_MeshInfo.m_LocalMat = m_BornInfo.BornList[0]->initMat *m_BornInfo.BornList[m_BornInfo.BornList.size() - 1]->initMat;
@@ -406,8 +400,8 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
-	InitData.pSysMem = m_MeshInfo.pvVertex;
-	if (FAILED(pDevice->CreateBuffer(&bd, &InitData, &m_MeshInfo.m_pVertexBuffer)))
+	InitData.pSysMem = m_MeshInfo.pVertex;
+	if (FAILED(pDevice->CreateBuffer(&bd, &InitData, &m_MeshInfo.pVertexBuffer)))
 		return FALSE;
 
 	//削除
@@ -433,19 +427,19 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 
 void LoadXDynamic::Relese()
 {
-	if (m_MeshInfo.m_pMaterial != nullptr)
+	if (m_MeshInfo.pMaterial != nullptr)
 	{
 		for (int i = 0; i < m_MeshInfo.materialNumAll; i++)
 		{
-			SAFE_RELEASE(m_MeshInfo.m_pMaterial[i].pTexture);
-			m_MeshInfo.m_ppIndexBuffer[i]->Release();
+			SAFE_RELEASE(m_MeshInfo.pMaterial[i].pTexture);
+			m_MeshInfo.ppIndexBuffer[i]->Release();
 		}
 
-		SAFE_DELETE_ARRAY(m_MeshInfo.pvVertex);
-		SAFE_DELETE_ARRAY(m_MeshInfo.m_pMaterial);
-		SAFE_DELETE_ARRAY(m_MeshInfo.m_ppIndexBuffer);
-		SAFE_RELEASE(m_MeshInfo.m_pVertexBuffer);
-		SAFE_RELEASE(m_MeshInfo.m_pSampleLinear);
+		SAFE_DELETE_ARRAY(m_MeshInfo.pVertex);
+		SAFE_DELETE_ARRAY(m_MeshInfo.pMaterial);
+		SAFE_DELETE_ARRAY(m_MeshInfo.ppIndexBuffer);
+		SAFE_RELEASE(m_MeshInfo.pVertexBuffer);
+		SAFE_RELEASE(m_MeshInfo.pSampleLinear);
 	}
 }
 
@@ -473,62 +467,8 @@ void LoadXDynamic::Update(CopyBorn *pCopyBorn)
 	AnimUpdate(pCopyBorn, m_BornInfo.sBorn.child);
 
 	//ボーン更新
-	D3DXMATRIX m;
-	D3DXMatrixIdentity(&m);
+	Matrix m;
 	BornMatUpdate(pCopyBorn, m_BornInfo.sBorn.child, m);
-}
-
-void LoadXDynamic::BornDebug(eBornDebug eBornDebug)
-{
-	/*
-	D3DXMATRIX m;
-	std::string str;
-	auto it = m_BornInfo.BornList.begin();
-	auto itEnd = m_BornInfo.BornList.end();
-	for (; it != itEnd; it++)
-	{
-		switch (eBornDebug)
-		{
-		case eInitMat:   m = (*it)->initMat; str = "InitMat"; break;
-		case eOffsetMat: m = (*it)->offsetMat; str = "OffsetMat"; break;
-		case eWorld:     m = (*it)->worldMat; str = "WorldMat"; break;
-		case eBornMat:   m = (*it)->bornMat; str = "BornMat"; break;
-		default: break;
-		}
-
-		//行列描画
-		std::cout << (*it)->BornName;
-		std::cout << " BornIndex" << "[" << (*it)->indexId << "]" << " ";
-		std::cout << str << "\n";
-		printf("%f, %f, %f, %f\n", m._11, m._12, m._13, m._14);
-		printf("%f, %f, %f, %f\n", m._21, m._22, m._23, m._24);
-		printf("%f, %f, %f, %f\n", m._31, m._32, m._33, m._34);
-		printf("%f, %f, %f, %f\n", m._41, m._42, m._43, m._44);
-		std::cout << "\n";
-	}
-	*/
-}
-
-void LoadXDynamic::AnimationDebug(int animNum)
-{
-	/*
-	int FrameNum = m_BornInfo.AnimationSetFrameNum[animNum].size();
-	std::cout << " FrameNum" << FrameNum << "\n";
-
-	auto it = m_BornInfo.AnimationSetMat[animNum].begin();
-
-	for (; it != m_BornInfo.AnimationSetMat[animNum].end(); it++)
-	{
-		auto it2 = it->second.begin();
-
-		std::cout << it->first << "\n";
-		D3DMATRIX m = *it2;
-		printf("%f, %f, %f, %f\n", m._11, m._12, m._13, m._14);
-		printf("%f, %f, %f, %f\n", m._21, m._22, m._23, m._24);
-		printf("%f, %f, %f, %f\n", m._31, m._32, m._33, m._34);
-		printf("%f, %f, %f, %f\n", m._41, m._42, m._43, m._44);
-	}
-	*/
 }
 
 void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
@@ -707,8 +647,13 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 	}
 
 	//アニメーションセットをマトリックスに変換
-	D3DXMATRIX m;
-	D3DXMATRIX S;
+	Matrix m;
+	Matrix S;
+
+	Vector4D rotation;
+	Vector3D scale;
+	Vector3D position;
+	D3DXQUATERNION quaternionOut;
 
 	int cnt = 0;
 	for (auto& i : AnimationSet)
@@ -718,16 +663,18 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 		{
 			for (int k = 0; k < loopNum; k++)
 			{
-				D3DXMatrixIdentity(&m);
+				rotation = j.second.rotation[k];
+				scale = j.second.scale[k];
+				position = j.second.position[k];
 
-				D3DXVECTOR4 rotation = j.second.rotation[k];
-				D3DXVECTOR3 scale = j.second.scale[k];
-				D3DXVECTOR3 position = j.second.position[k];
+				quaternionOut.x = rotation.x;
+				quaternionOut.y = rotation.y;
+				quaternionOut.z = rotation.z;
+				quaternionOut.w = -rotation.w;
 
-				D3DXQUATERNION quaternionOut(rotation.x, rotation.y, rotation.z, -rotation.w);
 				D3DXMatrixRotationQuaternion(&m, &quaternionOut);
 				D3DXMatrixScaling(&S, scale.x, scale.y, scale.z);
-
+				
 				m = m * S;
 
 				//平行移動
@@ -751,7 +698,7 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 			int index = i.second.weightList[cntBorn];
 			for (int k = 0; k < 4; k++)
 			{
-				if (pVB[index].BoneIndex[k] == 0)
+				if (pVB[index].boneIndex[k] == 0)
 				{
 					//該当するボーンのインデックス番号格納
 					int bornNum = 0;
@@ -764,8 +711,8 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 						}
 					}
 					//ボーンインデックスとウェイト値格納
-					pVB[index].BoneIndex[k] = bornNum;
-					pVB[index].BoneWeight[k] = i.second.weight[j];
+					pVB[index].boneIndex[k] = bornNum;
+					pVB[index].boneWeight[k] = i.second.weight[j];
 					break;
 				}
 			}
@@ -814,7 +761,7 @@ void LoadXDynamic::LoadMat(Born *pBorn, FILE *fp)
 	fgets(key, sizeof(key), fp);
 	fgets(key, sizeof(key), fp);
 
-	D3DXMATRIX m;
+	Matrix m;
 
 	float x, y, z, w;
 	for (int matCnt = 0; matCnt < 4; matCnt++)
@@ -827,7 +774,7 @@ void LoadXDynamic::LoadMat(Born *pBorn, FILE *fp)
 	pBorn->initMat = m;
 }
 
-void LoadXDynamic::BornMatUpdate(CopyBorn *pCopyBorn, Born *pBorn, D3DXMATRIX &bornMat)
+void LoadXDynamic::BornMatUpdate(CopyBorn *pCopyBorn, Born *pBorn, Matrix &bornMat)
 {
 	pCopyBorn->ParentAndChildMat = pCopyBorn->worldMat * bornMat;
 	pCopyBorn->bornMat = pBorn->offsetMat * pCopyBorn->ParentAndChildMat;
@@ -838,15 +785,14 @@ void LoadXDynamic::BornMatUpdate(CopyBorn *pCopyBorn, Born *pBorn, D3DXMATRIX &b
 
 void LoadXDynamic::AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn)
 {
-	D3DXMATRIX m;
-	D3DXMatrixIdentity(&m);
+	Matrix m;
 
 	auto frameAnimNum = m_BornInfo.AnimationSetFrameNum[pCopyBorn->animNum].size() - 1;
 
 	//アニメーションセットのフレーム時間
 	auto itFrame = m_BornInfo.AnimationSetFrameNum[pCopyBorn->animNum].begin();
 
-	std::vector<D3DXMATRIX> *pAnimMat = &m_BornInfo.AnimationSetMat[pCopyBorn->animNum][pBorn->BornName];
+	std::vector<Matrix> *pAnimMat = &m_BornInfo.AnimationSetMat[pCopyBorn->animNum][pBorn->BornName];
 	auto itAnimMat = pAnimMat->begin();
 
 	//指定のアニメーションフレームを超えたら戻す
@@ -875,8 +821,9 @@ void LoadXDynamic::AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn)
 				float lenge = frameAfter - frameBefore;
 				float t = lengeTime / lenge;
 
-				D3DXMATRIX mb = itAnimMat[i];
-				D3DXMATRIX ma = itAnimMat[i + 1];
+				Matrix mb = itAnimMat[i];
+				Matrix ma = itAnimMat[i + 1];
+
 				m = mb * (1 - t) + ma * t;
 
 				break;

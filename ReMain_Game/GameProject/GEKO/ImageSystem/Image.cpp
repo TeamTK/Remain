@@ -161,6 +161,7 @@ void Image::Draw(int x, int y)
 	InitModel(m_CenterX, m_CenterY);
 
 	Direct3D11::GetInstance()->ChangeBlendState2D();
+	Direct3D11::GetInstance()->DepthOff();
 
 	ID3D11DeviceContext *pDeviceContext;
 	pDeviceContext = Direct3D11::GetInstance()->GetID3D11DeviceContext();
@@ -248,6 +249,7 @@ void Image::Draw(int x, int y)
 	pDeviceContext->Draw(4, 0); //プリミティブをレンダリング
 
 	Direct3D11::GetInstance()->ChangeBlendState3D();
+	Direct3D11::GetInstance()->DepthOn();
 }
 
 void Image::Draw(const Vector2D &pos)

@@ -4,6 +4,7 @@
 #include "Mesh\StaticMesh.h"
 #include "AnimationMesh\DynamicMesh.h"
 #include "ImageSystem\Image.h"
+#include "ImageSystem\ImageAnimation.h"
 #include "SoundSystem\Sound.h"
 #include "System\Camera.h"
 #include "System\DirectionalLight.h"
@@ -35,6 +36,7 @@ namespace GEKO
 	void SetResolution_And_RefreshRate(int width, int height, int refreshRateNum);
 	void NoWindowFrame();
 	void MouseErasure();
+	void UseDepthBuffer(bool isUseDepth);
 	void DrawFps();
 	void RenderSpaceLine();
 	void ChangeFps(int fps);

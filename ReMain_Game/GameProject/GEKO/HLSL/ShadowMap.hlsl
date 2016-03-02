@@ -1,6 +1,6 @@
 #pragma warning(disable : 3206)
 
-//定義
+//ボーン数
 #define MAX_BONE_MATRICES 255
 
 //テクスチャー
@@ -20,7 +20,7 @@ cbuffer WLP_SkinMesh : register(b0)
 	matrix g_BornMatrix[MAX_BONE_MATRICES]; //ボーン行列
 };
 
-//バーテックスシェーダー出力構造体
+//頂点情報
 struct VS_OUTPUT_DEPTH
 {
 	float4 pos : SV_POSITION;
@@ -28,14 +28,15 @@ struct VS_OUTPUT_DEPTH
 	float2 uv : TEXCOORD1;
 };
 
+//テクスチャなし頂点情報
 struct VS_OUTPUT_DEPTH_NO_TEXTURE
 {
 	float4 pos : SV_POSITION;
 	float4 depth : TEXCOORD0;
 };
 
-//頂点をスキニング（ボーンにより移動）する。サブ関数（バーテックスシェーダーで使用）
-float4 SkinVert(float4 pos, uint4  bone, float4 weight)
+//頂点をスキニング
+float4 SkinVertex(float4 pos, uint4  bone, float4 weight)
 {
 	matrix matA = weight.x * g_BornMatrix[bone.x];
 	matrix matB = weight.y * g_BornMatrix[bone.y];
@@ -44,6 +45,20 @@ float4 SkinVert(float4 pos, uint4  bone, float4 weight)
 	matrix mat = matA + matB + matC + matD;
 
 	return mul(pos, mat);
+}
+
+//深度値算出
+float GetDepth(float z, float w, float2 uv)
+{
+	return z / w * g_texColor.Sample(g_samLinear, uv).a;
+}
+
+//深度値算出(テクスチャなし)
+float4 GetDepth_NoTexture(float z, float w)
+{
+	float color;
+	color.r = z / w;
+	return float4(color.r, 0.0f, 0.0f, 1.0f);
 }
 
 /******************************************/
@@ -62,10 +77,7 @@ VS_OUTPUT_DEPTH VS(float4 pos : POSITION, float4 normal : NORMAL, float2 uv : TE
 
 float4 PS(VS_OUTPUT_DEPTH input) : SV_Target
 {
-	float color;
-	color.r = input.depth.z / input.depth.w;
-	color.r *= g_texColor.Sample(g_samLinear, input.uv).a;
-	return color;
+	return GetDepth(input.depth.z, input.depth.w, input.uv);
 }
 
 /******************************************/
@@ -84,9 +96,7 @@ VS_OUTPUT_DEPTH_NO_TEXTURE VS_NoTexture(float4 pos : POSITION)
 
 float4 PS_NoTexture(VS_OUTPUT_DEPTH_NO_TEXTURE input) : SV_Target
 {
-	float4 color;
-	color.r = input.depth.z / input.depth.w;
-	return color;
+	return GetDepth_NoTexture(input.depth.z, input.depth.w);
 }
 
 /******************************************/
@@ -97,7 +107,7 @@ VS_OUTPUT_DEPTH VS_Skin(float4 pos : POSITION, float4 normal : NORMAL, float2 uv
 {
 	VS_OUTPUT_DEPTH output = (VS_OUTPUT_DEPTH)0;
 
-	float4 skinPos = SkinVert(pos, boneIndex, weight);
+	float4 skinPos = SkinVertex(pos, boneIndex, weight);
 	
 	output.pos = mul(skinPos, g_WLP);
 	output.depth = output.pos;
@@ -107,8 +117,5 @@ VS_OUTPUT_DEPTH VS_Skin(float4 pos : POSITION, float4 normal : NORMAL, float2 uv
 
 float4 PS_Skin(VS_OUTPUT_DEPTH input) : SV_Target
 {
-	float color;
-	color.r = input.depth.z / input.depth.w;
-	color.r *= g_texColor.Sample(g_samLinear, input.uv).a;
-	return color;
+	return GetDepth(input.depth.z, input.depth.w, input.uv);
 }

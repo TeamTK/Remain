@@ -4,17 +4,17 @@
 class StaticMesh;
 class DynamicMesh;
 class Vector3D;
+class Matrix;
 
 struct ID3D11Device;
 struct ID3D11DeviceContext;
-struct D3DXMATRIX;
 
 class ShaderShadowMap
 {
 public:
 	~ShaderShadowMap();
 	static ShaderShadowMap* GetInstance();
-	D3DXMATRIX *GetViewProjMatrix();
+	Matrix *GetViewProjMatrix();
 	void SetShadowMap(ID3D11DeviceContext *pDeviceContext);
 	void SetResolution(float width, float height);
 	void SetLookat(float x, float y, float z);

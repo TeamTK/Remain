@@ -5,7 +5,7 @@
 
 struct ConstantBufferLine3D
 {
-	D3DXVECTOR4 pos[2];
+	Vector4D pos[2];
 };
 
 class Line3D : public FiqureBase

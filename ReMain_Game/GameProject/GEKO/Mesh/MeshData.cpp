@@ -5,10 +5,10 @@ MeshData::MeshData()
 {
 	INIT_NULLPOINTR(m_MeshInfo.pVertex);
 	INIT_NULLPOINTR(m_MeshInfo.pIndex);
-	INIT_NULLPOINTR(m_MeshInfo.m_pMaterial);
-	INIT_NULLPOINTR(m_MeshInfo.m_ppIndexBuffer);
-	INIT_NULLPOINTR(m_MeshInfo.m_pVertexBuffer);
-	INIT_NULLPOINTR(m_MeshInfo.m_pSampleLinear);
+	INIT_NULLPOINTR(m_MeshInfo.pMaterial);
+	INIT_NULLPOINTR(m_MeshInfo.ppIndexBuffer);
+	INIT_NULLPOINTR(m_MeshInfo.pVertexBuffer);
+	INIT_NULLPOINTR(m_MeshInfo.pSampleLinear);
 }
 
 MeshData::~MeshData()
@@ -39,26 +39,26 @@ HRESULT MeshData::InitShader()
 	SamDesc.MinLOD = -FLT_MAX;
 	SamDesc.MaxLOD = FLT_MAX;
 
-	pDevice->CreateSamplerState(&SamDesc, &m_MeshInfo.m_pSampleLinear);
+	pDevice->CreateSamplerState(&SamDesc, &m_MeshInfo.pSampleLinear);
 
 	return S_OK;
 }
 
 void MeshData::Relese()
 {
-	if (m_MeshInfo.m_pMaterial != nullptr)
+	if (m_MeshInfo.pMaterial != nullptr)
 	{
 		for (int i = 0; i < m_MeshInfo.materialNumAll; i++)
 		{
-			SAFE_RELEASE(m_MeshInfo.m_pMaterial[i].pTexture);
-			m_MeshInfo.m_ppIndexBuffer[i]->Release();
+			SAFE_RELEASE(m_MeshInfo.pMaterial[i].pTexture);
+			m_MeshInfo.ppIndexBuffer[i]->Release();
 		}
 
 		SAFE_DELETE_ARRAY(m_MeshInfo.pVertex);
 		SAFE_DELETE_ARRAY(m_MeshInfo.pIndex);
-		SAFE_DELETE_ARRAY(m_MeshInfo.m_pMaterial);
-		SAFE_DELETE_ARRAY(m_MeshInfo.m_ppIndexBuffer);
-		SAFE_RELEASE(m_MeshInfo.m_pVertexBuffer);
-		SAFE_RELEASE(m_MeshInfo.m_pSampleLinear);
+		SAFE_DELETE_ARRAY(m_MeshInfo.pMaterial);
+		SAFE_DELETE_ARRAY(m_MeshInfo.ppIndexBuffer);
+		SAFE_RELEASE(m_MeshInfo.pVertexBuffer);
+		SAFE_RELEASE(m_MeshInfo.pSampleLinear);
 	}
 }

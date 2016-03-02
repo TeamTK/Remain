@@ -158,6 +158,9 @@ EWeapons UI_SelectWeapon::Select()
 
 void UI_SelectWeapon::Draw()
 {
+	//円
+	m_Circle.Draw(400, 300);
+
 	//各武器UI
 	for (int i = 0; i < 4; i++)
 		m_WeaponUI[i].Draw((int)m_UIPos[i].x, (int)m_UIPos[i].y);
@@ -165,9 +168,6 @@ void UI_SelectWeapon::Draw()
 	//カーソル
 	if (State == eSelect)
 		m_SelectedCursor.Draw((int)m_ScPos.x, (int)m_ScPos.y);
-
-	//円
-	m_Circle.Draw(400, 300);
 }
 
 bool UI_SelectWeapon::isSelected()

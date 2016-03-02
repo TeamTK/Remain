@@ -7,15 +7,17 @@
 #include "../../System/DirectionalLight.h"
 #include <list>
 
+#define SHADOW_MAP_FORMAT DXGI_FORMAT_R16_FLOAT
+
 struct ShadowInfo
 {
-	D3DXMATRIX lightWVP;
+	Matrix lightWVP;
 };
 
 struct ShadowSkinInfo
 {
-	D3DXMATRIX lightWVP;
-	D3DXMATRIX bornMat[MAX_BONES];
+	Matrix lightWVP;
+	Matrix bornMat[MAX_BONES];
 	ShadowSkinInfo()
 	{
 		for (int i = 0; i < MAX_BONES; i++)
@@ -28,30 +30,30 @@ struct ShadowSkinInfo
 class ShaderShadowMap::ShadowMapPimpl
 {
 public:
-	ID3D11Texture2D*		pTexture2D;		//
-	ID3D11RenderTargetView* pRenderTargetView;	//
-	ID3D11DepthStencilView* pStencilView;	//
-	ID3D11Texture2D*		pTexture2D_DepthStencil;		//
+	ID3D11Texture2D*		pTexture2D;	
+	ID3D11RenderTargetView* pRenderTargetView;
+	ID3D11DepthStencilView* pStencilView;
+	ID3D11Texture2D*		pTexture2D_DepthStencil;
 	ID3D11ShaderResourceView* pShaderResourceView;
 	ID3D11Buffer *pBuffer;
 	ID3D11Buffer *pSkinBuffer;
 	ID3D11SamplerState*  pSampleLinear;	 //テクスチャーのサンプラー
 
-	ID3D11VertexShader*  pVertexShader;				 //頂点シェーダー
-	ID3D11VertexShader*  pVertexSkinShader;				 //頂点シェーダー
-	//ID3D11VertexShader* pVertexShader_NoTexture;    //テクスチャーなし頂点シェーダー
-	ID3D11PixelShader*	 pPixelShader;				 //ピクセルシェーダー
-	ID3D11PixelShader*	 pPixelSkinShader;				 //ピクセルシェーダー
-	//ID3D11PixelShader* pPixelShader_NoTexture;	 //テクスチャーなしピクセルシェーダー
-	ID3D11InputLayout*	 pVertexLayout;				 //頂点レイアウト
-	ID3D11InputLayout*	 pVertexSkinLayout;				 //頂点レイアウト
-	//ID3D11InputLayout* m_pVertexLayout_NoTexture;	 //テクスチャーなし頂点レイアウト
+	ID3D11VertexShader*  pVertexShader;				//頂点シェーダー
+	ID3D11VertexShader*  pVertexSkinShader;			//頂点シェーダー(スキンメッシュ)
+	//ID3D11VertexShader* pVertexShader_NoTexture;  //テクスチャーなし頂点シェーダー
+	ID3D11PixelShader*	 pPixelShader;				//ピクセルシェーダー
+	ID3D11PixelShader*	 pPixelSkinShader;			//ピクセルシェーダー(スキンメッシュ)
+	//ID3D11PixelShader* pPixelShader_NoTexture;	//テクスチャーなしピクセルシェーダー
+	ID3D11InputLayout*	 pVertexLayout;				//頂点レイアウト
+	ID3D11InputLayout*	 pVertexSkinLayout;			//頂点レイアウト(スキンメッシュ)
+	//ID3D11InputLayout* m_pVertexLayout_NoTexture;	//テクスチャーなし頂点レイアウト
 
 	std::list<StaticMesh*> staticMeshList;
 	std::list<DynamicMesh*> dynamicMeshList;
-	D3DXMATRIX view;
-	D3DXMATRIX proj;
-	D3DXMATRIX vpMat;
+	Matrix view;
+	Matrix proj;
+	Matrix vpMat;
 	Vector3D pos;
 	Vector3D lookatPt;
 };
@@ -81,7 +83,7 @@ ShaderShadowMap* ShaderShadowMap::GetInstance()
 	return &shaderShadowMap;
 }
 
-D3DXMATRIX *ShaderShadowMap::GetViewProjMatrix()
+Matrix *ShaderShadowMap::GetViewProjMatrix()
 {
 	return &m_pShadowMaPimpl->vpMat;
 }
@@ -138,7 +140,7 @@ bool ShaderShadowMap::Init()
 	tdesc.MipLevels = 1;
 	tdesc.ArraySize = 1;
 	tdesc.MiscFlags = 0;
-	tdesc.Format = DXGI_FORMAT_R16_FLOAT;
+	tdesc.Format = DXGI_FORMAT_R16_TYPELESS;
 	tdesc.SampleDesc.Count = 1;
 	tdesc.SampleDesc.Quality = 0;
 	tdesc.Usage = D3D11_USAGE_DEFAULT;
@@ -149,7 +151,7 @@ bool ShaderShadowMap::Init()
 
 	//深度マップテクスチャー用　レンダーターゲットビュー作成
 	D3D11_RENDER_TARGET_VIEW_DESC DescRT;
-	DescRT.Format = DXGI_FORMAT_R16_FLOAT;
+	DescRT.Format = SHADOW_MAP_FORMAT;
 	DescRT.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	DescRT.Texture2D.MipSlice = 0;
 
@@ -161,7 +163,7 @@ bool ShaderShadowMap::Init()
 	descDepth.Height = (UINT)m_Height;
 	descDepth.MipLevels = 1;
 	descDepth.ArraySize = 1;
-	descDepth.Format = DXGI_FORMAT_R16_FLOAT;
+	descDepth.Format = SHADOW_MAP_FORMAT;
 	descDepth.SampleDesc.Count = 1;
 	descDepth.SampleDesc.Quality = 0;
 	descDepth.Usage = D3D11_USAGE_DEFAULT;
@@ -177,7 +179,7 @@ bool ShaderShadowMap::Init()
 	//深度マップテクスチャ用　シェーダーリソースビュー(SRV)作成	
 	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
 	ZeroMemory(&SRVDesc, sizeof(SRVDesc));
-	SRVDesc.Format = DXGI_FORMAT_R16_FLOAT;
+	SRVDesc.Format = SHADOW_MAP_FORMAT;
 	SRVDesc.ViewDimension = D3D_SRV_DIMENSION_TEXTURE2D;
 	SRVDesc.Texture2D.MostDetailedMip = 0;
 	SRVDesc.Texture2D.MipLevels = 1;
@@ -290,7 +292,7 @@ void ShaderShadowMap::Update()
 	m_pShadowMaPimpl->pos = m_pShadowMaPimpl->lookatPt + (Vector3D(-v->x, -v->y, -v->z).GetNormalize() * m_Distance);
 
 	// ビュートランスフォーム（視点座標変換）
-	D3DXVECTOR3 upVec(0.0f, 1.0f, 0.0f); //上方位置
+	Vector3D upVec(0.0f, 1.0f, 0.0f); //上方位置
 	D3DXMatrixLookAtLH(&m_pShadowMaPimpl->view, &m_pShadowMaPimpl->pos, &m_pShadowMaPimpl->lookatPt, &upVec);
 
 	// プロジェクショントランスフォーム（射影変換）
@@ -313,7 +315,7 @@ void ShaderShadowMap::Update()
 	float width = (float)Direct3D11::GetInstance()->GetResolutionWidth();
 	float height = (float)Direct3D11::GetInstance()->GetResolutionHeight();
 	Direct3D11::GetInstance()->SetViewport(width, height, 0.0f, 0.0f);
-	Direct3D11::GetInstance()->RederTarget();
+	Direct3D11::GetInstance()->RenderTarget();
 }
 
 void ShaderShadowMap::Add(StaticMesh *pStaticMesh)
@@ -508,7 +510,7 @@ void ShaderShadowMap::StaticMeshUpdate(ID3D11Device *pDevice, ID3D11DeviceContex
 		{
 			ShadowInfo sg;
 			
-			sg.lightWVP = i->m_pMeshData->GetMeshInfo()->m_LocalMat * i->m_WorldMatrix * m_pShadowMaPimpl->vpMat;
+			sg.lightWVP = i->m_pMeshData->GetMeshInfo()->localMat * i->m_WorldMatrix * m_pShadowMaPimpl->vpMat;
 			D3DXMatrixTranspose(&sg.lightWVP, &sg.lightWVP);
 
 			memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(ShadowInfo));
@@ -520,26 +522,23 @@ void ShaderShadowMap::StaticMeshUpdate(ID3D11Device *pDevice, ID3D11DeviceContex
 		//バーテックスバッファーをセット
 		UINT Stride = sizeof(VertexInfo);
 		UINT offset = 0;
-		pDeviceContext->IASetVertexBuffers(0, 1, &i->m_pMeshData->GetMeshInfo()->m_pVertexBuffer, &Stride, &offset);
+		pDeviceContext->IASetVertexBuffers(0, 1, &i->m_pMeshData->GetMeshInfo()->pVertexBuffer, &Stride, &offset);
 
 		//マテリアルごとにレンダリング
 		int num = i->m_pMeshData->GetMeshInfo()->materialNumAll;
 		for (int j = 0; j < num; j++)
 		{
 			//使用されていないマテリアル対策
-			if (i->m_pMeshData->GetMeshInfo()->m_pMaterial[j].dwNumFace == 0) continue;
+			if (i->m_pMeshData->GetMeshInfo()->pMaterial[j].numPolygon == 0) continue;
 			//インデックスバッファーをセット
-			pDeviceContext->IASetIndexBuffer(i->m_pMeshData->GetMeshInfo()->m_ppIndexBuffer[j], DXGI_FORMAT_R32_UINT, 0);
+			pDeviceContext->IASetIndexBuffer(i->m_pMeshData->GetMeshInfo()->ppIndexBuffer[j], DXGI_FORMAT_R32_UINT, 0);
 
 			//テクスチャーをシェーダーに渡す
-			if (i->m_pMeshData->GetMeshInfo()->m_pMaterial[j].pTexture)
-			{
-				pDeviceContext->PSSetSamplers(0, 1, &i->m_pMeshData->GetMeshInfo()->m_pSampleLinear);
-				pDeviceContext->PSSetShaderResources(0, 1, &i->m_pMeshData->GetMeshInfo()->m_pMaterial[j].pTexture);
-			}
+			pDeviceContext->PSSetSamplers(0, 1, &i->m_pMeshData->GetMeshInfo()->pSampleLinear);
+			pDeviceContext->PSSetShaderResources(0, 1, &i->m_pMeshData->GetMeshInfo()->pMaterial[j].pTexture);
 
 			//プリミティブをレンダリング
-			pDeviceContext->DrawIndexed(i->m_pMeshData->GetMeshInfo()->m_pMaterial[j].dwNumFace * 3, 0, 0);
+			pDeviceContext->DrawIndexed(i->m_pMeshData->GetMeshInfo()->pMaterial[j].numPolygon * 3, 0, 0);
 		}
 
 		//テクスチャリソース初期化
@@ -569,7 +568,7 @@ void ShaderShadowMap::DynaimcMeshUpdate(ID3D11Device *pDevice, ID3D11DeviceConte
 			int bornNum = i->GetBornAllNum();
 			for (int j = 0; j < bornNum; j++)
 			{
-				D3DXMATRIX m = i->m_CopyBornArray[j]->bornMat;
+				Matrix m = i->m_CopyBornArray[j]->bornMat;
 				D3DXMatrixTranspose(&m, &m);
 				sg.bornMat[j] = m;
 			}
@@ -583,26 +582,23 @@ void ShaderShadowMap::DynaimcMeshUpdate(ID3D11Device *pDevice, ID3D11DeviceConte
 		//バーテックスバッファーをセット
 		UINT Stride = sizeof(SkinVertexInfo);
 		UINT offset = 0;
-		pDeviceContext->IASetVertexBuffers(0, 1, &i->m_pSkinMeshData->GetSkinMeshInfo()->m_pVertexBuffer, &Stride, &offset);
+		pDeviceContext->IASetVertexBuffers(0, 1, &i->m_pSkinMeshData->GetSkinMeshInfo()->pVertexBuffer, &Stride, &offset);
 
 		//マテリアルごとにレンダリング
 		int num = i->m_pSkinMeshData->GetSkinMeshInfo()->materialNumAll;
 		for (int j = 0; j < num; j++)
 		{
 			//使用されていないマテリアル対策
-			if (i->m_pSkinMeshData->GetSkinMeshInfo()->m_pMaterial[j].dwNumFace == 0) continue;
+			if (i->m_pSkinMeshData->GetSkinMeshInfo()->pMaterial[j].numPolygon == 0) continue;
 			//インデックスバッファーをセット
-			pDeviceContext->IASetIndexBuffer(i->m_pSkinMeshData->GetSkinMeshInfo()->m_ppIndexBuffer[j], DXGI_FORMAT_R32_UINT, 0);
+			pDeviceContext->IASetIndexBuffer(i->m_pSkinMeshData->GetSkinMeshInfo()->ppIndexBuffer[j], DXGI_FORMAT_R32_UINT, 0);
 
 			//テクスチャーをシェーダーに渡す
-			if (i->m_pSkinMeshData->GetSkinMeshInfo()->m_pMaterial[j].pTexture)
-			{
-				pDeviceContext->PSSetSamplers(0, 1, &i->m_pSkinMeshData->GetSkinMeshInfo()->m_pSampleLinear);
-				pDeviceContext->PSSetShaderResources(0, 1, &i->m_pSkinMeshData->GetSkinMeshInfo()->m_pMaterial[j].pTexture);
-			}
+			pDeviceContext->PSSetSamplers(0, 1, &i->m_pSkinMeshData->GetSkinMeshInfo()->pSampleLinear);
+			pDeviceContext->PSSetShaderResources(0, 1, &i->m_pSkinMeshData->GetSkinMeshInfo()->pMaterial[j].pTexture);
 
 			//プリミティブをレンダリング
-			pDeviceContext->DrawIndexed(i->m_pSkinMeshData->GetSkinMeshInfo()->m_pMaterial[j].dwNumFace * 3, 0, 0);
+			pDeviceContext->DrawIndexed(i->m_pSkinMeshData->GetSkinMeshInfo()->pMaterial[j].numPolygon * 3, 0, 0);
 		}
 
 		//テクスチャリソース初期化

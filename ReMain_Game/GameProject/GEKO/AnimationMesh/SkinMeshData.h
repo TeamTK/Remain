@@ -9,71 +9,40 @@
 
 #define MAX_BONES 255
 
-//シェーダーに渡す用(変換行列など)
-struct SkinConstantBuffer0
-{
-	D3DXMATRIX  mW;			//ワールド行列
-	D3DXMATRIX  mWVP;		//ワールドから射影までの変換行列
-	D3DXVECTOR4 vLightDir;	//ライト方向
-	D3DXVECTOR4 fIntensity; //ライトの明るさ
-	D3DXVECTOR4 vEye;		//カメラ位置
-};
-
-//シェーダーに渡す用（マテリアル）
-struct SkinConstantBuffer1
-{
-	D3DXVECTOR4 vAmbient;	//アンビエント光
-	D3DXVECTOR4 vDiffuse;	//ディフューズ色
-	D3DXVECTOR4 vSpecular;	//鏡面反射
-};
-
-//シェーダーに渡す用（ボーン）
-struct BornConstantBuffer
-{
-	D3DXMATRIX bornMat[MAX_BONES];
-	BornConstantBuffer()
-	{
-		for (int i = 0; i < MAX_BONES; i++)
-		{
-			D3DXMatrixIdentity(&bornMat[i]);
-		}
-	}
-};
-
 //マテリアル構造体
 struct SkinMaterialInfo
 {
 	ID3D11ShaderResourceView* pTexture;
-	Vector4D Diffuse;	//ディフューズ
-	Vector3D Specular;	//スペキュラー
-	Vector3D Ambient;	//アンビエント
-	std::string TextureName;//テクスチャーファイル名
-	int dwNumFace;		//そのマテリアルであるポリゴン数
+	Vector4D diffuse;	//ディフューズ
+	Vector3D specular;	//スペキュラー
+	Vector3D ambient;	//アンビエント
+	std::string textureName;//テクスチャーファイル名
+	int numPolygon;		//そのマテリアルであるポリゴン数
 	SkinMaterialInfo() :
 		pTexture(nullptr),
-		dwNumFace(0) {}
+		numPolygon(0) {}
 	~SkinMaterialInfo() {}
 };
 
 //頂点の構造体
 struct SkinVertexInfo
 {
-	D3DXVECTOR3 vPos;
-	D3DXVECTOR3 vNormal;
-	D3DXVECTOR2 vTex;
-	UINT BoneIndex[4];	 //ボーン番号
-	float BoneWeight[4];//ボーン重み
+	Vector3D pos;
+	Vector3D normal;
+	Vector2D uv;
+	UINT boneIndex[4];	 //ボーン番号
+	float boneWeight[4];//ボーン重み
 	SkinVertexInfo()
 	{
-		BoneIndex[0] = 0;
-		BoneIndex[1] = 0;
-		BoneIndex[2] = 0;
-		BoneIndex[3] = 0;
+		boneIndex[0] = 0;
+		boneIndex[1] = 0;
+		boneIndex[2] = 0;
+		boneIndex[3] = 0;
 
-		BoneWeight[0] = 0.0f;
-		BoneWeight[1] = 0.0f;
-		BoneWeight[2] = 0.0f;
-		BoneWeight[3] = 0.0f;
+		boneWeight[0] = 0.0f;
+		boneWeight[1] = 0.0f;
+		boneWeight[2] = 0.0f;
+		boneWeight[3] = 0.0f;
 	}
 };
 
@@ -88,13 +57,13 @@ enum eBornDebug
 //スキンメッシュの情報
 struct SkinMeshInfo
 {
-	ID3D11Buffer*		 m_pVertexBuffer;	 //頂点バッファー
-	ID3D11Buffer**		 m_ppIndexBuffer;	 //インデックスバッファー
-	ID3D11SamplerState*  m_pSampleLinear;	 //テクスチャーのサンプラー
-	SkinMaterialInfo*	 m_pMaterial;		 //マテリアル情報
-	DWORD				 m_dwNumMaterial;	 //マテリアルの数
-	bool m_IsTexture;						 //テクスチャー判断
-	SkinVertexInfo* pvVertex;				 //頂点情報
+	ID3D11Buffer*		 pVertexBuffer;	 //頂点バッファー
+	ID3D11Buffer**		 ppIndexBuffer;	 //インデックスバッファー
+	ID3D11SamplerState*  pSampleLinear;	 //テクスチャーのサンプラー
+	SkinMaterialInfo*	 pMaterial;		 //マテリアル情報
+	DWORD				 dwNumMaterial;	 //マテリアルの数
+	bool isTexture;						 //テクスチャー判断
+	SkinVertexInfo* pVertex;				 //頂点情報
 	int vertexNumAll;						 //頂点数
 	int faceNumAll;						 //面の数
 	int normalNumAll;						 //法線の数
@@ -102,10 +71,10 @@ struct SkinMeshInfo
 	int materialListNumAll;				 //マテリアルリストの数;
 	int uvNumAll;							 //UVの数
 	SkinMeshInfo() :
-		m_IsTexture(true),
-		m_pVertexBuffer(nullptr),
-		m_pMaterial(nullptr),
-		pvVertex(nullptr),
+		isTexture(true),
+		pVertexBuffer(nullptr),
+		pMaterial(nullptr),
+		pVertex(nullptr),
 		faceNumAll(0),
 		normalNumAll(0),
 		materialNumAll(0),
@@ -114,15 +83,15 @@ struct SkinMeshInfo
 	~SkinMeshInfo() {}
 };
 
-//ボーン
+//ボーン階層構造
 struct Born
 {
 	int indexId;
 	Born *brother;
 	Born *child;
 	std::string BornName;
-	D3DXMATRIX initMat;
-	D3DXMATRIX offsetMat;
+	Matrix initMat;
+	Matrix offsetMat;
 	Born() :
 		indexId(0),
 		brother(nullptr),
@@ -135,9 +104,9 @@ struct CopyBorn
 {
 	CopyBorn *brother;
 	CopyBorn *child;
-	D3DXMATRIX worldMat;
-	D3DXMATRIX bornMat;
-	D3DXMATRIX ParentAndChildMat;
+	Matrix worldMat;
+	Matrix bornMat;
+	Matrix ParentAndChildMat;
 	unsigned int animNum;
 	float animFrame;
 	CopyBorn() :
@@ -150,12 +119,13 @@ struct CopyBorn
 //ボーン情報
 struct BornInfo
 {
-	Born sBorn;		  //ボーン階層構造
+	Born sBorn;	//ボーン階層構造
 	std::vector<Born *> BornList; //ボーンアドレス格納
 	std::map<int, std::vector<int>> AnimationSetFrameNum; //各アニメーションのフレーム時間
-	std::map<int, std::map<std::string, std::vector<D3DXMATRIX>>> AnimationSetMat; //各アニメーションの変換行列
+	std::map<int, std::map<std::string, std::vector<Matrix>>> AnimationSetMat; //各アニメーションの変換行列
 };
 
+//スキンメッシュデータ
 class SkinMeshData
 {
 public:
@@ -165,8 +135,6 @@ public:
 	const BornInfo *GetBornInfo() const;
 	virtual void Relese();
 	virtual void Update(CopyBorn *pCopyBorn);
-	virtual void BornDebug(eBornDebug eBornDebug);
-	virtual void AnimationDebug(int animNum);
 	virtual void CopyBornTree(CopyBorn *pBornCopy, std::vector<CopyBorn*> *pCopyBornArray, Born *pBornOriginal);
 
 protected:

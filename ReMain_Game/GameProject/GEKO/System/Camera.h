@@ -10,33 +10,27 @@ public:
 
 	/**
 	* @brief ビュー行列を取得
-	* @return D3DXMATRIX型のビュー行列のポインタ
+	* @return Matrix型のビュー行列のポインタ
 	*/
-	const static D3DXMATRIX* GetView();
+	const static Matrix* GetView();
 
 	/**
 	* @brief 射影行列を取得
-	* @return D3DXMATRIX型の射影行列のポインタ
+	* @return Matrix型の射影行列のポインタ
 	*/
-	const static D3DXMATRIX* GetProjection();
+	const static Matrix* GetProjection();
 
 	/**
 	* @brief ビュー行列 × 射影行列を取得
-	* @return D3DXMATRIX型のビュー行列 × 射影行列のポインタ
+	* @return Matrix型のビュー行列 × 射影行列のポインタ
 	*/
-	const static D3DXMATRIX* GetViewProjection();
+	const static Matrix* GetViewProjection();
 
 	/**
 	* @brief ビューポート行列を取得
-	* @return D3DXMATRIX型のビューポート行列のポインタ
+	* @return Matrix型のビューポート行列のポインタ
 	*/
-	const static D3DXMATRIX* GetViewport();
-
-	/**
-	* @brief カメラの位置を取得
-	* @return D3DXVECTOR3型のカメラ位置
-	*/
-	const static D3DXVECTOR3 GetEyePositionD3D();
+	const static Matrix* GetViewport();
 
 	/**
 	* @brief カメラの位置を取得
@@ -112,13 +106,13 @@ private:
 	static Camera* GetInstance();
 
 private:
-	D3DXMATRIX m_View;		//カメラ行列
-	D3DXMATRIX m_Proj;		//射影行列
-	D3DXMATRIX m_ViewProj;	//カメラビュー行列 × 射影行列
-	D3DXMATRIX m_Viewport;	//ビューポート行列
-	D3DXVECTOR3 m_EyePt;	//視点位置
-	D3DXVECTOR3 m_LookatPt;	//注視点位置
-	D3DXVECTOR3 m_UpVec;	//上方位置
+	Matrix m_View;		//カメラ行列
+	Matrix m_Proj;		//射影行列
+	Matrix m_ViewProj;	//カメラビュー行列 × 射影行列
+	Matrix m_Viewport;	//ビューポート行列
+	Vector3D m_EyePt;	//視点位置
+	Vector3D m_LookatPt;//注視点位置
+	Vector3D m_UpVec;	//上方位置
 	float m_Near;			//カメラが描画する最小距離
 	float m_Far;			//カメラが描画する最大距離
 	float m_ViewAngle;		//視野角度（ラジアン）

@@ -35,12 +35,11 @@ void Line3D::Render(const Vector3D &Spos, const Vector3D &Epos, const Vector3D &
 	ConstantBufferFiqure cb;
 	if (SUCCEEDED(pDeviceContext->Map(m_FigureInfo.pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
-		//ワールド、カメラ、射影行列を渡す
-		D3DXMATRIX m = (*Camera::GetView()) * (*Camera::GetProjection());
-		D3DXMatrixTranspose(&m, &m);
-		cb.mWVP = m;
+		//カメラ、射影行列を渡す
+		D3DXMATRIX m = *Camera::GetViewProjection();
+		D3DXMatrixTranspose(&cb.mWVP, &m);
 
-		cb.Color = D3DXVECTOR4(Color.x, Color.y, Color.z, 1.0f);
+		cb.Color = Vector4D(Color.x, Color.y, Color.z, 1.0f);
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));
 		pDeviceContext->Unmap(m_FigureInfo.pConstantBuffer, 0);
@@ -55,8 +54,8 @@ void Line3D::Render(const Vector3D &Spos, const Vector3D &Epos, const Vector3D &
 	{
 		ConstantBufferLine3D cbLine3D;
 
-		cbLine3D.pos[0] = D3DXVECTOR4(Spos.x, Spos.y, Spos.z, 1.0f);
-		cbLine3D.pos[1] = D3DXVECTOR4(Epos.x, Epos.y, Epos.z, 1.0f);
+		cbLine3D.pos[0] = Vector4D(Spos.x, Spos.y, Spos.z, 1.0f);
+		cbLine3D.pos[1] = Vector4D(Epos.x, Epos.y, Epos.z, 1.0f);
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cbLine3D), sizeof(cbLine3D));
 		pDeviceContext->Unmap(m_FigureInfo.pConstantBuffer, 0);

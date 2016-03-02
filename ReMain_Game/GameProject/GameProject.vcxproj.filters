@@ -132,6 +132,8 @@
     <ClCompile Include="GEKO\Shader\DynamicMeshShader\DynamicMesh_PixelInit.cpp" />
     <ClCompile Include="MainGame\Player\PlayerData.cpp" />
     <ClCompile Include="Chapter\ChapterManager.cpp" />
+    <ClCompile Include="GEKO\Shader\ConstantShader.cpp" />
+    <ClCompile Include="GEKO\ImageSystem\ImageAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -334,6 +336,8 @@
     <ClInclude Include="GEKO\Shader\DynamicMeshShader\DynamicMeshShader.h" />
     <ClInclude Include="MainGame\Player\PlayerData.h" />
     <ClInclude Include="Chapter\ChapterManager.h" />
+    <ClInclude Include="GEKO\Shader\ConstantShader.h" />
+    <ClInclude Include="GEKO\ImageSystem\ImageAnimation.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">
@@ -347,6 +351,13 @@
     <FxCompile Include="GEKO\HLSL\Triangle3D.hlsl" />
     <FxCompile Include="GEKO\HLSL\Line3D.hlsl" />
     <FxCompile Include="GEKO\HLSL\Billboard.hlsl" />
+    <FxCompile Include="GEKO\HLSL\SkinMeshInfo.hlsl" />
+    <FxCompile Include="GEKO\HLSL\ShadowMap.hlsl" />
+    <FxCompile Include="GEKO\HLSL\CommonMeshInfo.hlsl" />
+    <FxCompile Include="GEKO\HLSL\Mesh_NoTexture.hlsl" />
+    <FxCompile Include="GEKO\HLSL\Sphere3D.hlsl" />
+    <FxCompile Include="GEKO\HLSL\SkinMesh_NoTexture.hlsl" />
+    <FxCompile Include="GEKO\HLSL\MeshTest.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="GEKO\myicon.ico">

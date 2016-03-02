@@ -36,9 +36,8 @@ void Triangle3D::Render(const Vector3D &pos1, const Vector3D &pos2, const Vector
 	if (SUCCEEDED(pDeviceContext->Map(m_FigureInfo.pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
 		//ƒrƒ…[AŽË‰es—ñ‚ð“n‚·
-		D3DXMATRIX m = (*Camera::GetView()) * (*Camera::GetProjection());
-		D3DXMatrixTranspose(&m, &m);
-		cb.mWVP = m;
+		Matrix m = *Camera::GetViewProjection();
+		D3DXMatrixTranspose(&cb.mWVP, &m);
 
 		cb.Color = D3DXVECTOR4(color.x, color.y, color.z, 1.0f);
 
@@ -54,9 +53,9 @@ void Triangle3D::Render(const Vector3D &pos1, const Vector3D &pos2, const Vector
 	{
 		ConstantBufferTriangle3D cbLine3D;
 
-		cbLine3D.pos[0] = D3DXVECTOR4(pos1.x, pos1.y, pos1.z, 1.0f);
-		cbLine3D.pos[1] = D3DXVECTOR4(pos2.x, pos2.y, pos2.z, 1.0f);
-		cbLine3D.pos[2] = D3DXVECTOR4(pos3.x, pos3.y, pos3.z, 1.0f);
+		cbLine3D.pos[0] = Vector4D(pos1.x, pos1.y, pos1.z, 1.0f);
+		cbLine3D.pos[1] = Vector4D(pos2.x, pos2.y, pos2.z, 1.0f);
+		cbLine3D.pos[2] = Vector4D(pos3.x, pos3.y, pos3.z, 1.0f);
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cbLine3D), sizeof(cbLine3D));
 		pDeviceContext->Unmap(m_FigureInfo.pConstantBuffer, 0);
