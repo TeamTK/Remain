@@ -11,14 +11,12 @@ public:
 	void Relese();
 	void CopyBornTree(CopyBorn *pBornCopy, std::vector<CopyBorn*> *pCopyBornArray, Born *pBornOriginal);
 	void Update(CopyBorn *pCopyBorn);
-	void BornDebug(eBornDebug eBornDebug);
-	void AnimationDebug(int animNum);
 
 private:
 	HRESULT LoadXMesh(std::string fileName);
 	void LoadAnimation(FILE *fp, SkinVertexInfo* pVB);
 	void LoadMat(Born *pBorn, FILE *fp);
-	void BornMatUpdate(CopyBorn *pCopyBorn, Born *pBorn, D3DXMATRIX &bornMat);
+	void BornMatUpdate(CopyBorn *pCopyBorn, Born *pBorn, Matrix &bornMat);
 	void AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn);
 	void DeleteHierarchy(Born *pBorn);
 	bool AddBoneHierarchy(Born *pBorn, FILE *fp, int hierarchy);

@@ -31,7 +31,7 @@ bool StaticMeshShader::InitVertexShader(ID3D11Device *pDevice)
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	numElements = 3;
-	memcpy(layout, tmp, sizeof(D3D11_INPUT_ELEMENT_DESC)*numElements);
+	memcpy(layout, tmp, sizeof(D3D11_INPUT_ELEMENT_DESC) * numElements);
 
 	//頂点インプットレイアウトを作成
 	if (FAILED(pDevice->CreateInputLayout(

@@ -21,48 +21,6 @@ private:
 
 };
 
-struct SVector2D
-{
-	union
-	{
-		float v[2];
-		struct
-		{
-			float x;
-			float y;
-		};
-	};
-};
-
-struct SVector3D
-{
-	union 
-	{
-		float v[3];
-		struct 
-		{
-			float x;
-			float y;
-			float z;
-		};
-	};
-};
-
-struct SVector4D
-{
-	union
-	{
-		float v[4];
-		struct
-		{
-			float x;
-			float y;
-			float z;
-			float w;
-		};
-	};
-};
-
 class Vector2D : public D3DXVECTOR2
 {
 public:
@@ -134,7 +92,6 @@ public:
 	~Vector4D();
 	Vector4D operator * (const Matrix &matrix) const;
 	Vector4D operator * (const D3DXMATRIX &d3dxMatrix) const;
-	D3DXVECTOR4 Change();
 	void DebugDraw(const char *name) const;
 };
 
@@ -166,6 +123,8 @@ public:
 
 	void operator = (const Matrix &matrix);
 	void operator = (const D3DXMATRIX &d3dxMatrix);
+	Matrix operator + (const Matrix &matrix);
+	Matrix operator + (const D3DXMATRIX &matrix);
 	Matrix operator * (float num);
 	Matrix operator * (const Matrix &matrix);
 	Matrix operator * (const D3DXMATRIX &matrix);

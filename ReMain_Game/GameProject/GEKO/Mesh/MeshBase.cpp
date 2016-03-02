@@ -102,10 +102,10 @@ void MeshBase::WorldMatrixBuilding()
 	D3DXQUATERNION qX(0, 0, 0, 1); //単位クォータニオン
 	D3DXQUATERNION qY(0, 0, 0, 1); //単位クォータニオン
 	D3DXQUATERNION qZ(0, 0, 0, 1); //単位クォータニオン
-	D3DXVECTOR3 xAxis(1, 0, 0); //Xの中心軸
-	D3DXVECTOR3 yAxis(0, 1, 0); //Yの中心軸
-	D3DXVECTOR3 zAxis(0, 0, 1); //Zの中心軸
-	D3DXMATRIX Mat;
+	Vector3D xAxis(1, 0, 0); //Xの中心軸
+	Vector3D yAxis(0, 1, 0); //Yの中心軸
+	Vector3D zAxis(0, 0, 1); //Zの中心軸
+	Matrix Mat;
 
 	Matrix mat;
 

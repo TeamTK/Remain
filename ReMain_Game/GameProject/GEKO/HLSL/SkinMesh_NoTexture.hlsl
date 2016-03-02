@@ -49,8 +49,8 @@ struct Skin
 	float3 Normal;
 };
 
-//頂点をスキニング（ボーンにより移動）する。サブ関数（バーテックスシェーダーで使用）
-Skin SkinVert(float4 Pos, float4 Normal, uint4  Bones, float4 Weights)
+//頂点をスキニング
+Skin SkinVertex(float4 Pos, float4 Normal, uint4  Bones, float4 Weights)
 {
 	Skin Output = (Skin)0;
 
@@ -108,18 +108,18 @@ VS_OUTPUT VS_NoTexture(float4 Pos : POSITION, float4 Normal : NORMAL, uint4  Bon
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 
-	Skin vSkinned = SkinVert(Pos, Normal, Bones, Weights);
+	Skin skinned = SkinVertex(Pos, Normal, Bones, Weights);
 
 	//射影変換（ワールド→ビュー→プロジェクション）
-	output.Pos = mul(vSkinned.Pos, g_mWVP);
+	output.Pos = mul(skinned.Pos, g_mWVP);
 
 	//法線をモデルの姿勢に合わせる(モデルが回転すれば法線も回転させる）
-	output.Normal = normalize(mul(vSkinned.Normal, (float3x3)g_mW));
+	output.Normal = normalize(mul(skinned.Normal, (float3x3)g_mW));
 
 	//ディレクショナルライト
 	output.Light = -g_vLightDir;
 
-	//視線ベクトル　ワールド空間上での頂点から視点へ向かうベクトル
+	//視線ベクトル
 	float3 PosWorld = mul(output.Pos, g_mW);
 	output.EyeVector = normalize(PosWorld - g_vEye);
 

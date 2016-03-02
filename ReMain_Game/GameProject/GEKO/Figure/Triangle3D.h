@@ -5,7 +5,7 @@
 
 struct ConstantBufferTriangle3D
 {
-	D3DXVECTOR4 pos[3];
+	Vector4D pos[3];
 };
 
 class Triangle3D : public FiqureBase

@@ -1,9 +1,8 @@
 #include "StaticMesh.h"
-#include "..\System\Camera.h"
-#include "..\System\DirectionalLight.h"
 #include "..\Figure\Fiqure.h"
 #include "..\Shader\StaticMeshShader\StaticMeshShader.h"
 #include "..\Shader\ShadowMap\ShaderShadowMap.h"
+#include "..\Shader\ConstantShader.h"
 #include "..\ImageSystem\Image.h"
 
 StaticMesh::StaticMesh() :
@@ -49,12 +48,12 @@ const VertexInfo *StaticMesh::GetVertex() const
 
 const MaterialInfo *StaticMesh::GetMaterial() const
 {
-	return m_pMeshData->GetMeshInfo()->m_pMaterial;
+	return m_pMeshData->GetMeshInfo()->pMaterial;
 }
 
 const Matrix *StaticMesh::GetLocalMatrix() const
 {
-	return &m_pMeshData->GetMeshInfo()->m_LocalMat;
+	return &m_pMeshData->GetMeshInfo()->localMat;
 }
 
 const int StaticMesh::GetFaceAllNum() const
@@ -69,19 +68,19 @@ const int StaticMesh::GetMaterialAllNum() const
 
 void StaticMesh::Render(bool isShadow) const
 {
-	RenderFunc(m_pMeshData->GetMeshInfo()->m_LocalMat * m_WorldMatrix, isShadow);
+	RenderFunc(m_pMeshData->GetMeshInfo()->localMat * m_WorldMatrix, isShadow);
 }
 
 void StaticMesh::RenderMatrix(Matrix &matrix, bool isShadow) const
 {
-	RenderFunc(m_pMeshData->GetMeshInfo()->m_LocalMat * matrix, isShadow);
+	RenderFunc(m_pMeshData->GetMeshInfo()->localMat * matrix, isShadow);
 }
 
 void StaticMesh::DebugNormal() const
 {
 	Vector3D v1, v2, v3;
 	Vector3D normal1, normal2, normal3;
-	Matrix m = m_pMeshData->GetMeshInfo()->m_LocalMat * m_WorldMatrix;
+	Matrix m = m_pMeshData->GetMeshInfo()->localMat * m_WorldMatrix;
 	VertexInfo *vertex = m_pMeshData->GetMeshInfo()->pVertex;
 	IndexInfo *index = m_pMeshData->GetMeshInfo()->pIndex;
 	int polyNum = m_pMeshData->GetMeshInfo()->faceNumAll;
@@ -106,7 +105,7 @@ void StaticMesh::DebugNormal() const
 void StaticMesh::DebugPolygon() const
 {
 	Vector3D v1, v2, v3;
-	Matrix m = m_pMeshData->GetMeshInfo()->m_LocalMat * m_WorldMatrix;
+	Matrix m = m_pMeshData->GetMeshInfo()->localMat * m_WorldMatrix;
 	VertexInfo *vertex = m_pMeshData->GetMeshInfo()->pVertex;
 	IndexInfo *index = m_pMeshData->GetMeshInfo()->pIndex;
 	int polyNum = m_pMeshData->GetMeshInfo()->faceNumAll;
@@ -144,9 +143,9 @@ void StaticMesh::AllocationMeshData(const std::string &meshName)
 	//マテリアル割り当て
 	for (int i = 0; i < data->materialNumAll; i++)
 	{
-		diffuse = data->m_pMaterial[i].Diffuse;
-		specular = data->m_pMaterial[i].Specular;
-		ambient = data->m_pMaterial[i].Ambient;
+		diffuse = data->pMaterial[i].diffuse;
+		specular = data->pMaterial[i].specular;
+		ambient = data->pMaterial[i].ambient;
 
 		m_Diffuse.emplace_back(diffuse.x, diffuse.y, diffuse.z, diffuse.w);
 		m_Specular.emplace_back(specular.x, specular.y, specular.z);
@@ -162,11 +161,11 @@ void StaticMesh::RenderFunc(Matrix &matrix, bool isShadow) const
 
 	MeshInfo *data = m_pMeshData->GetMeshInfo();
 
-	StaticMeshShader::GetInstance()->BaseConstantBuffer(pDeviceContext, matrix, isShadow);
+	ConstantShader::GetInstance()->SetCommonInfoConstantBuffer();
 
-	StaticMeshShader::GetInstance()->SetVertexShader(pDeviceContext, data->m_IsTexture, isShadow);
-	StaticMeshShader::GetInstance()->SetPixelShader(pDeviceContext, data->m_IsTexture, isShadow);
-	StaticMeshShader::GetInstance()->SetInputLayout(pDeviceContext, data->m_IsTexture);
+	ConstantShader::GetInstance()->SetTransformMatrixConstantBuffer(pDeviceContext, matrix, isShadow);
+
+	StaticMeshShader::GetInstance()->SetShader(pDeviceContext, data->isTexture, isShadow);
 
 	//マルチテクスチャ
 	if (m_pImage != nullptr)
@@ -177,25 +176,19 @@ void StaticMesh::RenderFunc(Matrix &matrix, bool isShadow) const
 	//バーテックスバッファーをセット
 	UINT Stride = sizeof(VertexInfo);
 	UINT offset = 0;
-	pDeviceContext->IASetVertexBuffers(0, 1, &data->m_pVertexBuffer, &Stride, &offset);
+	pDeviceContext->IASetVertexBuffers(0, 1, &data->pVertexBuffer, &Stride, &offset);
 
-	D3DXVECTOR4 diffuse;
-	D3DXVECTOR4 specular;
-	D3DXVECTOR4 ambient;
+	Vector4D specular;
+	Vector4D ambient;
 	//属性の数だけ、それぞれの属性のインデックスバッファ－を描画
 	for (int i = 0; i < data->materialNumAll; i++)
 	{
 		//使用されていないマテリアル対策
-		if (data->m_pMaterial[i].dwNumFace == 0) continue;
+		if (data->pMaterial[i].numPolygon == 0) continue;
 		//インデックスバッファーをセット
-		pDeviceContext->IASetIndexBuffer(data->m_ppIndexBuffer[i], DXGI_FORMAT_R32_UINT, 0);
+		pDeviceContext->IASetIndexBuffer(data->ppIndexBuffer[i], DXGI_FORMAT_R32_UINT, 0);
 
-		//マテリアルの各要素をエフェクト（シェーダー）に渡す
-		diffuse.x = m_Diffuse[i].x;
-		diffuse.y = m_Diffuse[i].y;
-		diffuse.z = m_Diffuse[i].z;
-		diffuse.w = m_Diffuse[i].w;
-
+		//マテリアルの各要素を（シェーダー）に渡す
 		specular.x = m_Specular[i].x;
 		specular.y = m_Specular[i].y;
 		specular.z = m_Specular[i].z;
@@ -206,17 +199,13 @@ void StaticMesh::RenderFunc(Matrix &matrix, bool isShadow) const
 		ambient.z = m_Ambient[i].z;
 		ambient.w = m_Diffuse[i].w;
 
-		StaticMeshShader::GetInstance()->MaterialConstantBuffer(pDeviceContext, diffuse, specular, ambient);
+		ConstantShader::GetInstance()->SetMaterialConstantBuffer(pDeviceContext, m_Diffuse[i], specular, ambient);
 
-		//テクスチャーをシェーダーに渡す
-		if (data->m_pMaterial[i].pTexture)
-		{
-			pDeviceContext->PSSetSamplers(0, 1, &data->m_pSampleLinear);
-			pDeviceContext->PSSetShaderResources(0, 1, &data->m_pMaterial[i].pTexture);
-		}
+		pDeviceContext->PSSetSamplers(0, 1, &data->pSampleLinear);
+		pDeviceContext->PSSetShaderResources(0, 1, &data->pMaterial[i].pTexture);
 
 		//プリミティブをレンダリング
-		pDeviceContext->DrawIndexed(data->m_pMaterial[i].dwNumFace * 3, 0, 0);
+		pDeviceContext->DrawIndexed(data->pMaterial[i].numPolygon * 3, 0, 0);
 	}
 
 	//テクスチャリソース初期化

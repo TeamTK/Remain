@@ -221,7 +221,7 @@ void Enemy::HitBullet(Result_Sphere& r)
 	info.size = 2.0f;
 	info.sizeW = 256;
 	info.sizeH = 256;
-	info.speed = 32;
+	info.speed = 1.0f;
 	new EffectAnimation("BloodAnim", info);
 
 	m_Model.SetTexture(&m_DamegeBlood);

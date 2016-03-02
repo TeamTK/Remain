@@ -5,6 +5,7 @@
 #include "Shader\StaticMeshShader\StaticMeshShader.h"
 #include "Shader\DynamicMeshShader\DynamicMeshShader.h"
 #include "Shader\ShadowMap\ShaderShadowMap.h"
+#include "Shader\ConstantShader.h"
 
 namespace GEKO
 {
@@ -22,19 +23,14 @@ namespace GEKO
 				Input::KeyManagement::Get().Init();
 				SoundManagement::Get()->Init();
 
-				if (!StaticMeshShader::GetInstance()->Init())
-				{
-					GEKO::LoopEnd();
-					return false;
-				}
+				bool isInit[] = {false, false, false, false};
 
-				if (!DynamicMeshShader::GetInstance()->Init())
-				{
-					GEKO::LoopEnd();
-					return false;
-				}
+				isInit[0] = StaticMeshShader::GetInstance()->Init();
+				isInit[1] = DynamicMeshShader::GetInstance()->Init();
+				isInit[2] = ShaderShadowMap::GetInstance()->Init();
+				isInit[3] = ConstantShader::GetInstance()->Init();
 
-				if (!ShaderShadowMap::GetInstance()->Init())
+				if (!isInit[0] && !isInit[1] && !isInit[2] && !isInit[3])
 				{
 					GEKO::LoopEnd();
 					return false;
@@ -76,6 +72,16 @@ namespace GEKO
 		Window::Get()->SetFixing();
 	}
 
+	void FullScreen(bool isFullScreen)
+	{
+		Direct3D11::GetInstance()->FullScreen(isFullScreen);
+	}
+
+	void SetResolution_And_RefreshRate(int width, int height, int refreshRateNum)
+	{
+		Direct3D11::GetInstance()->SetResolution_And_RefreshRate(width, height, refreshRateNum);
+	}
+
 	void NoWindowFrame()
 	{
 		Window::Get()->NoDrawFrame();
@@ -87,14 +93,16 @@ namespace GEKO
 		ShowCursor(false);
 	}
 
-	void FullScreen(bool isFullScreen)
+	void UseDepthBuffer(bool isUseDepth)
 	{
-		Direct3D11::GetInstance()->FullScreen(isFullScreen);
-	}
-
-	void SetResolution_And_RefreshRate(int width, int height, int refreshRateNum)
-	{
-		Direct3D11::GetInstance()->SetResolution_And_RefreshRate(width, height, refreshRateNum);
+		if (isUseDepth)
+		{
+			Direct3D11::GetInstance()->DepthOn();
+		}
+		else
+		{
+			Direct3D11::GetInstance()->DepthOff();
+		}
 	}
 
 	void DrawFps()
@@ -143,6 +151,7 @@ namespace GEKO
 		StaticMeshShader::GetInstance()->Release();
 		DynamicMeshShader::GetInstance()->Release();
 		ShaderShadowMap::GetInstance()->Release();
+		ConstantShader::GetInstance()->Release();
 		Direct3D11::GetInstance()->DestroyD3D11();
 		Input::KeyManagement::Get().End();
 		OutputDebugString(TEXT("GEKO_System‚ª³í‚ÉI—¹‚µ‚Ü‚µ‚½\n"));

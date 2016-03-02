@@ -38,9 +38,9 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 
 	std::vector<int> face;
 	std::vector<int> normalIndex;
-	std::vector<D3DXVECTOR3> coordinate;
-	std::vector<D3DXVECTOR3> normal;
-	std::vector<D3DXVECTOR2> uv;
+	std::vector<Vector3D> coordinate;
+	std::vector<Vector3D> normal;
+	std::vector<Vector2D> uv;
 	std::vector<MaterialX> material;
 	std::vector<int> materialList;
 
@@ -77,8 +77,8 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 			fscanf_s(fp, "%f, %f, %f, %f,", &m._31, &m._32, &m._33, &m._34);
 			fscanf_s(fp, "%f, %f, %f, %f;;", &m._41, &m._42, &m._43, &m._44);
 
-			if (frameNum == 2) m_MeshInfo.m_LocalMat *= m;
-			else m_MeshInfo.m_LocalMat = m;
+			if (frameNum == 2) m_MeshInfo.localMat *= m;
+			else m_MeshInfo.localMat = m;
 		}
 
 		//頂点メッシュ読み込み
@@ -215,10 +215,10 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 
 			fgets(str, sizeof(str), fp);
 
-			D3DXVECTOR4 kd(0.0f, 0.0f, 0.0f, 0.0f);
+			Vector4D kd(0.0f, 0.0f, 0.0f, 0.0f);
 			float sp = 0.0f;
-			D3DXVECTOR3 ks(0.0f, 0.0f, 0.0f);
-			D3DXVECTOR3 ka(0.0f, 0.0f, 0.0f);
+			Vector3D ks(0.0f, 0.0f, 0.0f);
+			Vector3D ka(0.0f, 0.0f, 0.0f);
 			std::string textureName;
 
 			//マテリアル成分読み込み
@@ -287,10 +287,9 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 	assert(material.size() != 0 && "Xファイルのマテリアルがありません");
 
 	//マテリアルとインデックスバッファー動的作成
-	m_MeshInfo.m_pMaterial = new MaterialInfo[m_MeshInfo.materialNumAll];		//マテリアル
-	m_MeshInfo.m_ppIndexBuffer = new ID3D11Buffer*[m_MeshInfo.materialNumAll];	//インデックス
+	m_MeshInfo.pMaterial = new MaterialInfo[m_MeshInfo.materialNumAll];		//マテリアル
+	m_MeshInfo.ppIndexBuffer = new ID3D11Buffer*[m_MeshInfo.materialNumAll];	//インデックス
 	m_MeshInfo.pVertex = new VertexInfo[m_MeshInfo.vertexNumAll];				//公開用頂点
-	VertexData *pVertexData = new VertexData[m_MeshInfo.vertexNumAll];			//内部用頂点
 	m_MeshInfo.pIndex = new IndexInfo[m_MeshInfo.faceNumAll];
 
 	D3D11_BUFFER_DESC bd;
@@ -307,21 +306,21 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 		count = 0;
 
 		//マテリアル割り当て
-		m_MeshInfo.m_pMaterial[i].Ambient = material[i].Ambient;
-		m_MeshInfo.m_pMaterial[i].Diffuse = material[i].Diffuse;
-		m_MeshInfo.m_pMaterial[i].Specular = material[i].Specular;
+		m_MeshInfo.pMaterial[i].ambient = material[i].ambient;
+		m_MeshInfo.pMaterial[i].diffuse = material[i].diffuse;
+		m_MeshInfo.pMaterial[i].specular = material[i].specular;
 
-		m_MeshInfo.m_pMaterial[i].TextureName = material[i].TextureName;
+		m_MeshInfo.pMaterial[i].textureName = material[i].textureName;
 
 		//テクスチャー読み込み
-		if (material[i].TextureName == "NoTexture")
+		if (material[i].textureName == "NoTexture")
 		{
-			m_MeshInfo.m_IsTexture = false;
+			m_MeshInfo.isTexture = false;
 		}
 		else
 		{
 			//テクスチャーを作成
-			if (FAILED(D3DX11CreateShaderResourceViewFromFile(pDevice, material[i].TextureName.c_str(), NULL, NULL, &m_MeshInfo.m_pMaterial[i].pTexture, NULL)))
+			if (FAILED(D3DX11CreateShaderResourceViewFromFile(pDevice, material[i].textureName.c_str(), NULL, NULL, &m_MeshInfo.pMaterial[i].pTexture, NULL)))
 			{
 				Relese();
 				MessageBoxA(NULL, TEXT("テクスチャーの読み込みに失敗しました"), NULL, MB_OK);
@@ -345,7 +344,7 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 				pFaceBuffer[count] = face[j * 3];
 				pFaceBuffer[count + 1] = face[j * 3 + 1];
 				pFaceBuffer[count + 2] = face[j * 3 + 2];
-				m_MeshInfo.m_pMaterial[i].dwNumFace += 1;
+				m_MeshInfo.pMaterial[i].numPolygon += 1;
 				count += 3;
 			}
 		}
@@ -354,12 +353,12 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 
 		//インデックスバッファーを作成
 		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth = sizeof(int) * m_MeshInfo.m_pMaterial[i].dwNumFace * 3;
+		bd.ByteWidth = sizeof(int) * m_MeshInfo.pMaterial[i].numPolygon * 3;
 		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		bd.CPUAccessFlags = 0;
 		bd.MiscFlags = 0;
 		InitData.pSysMem = pFaceBuffer;
-		if (FAILED(pDevice->CreateBuffer(&bd, &InitData, &m_MeshInfo.m_ppIndexBuffer[i])))
+		if (FAILED(pDevice->CreateBuffer(&bd, &InitData, &m_MeshInfo.ppIndexBuffer[i])))
 			return FALSE;
 
 		delete [] pFaceBuffer;
@@ -378,11 +377,6 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 			m_MeshInfo.pVertex[i].pos = coordinate[i];
 			m_MeshInfo.pVertex[face[i]].normal = normal[normalIndex[i]];
 			m_MeshInfo.pVertex[i].uv = uv[i];
-
-			//内部用頂点
-			pVertexData[i].pos = coordinate[i];
-			pVertexData[i].normal = normal[normalIndex[i]];
-			pVertexData[i].uv = uv[i];
 		}
 	}
 	else
@@ -393,26 +387,18 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 			//公開用頂点
 			m_MeshInfo.pVertex[i].pos = coordinate[i];
 			m_MeshInfo.pVertex[i].normal = normal[normalIndex[i]];
-
-			//内部用頂点
-			pVertexData[i].pos = coordinate[i];
-			pVertexData[i].normal = normal[normalIndex[i]];
-			pVertexData[i].uv.x = 0.0f;
-			pVertexData[i].uv.y = 0.0f;
 		}
 	}
 
 	//バーテックスバッファーを作成
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(VertexData) * m_MeshInfo.vertexNumAll;
+	bd.ByteWidth = sizeof(VertexInfo) * m_MeshInfo.vertexNumAll;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
-	InitData.pSysMem = pVertexData;
-	if (FAILED(pDevice->CreateBuffer(&bd, &InitData, &m_MeshInfo.m_pVertexBuffer)))
+	InitData.pSysMem = m_MeshInfo.pVertex;
+	if (FAILED(pDevice->CreateBuffer(&bd, &InitData, &m_MeshInfo.pVertexBuffer)))
 		return FALSE;
-
-	delete pVertexData;
 
 	//削除
 	 face.clear();
@@ -437,18 +423,18 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 
 void LoadXStatic::Relese()
 {
-	if (m_MeshInfo.m_pMaterial != nullptr)
+	if (m_MeshInfo.pMaterial != nullptr)
 	{
 		for (int i = 0; i < m_MeshInfo.materialNumAll; i++)
 		{
-			SAFE_RELEASE(m_MeshInfo.m_pMaterial[i].pTexture);
-			m_MeshInfo.m_ppIndexBuffer[i]->Release();
+			SAFE_RELEASE(m_MeshInfo.pMaterial[i].pTexture);
+			m_MeshInfo.ppIndexBuffer[i]->Release();
 		}
 		
 		SAFE_DELETE_ARRAY(m_MeshInfo.pIndex);
 		SAFE_DELETE_ARRAY(m_MeshInfo.pVertex);
-		SAFE_DELETE_ARRAY(m_MeshInfo.m_pMaterial);
-		SAFE_DELETE_ARRAY(m_MeshInfo.m_ppIndexBuffer);
-		SAFE_RELEASE(m_MeshInfo.m_pSampleLinear);
+		SAFE_DELETE_ARRAY(m_MeshInfo.pMaterial);
+		SAFE_DELETE_ARRAY(m_MeshInfo.ppIndexBuffer);
+		SAFE_RELEASE(m_MeshInfo.pSampleLinear);
 	}
 }

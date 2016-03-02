@@ -379,11 +379,6 @@ Vector4D Vector4D::operator * (const D3DXMATRIX &d3dxMatrix) const
 	return v;
 }
 
-D3DXVECTOR4 Vector4D::Change()
-{
-	return D3DXVECTOR4(x, y, z, w);
-}
-
 void Vector4D::DebugDraw(const char *name) const
 {
 	printf("******************************************************************************\n");
@@ -660,16 +655,6 @@ Matrix Matrix::GetInverse()
 
 void Matrix::operator = (const Matrix &matrix)
 {
-	/*
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			m[i][j] = matrix.m[i][j];
-		}
-	}
-	*/
-
 	_11 = matrix._11, _12 = matrix._12, _13 = matrix._13, _14 = matrix._14;
 	_21 = matrix._21, _22 = matrix._22, _23 = matrix._23, _24 = matrix._24;
 	_31 = matrix._31, _32 = matrix._32, _33 = matrix._33, _34 = matrix._34;
@@ -677,17 +662,7 @@ void Matrix::operator = (const Matrix &matrix)
 }
 
 void Matrix::operator = (const D3DXMATRIX &d3dxMatrix)
-{
-	/*
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			m[i][j] = d3dxMatrix.m[i][j];
-		}
-	}
-	*/
-	
+{	
 	_11 = d3dxMatrix._11, _12 = d3dxMatrix._12, _13 = d3dxMatrix._13, _14 = d3dxMatrix._14;
 	_21 = d3dxMatrix._21, _22 = d3dxMatrix._22, _23 = d3dxMatrix._23, _24 = d3dxMatrix._24;
 	_31 = d3dxMatrix._31, _32 = d3dxMatrix._32, _33 = d3dxMatrix._33, _34 = d3dxMatrix._34;
@@ -695,24 +670,38 @@ void Matrix::operator = (const D3DXMATRIX &d3dxMatrix)
 	
 }
 
+Matrix Matrix::operator + (const Matrix &matrix)
+{
+	Matrix temp;
+
+	temp._11 = _11 + matrix._11, temp._12 = _12 + matrix._12, temp._13 = _13 + matrix._13, temp._14 = _14 + matrix._14;
+	temp._21 = _21 + matrix._21, temp._22 = _22 + matrix._22, temp._23 = _23 + matrix._23, temp._24 = _24 + matrix._24;
+	temp._31 = _31 + matrix._31, temp._32 = _32 + matrix._32, temp._33 = _33 + matrix._33, temp._34 = _34 + matrix._34;
+	temp._41 = _41 + matrix._41, temp._42 = _42 + matrix._42, temp._43 = _43 + matrix._43, temp._44 = _44 + matrix._44;
+
+	return temp;
+}
+
+Matrix Matrix::operator + (const D3DXMATRIX &matrix)
+{
+	Matrix temp;
+
+	temp._11 = _11 + matrix._11, temp._12 = _12 + matrix._12, temp._13 = _13 + matrix._13, temp._14 = _14 + matrix._14;
+	temp._21 = _21 + matrix._21, temp._22 = _22 + matrix._22, temp._23 = _23 + matrix._23, temp._24 = _24 + matrix._24;
+	temp._31 = _31 + matrix._31, temp._32 = _32 + matrix._32, temp._33 = _33 + matrix._33, temp._34 = _34 + matrix._34;
+	temp._41 = _41 + matrix._41, temp._42 = _42 + matrix._42, temp._43 = _43 + matrix._43, temp._44 = _44 + matrix._44;
+
+	return temp;
+}
+
 Matrix Matrix::operator * (float num)
 {
 	Matrix temp;
 
-	/*
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			temp.m[i][j] *= num;
-		}
-	}
-	*/
-
-	temp._11 *= num, temp._12 *= num, temp._13 *= num, temp._14 *= num;
-	temp._21 *= num, temp._22 *= num, temp._23 *= num, temp._24 *= num;
-	temp._31 *= num, temp._32 *= num, temp._33 *= num, temp._34 *= num;
-	temp._41 *= num, temp._42 *= num, temp._43 *= num, temp._44 *= num;
+	temp._11 = _11 * num, temp._12 = _12 * num, temp._13 = _13 * num, temp._14 = _14 * num;
+	temp._21 = _21 * num, temp._22 = _22 * num, temp._23 = _23 * num, temp._24 = _24 * num;
+	temp._31 = _31 * num, temp._32 = _32 * num, temp._33 = _33 * num, temp._34 = _34 * num;
+	temp._41 = _41 * num, temp._42 = _42 * num, temp._43 = _43 * num, temp._44 = _44 * num;
 
 	return temp;
 }
@@ -721,6 +710,27 @@ Matrix Matrix::operator * (const Matrix &matrix)
 {
 	Matrix temp;
 
+	temp._11 = _11 * matrix._11 + _12 * matrix._21 + _13 * matrix._31 + _14 * matrix._41;
+	temp._12 = _11 * matrix._12 + _12 * matrix._22 + _13 * matrix._32 + _14 * matrix._42;
+	temp._13 = _11 * matrix._13 + _12 * matrix._23 + _13 * matrix._33 + _14 * matrix._43;
+	temp._14 = _11 * matrix._14 + _12 * matrix._24 + _13 * matrix._34 + _14 * matrix._44;
+
+	temp._21 = _21 * matrix._11 + _22 * matrix._21 + _23 * matrix._31 + _24 * matrix._41;
+	temp._22 = _21 * matrix._12 + _22 * matrix._22 + _23 * matrix._32 + _24 * matrix._42;
+	temp._23 = _21 * matrix._13 + _22 * matrix._23 + _23 * matrix._33 + _24 * matrix._43;
+	temp._24 = _21 * matrix._14 + _22 * matrix._24 + _23 * matrix._34 + _24 * matrix._44;
+
+	temp._31 = _31 * matrix._11 + _32 * matrix._21 + _33 * matrix._31 + _34 * matrix._41;
+	temp._32 = _31 * matrix._12 + _32 * matrix._22 + _33 * matrix._32 + _34 * matrix._42;
+	temp._33 = _31 * matrix._13 + _32 * matrix._23 + _33 * matrix._33 + _34 * matrix._43;
+	temp._34 = _31 * matrix._14 + _32 * matrix._24 + _33 * matrix._34 + _34 * matrix._44;
+
+	temp._41 = _41 * matrix._11 + _42 * matrix._21 + _43 * matrix._31 + _44 * matrix._41;
+	temp._42 = _41 * matrix._12 + _42 * matrix._22 + _43 * matrix._32 + _44 * matrix._42;
+	temp._43 = _41 * matrix._13 + _42 * matrix._23 + _43 * matrix._33 + _44 * matrix._43;
+	temp._44 = _41 * matrix._14 + _42 * matrix._24 + _43 * matrix._34 + _44 * matrix._44;
+
+	/*
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
@@ -733,7 +743,7 @@ Matrix Matrix::operator * (const Matrix &matrix)
 			}
 		}
 	}
-
+	*/
 	return temp;
 }
 
@@ -741,6 +751,27 @@ Matrix Matrix::operator * (const D3DXMATRIX &matrix)
 {
 	Matrix temp;
 
+	temp._11 = _11 * matrix._11 + _12 * matrix._21 + _13 * matrix._31 + _14 * matrix._41;
+	temp._12 = _11 * matrix._12 + _12 * matrix._22 + _13 * matrix._32 + _14 * matrix._42;
+	temp._13 = _11 * matrix._13 + _12 * matrix._23 + _13 * matrix._33 + _14 * matrix._43;
+	temp._14 = _11 * matrix._14 + _12 * matrix._24 + _13 * matrix._34 + _14 * matrix._44;
+
+	temp._21 = _21 * matrix._11 + _22 * matrix._21 + _23 * matrix._31 + _24 * matrix._41;
+	temp._22 = _21 * matrix._12 + _22 * matrix._22 + _23 * matrix._32 + _24 * matrix._42;
+	temp._23 = _21 * matrix._13 + _22 * matrix._23 + _23 * matrix._33 + _24 * matrix._43;
+	temp._24 = _21 * matrix._14 + _22 * matrix._24 + _23 * matrix._34 + _24 * matrix._44;
+
+	temp._31 = _31 * matrix._11 + _32 * matrix._21 + _33 * matrix._31 + _34 * matrix._41;
+	temp._32 = _31 * matrix._12 + _32 * matrix._22 + _33 * matrix._32 + _34 * matrix._42;
+	temp._33 = _31 * matrix._13 + _32 * matrix._23 + _33 * matrix._33 + _34 * matrix._43;
+	temp._34 = _31 * matrix._14 + _32 * matrix._24 + _33 * matrix._34 + _34 * matrix._44;
+
+	temp._41 = _41 * matrix._11 + _42 * matrix._21 + _43 * matrix._31 + _44 * matrix._41;
+	temp._42 = _41 * matrix._12 + _42 * matrix._22 + _43 * matrix._32 + _44 * matrix._42;
+	temp._43 = _41 * matrix._13 + _42 * matrix._23 + _43 * matrix._33 + _44 * matrix._43;
+	temp._44 = _41 * matrix._14 + _42 * matrix._24 + _43 * matrix._34 + _44 * matrix._44;
+
+	/*
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
@@ -753,6 +784,7 @@ Matrix Matrix::operator * (const D3DXMATRIX &matrix)
 			}
 		}
 	}
+	*/
 
 	return temp;
 }

@@ -1,8 +1,7 @@
 #include "DynamicMesh.h"
-#include "..\System\Camera.h"
-#include "..\System\DirectionalLight.h"
 #include "..\Shader\DynamicMeshShader\DynamicMeshShader.h"
 #include "..\Shader\ShadowMap\ShaderShadowMap.h"
+#include "..\Shader\ConstantShader.h"
 #include "..\ImageSystem\Image.h"
 #include <assert.h>
 
@@ -142,7 +141,7 @@ void DynamicMesh::StopAnimation()
 
 const SkinVertexInfo *DynamicMesh::GetVertex() const
 {
-	return m_pSkinMeshData->GetSkinMeshInfo()->pvVertex;
+	return m_pSkinMeshData->GetSkinMeshInfo()->pVertex;
 }
 
 float DynamicMesh::GetPlayTime(int bornIndex) const
@@ -259,21 +258,12 @@ void DynamicMesh::RenderMatrix(Matrix &matrix)
 
 void DynamicMesh::BornDebug(eBornDebug eBornDebug) const
 {
-	/*
-	auto it = m_CopyBornArray.begin();
-	auto itEnd = m_CopyBornArray.end();
-	for (; it != itEnd; it++)
-	{
-		//(*it)->
-	}
-	*/
-
 	int cnt = 0;
 	for (auto& i : m_pSkinMeshData->GetBornInfo()->BornList)
 	{
 		printf("%s\n", i->BornName.c_str());
 
-		D3DXMATRIX m = m_CopyBornArray[cnt]->bornMat;
+		Matrix m = m_CopyBornArray[cnt]->bornMat;
 		printf("%f %f %f %f\n", m._11, m._12, m._13, m._14);
 		printf("%f %f %f %f\n", m._21, m._22, m._23, m._24);
 		printf("%f %f %f %f\n", m._31, m._32, m._33, m._34);
@@ -285,7 +275,7 @@ void DynamicMesh::BornDebug(eBornDebug eBornDebug) const
 
 void DynamicMesh::AnimationDebug(int animNum) const
 {
-	m_pSkinMeshData->AnimationDebug(animNum);
+
 }
 
 void DynamicMesh::AllocationSkinMeshData(const std::string &meshName)
@@ -308,9 +298,9 @@ void DynamicMesh::AllocationSkinMeshData(const std::string &meshName)
 	//マテリアル割り当て
 	for (int i = 0; i < data->materialNumAll; i++)
 	{
-		diffuse = data->m_pMaterial[i].Diffuse;
-		specular = data->m_pMaterial[i].Specular;
-		ambient = data->m_pMaterial[i].Ambient;
+		diffuse = data->pMaterial[i].diffuse;
+		specular = data->pMaterial[i].specular;
+		ambient = data->pMaterial[i].ambient;
 
 		m_Diffuse.emplace_back(diffuse.x, diffuse.y, diffuse.z, diffuse.w);
 		m_Specular.emplace_back(specular.x, specular.y, specular.z);
@@ -339,26 +329,22 @@ void DynamicMesh::RenderFunc(Matrix &matrix)
 
 	const SkinMeshInfo *data = m_pSkinMeshData->GetSkinMeshInfo();
 
-	DynamicMeshShader::GetInstance()->SetVertexShader(pDeviceContext, data->m_IsTexture, false);
-	DynamicMeshShader::GetInstance()->SetPixelShader(pDeviceContext, data->m_IsTexture, false);
-	DynamicMeshShader::GetInstance()->SetInputLayout(pDeviceContext, data->m_IsTexture);
+	DynamicMeshShader::GetInstance()->SetShader(pDeviceContext, data->isTexture, false);
 
-	DynamicMeshShader::GetInstance()->SetBaseConstantBuffer(pDeviceContext, matrix, false);
+	ConstantShader::GetInstance()->SetCommonInfoConstantBuffer();
+	ConstantShader::GetInstance()->SetTransformMatrixConstantBuffer(pDeviceContext, matrix, false);
 
 	//アニメーション更新
-	if (m_IsAnimUpdate)
-	{
-		m_pSkinMeshData->Update(&m_Born);
-	}
+	if (m_IsAnimUpdate) m_pSkinMeshData->Update(&m_Born);
 
-	DynamicMeshShader::GetInstance()->SetBornConstantBuffer(pDeviceContext, GetBornAllNum(), m_CopyBornArray);
+	ConstantShader::GetInstance()->SetBornConstantBuffer(pDeviceContext, GetBornAllNum(), m_CopyBornArray);
 
 	//属性ごとにレンダリング
 
 	//バーテックスバッファーをセット
 	UINT Stride = sizeof(SkinVertexInfo);
 	UINT offset = 0;
-	pDeviceContext->IASetVertexBuffers(0, 1, &data->m_pVertexBuffer, &Stride, &offset);
+	pDeviceContext->IASetVertexBuffers(0, 1, &data->pVertexBuffer, &Stride, &offset);
 
 	//マルチテクスチャ
 	if (m_pImage != nullptr)
@@ -366,23 +352,17 @@ void DynamicMesh::RenderFunc(Matrix &matrix)
 		pDeviceContext->PSSetShaderResources(2, 1, &m_pImage->m_pImageData->GetImageInfo()->pTexture);
 	}
 
-	D3DXVECTOR4 diffuse;
-	D3DXVECTOR4 specular;
-	D3DXVECTOR4 ambient;
+	Vector4D specular;
+	Vector4D ambient;
 
 	//属性の数だけ、それぞれの属性のインデックスバッファ－を描画
 	for (int i = 0; i < data->materialNumAll; i++)
 	{
 		//使用されていないマテリアル対策
-		if (data->m_pMaterial[i].dwNumFace == 0) continue;
+		if (data->pMaterial[i].numPolygon == 0) continue;
 
 		//インデックスバッファーをセット
-		pDeviceContext->IASetIndexBuffer(data->m_ppIndexBuffer[i], DXGI_FORMAT_R32_UINT, 0);
-
-		diffuse.x = m_Diffuse[i].x;
-		diffuse.y = m_Diffuse[i].y;
-		diffuse.z = m_Diffuse[i].z;
-		diffuse.w = m_Diffuse[i].w;
+		pDeviceContext->IASetIndexBuffer(data->ppIndexBuffer[i], DXGI_FORMAT_R32_UINT, 0);
 
 		specular.x = m_Specular[i].x;
 		specular.y = m_Specular[i].y;
@@ -394,17 +374,13 @@ void DynamicMesh::RenderFunc(Matrix &matrix)
 		ambient.z = m_Ambient[i].z;
 		ambient.w = m_Diffuse[i].w;
 
-		DynamicMeshShader::GetInstance()->SetMaterialConstantBuffer(pDeviceContext, diffuse, specular, ambient);
+		ConstantShader::GetInstance()->SetMaterialConstantBuffer(pDeviceContext, m_Diffuse[i], specular, ambient);
 
-		//テクスチャーをシェーダーに渡す
-		if (data->m_pMaterial[i].pTexture)
-		{
-			pDeviceContext->PSSetSamplers(0, 1, &data->m_pSampleLinear);
-			pDeviceContext->PSSetShaderResources(0, 1, &data->m_pMaterial[i].pTexture);
-		}
+		pDeviceContext->PSSetSamplers(0, 1, &data->pSampleLinear);
+		pDeviceContext->PSSetShaderResources(0, 1, &data->pMaterial[i].pTexture);
 
 		//プリミティブをレンダリング
-		pDeviceContext->DrawIndexed(data->m_pMaterial[i].dwNumFace * 3, 0, 0);
+		pDeviceContext->DrawIndexed(data->pMaterial[i].numPolygon * 3, 0, 0);
 	}
 
 	//テクスチャリソース初期化

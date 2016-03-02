@@ -1,17 +1,22 @@
 #pragma warning(disable : 3206)
 
+//全てのメッシュ共通情報
+cbuffer CommonInfo : register(b0)
+{
+	float4 g_LightDir;  //ライトの方向ベクトル
+	float4 g_Intensity; //ディレクショナルライト情報（ライトの明るさ）
+	float4 g_Eye;		//カメラ位置
+};
+
 //変換行列やライト
-cbuffer global_0:register(b0)
+cbuffer global_0:register(b1)
 {
 	matrix g_mW;		//ワールド行列
 	matrix g_mWVP;		//ワールドから射影までの変換行列
-	float4 g_vLightDir; //ライトの方向ベクトル
-	float4 g_fIntensity;//ディレクショナルライト情報（ライトの明るさ）
-	float4 g_vEye;		//カメラ位置
 };
 
 //マテリアル
-cbuffer global_1:register(b1)
+cbuffer global_1:register(b2)
 {
 	float4 g_Ambient; //アンビエント光
 	float4 g_Diffuse; //拡散反射(色）
@@ -39,11 +44,11 @@ VS_OUTPUT VS_NoTexture(float4 Pos : POSITION, float4 Normal : NORMAL)
 	output.Normal = mul(Normal, (float3x3)g_mW);
 
 	//ディレクショナルライト
-	output.Light = -g_vLightDir.xyz;
+	output.Light = -g_LightDir.xyz;
 
 	//視線ベクトル　ワールド空間上での頂点から視点へ向かうベクトル
 	float4 PosWorld = mul(Pos, g_mW);
-	output.EyeVector = normalize(PosWorld - g_vEye).xyz;
+	output.EyeVector = normalize(PosWorld - g_Eye).xyz;
 
 	return output;
 }
@@ -66,8 +71,8 @@ float4 PS_NoTexture( VS_OUTPUT input ) : SV_Target
 	//フォンモデル最終色　３つの項の合計
 	float4 color = ambient + diffuse + specular;
 
-	color.rgb *= g_fIntensity.rgb; //ライトの色反映
-	color *= g_fIntensity.w; //ライト強度を反映
+	color.rgb *= g_Intensity.rgb; //ライトの色反映
+	color *= g_Intensity.w; //ライト強度を反映
 	color.a = g_Diffuse.w; //アルファ値反映
 
 	return color;

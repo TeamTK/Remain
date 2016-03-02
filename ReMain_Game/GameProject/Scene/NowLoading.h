@@ -2,7 +2,7 @@
 #define _NOW_LOADING_H_
 
 #include "../GEKO/Task/RenderTask.h"
-#include "..\GameSystem\ScreenTransfer.h"
+#include "../GameSystem/ScreenTransfer.h"
 
 class NowLoading : public Task
 {

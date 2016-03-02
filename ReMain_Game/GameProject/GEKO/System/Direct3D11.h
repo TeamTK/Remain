@@ -106,7 +106,11 @@ public:
 	/// </returns>
 	void Present();
 
-	void RederTarget();
+	void RenderTarget();
+
+	void DepthOn();
+
+	void DepthOff();
 
 	/// <summary>
 	/// 画面をフルスクリーンで表示
@@ -158,6 +162,8 @@ private:
 	ID3D11Texture2D*		m_pDepthStencil;		//深度・ステンシルを作るテクスチャー
 	ID3D11RenderTargetView* m_pRenderTargetView;	//レンダーターゲットビュー
 	ID3D11DepthStencilView* m_pDepthStencilView;	//深度・ステンシル・ビュー
+	ID3D11DepthStencilState*m_pDepthStencilState_DepthOn;
+	ID3D11DepthStencilState*m_pDepthStencilState_DepthOff;
 	ID3D11BlendState*		m_pBlendState;			//ブレンド設定3D
 	ID3D11BlendState*		m_pBlendState2D;		//ブレンド設定2D
 	D3D11_VIEWPORT			m_Viewport;				//ビューポート
