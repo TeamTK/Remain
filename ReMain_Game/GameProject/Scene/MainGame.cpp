@@ -5,11 +5,17 @@
 #include "../Chapter/Chapter.h"
 #include "../Scene/Title.h"
 
+//#define BOSS_DEBUG_MODE
+
 MainGame::MainGame() :
 	Task("MainGame", 0)
 {
-
+#ifndef BOSS_DEBUG_MODE
 	new Chapter_1_1();
+#endif
+#ifdef BOSS_DEBUG_MODE
+	new Chapter_1_3();
+#endif
 }
 
 MainGame::~MainGame()

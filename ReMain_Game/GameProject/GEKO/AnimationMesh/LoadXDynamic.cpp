@@ -816,8 +816,11 @@ void LoadXDynamic::AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn, bool *pIsAnimEnd
 			AnimFrameInit(pCopyBorn, (float)frameAnimNum);
 			*pIsAnimEnd = false;
 		}
-		else *pIsAnimEnd = true;
-		return;
+		else
+		{
+			*pIsAnimEnd = true;
+			return;
+		}
 	}
 
 	//アニメーション補間

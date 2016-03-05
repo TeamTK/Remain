@@ -93,6 +93,7 @@
     <ClCompile Include="MainGame\AmmoBox\AmmoBox_Shotgun.cpp" />
     <ClCompile Include="MainGame\Bullet\Bullet.cpp" />
     <ClCompile Include="MainGame\Character.cpp" />
+    <ClCompile Include="MainGame\Enemy\Boss.cpp" />
     <ClCompile Include="MainGame\Enemy\Enemy.cpp" />
     <ClCompile Include="MainGame\Enemy\EnemyWave.cpp" />
     <ClCompile Include="MainGame\Enemy\EnemyStateManager.cpp" />
@@ -276,6 +277,7 @@
     <ClInclude Include="MainGame\Bullet\Bullet.h" />
     <ClInclude Include="MainGame\Character.h" />
     <ClInclude Include="MainGame\Enemy.h" />
+    <ClInclude Include="MainGame\Enemy\Boss.h" />
     <ClInclude Include="MainGame\Enemy\Enemy.h" />
     <ClInclude Include="MainGame\Enemy\EnemyWave.h" />
     <ClInclude Include="MainGame\Enemy\EnemyStateManager.h" />

@@ -10,8 +10,10 @@ std::string className[] =
 	"Cabin",
 	"Ground_1_1",
 	"Ground_1_2",
+	"Ground_1_3",
 	"RockWall_1_1",
 	"RockWall_1_2",
+	"RockWall_1_3",
 	"SkyDome",
 	"Bush",
 	"Clover",
@@ -234,53 +236,61 @@ MapObject::MapObject(XYZ &pos, XYZ &rot, XYZ &sca, std::string name)
 	}
 	else if (name == className[7])
 	{
-		mp_StageObject = new RockWall_1_1(pos, rot, sca, name);
+		mp_StageObject = new Ground_1_3(pos, rot, sca, name);
 	}
 	else if (name == className[8])
 	{
-		mp_StageObject = new RockWall_1_2(pos, rot, sca, name);
+		mp_StageObject = new RockWall_1_1(pos, rot, sca, name);
 	}
 	else if (name == className[9])
 	{
-		mp_StageObject = new SkyDome(pos, rot, sca, name);
+		mp_StageObject = new RockWall_1_2(pos, rot, sca, name);
 	}
 	else if (name == className[10])
 	{
-		mp_StageObject = new Bush(pos, rot, sca, name);
+		mp_StageObject = new RockWall_1_3(pos, rot, sca, name);
 	}
 	else if (name == className[11])
 	{
-		mp_StageObject = new Clover(pos, rot, sca, name);
+		mp_StageObject = new SkyDome(pos, rot, sca, name);
 	}
 	else if (name == className[12])
 	{
-		mp_StageObject = new Fern(pos, rot, sca, name);
+		mp_StageObject = new Bush(pos, rot, sca, name);
 	}
 	else if (name == className[13])
 	{
-		mp_StageObject = new Fence(pos, rot, sca, name);
+		mp_StageObject = new Clover(pos, rot, sca, name);
 	}
 	else if (name == className[14])
 	{
-		mp_StageObject = new Stone_A(pos, rot, sca, name);
+		mp_StageObject = new Fern(pos, rot, sca, name);
 	}
 	else if (name == className[15])
 	{
-		mp_StageObject = new Fallen_leaves(pos, rot, sca, name);
+		mp_StageObject = new Fence(pos, rot, sca, name);
 	}
 	else if (name == className[16])
 	{
-		mp_StageObject = new Tree_1_Trunk(pos, rot, sca, name);
+		mp_StageObject = new Stone_A(pos, rot, sca, name);
 	}
 	else if (name == className[17])
 	{
-		mp_StageObject = new Shrub(pos, rot, sca, name);
+		mp_StageObject = new Fallen_leaves(pos, rot, sca, name);
 	}
 	else if (name == className[18])
 	{
-		mp_StageObject = new Weeds(pos, rot, sca, name);
+		mp_StageObject = new Tree_1_Trunk(pos, rot, sca, name);
 	}
 	else if (name == className[19])
+	{
+		mp_StageObject = new Shrub(pos, rot, sca, name);
+	}
+	else if (name == className[20])
+	{
+		mp_StageObject = new Weeds(pos, rot, sca, name);
+	}
+	else if (name == className[21])
 	{
 		mp_StageObject = new WoodBox(pos, rot, sca, name);
 	}
