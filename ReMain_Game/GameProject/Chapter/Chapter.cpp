@@ -6,6 +6,7 @@
 #include "../MainGame/AmmoBox/AmmoBox_Shotgun.h"
 #include "../MainGame/Player/PlayerData.h"
 #include "../MainGame/Enemy/Wanderings.h"
+#include "../MainGame/Enemy/Boss.h"
 
 void Kill()
 {
@@ -116,7 +117,8 @@ void Chapter_1_1::StageChange(Result_Sphere &data)
 Chapter_1_2::Chapter_1_2() :
 	Task("Chapter_1_2", 0),
 	m_Radius(2.0f),
-	m_pos(-7.0f, 0.0f, 4.0f)
+	m_pos(-7.0f, 0.0f, 4.0f),
+	m_StageChangePos(64.0f, 0.0f, 39.0f)
 {
 	DirectionalLight::SetDistance(160.0f);
 
@@ -139,6 +141,10 @@ Chapter_1_2::Chapter_1_2() :
 	StageObjectManager::GetInstance()->ClearList();
 	StageObjectManager::GetInstance()->LoadObject("TextData\\StageObject_Cha1_2.txt");
 
+	//ステージ移動用
+	m_StageChange.Regist_S_vs_S(&m_StageChangePos, &m_Radius, REGIST_FUNC(Chapter_1_2::StageChange));
+	m_StageChange.SetID(eHITID4, eHITID1);
+
 	//敵生成
 	EnemyStateManager::LoadFileState("TextData\\EnemyState.txt");
 	EnemyStateManager::LoadFileSpawn("TextData\\EnemySpawn_Chapter_1-2.txt");
@@ -154,15 +160,114 @@ Chapter_1_2::Chapter_1_2() :
 Chapter_1_2::~Chapter_1_2()
 {
 	TracerouteManager::ClearTopography("Chapter_1_2_Traceroute");
-	Kill();
 	m_BGM.Stop();
 }
 
 void Chapter_1_2::Update()
 {
+	m_Transfer_In.Update();
+
+	if (m_Transfer_In.GetIsEndTransfer())
+	{
+		Kill();
+		SetKill();
+		new Chapter_1_3();
+	}
+
 	if (Input::KeyO.Clicked()) //敵削除
 	{
 		TaskManager::Kill("Monster_A");
 		TaskManager::Kill("Monster_B");
 	}
+}
+
+void Chapter_1_2::Render()
+{
+	m_Transfer_In.Render();
+}
+
+void Chapter_1_2::StageChange(Result_Sphere &data)
+{
+	m_StageChange.Sleep();
+	m_Transfer_In.Start(3);
+}
+
+
+
+//******************************************
+//				Chapter_1_3
+//******************************************
+
+Chapter_1_3::Chapter_1_3() :
+	Task("Chapter_1_3", 0),
+	m_Radius(5.0f),
+	m_pos(-7.0f, 0.0f, 4.0f)
+{
+	DirectionalLight::SetDistance(160.0f);
+	/*
+	PData data;
+	data.HP = PlayerData::GetData().HP;
+	data.Shotgun_Ammo = PlayerData::GetData().Shotgun_Ammo;
+	data.Shotgun_LoadedAmmo = PlayerData::GetData().Shotgun_LoadedAmmo;
+	data.Handgun_Ammo = PlayerData::GetData().Handgun_Ammo;
+	data.Handgun_LoadedAmmo = PlayerData::GetData().Handgun_LoadedAmmo;
+	data.isTakeWeapon = PlayerData::GetData().isTakeWeapon;
+	data.Weapon = PlayerData::GetData().Weapon;
+	*/
+	PData data;
+	data.HP = 100.0f;
+	data.Shotgun_Ammo = 6;
+	data.Shotgun_LoadedAmmo = 6;
+	data.Handgun_Ammo = 6;
+	data.Handgun_LoadedAmmo = 6;
+	data.isTakeWeapon = false;
+	data.Weapon = eShotgun;
+	new Player(&data, Vector3D(13.0f, 0.0f, 12.0f), 80, -2);
+
+	//アッセットtxt読み込み
+	StageObjectManager::GetInstance()->ClearList();
+	StageObjectManager::GetInstance()->LoadObject("TextData\\StageObject_Cha1_3.txt");
+
+	new AmmoBox_Shotgun(Vector3D(-9.5f, 0.0f, 14.4f), Vector3D(0.0f, 200.0f, 0.0f), 6);
+
+	BossState state;
+	state.hp = 50;
+	state.spawnPos = Vector3D(4.0f, 0.0f, -12.0f);
+	state.spawnRot = Vector3D(0.0f, 180.0f, 0.0f);
+	new Boss(state);
+
+	m_BGM.SetAseet("Field1");
+	m_BGM.SetLoop(true);
+	m_BGM.Play();
+}
+
+Chapter_1_3::~Chapter_1_3()
+{
+	Kill();
+	m_BGM.Stop();
+}
+
+void Chapter_1_3::Update()
+{
+	m_Transfer_In.Update();
+	
+}
+
+void Chapter_1_3::Render()
+{
+	m_Transfer_In.Render();
+}
+
+void Chapter_1_3::HitPlayer(Result_Sphere &data)
+{
+	EnemyWaveInfo info;
+	info.isSearch = true;
+	info.waveAllNum = 1;
+	info.intervalTime = 1;
+	info.spawnName = "Chapter1-1";
+	info.stateName = "Normal_Monster_A";
+	info.tracerouteName = "Chapter_1_3_Traceroute";
+	new EnemyWave(info);
+
+	m_MapCol.Sleep();
 }

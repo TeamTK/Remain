@@ -1,3 +1,4 @@
 DynamicMesh media\Player.x Player
 DynamicMesh media\Monster_A.x Monster_A
 DynamicMesh media\Monster_B.x Monster_B
+DynamicMesh media\Boss.x Boss

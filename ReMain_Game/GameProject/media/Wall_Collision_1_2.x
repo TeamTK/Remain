@@ -2283,7 +2283,7 @@ Frame Root {
         0,
         0,
         0;;
-        Material Wall_Collision {
+        Material Wall_Collision_1_1 {
            0.640000; 0.640000; 0.640000; 1.000000;;
            96.078431;
            0.000000; 0.000000; 0.000000;;
