@@ -7,8 +7,6 @@
 #include <fstream>
 #include <map>
 
-#define MAX_BONES 255
-
 //マテリアル構造体
 struct SkinMaterialInfo
 {
@@ -134,7 +132,7 @@ public:
 	const SkinMeshInfo *GetSkinMeshInfo() const;
 	const BornInfo *GetBornInfo() const;
 	virtual void Relese();
-	virtual void Update(CopyBorn *pCopyBorn);
+	virtual void Update(CopyBorn *pCopyBorn, bool *pIsAnimEnd);
 	virtual void CopyBornTree(CopyBorn *pBornCopy, std::vector<CopyBorn*> *pCopyBornArray, Born *pBornOriginal);
 
 protected:

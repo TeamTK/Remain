@@ -153,7 +153,12 @@ float4 BlinnPhong(float3 n, float3 l, float3 v)
 float4 MatrialColor(float4 ambient, float4 diffuse, float4 specular, float2 uv)
 {
 	float4 matrial = ambient + diffuse + specular;
-	float4 color = g_texColor.Sample(g_SamLinear, uv) + g_Texture.Sample(g_SamLinear, uv);
+	float4 color;
+	float4 TexColor1 = g_texColor.Sample(g_SamLinear, uv);
+	float4 TexColor2 = g_Texture.Sample(g_SamLinear, uv);
+
+	color = TexColor1 * (1 - TexColor2.a) + TexColor2 * TexColor2.a;
+
 	color.rgb *= matrial.rgb * g_Intensity.rgb * g_Intensity.w;
 	color.a *= g_Diffuse.w; //アルファ値反映
 	return color;

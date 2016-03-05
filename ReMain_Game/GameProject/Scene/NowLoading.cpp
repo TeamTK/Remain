@@ -35,7 +35,7 @@ NowLoading::NowLoading(bool isResource) :
 				GEKO::ScreenUpdate();
 				GEKO::ClearColor(10, 10, 10);
 
-				g_NowLodingImage.PlayFrame(0.01f);
+				g_NowLodingImage.PlayFrame(0.007f);
 				g_NowLodingImage.Draw(Vector2D(NOW_LOADING_POS));
 			}
 		};

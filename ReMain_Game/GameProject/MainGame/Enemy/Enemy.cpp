@@ -43,7 +43,6 @@ Enemy::Enemy(const char* name, EnemyState &enemyState) :
 
 	//Œo˜H’Tõ
 	m_Search.SetPosition(&m_pos);
-	m_Search.SetTargetName("Player");
 	m_Search.SetTopography(enemyState.topographyName);
 
 	//Œo˜H’TõŠJŽn”»’f
@@ -51,18 +50,18 @@ Enemy::Enemy(const char* name, EnemyState &enemyState) :
 	{
 		m_Search.StartSerch();
 		m_Search.StartMove();
+		m_Search.SetTargetName("Player");
 		m_Sight.Sleep();
 		m_AuditorySense.Stop();
 		m_pPlayerPos = g_pPlayerPos;
 	}
 	else
 	{
-		m_Search.StopSerch();
-		m_Search.StopMove();
+		m_Search.StartSerch();
+		m_Search.StartMove();
+		//œpœj‰Šú‰»
+		m_Wandering.Init(enemyState.wanderingName, &m_Search, &m_pos, &m_rot);
 	}
-
-	//œpœj‰Šú‰»
-	m_Wandering.Init(enemyState.wanderingName, &m_Search, &m_pos, &m_rot);
 }
 
 Enemy::~Enemy()
@@ -195,19 +194,22 @@ void Enemy::Update()
 	m_Model.ChangeAnimation(m_AnimType);
 
 	m_FuncTask.Update();
-	m_FuncTask.RunningDraw();
 
 	//Œo˜H’Tõ‚ð‚·‚éŠÔŠu
-	if (m_SearchCnt >= SEARCH_INTERVAL && m_Sight.GetSleep())
+	if (!m_FuncTask.Running("Wandering"))
 	{
-		m_Search.StartSerch();
-		m_SearchCnt = 0;
+		if (m_SearchCnt >= SEARCH_INTERVAL && m_Sight.GetSleep())
+		{
+			m_Search.StartSerch();
+			m_SearchCnt = 0;
+		}
+		else
+		{
+			m_Search.StopSerch();
+			m_SearchCnt++;
+		}
 	}
-	else
-	{
-		m_Search.StopSerch();
-		m_SearchCnt++;
-	}
+
 	Character::Update();
 	//m_Search.DebugMigrationPath();
 }
@@ -278,6 +280,7 @@ void Enemy::HitBullet(Result_Sphere& r)
 			m_AuditorySense.Stop();
 			m_Search.StartSerch();
 			m_Search.StartMove();
+			m_Search.SetTargetName("Player");
 			m_Wandering.Stop();
 		}
 	}
@@ -308,6 +311,7 @@ void Enemy::HitSight(const Vector3D *pPos)
 	m_AuditorySense.Stop();
 	m_Search.StartSerch();
 	m_Search.StartMove();
+	m_Search.SetTargetName("Player");
 	m_Wandering.Stop();
 }
 
@@ -329,6 +333,7 @@ void Enemy::Auditory(int volume)
 		m_AuditorySense.Stop();
 		m_Search.StartSerch();
 		m_Search.StartMove();
+		m_Search.SetTargetName("Player");
 		m_Wandering.Stop();
 		break;
 

@@ -55,17 +55,11 @@ Chapter_1_1::Chapter_1_1() :
 
 	//ìGê∂ê¨
 	EnemyStateManager::LoadFileState("TextData\\EnemyState.txt");
-	EnemyStateManager::LoadFileSpawn("TextData\\EnemySpawn.txt");
+	EnemyStateManager::LoadFileSpawn("TextData\\EnemySpawn_Chapter_1-1.txt");
 
 	//ÉXÉeÅ[ÉWà⁄ìÆóp
 	m_StageChange.Regist_S_vs_S(&m_StageChangePos, &m_Radius, REGIST_FUNC(Chapter_1_1::StageChange));
 	m_StageChange.SetID(eHITID4, eHITID1);
-
-	//ìGÇèoåª
-	m_MapCol.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Chapter_1_1::HitPlayer));
-	m_MapCol.SetID(eHITID5, eHITID1);
-
-	m_MapCol.Sleep();
 
 	m_Render.Regist(6, REGIST_RENDER_FUNC(Chapter_1_1::Render));
 
@@ -75,7 +69,7 @@ Chapter_1_1::Chapter_1_1() :
 	m_BGM.SetLoop(true);
 	m_BGM.Play();
 
-	EnemyStateManager::Generation("Normal_Monster_A", "Chapter1-1", "Chapter_1_1_Traceroute", true);
+	EnemyStateManager::Generation("Normal_Monster_A", "Chapter1-1_Start", "Chapter_1_1_Traceroute", false);
 }
 
 Chapter_1_1::~Chapter_1_1()
@@ -94,25 +88,6 @@ void Chapter_1_1::Update()
 		SetKill();
 		new Chapter_1_2();
 	}
-	/*
-	if (Input::KeyP.Clicked()) //ìGí«â¡(âº)
-	{
-		EnemyWaveInfo info;
-		info.isSearch = true;
-		info.waveAllNum = 1;
-		info.intervalTime = 1;
-		info.spawnName = "Chapter1-1";
-		info.stateName = "Normal_Monster_A";
-		info.tracerouteName = "Chapter_1_1_Traceroute";
-		new EnemyWave(info);
-	}
-
-	if (Input::KeyO.Clicked()) //ìGçÌèú
-	{
-		TaskManager::Kill("Monster_A");
-		TaskManager::Kill("Monster_B");
-	}
-	*/
 
 	if (Input::KeyO.Clicked()) //ìGçÌèú
 	{
@@ -124,20 +99,6 @@ void Chapter_1_1::Update()
 void Chapter_1_1::Render()
 {
 	m_Transfer_In.Render();
-}
-
-void Chapter_1_1::HitPlayer(Result_Sphere &data)
-{
-	EnemyWaveInfo info;
-	info.isSearch = true;
-	info.waveAllNum = 1;
-	info.intervalTime = 1;
-	info.spawnName = "Chapter1-1";
-	info.stateName = "Normal_Monster_A";
-	info.tracerouteName = "Chapter_1_1_Traceroute";
-	new EnemyWave(info);
-
-	m_MapCol.Sleep();
 }
 
 void Chapter_1_1::StageChange(Result_Sphere &data)
@@ -180,11 +141,8 @@ Chapter_1_2::Chapter_1_2() :
 
 	//ìGê∂ê¨
 	EnemyStateManager::LoadFileState("TextData\\EnemyState.txt");
-	EnemyStateManager::LoadFileSpawn("TextData\\EnemySpawn.txt");
-
-	//ìGÇèoåª
-	m_MapCol.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Chapter_1_2::HitPlayer));
-	m_MapCol.SetID(eHITID5, eHITID1);
+	EnemyStateManager::LoadFileSpawn("TextData\\EnemySpawn_Chapter_1-2.txt");
+	//EnemyStateManager::Generation("Normal_Monster_A", "Chapter1-1_Start", "Chapter_1_2_Traceroute", false);
 
 	new AmmoBox_Shotgun(Vector3D(-9.5f, 0.0f, 14.4f), Vector3D(0.0f, 200.0f, 0.0f), 6);
 
@@ -202,37 +160,9 @@ Chapter_1_2::~Chapter_1_2()
 
 void Chapter_1_2::Update()
 {
-	/*
-	if (Input::KeyP.Clicked()) //ìGí«â¡(âº)
-	{
-		EnemyWaveInfo info;
-		info.isSearch = true;
-		info.waveAllNum = 1;
-		info.intervalTime = 1;
-		info.spawnName = "Chapter1-1";
-		info.stateName = "Normal_Monster_A";
-		info.tracerouteName = "Chapter_1_2_Traceroute";
-		new EnemyWave(info);
-	}
-
 	if (Input::KeyO.Clicked()) //ìGçÌèú
 	{
 		TaskManager::Kill("Monster_A");
 		TaskManager::Kill("Monster_B");
 	}
-	*/
-}
-
-void Chapter_1_2::HitPlayer(Result_Sphere &data)
-{
-	EnemyWaveInfo info;
-	info.isSearch = true;
-	info.waveAllNum = 1;
-	info.intervalTime = 1;
-	info.spawnName = "Chapter1-1";
-	info.stateName = "Normal_Monster_A";
-	info.tracerouteName = "Chapter_1_2_Traceroute";
-	new EnemyWave(info);
-
-	m_MapCol.Sleep();
 }

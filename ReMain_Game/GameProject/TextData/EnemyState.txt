@@ -1,6 +1,6 @@
 EnemyState Normal_Monster_A
 Flinch: 15
-HitPoint: 20
+HitPoint: 15
 WalkSpeed: 2.5
 RunSpeed: 3.0
 MapHitRadius: 0.5

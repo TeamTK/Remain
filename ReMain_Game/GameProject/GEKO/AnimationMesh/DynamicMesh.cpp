@@ -7,6 +7,7 @@
 
 DynamicMesh::DynamicMesh() :
 	m_IsAnimUpdate(true),
+	m_IsAnimEnd(false),
 	m_pSkinMeshData(nullptr)
 {
 }
@@ -335,7 +336,7 @@ void DynamicMesh::RenderFunc(Matrix &matrix)
 	ConstantShader::GetInstance()->SetTransformMatrixConstantBuffer(pDeviceContext, matrix, false);
 
 	//アニメーション更新
-	if (m_IsAnimUpdate) m_pSkinMeshData->Update(&m_Born);
+	if (m_IsAnimUpdate) m_pSkinMeshData->Update(&m_Born, &m_IsAnimEnd);
 
 	ConstantShader::GetInstance()->SetBornConstantBuffer(pDeviceContext, GetBornAllNum(), m_CopyBornArray);
 

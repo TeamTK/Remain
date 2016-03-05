@@ -50,6 +50,8 @@ private:
 
 private:
 	bool m_IsAnimUpdate;
+	bool m_IsAnimEnd;
+	float m_AnimSpeed;
 	SkinMeshData *m_pSkinMeshData;
 	CopyBorn m_Born;
 	std::vector<CopyBorn*> m_CopyBornArray;

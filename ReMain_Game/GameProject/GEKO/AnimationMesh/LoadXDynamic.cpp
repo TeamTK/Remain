@@ -462,9 +462,9 @@ void LoadXDynamic::CopyBornTree(CopyBorn *pBornCopy, std::vector<CopyBorn*> *pCo
 	}
 }
 
-void LoadXDynamic::Update(CopyBorn *pCopyBorn)
+void LoadXDynamic::Update(CopyBorn *pCopyBorn, bool *pIsAnimEnd)
 {
-	AnimUpdate(pCopyBorn, m_BornInfo.sBorn.child);
+	AnimUpdate(pCopyBorn, m_BornInfo.sBorn.child, pIsAnimEnd);
 
 	//ボーン更新
 	Matrix m;
@@ -783,7 +783,7 @@ void LoadXDynamic::BornMatUpdate(CopyBorn *pCopyBorn, Born *pBorn, Matrix &bornM
 	if (pBorn->brother != nullptr) BornMatUpdate(pCopyBorn->brother, pBorn->brother, bornMat);
 }
 
-void LoadXDynamic::AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn)
+void LoadXDynamic::AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn, bool *pIsAnimEnd)
 {
 	Matrix m;
 
@@ -798,11 +798,26 @@ void LoadXDynamic::AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn)
 	//指定のアニメーションフレームを超えたら戻す
 	if (pCopyBorn->animFrame > (float)frameAnimNum)
 	{
-		pCopyBorn->animFrame = 0.0f;
+		if (*pIsAnimEnd)
+		{
+			AnimFrameInit(pCopyBorn, 0.0f);
+			*pIsAnimEnd = false;
+		}
+		else 
+		{
+			*pIsAnimEnd = true;
+			return;
+		}
 	}
 	else if (pCopyBorn->animFrame < 0.0f)
 	{
-		pCopyBorn->animFrame = (float)frameAnimNum;
+		if (*pIsAnimEnd)
+		{
+			AnimFrameInit(pCopyBorn, (float)frameAnimNum);
+			*pIsAnimEnd = false;
+		}
+		else *pIsAnimEnd = true;
+		return;
 	}
 
 	//アニメーション補間
@@ -833,8 +848,16 @@ void LoadXDynamic::AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn)
 
 	pCopyBorn->worldMat = m;
 
-	if (pCopyBorn->child != nullptr) AnimUpdate(pCopyBorn->child, pBorn->child);
-	if (pCopyBorn->brother != nullptr) AnimUpdate(pCopyBorn->brother, pBorn->brother);
+	if (pCopyBorn->child != nullptr) AnimUpdate(pCopyBorn->child, pBorn->child, nullptr);
+	if (pCopyBorn->brother != nullptr) AnimUpdate(pCopyBorn->brother, pBorn->brother, nullptr);
+}
+
+void LoadXDynamic::AnimFrameInit(CopyBorn *pCopyBorn, float initNum)
+{
+	pCopyBorn->animFrame = initNum;
+
+	if (pCopyBorn->child != nullptr) AnimFrameInit(pCopyBorn->child, initNum);
+	if (pCopyBorn->brother != nullptr) AnimFrameInit(pCopyBorn->brother, initNum);
 }
 
 void LoadXDynamic::DeleteHierarchy(Born *pBorn)

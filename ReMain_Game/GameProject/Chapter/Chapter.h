@@ -11,12 +11,10 @@ public:
 	~Chapter_1_1();
 	void Update();
 	void Render();
-	void HitPlayer(Result_Sphere &data);
 	void StageChange(Result_Sphere &data);
 
 private:
 	float m_Radius;
-	Collider m_MapCol;
 	Collider m_StageChange;	//ステージ移動用
 	Vector3D m_pos;
 	Vector3D m_StageChangePos;	//ステージ移動用当たり判定座標
@@ -34,11 +32,8 @@ public:
 	~Chapter_1_2();
 	void Update();
 
-	void HitPlayer(Result_Sphere &data);
-
 private:
 	float m_Radius;
-	Collider m_MapCol;
 	Vector3D m_pos;
 	Sound m_BGM;
 };

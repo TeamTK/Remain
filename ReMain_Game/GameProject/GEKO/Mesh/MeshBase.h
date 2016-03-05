@@ -6,6 +6,7 @@
 
 class Image;
 
+//StaticMesh・DynamicMesh型の基底メッシュ二つの共通項目を定義
 class MeshBase
 {
 public:
@@ -40,16 +41,16 @@ public:
 	void DebugAxis();
 
 protected:
-	Matrix m_LocalMatrix;
-	Matrix m_WorldMatrix;
-	Vector3D m_Rotation;
-	Vector3D m_Scale;
-	Vector3D m_Transelate;
-	WorldMatrixInfo m_WorldMatrixInfo;
-	std::vector<Vector4D> m_Diffuse;
-	std::vector<Vector3D> m_Specular;
-	std::vector<Vector3D> m_Ambient;
-	Image *m_pImage;
+	Matrix m_LocalMatrix;			   //モデルのローカル行列
+	Matrix m_WorldMatrix;			   //モデルのワールド行列
+	Vector3D m_Rotation;			   //モデルの回転値（X軸・Y軸・Z軸）
+	Vector3D m_Scale;				   //モデルの拡大率（X軸・Y軸・Z軸）
+	Vector3D m_Transelate;			   //モデルの平行移動（X軸・Y軸・Z軸）
+	WorldMatrixInfo m_WorldMatrixInfo; //モデルの回転・拡大・平行移動を他の場所で計算するための情報
+	std::vector<Vector4D> m_Diffuse;   //モデルの拡散反射率
+	std::vector<Vector3D> m_Specular;  //モデルの鏡面反射率
+	std::vector<Vector3D> m_Ambient;   //モデルの環境光率
+	Image *m_pImage;				   //マルチテクスチャ適用の画像
 };
 
 #endif

@@ -276,29 +276,27 @@ void EnemyStateManager::Generation(const char *stateName, const char *spawnName,
 	state.topographyName = tracerouteName;
 
 	//指定数の敵を生成してパラメーターを割り当て
-	auto it = GetInstance()->m_pEnemyStatePimpl->mapSpawn[spawnName].begin();
-	auto itEnd = GetInstance()->m_pEnemyStatePimpl->mapSpawn[spawnName].end();
-	for (; it != itEnd; it++)
+	for (auto& it : GetInstance()->m_pEnemyStatePimpl->mapSpawn[spawnName])
 	{
-		if (it->first == "Monster_A")
+		if (it.first == "Monster_A")
 		{
-			unsigned int num = it->second.size();
+			unsigned int num = it.second.size();
 			for (unsigned int i = 0; i < num; i++)
 			{
-				state.posSpawn = it->second[i].pos;
-				state.rotation = it->second[i].rotation;
-				state.wanderingName = it->second[i].wanderingName;
+				state.posSpawn = it.second[i].pos;
+				state.rotation = it.second[i].rotation;
+				state.wanderingName = it.second[i].wanderingName;
 				new Monster_A(state);
 			}
 		}
-		else if (it->first == "Monster_B")
+		else if (it.first == "Monster_B")
 		{
-			unsigned int num = it->second.size();
+			unsigned int num = it.second.size();
 			for (unsigned int i = 0; i < num; i++)
 			{
-				state.posSpawn = it->second[i].pos;
-				state.rotation = it->second[i].rotation;
-				state.wanderingName = it->second[i].wanderingName;
+				state.posSpawn = it.second[i].pos;
+				state.rotation = it.second[i].rotation;
+				state.wanderingName = it.second[i].wanderingName;
 				new Monster_B(state);
 			}
 		}

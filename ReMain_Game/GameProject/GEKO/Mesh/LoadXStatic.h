@@ -19,6 +19,7 @@ struct MaterialX
 	}
 };
 
+//StaticMesh型用Xファイル読み込み
 class LoadXStatic : public MeshData
 {
 public:

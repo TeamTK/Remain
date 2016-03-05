@@ -3,6 +3,7 @@
 
 #include "..\..\System\Direct3D11.h"
 
+//DynamicMesh型の動的な3Dモデルのシェーダーを管理
 class DynamicMeshShader
 {
 public:
@@ -23,14 +24,14 @@ private:
 	bool InitPixelShader_ShadowMap(ID3D11Device *pDevice);
 
 private:
-	ID3D11InputLayout*	 m_pVertexLayout;				//頂点レイアウト
-	ID3D11InputLayout*	 m_pVertexLayout_NoTexture;		//テクスチャーなし頂点レイアウト
-	ID3D11VertexShader*  m_pVertexShader;				//頂点シェーダー
-	ID3D11VertexShader*  m_pVertexShader_NoTexture;		//テクスチャーなし頂点シェーダー
-	ID3D11VertexShader*  m_pVertexShader_ShadowMap;		//シャドウマップ頂点シェーダー
-	ID3D11PixelShader*	 m_pPixelShader;				//ピクセルシェーダー
-	ID3D11PixelShader*	 m_pPixelShader_NoTexture;		//テクスチャーなしピクセルシェーダー
-	ID3D11PixelShader*	 m_pPixelShader_ShadowMap;		//シャドウマップピクセルシェーダー
+	ID3D11InputLayout*	 m_pVertexLayout;			//頂点レイアウト
+	ID3D11InputLayout*	 m_pVertexLayout_NoTexture;	//テクスチャーなし頂点レイアウト
+	ID3D11VertexShader*  m_pVertexShader;			//頂点シェーダー
+	ID3D11VertexShader*  m_pVertexShader_NoTexture;	//テクスチャーなし頂点シェーダー
+	ID3D11VertexShader*  m_pVertexShader_ShadowMap;	//シャドウマップ頂点シェーダー
+	ID3D11PixelShader*	 m_pPixelShader;			//ピクセルシェーダー
+	ID3D11PixelShader*	 m_pPixelShader_NoTexture;	//テクスチャーなしピクセルシェーダー
+	ID3D11PixelShader*	 m_pPixelShader_ShadowMap;	//シャドウマップピクセルシェーダー
 };
 
 #endif

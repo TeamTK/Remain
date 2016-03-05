@@ -3,6 +3,7 @@
 
 #include "..\System\Math.h"
 
+//モデルの行列を管理する情報
 struct WorldMatrixInfo
 {
 	Matrix *pWorldMatrix;
@@ -11,6 +12,7 @@ struct WorldMatrixInfo
 	Vector3D *pTranselate;
 };
 
+//全ての3Dモデルの行列を管理
 class WorldMatrixManager
 {
 public:
@@ -25,6 +27,7 @@ private:
 	WorldMatrixManager();
 
 private:
+	//イディオムにデータを定義
 	class ListPimpl;
 	ListPimpl *m_pListPimpl;
 };

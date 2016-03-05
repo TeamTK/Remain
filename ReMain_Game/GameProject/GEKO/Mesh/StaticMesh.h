@@ -2,8 +2,10 @@
 #define _STATIC_MESH_H_
 
 #include "MeshBase.h"
+
 class ShaderShadowMap;
 
+//アニメーションをしない静的な3Dモデルを運用
 class StaticMesh : public MeshBase
 {
 public:
@@ -29,7 +31,7 @@ private:
 	void RenderFunc(Matrix &matrix, bool isShadow) const;
 
 private:
-	MeshData *m_pMeshData;
+	MeshData *m_pMeshData; //モデルの情報へのポインタ
 };
 
 #endif
