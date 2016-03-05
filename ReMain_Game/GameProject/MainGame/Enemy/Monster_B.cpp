@@ -59,12 +59,11 @@ Monster_B::Monster_B(EnemyState &enemyState) :
 	m_FuncTask.AllStop();
 	if (enemyState.isSearch)
 	{
-		m_FuncTask.Start("Wandering");
-		//m_FuncTask.Start("Chase");
+		m_FuncTask.Start("Chase");
 	}
 	else
 	{
-		m_FuncTask.Start("Idle");
+		m_FuncTask.Start("Wandering");
 	}
 
 	m_JudgementAnim = MONSTAR_B_BORN_ANIM_ENEMY;
@@ -129,8 +128,17 @@ void Monster_B::Die()
 
 void Monster_B::Wandering()
 {
-	m_AnimType = eAnimationTrot;
 	Enemy::Wandering();
+
+	//目的地に着いたら待機アニメーション
+	if (m_Wandering.GetIsStopTime())
+	{
+		m_AnimType = eAnimationIdle;
+	}
+	else
+	{
+		m_AnimType = eAnimationTrot;
+	}
 }
 
 void Monster_B::Update()

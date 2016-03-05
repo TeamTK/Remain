@@ -1,5 +1,5 @@
 #include "ShaderShadowMap.h"
-#include "../../System/Direct3D11.h"
+#include "../ShaderInfo.h"
 #include "../../System/Window.h"
 #include "../../Mesh/StaticMesh.h"
 #include "../../AnimationMesh/DynamicMesh.h"

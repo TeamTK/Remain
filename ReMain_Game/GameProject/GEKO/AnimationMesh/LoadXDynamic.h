@@ -10,14 +10,15 @@ public:
 	~LoadXDynamic();
 	void Relese();
 	void CopyBornTree(CopyBorn *pBornCopy, std::vector<CopyBorn*> *pCopyBornArray, Born *pBornOriginal);
-	void Update(CopyBorn *pCopyBorn);
+	void Update(CopyBorn *pCopyBorn, bool *pIsAnimEnd);
 
 private:
 	HRESULT LoadXMesh(std::string fileName);
 	void LoadAnimation(FILE *fp, SkinVertexInfo* pVB);
 	void LoadMat(Born *pBorn, FILE *fp);
 	void BornMatUpdate(CopyBorn *pCopyBorn, Born *pBorn, Matrix &bornMat);
-	void AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn);
+	void AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn, bool *pIsAnimEnd);
+	void AnimFrameInit(CopyBorn *pCopyBorn, float initNum);
 	void DeleteHierarchy(Born *pBorn);
 	bool AddBoneHierarchy(Born *pBorn, FILE *fp, int hierarchy);
 

@@ -5,7 +5,7 @@ Fps::Fps() :
 	m_StartTime(0),
 	m_Count(0),
 	m_Fps(0),
-	N(60),
+	m_OneFps(0.0f),
 	FPS(60)
 {
 
@@ -22,10 +22,19 @@ float Fps::GetFPS()
 	return GetInstance()->m_Fps;
 }
 
+float Fps::GetOneFPS()
+{
+	return GetInstance()->m_OneFps;
+}
+
+int Fps::GetSettingFPS() 
+{
+	return GetInstance()->FPS;
+}
+
 void Fps::SetFps(int fps)
 {
 	Fps* p_Fps = GetInstance();
-	p_Fps->N = fps;
 	p_Fps->FPS = fps;
 }
 
@@ -36,14 +45,24 @@ void Fps::Update()
 	if (p_Fps->m_Count == 0) p_Fps->m_StartTime = timeGetTime();
 
 	//指定のフレーム目なら平均を計算する
-	if (p_Fps->m_Count == p_Fps->N)
+	if (p_Fps->m_Count == p_Fps->FPS)
 	{ 
 		int t = timeGetTime();
-		p_Fps->m_Fps = 1000.f / ((t - p_Fps->m_StartTime) / (float)p_Fps->N);
+		p_Fps->m_Fps = 1000.f / ((t - p_Fps->m_StartTime) / (float)p_Fps->FPS);
 		p_Fps->m_Count = 0;
 		p_Fps->m_StartTime = t;
 	}
 	p_Fps->m_Count++;
+
+	//現在のfpsが0だったら設定したfpsで1フレームを求める
+	if (p_Fps->m_Fps == 0.0f)
+	{
+		p_Fps->m_OneFps = 1 / (float)p_Fps->FPS;
+	}
+	else
+	{
+		p_Fps->m_OneFps = 1 / p_Fps->m_Fps;
+	}
 }
 
 void Fps::Wait()

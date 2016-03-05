@@ -1,4 +1,5 @@
 #include "Monster_A.h"
+#include <vector>
 
 #define MONSTER_A_ATTACK_ENDTIME 29
 #define MONSTER_A_HITDAMAGE_ENDTIME 29
@@ -58,12 +59,11 @@ Monster_A::Monster_A(EnemyState &enemyState) :
 	m_FuncTask.AllStop();
 	if (enemyState.isSearch)
 	{
-		m_FuncTask.Start("Wandering");
-		//m_FuncTask.Start("Chase");
+		m_FuncTask.Start("Chase");
 	}
 	else
 	{
-		m_FuncTask.Start("Idle");
+		m_FuncTask.Start("Wandering");
 	}
 
 	m_JudgementAnim = COMMON_BORN_ANIM_ENEMY;
@@ -114,11 +114,19 @@ void Monster_A::Die()
 	Enemy::Die();
 }
 
-
 void Monster_A::Wandering()
 {
-	m_AnimType = eAnimationTrot;
 	Enemy::Wandering();
+
+	//目的地に着いたら待機アニメーション
+	if (m_Wandering.GetIsStopTime())
+	{
+		m_AnimType = eAnimationIdle;
+	}
+	else
+	{
+		m_AnimType = eAnimationTrot;
+	}
 }
 
 void Monster_A::Update()

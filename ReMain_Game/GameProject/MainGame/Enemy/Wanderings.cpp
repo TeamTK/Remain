@@ -14,12 +14,19 @@ struct WanderingsInfo
 
 Wanderings::Wanderings() :
 	m_TargetNum(0),
-	m_IsStart(true)
+	m_WaitingCnt(0.0f),
+	m_IsStart(true),
+	m_IsStopTime(false)
 {
 }
 
 Wanderings::~Wanderings()
 {
+}
+
+bool Wanderings::GetIsStopTime()
+{
+	return m_IsStopTime;
 }
 
 void Wanderings::Init(std::string name, TracerouteSearch *pSearch,
@@ -29,32 +36,44 @@ void Wanderings::Init(std::string name, TracerouteSearch *pSearch,
 	m_pSearch = pSearch;
 	m_pPos = pPos;
 	m_pRot = pRot;
+	m_WaitingCnt = 0.0f;
 	m_TargetNum = 0;
 	m_IsStart = true;
-	m_pSearch->SetPosition(&m_pWanderingsInfo->targetPos[m_TargetNum]);
+	m_pSearch->StartMove();
+	m_pSearch->StartSerch();
+	m_pSearch->SetTargetName("Wanderings");
+
+	m_Target.SetName("Wanderings");
+	m_Target.SetPosition(&m_pWanderingsInfo->targetPos[m_TargetNum]);
 }
 
 void Wanderings::Update()
 {
 	if (!m_IsStart)
 	{
-		m_StopTimer.Start();
+		m_WaitingCnt = 0.0f;
 		return;
 	}
 
-	//待機時間
-	if (m_StopTimer.GetSecond() >= m_pWanderingsInfo->stopTime[m_TargetNum])
+	if (m_IsStopTime)
 	{
-		m_pSearch->StopSerch();
+		m_WaitingCnt++;
+	}
+
+	//待機時間
+	if ((m_WaitingCnt >= m_pWanderingsInfo->stopTime[m_TargetNum]) && m_IsStopTime)
+	{
 		m_pSearch->StartMove();
+		m_IsStopTime = false;
+		m_WaitingCnt = 0.0f;
 	}
 	else
 	{
 		//目標地点にきたら設定された時間待機と目標地点変更
-		if (m_pSearch->GetIsGoal())
+		if (m_pSearch->GetIsGoal() && !m_IsStopTime)
 		{
 			//徘徊の回数が最大まできたら最初から
-			if (m_TargetNum >= m_pWanderingsInfo->targetNum)
+			if (m_TargetNum >= m_pWanderingsInfo->targetNum - 1)
 			{
 				m_TargetNum = 0;
 			}
@@ -62,15 +81,17 @@ void Wanderings::Update()
 			{
 				m_TargetNum++;
 			}
-			m_StopTimer.Start();
-			m_pSearch->SetPosition(&m_pWanderingsInfo->targetPos[m_TargetNum]);
+			m_Target.SetPosition(&m_pWanderingsInfo->targetPos[m_TargetNum]);
+			m_pSearch->SetPosition(m_pPos);
 			m_pSearch->StartSerch();
 			m_pSearch->StopMove();
+			m_IsStopTime = true;
 		}
 		else
 		{
-			*m_pPos += *m_pSearch->GetTargetDirection() * m_pWanderingsInfo->speed[m_TargetNum];
-			//m_pRot->y = tanf(m_pSearch->GetTargetDirection()->x / m_pSearch->GetTargetDirection()->z);
+			m_pSearch->StopSerch();
+			*m_pPos += *m_pSearch->GetTargetDirection() * m_pWanderingsInfo->speed[m_TargetNum] * GEKO::GetOneFps();
+			m_pRot->y = atan2f(m_pSearch->GetTargetDirection()->x, m_pSearch->GetTargetDirection()->z);
 		}
 	}
 }
@@ -81,9 +102,8 @@ void Wanderings::Start()
 	{
 		m_IsStart = true;
 		m_TargetNum = 0;
-		m_StopTimer.Start();
-		m_pSearch->SetPosition(&m_pWanderingsInfo->targetPos[m_TargetNum]);
 		m_pSearch->StartSerch();
+		m_Target.SetPosition(&m_pWanderingsInfo->targetPos[m_TargetNum]);
 	}
 }
 

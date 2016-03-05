@@ -169,6 +169,6 @@ namespace GEKO
 
 	float GetOneFps()
 	{
-		return 1 / Fps::GetFPS();
+		return Fps::GetOneFPS();
 	}
 }

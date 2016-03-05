@@ -10,6 +10,7 @@ class Wanderings
 public:
 	Wanderings();
 	~Wanderings();
+	bool GetIsStopTime();
 	void Init(std::string name, TracerouteSearch *pSearch,
 			  Vector3D *pPos, Vector3D *pRot);
 	void Update();
@@ -19,12 +20,13 @@ public:
 private:
 	WanderingsInfo *m_pWanderingsInfo;
 	TracerouteSearch *m_pSearch;
+	TracerouteTarget m_Target;
 	Vector3D *m_pPos;
 	Vector3D *m_pRot;
-	Timer m_StopTimer;
 	int m_TargetNum;
 	bool m_IsStart;
-	//bool *m_pWaiting;
+	bool m_IsStopTime;
+	float m_WaitingCnt;
 };
 
 class WanderingsManager

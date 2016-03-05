@@ -2,6 +2,7 @@
 #include "..\System\DirectionalLight.h"
 #include "..\System\Camera.h"
 #include "..\Shader\ShadowMap\ShaderShadowMap.h"
+#include "..\AnimationMesh\SkinMeshData.h"
 
 ConstantShader::ConstantShader()
 {

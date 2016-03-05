@@ -67,7 +67,7 @@ void SkinMeshData::Relese()
 	}
 }
 
-void SkinMeshData::Update(CopyBorn *pCopyBorn)
+void SkinMeshData::Update(CopyBorn *pCopyBorn, bool *pIsAnimEnd)
 {
 }
 

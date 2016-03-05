@@ -391,6 +391,13 @@
     <Text Include="TextData\StaticMesh.txt" />
     <Text Include="TextData\DynamicMesh.txt" />
     <Text Include="TextData\Image.txt" />
+    <Text Include="TextData\EnemySpawn_Chapter_1-1.txt" />
+    <Text Include="TextData\EnemySpawn_Chapter_1-2.txt" />
+    <Text Include="TextData\StageObject_Cha1_1.txt" />
+    <Text Include="TextData\StageObject_Cha1_2.txt" />
+    <Text Include="TextData\Sound.txt" />
+    <Text Include="TextData\EnemyState.txt" />
+    <Text Include="TextData\Wandering_Chapter_1_1.txt" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="GEKO\Lib\d2d1.lib" />
