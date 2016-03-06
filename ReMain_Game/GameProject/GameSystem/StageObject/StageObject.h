@@ -349,11 +349,6 @@ public:
 		//ƒJƒƒ‰‚Æ•Ç‚Ì“–‚½‚è”»’è
 		m_CameraHit.Regist_SMesh_vs_L(&m_HitMesh, true);
 		m_CameraHit.SetID(eHITID1, eHITID0);
-
-		//’e‚Æ•Ç‚Ì“–‚½‚è”»’è
-		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
-		m_BulletHit.SetID(eHITID7, eHITID2);
-		m_BulletHit.SetName("RockWall_1_3");
 	}
 	~RockWall_1_3() {}
 

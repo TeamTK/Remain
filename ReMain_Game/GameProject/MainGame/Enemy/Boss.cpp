@@ -1,20 +1,25 @@
 #include "Boss.h"
 #include "../Player/Player.h"
 
-#define BOSS_ANIM_ENDTIME 29
-
+#define BOSS_ANIM_ENDTIME 28.5f
 #define JUDGEMENT_ANIM 10
 
 #define BOSS_ATTACK_ANIMSPEED 20.0f
 #define BOSS_NORMAL_ANIMSPEED 30.0f
 #define BOSS_DIE_ANIMSPEED 20.0f
 
+#define GUN_POWER_HANDGUN 2.0f //ショットガンの威力
+#define GUN_POWER_SHOTGUN 4.0f //拳銃の威力
+#define DEFENCE_MIGRATION_TIME 1.5f
+
 Boss::Boss(BossState &bossState) :
 	Task("Boss", 1),
 	m_AnimType(eAnimationIdle),
 	m_AnimSpeed(BOSS_NORMAL_ANIMSPEED),
 	m_Hp(bossState.hp),
+	m_FlinchNum(bossState.flinch),
 	m_Length(0),
+	m_Timer(0),
 	m_isDefence(false)
 {
 	m_RenderTask.Regist(1, REGIST_RENDER_FUNC(Boss::Render));
@@ -33,6 +38,7 @@ Boss::Boss(BossState &bossState) :
 	m_BoneCapsule.emplace_back(0.8f, 37, 39, "Tentacles_L");  //触手左
 	m_BoneCapsule.emplace_back(0.8f, 46, 48, "Tentacles_R");  //触手右
 
+	//ダメージ倍率
 	m_DamageMagnification.push_back(0.8f);	//茎
 	m_DamageMagnification.push_back(2.0f);	//めしべ
 	m_DamageMagnification.push_back(0.8f);	//花びら1
@@ -91,7 +97,7 @@ void Boss::Update()
 {
 	//1フレームタイム
 	m_OneFlameTime = GEKO::GetOneFps();
-	
+
 	Vector3D distance = (*m_pPlayerPos - m_pos);
 	m_Length = distance.Length();
 
@@ -106,6 +112,7 @@ void Boss::Update()
 		if (!m_FuncTask.Running("Die")) m_pHitAttackBody[i].Awake();
 	}
 
+	printf("%f\n", m_Timer);
 	m_FuncTask.Update();
 	m_Model.ChangeAnimation(m_AnimType);
 	m_Model.SetPlayTime(m_AnimSpeed *m_OneFlameTime);
@@ -149,8 +156,15 @@ void Boss::Idle()
 		m_FuncTask.Stop("Idle");
 		m_FuncTask.Start("Attack");
 	}
+
 	if (m_Length > 15.0f)
+		m_Timer += GEKO::GetOneFps();
+	else
+		m_Timer = 0.0f;
+
+	if (m_Timer >= DEFENCE_MIGRATION_TIME)
 	{
+		m_Timer = 0.0f;
 		m_Model.SetTime(0);
 		m_FuncTask.Stop("Idle");
 		m_FuncTask.Start("Defence");
@@ -161,7 +175,7 @@ void Boss::Defence()
 {
 	m_AnimType = eAnimationDefence;
 	m_AnimSpeed = BOSS_NORMAL_ANIMSPEED;
-	 
+
 	//アニメーションを停止
 	if (m_AnimType == eAnimationDefence &&
 		m_Model.GetPlayTime(JUDGEMENT_ANIM) >= 14)
@@ -227,6 +241,17 @@ void Boss::Die()
 
 void Boss::HitBullet(Result_Sphere& r)
 {
+
+	float GunPower = 1.0f;
+	if (r.targetName == "HandGun")
+	{
+		GunPower = GUN_POWER_HANDGUN;
+	}
+	else if (r.targetName == "ShotGun")
+	{
+		GunPower = GUN_POWER_SHOTGUN;
+	}
+
 	auto bornNum = m_BoneCapsule.size();
 	for (unsigned int i = 0; i < bornNum; i++)
 	{
@@ -236,25 +261,27 @@ void Boss::HitBullet(Result_Sphere& r)
 		//ダメージ倍率
 		if (r.name == m_pHitAttackBody[i].GetName())
 		{
-
+			float damegeNum = m_DamageMagnification[i] * GunPower;
+			m_Hp -= damegeNum;
+			m_FlinchCnt += damegeNum;
 		}
 	}
 
-
-	if (r.targetName == "HandGun")
-	{
-		m_Hp -= 10;
-	}
-	else if (r.targetName == "ShotGun")
-	{
-		m_Hp -= 20;
-	}
-
-
-
 	if (m_Hp >= 0.0f)
 	{
-		m_FuncTask.Start("HitDamage");
+		//怯み動作
+		if (m_FlinchCnt >= (float)m_FlinchNum)
+		{
+			m_Model.SetTime(0);
+			m_FuncTask.Start("HitDamage");
+			m_FlinchCnt = 0;
+			for (unsigned int i = 0; i < bornNum; i++) m_pHitAttack[i].Sleep();
+		}
+		else
+		{
+			m_Model.SetTime(0);
+			m_FuncTask.Start("Idle");
+		}
 	}
 	else
 	{
@@ -265,7 +292,6 @@ void Boss::HitBullet(Result_Sphere& r)
 		m_FuncTask.AllStop();
 		m_FuncTask.Start("Die");
 	}
-
 }
 
 void Boss::HitAttack(Result_Capsule &hitData)

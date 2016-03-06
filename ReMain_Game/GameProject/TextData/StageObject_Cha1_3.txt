@@ -14,7 +14,7 @@ name Ground_1_3
 position
 0.0,0.0,0.0
 rotation
-0.0,180.0,0.0
+0.0,0.0,0.0
 scale
 1.0,1.0,1.0
 
@@ -24,7 +24,7 @@ name RockWall_1_3
 position
 0.0,0.0,0.0
 rotation
-0.0,180.0,0.0
+0.0,0.0,0.0
 scale
 1.0,1.0,1.0
 
