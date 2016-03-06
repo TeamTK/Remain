@@ -1,12 +1,24 @@
-EnemySpawn Chapter1-1_Start
+EnemySpawn Chapter1-1
 Begin
  EnemyName Monster_A
  {
-  position 1
+  position 2
   -6.8, 1.0, 8.0
+  36.7, 1.0, -3.9
+  rotation 2
+  0.0, 0.0, 0.0
+  0.0, 0.0, 0.0
+  wandering 2
+  Chapter_1_1_Monstar_A_1
+  Chapter_1_1_Monstar_A_2
+ }
+ EnemyName Monster_B
+ {
+  position 1
+  19.0, 1.0, -15.7
   rotation 1
   0.0, 0.0, 0.0
   wandering 1
-  Chapter_1_1_Monstar_A_1
+  Chapter_1_1_Monstar_B_1
  }
 End

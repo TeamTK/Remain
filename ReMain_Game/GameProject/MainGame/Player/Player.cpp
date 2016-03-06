@@ -155,6 +155,8 @@ Player::~Player()
 
 void Player::Update()
 {
+	m_pos.DebugDraw("Player");
+
 	//1フレームタイム
 	m_OneFlameTime = GEKO::GetOneFps();
 
@@ -180,7 +182,6 @@ void Player::Update()
 
 	m_SightPos = m_Model.GetBornPos(6); //頭のボーン位置
 	m_MatrixK = m_Model.GetBornMatrix(25, true);	//指のボーン位置
-
 
 	//プレイヤーのボーン行列の切り替え
 	if ((m_Anim == eAnim_TakeGun && m_Model.GetPlayTime(m_JudgementAnim) > 16) ||
