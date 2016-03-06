@@ -7,6 +7,7 @@
 struct BossState
 {
 	float hp;
+	int flinch;
 	Vector3D spawnPos;
 	Vector3D spawnRot;
 };
@@ -48,6 +49,9 @@ private:
 	std::vector<BoneCalpule> m_BoneCapsule; //ボーン情報（カプセル）
 	std::vector<float> m_DamageMagnification; //ダメージ倍率
 	unsigned int m_AnimType;	//アニメーションの種類
+	int m_FlinchNum; //耐久値
+	float m_FlinchCnt; //耐久蓄積値
+	float m_Timer;
 	float m_Hp;			//体力
 	float m_AnimSpeed;	//アニメーションの速度
 	float m_AnimEndTime;	//アニメーションの終わり時間
