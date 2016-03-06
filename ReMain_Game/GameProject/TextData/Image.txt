@@ -21,3 +21,5 @@ Image media\ImageData\ScreenBlood.png ScreenBlood
 Image media\ImageData\Monster_A_2.png Monster_A_2
 Image media\ImageData\Monster_B_2.png Monster_B_2
 Image media\ImageData\Player_2.png Player_2
+Image media\ImageData\Retry.png Retry
+Image media\ImageData\Quit.png Quit
