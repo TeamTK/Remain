@@ -1,0 +1,4 @@
+StaticMesh media\Cabin.x Cabin
+StaticMesh media\Shotgun.x Shotgun
+StaticMesh media\Handgun.x Handgun
+StaticMesh media\AmmoBox.x AmmoBox

@@ -2,7 +2,6 @@
 #include "TracerouteManager.h"
 
 TracerouteTarget::TracerouteTarget() :
-	m_Name(nullptr),
 	m_pPosition(nullptr)
 {
 	TracerouteManager::AddTarget(this);
@@ -13,7 +12,7 @@ TracerouteTarget::~TracerouteTarget()
 	TracerouteManager::ClearTarget(this);
 }
 
-void TracerouteTarget::SetName(const char* name)
+void TracerouteTarget::SetName(std::string name)
 {
 	m_Name = name;
 }

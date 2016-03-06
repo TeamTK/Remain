@@ -5,8 +5,7 @@ TracerouteSearch::TracerouteSearch() :
 	m_IsSerch(true),
 	m_IsSerchMove(true),
 	m_IsGoal(false),
-	m_NameTopography(nullptr),
-	m_NameTarget(nullptr)
+	m_NameTopography(nullptr)
 {
 	TracerouteManager::AddSearch(this);
 }
@@ -48,7 +47,7 @@ void TracerouteSearch::SetTopography(const char* name)
 	m_NameTopography = name;
 }
 
-void TracerouteSearch::SetTargetName(const char* name)
+void TracerouteSearch::SetTargetName(std::string name)
 {
 	m_NameTarget = name;
 }

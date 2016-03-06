@@ -17,7 +17,7 @@ public:
 	const Vector3D *GetTargetDirection() const;
 	void SetPosition(const Vector3D *pos);
 	void SetTopography(const char* name);
-	void SetTargetName(const char* name);
+	void SetTargetName(std::string name);
 	void StartSerch();
 	void StopSerch();
 	void StartMove();
@@ -32,7 +32,7 @@ private:
 	bool m_IsSerchMove;
 	bool m_IsGoal;
 	const char* m_NameTopography;
-	const char* m_NameTarget;
+	std::string m_NameTarget;
 };
 
 #endif
