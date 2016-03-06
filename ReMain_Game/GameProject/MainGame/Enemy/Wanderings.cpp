@@ -161,6 +161,11 @@ void WanderingsManager::LoadFile(const char* fileName)
 
 			//–¼‘O“Ç‚İ‚İ
 			ifs >> str;
+			if (GetInstance()->m_pWanderingsPimpl->info.find(str) != GetInstance()->m_pWanderingsPimpl->info.end())
+			{
+				return;
+			}
+
 			auto *p = &GetInstance()->m_pWanderingsPimpl->info[str];
 
 			//Œü‚©‚¤êŠ‚Ì”“Ç‚İ‚İ

@@ -7,19 +7,16 @@
 #define NOW_LOADING_POS 500, 500
 
 ImageAnimation g_NowLodingImage;
-//Image g_NowLodingImage;
 bool g_isLoad = false;
 
 NowLoading::NowLoading(bool isResource) :
 	Task("NowLoading", 0)
 {
-	//g_NowLodingImage.SetAsset("NowLoading");
-
-	g_NowLodingImage.FrameDivision("NowLoading", 12, 256, 80);
-
 	//リソース読み込み既に読み込んでいたら実行しない
 	if (!isResource)
 	{
+		g_NowLodingImage.FrameDivision("NowLoading", 12, 256, 80);
+
 		auto func = []
 		{
 			DynamicMeshAsset::LoadFile("TextData\\DynamicMesh.txt");
@@ -45,9 +42,14 @@ NowLoading::NowLoading(bool isResource) :
 
 		t1.join();
 		t2.join();
+
+		m_Transfer.Start(3.0f);
+	}
+	else
+	{
+		m_Transfer.Start(1.0f);
 	}
 	m_Render.Regist(6, REGIST_RENDER_FUNC(NowLoading::Render));
-	m_Transfer.Start(3.0f);
 }
 
 NowLoading::~NowLoading()
@@ -67,4 +69,6 @@ void NowLoading::Update()
 void NowLoading::Render()
 {
 	m_Transfer.Render();
+	g_NowLodingImage.PlayFrame(0.3f);
+	g_NowLodingImage.Draw(Vector2D(NOW_LOADING_POS));
 }

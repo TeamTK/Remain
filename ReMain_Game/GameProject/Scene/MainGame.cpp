@@ -4,6 +4,7 @@
 #include "../MainGame/Enemy/EnemyStateManager.h"
 #include "../Chapter/Chapter.h"
 #include "../Scene/Title.h"
+#include "../Scene/NowLoading.h"
 
 //#define BOSS_DEBUG_MODE
 
@@ -21,6 +22,7 @@ MainGame::MainGame() :
 MainGame::~MainGame()
 {
 	SightManager::GetInstance()->AllClear();
+	AuditoryManager::GetInstance()->AllClaer();
 	StageObjectManager::GetInstance()->ClearList();
 	TracerouteManager::AllClear();
 	TaskManager::Kill("UI_Reticle");
@@ -46,5 +48,12 @@ void MainGame::Update()
 	{
 		TaskManager::AllKill();
 		new Title();
+	}
+
+	//‰¼
+	if (Input::KeyO.Clicked())
+	{
+		TaskManager::AllKill();
+		new NowLoading(true);
 	}
 }

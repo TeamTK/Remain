@@ -95,55 +95,61 @@ void EnemyStateManager::LoadFileState(const char *fileName)
 			//èÛë‘ÇÃñºëO
 			fscanf_s(fp, "%s", key, sizeof(key));
 			str = key;
+			
+			auto *mapState = &GetInstance()->m_pEnemyStatePimpl->mapState;
 
-			//ãØÇ›íl
-			fscanf_s(fp, "%s", key, sizeof(key));
-			fscanf_s(fp, "%s", key, sizeof(key));
-			info.flinch = std::stoi(key);
+			//ñºëOÇ™ìØÇ∂Ç»ÇÃÇñhÇÆÇ‹ÇΩÇÕìØÇ∂ÉtÉ@ÉCÉãì«Ç›çûÇ›ñhé~
+			if (mapState->find(str) == mapState->end())
+			{
+				//ãØÇ›íl
+				fscanf_s(fp, "%s", key, sizeof(key));
+				fscanf_s(fp, "%s", key, sizeof(key));
+				info.flinch = std::stoi(key);
 
-			//ëÃóÕ
-			fscanf_s(fp, "%s", key, sizeof(key));
-			fscanf_s(fp, "%s", key, sizeof(key));
-			info.hp = std::stof(key);
+				//ëÃóÕ
+				fscanf_s(fp, "%s", key, sizeof(key));
+				fscanf_s(fp, "%s", key, sizeof(key));
+				info.hp = std::stof(key);
 
-			//ï‡Ç≠ÉXÉsÅ[Éh
-			fscanf_s(fp, "%s", key, sizeof(key));
-			fscanf_s(fp, "%s", key, sizeof(key));
-			info.walkSpeed = std::stof(key);
+				//ï‡Ç≠ÉXÉsÅ[Éh
+				fscanf_s(fp, "%s", key, sizeof(key));
+				fscanf_s(fp, "%s", key, sizeof(key));
+				info.walkSpeed = std::stof(key);
 
-			//ëñÇÈÉXÉsÅ[Éh
-			fscanf_s(fp, "%s", key, sizeof(key));
-			fscanf_s(fp, "%s", key, sizeof(key));
-			info.runSpeed = std::stof(key);
+				//ëñÇÈÉXÉsÅ[Éh
+				fscanf_s(fp, "%s", key, sizeof(key));
+				fscanf_s(fp, "%s", key, sizeof(key));
+				info.runSpeed = std::stof(key);
 
-			//ínå`ÇÃìñÇΩÇËîºåa
-			fscanf_s(fp, "%s", key, sizeof(key));
-			fscanf_s(fp, "%s", key, sizeof(key));
-			info.mapHitRadius = std::stof(key);
+				//ínå`ÇÃìñÇΩÇËîºåa
+				fscanf_s(fp, "%s", key, sizeof(key));
+				fscanf_s(fp, "%s", key, sizeof(key));
+				info.mapHitRadius = std::stof(key);
 
-			//ÉLÉÉÉâÉNÉ^ìØésÇÃìñÇΩÇËîºåa
-			fscanf_s(fp, "%s", key, sizeof(key));
-			fscanf_s(fp, "%s", key, sizeof(key));
-			info.bodyRadius = std::stof(key);
+				//ÉLÉÉÉâÉNÉ^ìØésÇÃìñÇΩÇËîºåa
+				fscanf_s(fp, "%s", key, sizeof(key));
+				fscanf_s(fp, "%s", key, sizeof(key));
+				info.bodyRadius = std::stof(key);
 
-			//éãäEÇÃäpìx
-			fscanf_s(fp, "%s", key, sizeof(key));
-			fscanf_s(fp, "%s", key, sizeof(key));
-			info.sightAngle = std::stof(key);
+				//éãäEÇÃäpìx
+				fscanf_s(fp, "%s", key, sizeof(key));
+				fscanf_s(fp, "%s", key, sizeof(key));
+				info.sightAngle = std::stof(key);
 
-			//éãäEÇÃîFéØãóó£
-			fscanf_s(fp, "%s", key, sizeof(key));
-			fscanf_s(fp, "%s", key, sizeof(key));
-			info.sightDistance = std::stof(key);
+				//éãäEÇÃîFéØãóó£
+				fscanf_s(fp, "%s", key, sizeof(key));
+				fscanf_s(fp, "%s", key, sizeof(key));
+				info.sightDistance = std::stof(key);
 
-			GetInstance()->m_pEnemyStatePimpl->mapState[str].flinch = info.flinch;
-			GetInstance()->m_pEnemyStatePimpl->mapState[str].hp = info.hp;
-			GetInstance()->m_pEnemyStatePimpl->mapState[str].walkSpeed = info.walkSpeed;
-			GetInstance()->m_pEnemyStatePimpl->mapState[str].runSpeed = info.runSpeed;
-			GetInstance()->m_pEnemyStatePimpl->mapState[str].mapHitRadius = info.mapHitRadius;
-			GetInstance()->m_pEnemyStatePimpl->mapState[str].bodyRadius = info.bodyRadius;
-			GetInstance()->m_pEnemyStatePimpl->mapState[str].sightAngle = info.sightAngle;
-			GetInstance()->m_pEnemyStatePimpl->mapState[str].sightDistance = info.sightDistance;
+				(*mapState)[str].flinch = info.flinch;
+				(*mapState)[str].hp = info.hp;
+				(*mapState)[str].walkSpeed = info.walkSpeed;
+				(*mapState)[str].runSpeed = info.runSpeed;
+				(*mapState)[str].mapHitRadius = info.mapHitRadius;
+				(*mapState)[str].bodyRadius = info.bodyRadius;
+				(*mapState)[str].sightAngle = info.sightAngle;
+				(*mapState)[str].sightDistance = info.sightDistance;
+			}
 		}
 	}
 }
@@ -166,6 +172,7 @@ void EnemyStateManager::LoadFileSpawn(const char *fileName)
 	std::vector<Vector3D> position;
 	std::vector<Vector3D> rotation;
 	std::vector<std::string> wanderingName;
+	EnemyStatePimpl *p = GetInstance()->m_pEnemyStatePimpl;
 
 	while (!feof(fp))
 	{
@@ -177,86 +184,92 @@ void EnemyStateManager::LoadFileSpawn(const char *fileName)
 			fscanf_s(fp, "%s", key, sizeof(key));
 			enemySpawnName = key;
 
-			fscanf_s(fp, "%s", key, sizeof(key));
-
-			while (strcmp(key, "End") != 0)
+			//ñºëOÇ™ìØÇ∂Ç»ÇÃÇñhÇÆÇ‹ÇΩÇÕìØÇ∂ÉtÉ@ÉCÉãì«Ç›çûÇ›ñhé~
+			if (p->mapSpawn.find(enemySpawnName) == p->mapSpawn.end())
 			{
 				fscanf_s(fp, "%s", key, sizeof(key));
 
-				//ìGÇÃéÌóﬁÇ≤Ç∆Ç…ì«Ç›çûÇ›
-				if (strcmp(key, "EnemyName") == 0)
+				while (strcmp(key, "End") != 0)
 				{
-					//ìGÇÃñºëO
-					fscanf_s(fp, "%s", key, sizeof(key));
-					enemyName = key;
-
-					fscanf_s(fp, "%s", key, sizeof(key));
 					fscanf_s(fp, "%s", key, sizeof(key));
 
-					//à íuÇÃêî
-					fscanf_s(fp, "%s", key, sizeof(key));
-					cnt = std::stoi(key);
-
-					//à íuÇÃì«Ç›çûÇ›
-					fgets(key, sizeof(key), fp);
-					for (int i = 0; i < cnt; i++)
+					//ìGÇÃéÌóﬁÇ≤Ç∆Ç…ì«Ç›çûÇ›
+					if (strcmp(key, "EnemyName") == 0)
 					{
-						fgets(key, sizeof(key), fp);
-						sscanf_s(key, "%f, %f, %f", &x, &y, &z);
-						position.emplace_back(x, y, z);
-					}
-
-					fscanf_s(fp, "%s", key, sizeof(key));
-
-					//âÒì]ílÇÃêî
-					fscanf_s(fp, "%s", key, sizeof(key));
-					cnt = std::stoi(key);
-
-					//âÒì]ílì«Ç›çûÇ›
-					fgets(key, sizeof(key), fp);
-					for (int i = 0; i < cnt; i++)
-					{
-						fgets(key, sizeof(key), fp);
-						sscanf_s(key, "%f, %f, %f", &x, &y, &z);
-						rotation.emplace_back(x, y, z);
-					}
-
-					fscanf_s(fp, "%s", key, sizeof(key));
-
-					//úpújÉpÉ^Å[ÉìÇÃñºëOÇÃêî
-					fscanf_s(fp, "%s", key, sizeof(key));
-					cnt = std::stoi(key);
-
-					//úpújÉpÉ^Å[ÉìÇÃñºëOì«Ç›çûÇ›
-					fgets(key, sizeof(key), fp);
-					for (int i = 0; i < cnt; i++)
-					{
+						//ìGÇÃñºëO
 						fscanf_s(fp, "%s", key, sizeof(key));
-						wanderingName.emplace_back(key);
+						enemyName = key;
+
+						fscanf_s(fp, "%s", key, sizeof(key));
+						fscanf_s(fp, "%s", key, sizeof(key));
+
+						//à íuÇÃêî
+						fscanf_s(fp, "%s", key, sizeof(key));
+						cnt = std::stoi(key);
+
+						//à íuÇÃì«Ç›çûÇ›
+						fgets(key, sizeof(key), fp);
+						for (int i = 0; i < cnt; i++)
+						{
+							fgets(key, sizeof(key), fp);
+							sscanf_s(key, "%f, %f, %f", &x, &y, &z);
+							position.emplace_back(x, y, z);
+						}
+
+						fscanf_s(fp, "%s", key, sizeof(key));
+
+						//âÒì]ílÇÃêî
+						fscanf_s(fp, "%s", key, sizeof(key));
+						cnt = std::stoi(key);
+
+						//âÒì]ílì«Ç›çûÇ›
+						fgets(key, sizeof(key), fp);
+						for (int i = 0; i < cnt; i++)
+						{
+							fgets(key, sizeof(key), fp);
+							sscanf_s(key, "%f, %f, %f", &x, &y, &z);
+							rotation.emplace_back(x, y, z);
+						}
+
+						fscanf_s(fp, "%s", key, sizeof(key));
+
+						//úpújÉpÉ^Å[ÉìÇÃñºëOÇÃêî
+						fscanf_s(fp, "%s", key, sizeof(key));
+						cnt = std::stoi(key);
+
+						//úpújÉpÉ^Å[ÉìÇÃñºëOì«Ç›çûÇ›
+						fgets(key, sizeof(key), fp);
+						for (int i = 0; i < cnt; i++)
+						{
+							fscanf_s(fp, "%s", key, sizeof(key));
+							wanderingName.emplace_back(key);
+						}
+
+						unsigned int posNum = position.size();
+						unsigned int rotNum = rotation.size();
+						unsigned int nameNum = wanderingName.size();
+						assert(posNum == rotNum && "à íuÇ∆âÒì]ÇÃçáåvÇ™àÍívÇµÇ‹ÇπÇÒ");
+
+						//äiî[
+						for (int i = 0; i < cnt; i++)
+						{
+							p->mapSpawn[enemySpawnName][enemyName].emplace_back(position[i], rotation[i], wanderingName[i]);
+						}
+
+						//çÌèú
+						position.shrink_to_fit();
+						position.clear();
+						rotation.shrink_to_fit();
+						rotation.clear();
+						wanderingName.shrink_to_fit();
+						wanderingName.clear();
 					}
-
-					unsigned int posNum = position.size();
-					unsigned int rotNum = rotation.size();
-					unsigned int nameNum = wanderingName.size();
-					assert(posNum == rotNum && "à íuÇ∆âÒì]ÇÃçáåvÇ™àÍívÇµÇ‹ÇπÇÒ");
-
-					//äiî[
-					EnemyStatePimpl * p = GetInstance()->m_pEnemyStatePimpl;
-					for (int i = 0; i < cnt; i++)
-					{
-						p->mapSpawn[enemySpawnName][enemyName].emplace_back(position[i], rotation[i], wanderingName[i]);
-					}
-
-					position.shrink_to_fit();
-					position.clear();
-					rotation.shrink_to_fit();
-					rotation.clear();
-					wanderingName.shrink_to_fit();
-					wanderingName.clear();
 				}
 			}	
 		}
 	}
+
+	fclose(fp);
 }
 
 void EnemyStateManager::Generation(const char *stateName, const char *spawnName, const char* tracerouteName, bool isSearch)
