@@ -155,8 +155,6 @@ Player::~Player()
 
 void Player::Update()
 {
-	m_pos.DebugDraw("Player");
-
 	//1フレームタイム
 	m_OneFlameTime = GEKO::GetOneFps();
 

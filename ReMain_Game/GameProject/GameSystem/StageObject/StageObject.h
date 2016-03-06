@@ -266,7 +266,6 @@ public:
 		StageObject(pos, rot, sca, name, true, true) 
 	{
 		//当たり判定用のメッシュ初期化
-		//m_HitMesh.SetAsset("RockWall");
 		m_HitMesh.SetAsset("Wall_Collision_1_1");
 		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
 		m_HitMesh.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
@@ -301,7 +300,6 @@ public:
 		StageObject(pos, rot, sca, name, true, true)
 	{
 		//当たり判定用のメッシュ初期化
-		//m_HitMesh.SetAsset("RockWall");
 		m_HitMesh.SetAsset("Wall_Collision_1_2");
 		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
 		m_HitMesh.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
@@ -336,7 +334,11 @@ public:
 		StageObject(pos, rot, sca, name, true, true)
 	{
 		//当たり判定用のメッシュ初期化
-		//m_HitMesh.SetAsset("RockWall");
+		m_BulletHitMesh.SetAsset("RockWall_1_3");
+		m_BulletHitMesh.SetTranselate(pos.x, pos.y, pos.z);
+		m_BulletHitMesh.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
+		m_BulletHitMesh.SetScale(sca.x, sca.y, sca.z);
+
 		m_HitMesh.SetAsset("Wall_Collision_1_3");
 		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
 		m_HitMesh.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
@@ -349,11 +351,17 @@ public:
 		//カメラと壁の当たり判定
 		m_CameraHit.Regist_SMesh_vs_L(&m_HitMesh, true);
 		m_CameraHit.SetID(eHITID1, eHITID0);
+
+		//弾と壁の当たり判定
+		m_BulletHit.Regist_SMesh_vs_L(&m_BulletHitMesh, true);
+		m_BulletHit.SetID(eHITID7, eHITID2);
+		m_BulletHit.SetName("RockWall_1_3");
 	}
 	~RockWall_1_3() {}
 
 private:
 	StaticMesh m_HitMesh;
+	StaticMesh m_BulletHitMesh;
 	Collider m_CameraHit;
 	Collider m_BulletHit;
 };

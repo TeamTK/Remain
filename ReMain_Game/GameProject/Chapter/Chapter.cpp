@@ -142,6 +142,8 @@ Chapter_1_2::Chapter_1_2() :
 	EnemyStateManager::LoadFileSpawn("TextData\\EnemySpawn_Chapter_1-2.txt");
 	//EnemyStateManager::Generation("Normal_Monster_A", "Chapter1-1_Start", "Chapter_1_2_Traceroute", false);
 
+	m_Render.Regist(6, REGIST_RENDER_FUNC(Chapter_1_2::Render));
+
 	new AmmoBox_Shotgun(Vector3D(-9.5f, 0.0f, 14.4f), Vector3D(0.0f, 200.0f, 0.0f), 6);
 
 	m_BGM.SetAseet("Field1");
@@ -194,7 +196,7 @@ Chapter_1_3::Chapter_1_3() :
 	Task("Chapter_1_3", 0)
 {
 	DirectionalLight::SetDistance(160.0f);
-	/*
+
 	PData data;
 	data.HP = PlayerData::GetData().HP;
 	data.Shotgun_Ammo = PlayerData::GetData().Shotgun_Ammo;
@@ -203,16 +205,7 @@ Chapter_1_3::Chapter_1_3() :
 	data.Handgun_LoadedAmmo = PlayerData::GetData().Handgun_LoadedAmmo;
 	data.isTakeWeapon = PlayerData::GetData().isTakeWeapon;
 	data.Weapon = PlayerData::GetData().Weapon;
-	*/
-	PData data;
-	data.HP = 100.0f;
-	data.Shotgun_Ammo = 6;
-	data.Shotgun_LoadedAmmo = 6;
-	data.Handgun_Ammo = 6;
-	data.Handgun_LoadedAmmo = 6;
-	data.isTakeWeapon = false;
-	data.Weapon = eShotgun;
-	new Player(&data, Vector3D(13.0f, 0.0f, 12.0f), 80, -2);
+	new Player(&data, Vector3D(13.0f, 0.0f, 12.0f), -140.0f, -5.0f);
 
 	//アッセットtxt読み込み
 	StageObjectManager::GetInstance()->ClearList();
@@ -221,7 +214,7 @@ Chapter_1_3::Chapter_1_3() :
 	new AmmoBox_Shotgun(Vector3D(-9.5f, 0.0f, 14.4f), Vector3D(0.0f, 200.0f, 0.0f), 6);
 
 	BossState state;
-	state.hp = 100;
+	state.hp = 80;
 	state.spawnPos = Vector3D(4.0f, 0.0f, -12.0f);
 	state.spawnRot = Vector3D(0.0f, 180.0f, 0.0f);
 	new Boss(state);
