@@ -12,7 +12,6 @@ GameOvar::~GameOvar()
 
 void GameOvar::Update()
 {
-	std::cout << "GameOvar" << "\n";
 }
 
 void GameOvar::Render()

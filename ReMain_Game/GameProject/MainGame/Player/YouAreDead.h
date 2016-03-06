@@ -13,12 +13,28 @@ public:
 	void Render();
 
 private:
+	void Select();
+
+private:
+	enum SelectState
+	{
+		eNo,
+		eRetry,
+		eQuit
+	};
+
+	bool m_IsDecision;
 	int m_EndTime;
 	float m_AlphaCnt;
+	Vector2D m_SelectPos;
 	RenderTask m_Render;
 	Timer m_Timer;
 	Image m_YouAreDeadImage;
+	Image m_RetryImage;
+	Image m_QuitImage;
+	Image m_SelectImage;
 	ScreenTransfer_In m_Transfer_In;
+	SelectState m_SelectState;
 };
 
 #endif
