@@ -131,7 +131,7 @@ Chapter_1_2::Chapter_1_2() :
 	data.isTakeWeapon = PlayerData::GetData().isTakeWeapon;
 	data.Weapon = PlayerData::GetData().Weapon;
 
-	new Player(&data, Vector3D(-28.0f, 0.0f, -98.0f), 80, -2);
+	new Player(&data, Vector3D(-28.0f, 0.0f, -98.0f), -2.5f, -0.1f);
 
 	//åoòHíTçıÉfÅ[É^ì«Ç›çûÇ›Ç∆ç\íz
 	static StaticMesh mesh("Chapter_1_2_Traceroute");
@@ -231,7 +231,7 @@ Chapter_1_3::Chapter_1_3() :
 	new AmmoBox_Shotgun(Vector3D(-9.5f, 0.0f, 14.4f), Vector3D(0.0f, 200.0f, 0.0f), 6);
 
 	BossState state;
-	state.hp = 50;
+	state.hp = 100;
 	state.spawnPos = Vector3D(4.0f, 0.0f, -12.0f);
 	state.spawnRot = Vector3D(0.0f, 180.0f, 0.0f);
 	new Boss(state);
