@@ -27,7 +27,6 @@ void Kill()
 Chapter_1_1::Chapter_1_1() :
 	Task("Chapter_1_1", 0),
 	m_Radius(4.0f),
-	m_pos(-7.0f, 0.0f, 4.0f),
 	m_StageChangePos(40.0f, 0.0f, -17.0f)
 {
 	DirectionalLight::SetDistance(140.0f);
@@ -70,7 +69,7 @@ Chapter_1_1::Chapter_1_1() :
 	m_BGM.SetLoop(true);
 	m_BGM.Play();
 
-	EnemyStateManager::Generation("Normal_Monster_A", "Chapter1-1_Start", "Chapter_1_1_Traceroute", false);
+	EnemyStateManager::Generation("Normal_Monster_A", "Chapter1-1", "Chapter_1_1_Traceroute", false);
 }
 
 Chapter_1_1::~Chapter_1_1()
@@ -88,12 +87,6 @@ void Chapter_1_1::Update()
 		Kill();
 		SetKill();
 		new Chapter_1_2();
-	}
-
-	if (Input::KeyO.Clicked()) //ìGçÌèú
-	{
-		TaskManager::Kill("Monster_A");
-		TaskManager::Kill("Monster_B");
 	}
 }
 
@@ -117,7 +110,6 @@ void Chapter_1_1::StageChange(Result_Sphere &data)
 Chapter_1_2::Chapter_1_2() :
 	Task("Chapter_1_2", 0),
 	m_Radius(2.0f),
-	m_pos(-7.0f, 0.0f, 4.0f),
 	m_StageChangePos(64.0f, 0.0f, 39.0f)
 {
 	DirectionalLight::SetDistance(160.0f);
@@ -199,9 +191,7 @@ void Chapter_1_2::StageChange(Result_Sphere &data)
 //******************************************
 
 Chapter_1_3::Chapter_1_3() :
-	Task("Chapter_1_3", 0),
-	m_Radius(5.0f),
-	m_pos(-7.0f, 0.0f, 4.0f)
+	Task("Chapter_1_3", 0)
 {
 	DirectionalLight::SetDistance(160.0f);
 	/*

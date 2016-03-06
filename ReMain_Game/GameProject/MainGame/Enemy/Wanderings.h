@@ -16,6 +16,7 @@ public:
 	void Update();
 	void Start();
 	void Stop();
+	void DebugDraw();
 
 private:
 	WanderingsInfo *m_pWanderingsInfo;
@@ -35,6 +36,7 @@ public:
 	~WanderingsManager();
 	static void LoadFile(const char* fileName);
 	static WanderingsInfo *GetWanderingsInfo(std::string myName);
+	static void DebugDraw(std::string myName);
 
 private:
 	WanderingsManager();

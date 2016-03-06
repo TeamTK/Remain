@@ -41,9 +41,9 @@ void Wanderings::Init(std::string name, TracerouteSearch *pSearch,
 	m_IsStart = true;
 	m_pSearch->StartMove();
 	m_pSearch->StartSerch();
-	m_pSearch->SetTargetName("Wanderings");
+	m_pSearch->SetTargetName(name);
 
-	m_Target.SetName("Wanderings");
+	m_Target.SetName(name);
 	m_Target.SetPosition(&m_pWanderingsInfo->targetPos[m_TargetNum]);
 }
 
@@ -112,6 +112,11 @@ void Wanderings::Stop()
 	m_IsStart = false;
 }
 
+void Wanderings::DebugDraw()
+{
+	m_pWanderingsInfo->targetPos[m_TargetNum].DebugDraw("Now Target");
+}
+
 class WanderingsManager::WanderingsPimpl
 {
 public:
@@ -161,68 +166,66 @@ void WanderingsManager::LoadFile(const char* fileName)
 
 			//名前読み込み
 			ifs >> str;
-			if (GetInstance()->m_pWanderingsPimpl->info.find(str) != GetInstance()->m_pWanderingsPimpl->info.end())
+			if (GetInstance()->m_pWanderingsPimpl->info.find(str) == GetInstance()->m_pWanderingsPimpl->info.end())
 			{
-				return;
-			}
+				auto *p = &GetInstance()->m_pWanderingsPimpl->info[str];
 
-			auto *p = &GetInstance()->m_pWanderingsPimpl->info[str];
+				//向かう場所の数読み込み
+				ifs >> str;
+				p->targetNum = 0;
+				p->targetNum = std::stoi(str);
+				assert(p->targetNum > 0 && "ターゲット数がありません");
 
-			//向かう場所の数読み込み
-			ifs >> str;
-			p->targetNum = 0;
-			p->targetNum = std::stoi(str);
-			assert(p->targetNum > 0 && "ターゲット数がありません");
-
-			//移動スピード読み込み
-			ifs >> str;
-			if (str == "Speed")
-			{		
-				for (cnt = 0; cnt < p->targetNum; cnt++)
+				//移動スピード読み込み
+				ifs >> str;
+				if (str == "Speed")
 				{
-					str = "NULL";
-					ifs >> str;
-					assert(str != "NULL" && "WanderingのSpeedの値がありません");
-					p->speed.emplace_back(std::stof(str));
+					for (cnt = 0; cnt < p->targetNum; cnt++)
+					{
+						str = "NULL";
+						ifs >> str;
+						assert(str != "NULL" && "WanderingのSpeedの値がありません");
+						p->speed.emplace_back(std::stof(str));
+					}
 				}
-			}
 
-			//待機時間
-			ifs >> str;
-			if (str == "StopTime")
-			{
-				for (cnt = 0; cnt < p->targetNum; cnt++)
+				//待機時間
+				ifs >> str;
+				if (str == "StopTime")
 				{
-					str = "NULL";
-					ifs >> str;
-					assert(str != "NULL" && "WanderingのStopTimeの値がありません");
-					p->stopTime.emplace_back(std::stof(str));
+					for (cnt = 0; cnt < p->targetNum; cnt++)
+					{
+						str = "NULL";
+						ifs >> str;
+						assert(str != "NULL" && "WanderingのStopTimeの値がありません");
+						p->stopTime.emplace_back(std::stof(str));
+					}
 				}
-			}
 
-			//向かう場所
-			ifs >> str;
-			if (str == "TargetPos")
-			{
-				for (cnt = 0; cnt < p->targetNum; cnt++)
+				//向かう場所
+				ifs >> str;
+				if (str == "TargetPos")
 				{
-					std::string pos[3] = {"NULL", "NULL", "NULL"};
-					ifs >> pos[0];
-					ifs >> pos[1];
-					ifs >> pos[2];
+					for (cnt = 0; cnt < p->targetNum; cnt++)
+					{
+						std::string pos[3] = { "NULL", "NULL", "NULL" };
+						ifs >> pos[0];
+						ifs >> pos[1];
+						ifs >> pos[2];
 
-					assert(pos[0] != "NULL" && "WanderingのTargetPosのX座標がありません");
-					assert(pos[1] != "NULL" && "WanderingのTargetPosのY座標がありません");
-					assert(pos[2] != "NULL" && "WanderingのTargetPosのZ座標がありません");
+						assert(pos[0] != "NULL" && "WanderingのTargetPosのX座標がありません");
+						assert(pos[1] != "NULL" && "WanderingのTargetPosのY座標がありません");
+						assert(pos[2] != "NULL" && "WanderingのTargetPosのZ座標がありません");
 
-					p->targetPos.emplace_back(std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2]));
+						p->targetPos.emplace_back(std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2]));
+					}
 				}
-			}
 
-			//指定の数分読み込まれたか確認
-			if (p->targetNum != p->speed.size()) assert(0 && "WanderingのSpeedの読み込みが適切ではありません");
-			if (p->targetNum != p->stopTime.size()) assert(0 && "WanderingのStopTimeの読み込みが適切ではありません");
-			if (p->targetNum != p->targetPos.size()) assert(0 && "WanderingのTargetPosの読み込みが適切ではありません");
+				//指定の数分読み込まれたか確認
+				if (p->targetNum != p->speed.size()) assert(0 && "WanderingのSpeedの読み込みが適切ではありません");
+				if (p->targetNum != p->stopTime.size()) assert(0 && "WanderingのStopTimeの読み込みが適切ではありません");
+				if (p->targetNum != p->targetPos.size()) assert(0 && "WanderingのTargetPosの読み込みが適切ではありません");
+			}
 		}
 	}
 }
@@ -230,4 +233,9 @@ void WanderingsManager::LoadFile(const char* fileName)
 WanderingsInfo *WanderingsManager::GetWanderingsInfo(std::string myName)
 {
 	return &GetInstance()->m_pWanderingsPimpl->info[myName];
+}
+
+void WanderingsManager::DebugDraw(std::string myName)
+{
+	GetInstance()->m_pWanderingsPimpl->info[myName].targetPos[0].DebugDraw(myName.data());
 }

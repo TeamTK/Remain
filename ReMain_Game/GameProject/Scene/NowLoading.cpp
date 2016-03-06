@@ -19,6 +19,7 @@ NowLoading::NowLoading(bool isResource) :
 
 		auto func = []
 		{
+			StaticMeshAsset::LoadFile("TextData\\StaticMesh2.txt");
 			DynamicMeshAsset::LoadFile("TextData\\DynamicMesh.txt");
 			SoundAsset::LoadFile("TextData\\Sound.txt");
 			g_isLoad = true;
@@ -69,6 +70,6 @@ void NowLoading::Update()
 void NowLoading::Render()
 {
 	m_Transfer.Render();
-	g_NowLodingImage.PlayFrame(0.3f);
+	g_NowLodingImage.PlayFrame(0.2f);
 	g_NowLodingImage.Draw(Vector2D(NOW_LOADING_POS));
 }
