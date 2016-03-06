@@ -6,7 +6,7 @@
 #include "../Scene/Title.h"
 #include "../Scene/NowLoading.h"
 
-#define BOSS_DEBUG_MODE
+//#define BOSS_DEBUG_MODE
 
 MainGame::MainGame() :
 	Task("MainGame", 0)

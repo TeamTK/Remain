@@ -112,7 +112,6 @@ void Boss::Update()
 		if (!m_FuncTask.Running("Die")) m_pHitAttackBody[i].Awake();
 	}
 
-	printf("%f\n", m_Timer);
 	m_FuncTask.Update();
 	m_Model.ChangeAnimation(m_AnimType);
 	m_Model.SetPlayTime(m_AnimSpeed *m_OneFlameTime);
