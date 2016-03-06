@@ -126,9 +126,6 @@ void TPSCamera::Update()
 
 	Camera::SetEye(m_CameraPos);
 	Camera::SetLookat(*info->pLookPos);
-
-	m_CameraPos.DebugDraw("p");
-	info->pLookPos->DebugDraw("l");
 }
 
 void TPSCamera::HitCamera(Result_Porygon &hitData)
