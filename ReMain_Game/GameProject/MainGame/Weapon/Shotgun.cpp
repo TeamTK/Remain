@@ -7,7 +7,7 @@ Shotgun* g_pShotgun;
 Shotgun::Shotgun(int* anim, float* frame, bool* take, EWeapons* weapon, Matrix* m) :
 	WeaponBase(anim, frame, take, m, "Shotgun", 0)
 {
-	m_Model.SetAsset("Shotgun");
+	m_Model.SetAsset("Shotgun", true);
 
 	m_Ammo = DEFAULT_BULLET_HAVE;
 	m_Weapon = weapon;

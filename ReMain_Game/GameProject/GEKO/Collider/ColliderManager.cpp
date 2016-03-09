@@ -4,7 +4,7 @@
 #include "LineSegment.h"
 #include "StaticMeshCollider.h"
 #include "..\System\Collision.h"
-#include "..\Mesh\StaticMesh.h"
+#include "..\Mesh\StaticMesh\StaticMesh.h"
 #include <list>
 #include <map>
 
@@ -821,9 +821,7 @@ bool ColliderManager::HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, Ve
 	HitResult_SegmentTriangle hit;
 
 	//モデルの変換行列
-	Matrix world = *hitData1.GetWorldMatrix();
-	Matrix local = *hitData1.GetLocalMatrix();
-	Matrix m = local * world;
+	Matrix m = *hitData1.GetSynthesisMatrix();
 	Matrix inverse = m.GetInverse();
 
 	//当たり判定の形状
@@ -847,8 +845,8 @@ bool ColliderManager::HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, Ve
 		//当たったら当たった頂点格納
 		if (hit.isHit)
 		{
-			pory->worldMatrix = world;
-			pory->localMatrix = local;
+			pory->worldMatrix = *hitData1.GetWorldMatrix();
+			pory->localMatrix = *hitData1.GetLocalMatrix();
 			pory->meshMatrix = m;
 			pory->contactPos = hit.pos;
 			pory->normal = hit.normal;
@@ -868,9 +866,7 @@ bool ColliderManager::HitCheckStaticMesh_vs_LineSegment_Group(StaticMesh &hitDat
 	HitResult_SegmentTriangle hit;
 
 	//モデルの変換行列
-	Matrix world = *hitData1.GetWorldMatrix();
-	Matrix local = *hitData1.GetLocalMatrix();
-	Matrix m = local * world;
+	Matrix m = *hitData1.GetSynthesisMatrix();
 	Matrix inverse = m.GetInverse();
 
 	//当たり判定の形状
@@ -905,8 +901,8 @@ bool ColliderManager::HitCheckStaticMesh_vs_LineSegment_Group(StaticMesh &hitDat
 			hitVer.emplace_back(hitTriangle.v1, hitTriangle.v2, hitTriangle.v3);
 			materialNum.emplace_back(index[i].materialIndex);
 
-			pory->worldMatrix = world;
-			pory->localMatrix = local;
+			pory->worldMatrix = *hitData1.GetWorldMatrix();
+			pory->localMatrix = *hitData1.GetLocalMatrix();
 			pory->meshMatrix = m;
 		}
 	}
@@ -936,8 +932,8 @@ bool ColliderManager::HitCheckStaticMesh_vs_LineSegment_Group(StaticMesh &hitDat
 		pory->pArray[i].vertexPos[2] = hitVer[i].v3;
 		pory->pArray[i].materialIndex = materialNum[i];
 	}
-	pory->worldMatrix = world;
-	pory->localMatrix = local;
+	pory->worldMatrix = *hitData1.GetWorldMatrix();
+	pory->localMatrix = *hitData1.GetLocalMatrix();
 	pory->meshMatrix = m;
 	pory->hitNum = hitVer.size();
 
@@ -959,9 +955,7 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, Vector3
 	HitResult_SphereTriangle Hitdata;
 
 	//モデルの変換行列
-	Matrix world = *hitData1.GetWorldMatrix();
-	Matrix local = *hitData1.GetLocalMatrix();
-	Matrix m = local * world;
+	Matrix m = *hitData1.GetSynthesisMatrix();
 
 	//当たり判定の形状
 	TriangleInfo hitTriangle;
@@ -1025,8 +1019,8 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, Vector3
 		pory->pArray[i].materialIndex = materialNum[i];
 		pory->pArray[i].dist = hitDist[i];
 	}
-	pory->worldMatrix = world;
-	pory->localMatrix = local;
+	pory->worldMatrix = *hitData1.GetWorldMatrix();
+	pory->localMatrix = *hitData1.GetLocalMatrix();
 	pory->meshMatrix = m;
 	pory->hitNum = hitVer.size();
 

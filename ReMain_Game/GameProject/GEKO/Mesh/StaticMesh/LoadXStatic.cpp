@@ -1,5 +1,5 @@
 #include "LoadXStatic.h"
-#include "..\System\Window.h"
+#include "..\..\System\Window.h"
 
 LoadXStatic::LoadXStatic(std::string fileName)
 {
@@ -41,11 +41,17 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 	std::vector<Vector3D> coordinate;
 	std::vector<Vector3D> normal;
 	std::vector<Vector2D> uv;
-	std::vector<MaterialX> material;
+	std::vector<Vector3D> ambient;
+	std::vector<Vector4D> diffuse;
+	std::vector<Vector3D> specular;
+	std::vector<std::string> textureNameArray;
 	std::vector<int> materialList;
 
 	int index1, index2, index3;
 	int frameNum = 0;
+	int uvNumAll = 0; //UVの数
+	int normalNumAll = 0; //法線の数
+	int materialListNumAll = 0;
 	float x, y, z;
 
 	char str[400] = { 0 };
@@ -77,8 +83,8 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 			fscanf_s(fp, "%f, %f, %f, %f,", &m._31, &m._32, &m._33, &m._34);
 			fscanf_s(fp, "%f, %f, %f, %f;;", &m._41, &m._42, &m._43, &m._44);
 
-			if (frameNum == 2) m_MeshInfo.localMat *= m;
-			else m_MeshInfo.localMat = m;
+			if (frameNum == 2) m_MeshInfo.localMatrix *= m;
+			else m_MeshInfo.localMatrix = m;
 		}
 
 		//頂点メッシュ読み込み
@@ -129,10 +135,10 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 
 			//法線の数
 			fgets(str, sizeof(str), fp);
-			fscanf_s(fp, "%d;", &m_MeshInfo.normalNumAll);
+			fscanf_s(fp, "%d;", &normalNumAll);
 
 			//法線読み込み
-			for (int i = 0; i < m_MeshInfo.normalNumAll; i++)
+			for (int i = 0; i < normalNumAll; i++)
 			{
 				fscanf_s(fp, "%f; %f; %f;,", &x, &y, &z);
 				normal.emplace_back(x, y, z);
@@ -167,9 +173,9 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 			assert(leftCurlyBracket == '{' && "UV座標の初め波括弧が正しくありません");
 
 			fgets(str, sizeof(str), fp);
-			fscanf_s(fp, "%d;", &m_MeshInfo.uvNumAll);
+			fscanf_s(fp, "%d;", &uvNumAll);
 
-			for (int i = 0; i < m_MeshInfo.uvNumAll; i++)
+			for (int i = 0; i < uvNumAll; i++)
 			{
 				fscanf_s(fp, "%f; %f;,", &x, &y);
 				uv.emplace_back(x, y);
@@ -190,11 +196,11 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 			fscanf_s(fp, "%d;", &m_MeshInfo.materialNumAll);
 
 			//マテリアルリストの数
-			fscanf_s(fp, "%d;", &m_MeshInfo.materialListNumAll);
+			fscanf_s(fp, "%d;", &materialListNumAll);
 
 			//マテリアルリスト格納
 			int listNum = 0;
-			for (int i = 0; i < m_MeshInfo.materialListNumAll; i++)
+			for (int i = 0; i < materialListNumAll; i++)
 			{
 				fscanf_s(fp, "%d,", &listNum);
 				materialList.emplace_back(listNum);
@@ -273,23 +279,29 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 					}
 				}
 
-				material.emplace_back(kd, ks, ka, temp2 + textureName);
+				ambient.emplace_back(ka);
+				diffuse.emplace_back(kd);
+				specular.emplace_back(ks);
+				textureNameArray.emplace_back(temp2 + textureName);
 			}
 			else
 			{
-				material.emplace_back(kd, ks, ka, "NoTexture");
+				ambient.emplace_back(ka);
+				diffuse.emplace_back(kd);
+				specular.emplace_back(ks);
+				textureNameArray.emplace_back("NoTexture");
 			}
 		}
 	}
 
 	assert(coordinate.size() != 0 && "Xファイルの頂点座標がありません");
 	assert(normal.size() != 0 && "Xファイルの法線がありません");
-	assert(material.size() != 0 && "Xファイルのマテリアルがありません");
+	assert(ambient.size() != 0 && "Xファイルのマテリアルがありません");
 
 	//マテリアルとインデックスバッファー動的作成
 	m_MeshInfo.pMaterial = new MaterialInfo[m_MeshInfo.materialNumAll];		//マテリアル
 	m_MeshInfo.ppIndexBuffer = new ID3D11Buffer*[m_MeshInfo.materialNumAll];	//インデックス
-	m_MeshInfo.pVertex = new VertexInfo[m_MeshInfo.vertexNumAll];				//公開用頂点
+	m_pVertex = new VertexInfo[m_MeshInfo.vertexNumAll];
 	m_MeshInfo.pIndex = new IndexInfo[m_MeshInfo.faceNumAll];
 
 	D3D11_BUFFER_DESC bd;
@@ -306,21 +318,21 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 		count = 0;
 
 		//マテリアル割り当て
-		m_MeshInfo.pMaterial[i].ambient = material[i].ambient;
-		m_MeshInfo.pMaterial[i].diffuse = material[i].diffuse;
-		m_MeshInfo.pMaterial[i].specular = material[i].specular;
+		m_MeshInfo.pMaterial[i].ambient = ambient[i];
+		m_MeshInfo.pMaterial[i].diffuse = diffuse[i];
+		m_MeshInfo.pMaterial[i].specular = specular[i];
 
-		m_MeshInfo.pMaterial[i].textureName = material[i].textureName;
+		m_MeshInfo.pMaterial[i].textureName = textureNameArray[i];
 
 		//テクスチャー読み込み
-		if (material[i].textureName == "NoTexture")
+		if (textureNameArray[i] == "NoTexture")
 		{
 			m_MeshInfo.isTexture = false;
 		}
 		else
 		{
 			//テクスチャーを作成
-			if (FAILED(D3DX11CreateShaderResourceViewFromFile(pDevice, material[i].textureName.c_str(), NULL, NULL, &m_MeshInfo.pMaterial[i].pTexture, NULL)))
+			if (FAILED(D3DX11CreateShaderResourceViewFromFile(pDevice, textureNameArray[i].c_str(), NULL, NULL, &m_MeshInfo.pMaterial[i].pTexture, NULL)))
 			{
 				Relese();
 				MessageBoxA(NULL, TEXT("テクスチャーの読み込みに失敗しました"), NULL, MB_OK);
@@ -373,10 +385,9 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 		//uv有りバージョン
 		for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
 		{
-			//公開用頂点
-			m_MeshInfo.pVertex[i].pos = coordinate[i];
-			m_MeshInfo.pVertex[face[i]].normal = normal[normalIndex[i]];
-			m_MeshInfo.pVertex[i].uv = uv[i];
+			m_pVertex[i].pos = coordinate[i];
+			m_pVertex[face[i]].normal = normal[normalIndex[i]];
+			m_pVertex[i].uv = uv[i];
 		}
 	}
 	else
@@ -384,9 +395,8 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 		//uvなしバージョン
 		for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
 		{
-			//公開用頂点
-			m_MeshInfo.pVertex[i].pos = coordinate[i];
-			m_MeshInfo.pVertex[i].normal = normal[normalIndex[i]];
+			m_pVertex[i].pos = coordinate[i];
+			m_pVertex[i].normal = normal[normalIndex[i]];
 		}
 	}
 
@@ -396,7 +406,7 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
-	InitData.pSysMem = m_MeshInfo.pVertex;
+	InitData.pSysMem = m_pVertex;
 	if (FAILED(pDevice->CreateBuffer(&bd, &InitData, &m_MeshInfo.pVertexBuffer)))
 		return FALSE;
 
@@ -411,8 +421,14 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 	 normal.shrink_to_fit();
 	 uv.clear();
 	 uv.shrink_to_fit();
-	 material.clear();
-	 material.shrink_to_fit();
+	 ambient.clear();
+	 ambient.shrink_to_fit();
+	 diffuse.clear();
+	 diffuse.shrink_to_fit();
+	 specular.clear();
+	 specular.shrink_to_fit();
+	 textureNameArray.clear();
+	 textureNameArray.clear();
 	 materialList.clear();
 	 materialList.shrink_to_fit();
 
@@ -432,7 +448,7 @@ void LoadXStatic::Relese()
 		}
 		
 		SAFE_DELETE_ARRAY(m_MeshInfo.pIndex);
-		SAFE_DELETE_ARRAY(m_MeshInfo.pVertex);
+		SAFE_DELETE_ARRAY(m_pVertex);
 		SAFE_DELETE_ARRAY(m_MeshInfo.pMaterial);
 		SAFE_DELETE_ARRAY(m_MeshInfo.ppIndexBuffer);
 		SAFE_RELEASE(m_MeshInfo.pSampleLinear);

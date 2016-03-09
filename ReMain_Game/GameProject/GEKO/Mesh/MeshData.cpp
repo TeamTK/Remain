@@ -3,7 +3,6 @@
 
 MeshData::MeshData()
 {
-	INIT_NULLPOINTR(m_MeshInfo.pVertex);
 	INIT_NULLPOINTR(m_MeshInfo.pIndex);
 	INIT_NULLPOINTR(m_MeshInfo.pMaterial);
 	INIT_NULLPOINTR(m_MeshInfo.ppIndexBuffer);
@@ -13,6 +12,7 @@ MeshData::MeshData()
 
 MeshData::~MeshData()
 {
+	Relese();
 }
 
 MeshInfo* MeshData::GetMeshInfo()
@@ -51,14 +51,78 @@ void MeshData::Relese()
 		for (int i = 0; i < m_MeshInfo.materialNumAll; i++)
 		{
 			SAFE_RELEASE(m_MeshInfo.pMaterial[i].pTexture);
-			m_MeshInfo.ppIndexBuffer[i]->Release();
+			SAFE_RELEASE(m_MeshInfo.ppIndexBuffer[i]);
 		}
 
-		SAFE_DELETE_ARRAY(m_MeshInfo.pVertex);
 		SAFE_DELETE_ARRAY(m_MeshInfo.pIndex);
 		SAFE_DELETE_ARRAY(m_MeshInfo.pMaterial);
 		SAFE_DELETE_ARRAY(m_MeshInfo.ppIndexBuffer);
 		SAFE_RELEASE(m_MeshInfo.pVertexBuffer);
 		SAFE_RELEASE(m_MeshInfo.pSampleLinear);
 	}
+}
+
+StaticMeshData::StaticMeshData()
+{
+	INIT_NULLPOINTR(m_pVertex);
+}
+
+StaticMeshData::~StaticMeshData()
+{
+	SAFE_DELETE_ARRAY(m_pVertex);
+}
+
+VertexInfo *StaticMeshData::GetVertex()
+{
+	return m_pVertex;
+}
+
+DyanmicMeshData::DyanmicMeshData()
+{
+	INIT_NULLPOINTR(m_pVertex);
+}
+
+DyanmicMeshData::~DyanmicMeshData()
+{
+	SAFE_DELETE_ARRAY(m_pVertex);
+
+	//ボーンリスト削除
+	m_BornInfo.BornList.clear();
+	m_BornInfo.BornList.shrink_to_fit();
+
+	//アニメーションフレーム数
+	for (auto& i : m_BornInfo.AnimationSetFrameNum)
+	{
+		i.second.clear();
+		i.second.shrink_to_fit();
+	}
+	m_BornInfo.AnimationSetFrameNum.clear();
+
+	//フレーム階層構造削除
+	DeleteHierarchy(m_BornInfo.sBorn.child);
+}
+
+SkinVertexInfo *DyanmicMeshData::GetVertex()
+{
+	return m_pVertex;
+}
+
+const BornInfo *DyanmicMeshData::GetBornInfo() const
+{
+	return &m_BornInfo;
+}
+
+void DyanmicMeshData::Update(CopyBorn *pCopyBorn, unsigned int animNum, float *animFrame, bool *pIsAnimEnd)
+{
+}
+
+void DyanmicMeshData::CopyBornTree(CopyBorn *pBornCopy, std::vector<CopyBorn*> *pCopyBornArray, Born *pBornOriginal)
+{
+}
+
+void DyanmicMeshData::DeleteHierarchy(Born *pBorn)
+{
+	if (pBorn->child != nullptr) DeleteHierarchy(pBorn->child);
+	if (pBorn->brother != nullptr) DeleteHierarchy(pBorn->brother);
+	delete pBorn;
 }

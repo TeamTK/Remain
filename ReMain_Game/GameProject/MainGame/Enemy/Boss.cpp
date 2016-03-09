@@ -4,7 +4,6 @@
 #include "../../GameSystem/Effect/EffectAnimation.h"
 
 #define BOSS_ANIM_ENDTIME 28.5f
-#define JUDGEMENT_ANIM 10
 
 #define BOSS_ATTACK_ANIMSPEED 20.0f
 #define BOSS_NORMAL_ANIMSPEED 30.0f
@@ -144,14 +143,14 @@ void Boss::Attack()
 	m_AnimType = eAnimationAttack2;
 	m_AnimSpeed = BOSS_ATTACK_ANIMSPEED;
 
-	float animNum = m_Model.GetPlayTime(JUDGEMENT_ANIM);
+	float animNum = m_Model.GetPlayTime();
 	if (animNum >= 12 && animNum <= 13) m_pHitAttack[8].Awake(); //右腕の当たり判定起動
 	if (animNum >= 22) m_pHitAttack[8].Sleep();			//右腕の当たり判定終了
 
 	if (animNum >= 12 && animNum <= 13) m_pHitAttack[7].Awake(); //左腕の当たり判定起動
 	if (animNum >= 22) m_pHitAttack[7].Sleep();			//左腕の当たり判定終了
 
-	if (m_Model.GetPlayTime(JUDGEMENT_ANIM) >= BOSS_ANIM_ENDTIME)
+	if (m_Model.GetPlayTime() >= BOSS_ANIM_ENDTIME)
 	{
 		auto bornNum = m_BoneCapsule.size();
 		for (unsigned int i = 0; i < bornNum; i++) m_pHitAttack[i].Sleep();
@@ -202,7 +201,7 @@ void Boss::Defence()
 
 	//アニメーションを停止
 	if (m_AnimType == eAnimationDefence &&
-		m_Model.GetPlayTime(JUDGEMENT_ANIM) >= 14)
+		m_Model.GetPlayTime() >= 14)
 	{
 		m_Model.StopAnimation();
 	}
@@ -212,7 +211,7 @@ void Boss::Defence()
 		//アニメーションを再生
 		m_Model.StartAnimation();
 		if (m_AnimType == eAnimationDefence &&
-			m_Model.GetPlayTime(JUDGEMENT_ANIM) >= BOSS_ANIM_ENDTIME)
+			m_Model.GetPlayTime() >= BOSS_ANIM_ENDTIME)
 		{
 			m_Model.SetTime(0);
 			m_FuncTask.Stop("Defence");
@@ -243,7 +242,7 @@ void Boss::HitDamage()
 	m_AnimType = eAnimationHitDamage;
 	m_AnimSpeed = BOSS_NORMAL_ANIMSPEED;
 
-	if (m_Model.GetPlayTime(JUDGEMENT_ANIM) >= BOSS_ANIM_ENDTIME)
+	if (m_Model.GetPlayTime() >= BOSS_ANIM_ENDTIME)
 	{
 		m_Model.SetTime(0);
 		m_FuncTask.Stop("HitDamage");
@@ -256,7 +255,7 @@ void Boss::Die()
 	m_AnimType = eAnimationDie;
 	m_AnimSpeed = BOSS_DIE_ANIMSPEED;
 
-	if (m_Model.GetPlayTime(JUDGEMENT_ANIM) >= BOSS_ANIM_ENDTIME)
+	if (m_Model.GetPlayTime() >= BOSS_ANIM_ENDTIME)
 	{
 		m_Model.StopAnimation();
 	}

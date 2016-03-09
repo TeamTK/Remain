@@ -6,7 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include "../../GEKO/Collider/Collider.h"
-#include "../../GEKO/Mesh/StaticMesh.h"
+#include "../../GEKO/Mesh/StaticMesh/StaticMesh.h"
 
 struct XYZ
 {
@@ -80,7 +80,7 @@ class Tree_1 : public StageObject
 {
 public:
 	Tree_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos,rot,sca,name, true, true)
+		StageObject(pos,rot,sca,name, false, true)
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
@@ -100,7 +100,7 @@ class Tree_2 : public StageObject
 {
 public:
 	Tree_2(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true, true)
+		StageObject(pos, rot, sca, name, false, true)
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);

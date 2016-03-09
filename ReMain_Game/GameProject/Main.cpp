@@ -26,7 +26,6 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 	StaticMeshAsset::LoadMesh("media\\Traceroute_1_2.x", "Chapter_1_2_Traceroute");
 
 	new Title();
-	//WanderingsManager::LoadFile("TextData\\Wandering_Chapter_1_1.txt");
 
 	while (GEKO::Loop())
 	{

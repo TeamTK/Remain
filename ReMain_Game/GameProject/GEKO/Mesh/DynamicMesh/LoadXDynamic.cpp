@@ -1,6 +1,5 @@
 #include "LoadXDynamic.h"
-#include "..\Mesh\LoadXStatic.h"
-#include "..\System\Window.h"
+#include "..\..\System\Window.h"
 
 struct SkinWeightInfo
 {
@@ -36,20 +35,6 @@ LoadXDynamic::LoadXDynamic(std::string fileName) :
 
 LoadXDynamic::~LoadXDynamic()
 {
-	//ボーンリスト削除
-	m_BornInfo.BornList.clear();
-	m_BornInfo.BornList.shrink_to_fit();
-
-	//アニメーションフレーム数
-	for (auto& i : m_BornInfo.AnimationSetFrameNum)
-	{
-		i.second.clear();
-		i.second.shrink_to_fit();
-	}
-	m_BornInfo.AnimationSetFrameNum.clear();
-
-	//フレーム階層構造削除
-	DeleteHierarchy(m_BornInfo.sBorn.child);
 }
 
 HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
@@ -72,10 +57,16 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	std::vector<Vector3D> coordinate;
 	std::vector<Vector3D> normal;
 	std::vector<Vector2D> uv;
-	std::vector<MaterialX> material;
+	std::vector<Vector3D> ambient;
+	std::vector<Vector4D> diffuse;
+	std::vector<Vector3D> specular;
+	std::vector<std::string> textureNameArray;
 	std::vector<int> materialList;
 
 	int index1, index2, index3;
+	int uvNumAll = 0; //UVの数
+	int normalNumAll = 0; //法線の数
+	int materialListNumAll = 0;
 	float x, y, z;
 
 	char str[400] = { 0 };
@@ -142,10 +133,10 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 
 			//法線の数
 			fgets(str, sizeof(str), fp);
-			fscanf_s(fp, "%d;", &m_MeshInfo.normalNumAll);
+			fscanf_s(fp, "%d;", &normalNumAll);
 
 			//法線読み込み
-			for (int i = 0; i < m_MeshInfo.normalNumAll; i++)
+			for (int i = 0; i < normalNumAll; i++)
 			{
 				fscanf_s(fp, "%f; %f; %f;,", &x, &y, &z);
 				normal.emplace_back(x, y, z);
@@ -180,9 +171,9 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 			assert(leftCurlyBracket == '{' && "UV座標の初め波括弧が正しくありません");
 
 			fgets(str, sizeof(str), fp);
-			fscanf_s(fp, "%d;", &m_MeshInfo.uvNumAll);
+			fscanf_s(fp, "%d;", &uvNumAll);
 
-			for (int i = 0; i < m_MeshInfo.uvNumAll; i++)
+			for (int i = 0; i < uvNumAll; i++)
 			{
 				fscanf_s(fp, "%f; %f;,", &x, &y);
 				uv.emplace_back(x, y);
@@ -203,11 +194,11 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 			fscanf_s(fp, "%d;", &m_MeshInfo.materialNumAll);
 
 			//マテリアルリストの数
-			fscanf_s(fp, "%d;", &m_MeshInfo.materialListNumAll);
+			fscanf_s(fp, "%d;", &materialListNumAll);
 
 			//マテリアルリスト格納
 			int listNum = 0;
-			for (int i = 0; i < m_MeshInfo.materialListNumAll; i++)
+			for (int i = 0; i < materialListNumAll; i++)
 			{
 				fscanf_s(fp, "%d,", &listNum);
 				materialList.emplace_back(listNum);
@@ -285,23 +276,29 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 					}
 				}
 
-				material.emplace_back(kd, ks, ka, temp2 + textureName);
+				ambient.emplace_back(ka);
+				diffuse.emplace_back(kd);
+				specular.emplace_back(ks);
+				textureNameArray.emplace_back(temp2 + textureName);
 			}
 			else
 			{
-				material.emplace_back(kd, ks, ka, "NoTexture");
+				ambient.emplace_back(ka);
+				diffuse.emplace_back(kd);
+				specular.emplace_back(ks);
+				textureNameArray.emplace_back("NoTexture");
 			}
 		}
 	}
 
 	assert(coordinate.size() != 0 && "Xファイルの頂点座標がありません");
 	assert(normal.size() != 0 && "Xファイルの法線がありません");
-	assert(material.size() != 0 && "Xファイルのマテリアルがありません");
+	assert(ambient.size() != 0 && "Xファイルのマテリアルがありません");
 
 	//マテリアルとインデックスバッファー動的作成
-	m_MeshInfo.pMaterial = new SkinMaterialInfo[m_MeshInfo.materialNumAll];
+	m_MeshInfo.pMaterial = new MaterialInfo[m_MeshInfo.materialNumAll];
 	m_MeshInfo.ppIndexBuffer = new ID3D11Buffer*[m_MeshInfo.materialNumAll];
-	m_MeshInfo.pVertex = new SkinVertexInfo[m_MeshInfo.vertexNumAll];
+	m_pVertex = new SkinVertexInfo[m_MeshInfo.vertexNumAll];
 
 	D3D11_BUFFER_DESC bd;
 	D3D11_SUBRESOURCE_DATA InitData;
@@ -315,20 +312,20 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 		count = 0;
 
 		//マテリアル割り当て
-		m_MeshInfo.pMaterial[i].ambient = material[i].ambient;
-		m_MeshInfo.pMaterial[i].diffuse = material[i].diffuse;
-		m_MeshInfo.pMaterial[i].specular = material[i].specular;
+		m_MeshInfo.pMaterial[i].ambient = ambient[i];
+		m_MeshInfo.pMaterial[i].diffuse = diffuse[i];
+		m_MeshInfo.pMaterial[i].specular = specular[i];
 
-		m_MeshInfo.pMaterial[i].textureName = material[i].textureName;
+		m_MeshInfo.pMaterial[i].textureName = textureNameArray[i];
 
-		if (material[i].textureName == "NoTexture")
+		if (textureNameArray[i] == "NoTexture")
 		{
 			m_MeshInfo.isTexture = false;
 		}
 		else
 		{
 			//テクスチャーを作成
-			if (FAILED(D3DX11CreateShaderResourceViewFromFile(pDevice, material[i].textureName.c_str(), NULL, NULL, &m_MeshInfo.pMaterial[i].pTexture, NULL)))
+			if (FAILED(D3DX11CreateShaderResourceViewFromFile(pDevice, textureNameArray[i].c_str(), NULL, NULL, &m_MeshInfo.pMaterial[i].pTexture, NULL)))
 			{
 				MessageBoxA(NULL, "テクスチャーの読み込みに失敗しました", NULL, MB_OK);
 				return E_FAIL;
@@ -370,9 +367,9 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 		//uv有りバージョン
 		for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
 		{
-			m_MeshInfo.pVertex[i].pos = coordinate[i];
-			m_MeshInfo.pVertex[face[i]].normal = normal[normalIndex[i]];
-			m_MeshInfo.pVertex[i].uv = uv[i];
+			m_pVertex[i].pos = coordinate[i];
+			m_pVertex[face[i]].normal = normal[normalIndex[i]];
+			m_pVertex[i].uv = uv[i];
 		}
 	}
 	else
@@ -380,8 +377,8 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 		//uvなしバージョン
 		for (int i = 0; i < m_MeshInfo.vertexNumAll; i++)
 		{
-			m_MeshInfo.pVertex[i].pos = coordinate[i];
-			m_MeshInfo.pVertex[face[i]].normal = normal[normalIndex[i]];
+			m_pVertex[i].pos = coordinate[i];
+			m_pVertex[face[i]].normal = normal[normalIndex[i]];
 		}
 	}
 
@@ -389,10 +386,10 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	AddBoneHierarchy(&m_BornInfo.sBorn, fp, 0); //ボーン階層構造読み込み
 
 	fseek(fp, 0, SEEK_SET);
-	LoadAnimation(fp, m_MeshInfo.pVertex); //アニメーションとスキンウェイト読み込み
+	LoadAnimation(fp, m_pVertex); //アニメーションとスキンウェイト読み込み
 
 	//ローカル行列格納
-	//m_MeshInfo.m_LocalMat = m_BornInfo.BornList[0]->initMat *m_BornInfo.BornList[m_BornInfo.BornList.size() - 1]->initMat;
+	m_MeshInfo.localMatrix = m_BornInfo.BornList[0]->initMat *m_BornInfo.BornList[m_BornInfo.BornList.size() - 1]->initMat;
 
 	//バーテックスバッファーを作成
 	bd.Usage = D3D11_USAGE_DEFAULT;
@@ -400,7 +397,7 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
-	InitData.pSysMem = m_MeshInfo.pVertex;
+	InitData.pSysMem = m_pVertex;
 	if (FAILED(pDevice->CreateBuffer(&bd, &InitData, &m_MeshInfo.pVertexBuffer)))
 		return FALSE;
 
@@ -415,32 +412,20 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	normal.shrink_to_fit();
 	uv.clear();
 	uv.shrink_to_fit();
-	material.clear();
-	material.shrink_to_fit();
+	ambient.clear();
+	ambient.shrink_to_fit();
+	diffuse.clear();
+	diffuse.shrink_to_fit();
+	specular.clear();
+	specular.shrink_to_fit();
+	textureNameArray.clear();
+	textureNameArray.clear();
 	materialList.clear();
 	materialList.shrink_to_fit();
 
 	fclose(fp);
 
 	return S_OK;
-}
-
-void LoadXDynamic::Relese()
-{
-	if (m_MeshInfo.pMaterial != nullptr)
-	{
-		for (int i = 0; i < m_MeshInfo.materialNumAll; i++)
-		{
-			SAFE_RELEASE(m_MeshInfo.pMaterial[i].pTexture);
-			m_MeshInfo.ppIndexBuffer[i]->Release();
-		}
-
-		SAFE_DELETE_ARRAY(m_MeshInfo.pVertex);
-		SAFE_DELETE_ARRAY(m_MeshInfo.pMaterial);
-		SAFE_DELETE_ARRAY(m_MeshInfo.ppIndexBuffer);
-		SAFE_RELEASE(m_MeshInfo.pVertexBuffer);
-		SAFE_RELEASE(m_MeshInfo.pSampleLinear);
-	}
 }
 
 void LoadXDynamic::CopyBornTree(CopyBorn *pBornCopy, std::vector<CopyBorn*> *pCopyBornArray, Born *pBornOriginal)
@@ -462,9 +447,39 @@ void LoadXDynamic::CopyBornTree(CopyBorn *pBornCopy, std::vector<CopyBorn*> *pCo
 	}
 }
 
-void LoadXDynamic::Update(CopyBorn *pCopyBorn, bool *pIsAnimEnd)
+void LoadXDynamic::Update(CopyBorn *pCopyBorn, unsigned int animNum, float *animFrame, bool *pIsAnimEnd)
 {
-	AnimUpdate(pCopyBorn, m_BornInfo.sBorn.child, pIsAnimEnd);
+	auto frameAnimNum = m_BornInfo.AnimationSetFrameNum[(int)animNum].size() - 1;
+
+	//指定のアニメーションフレームを超えたら戻す
+	if (*animFrame > (float)frameAnimNum)
+	{
+		if (*pIsAnimEnd)
+		{
+			*animFrame = 0.0f;
+			*pIsAnimEnd = false;
+		}
+		else
+		{
+			*pIsAnimEnd = true;
+			return;
+		}
+	}
+	else if (*animFrame < 0.0f)
+	{
+		if (*pIsAnimEnd)
+		{
+			*animFrame = (float)frameAnimNum;
+			*pIsAnimEnd = false;
+		}
+		else
+		{
+			*pIsAnimEnd = true;
+			return;
+		}
+	}
+
+	AnimUpdate(pCopyBorn, m_BornInfo.sBorn.child, (int)animNum, *animFrame, frameAnimNum);
 
 	//ボーン更新
 	Matrix m;
@@ -783,58 +798,27 @@ void LoadXDynamic::BornMatUpdate(CopyBorn *pCopyBorn, Born *pBorn, Matrix &bornM
 	if (pBorn->brother != nullptr) BornMatUpdate(pCopyBorn->brother, pBorn->brother, bornMat);
 }
 
-void LoadXDynamic::AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn, bool *pIsAnimEnd)
+void LoadXDynamic::AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn, int animNum, float animFrame, unsigned int frameAnimNum)
 {
 	Matrix m;
 
-	auto frameAnimNum = m_BornInfo.AnimationSetFrameNum[pCopyBorn->animNum].size() - 1;
-
 	//アニメーションセットのフレーム時間
-	auto itFrame = m_BornInfo.AnimationSetFrameNum[pCopyBorn->animNum].begin();
+	auto itFrame = m_BornInfo.AnimationSetFrameNum[animNum].begin();
 
-	std::vector<Matrix> *pAnimMat = &m_BornInfo.AnimationSetMat[pCopyBorn->animNum][pBorn->BornName];
+	std::vector<Matrix> *pAnimMat = &m_BornInfo.AnimationSetMat[animNum][pBorn->BornName];
 	auto itAnimMat = pAnimMat->begin();
-
-	//指定のアニメーションフレームを超えたら戻す
-	if (pCopyBorn->animFrame > (float)frameAnimNum)
-	{
-		if (*pIsAnimEnd)
-		{
-			AnimFrameInit(pCopyBorn, 0.0f);
-			*pIsAnimEnd = false;
-		}
-		else 
-		{
-			*pIsAnimEnd = true;
-			return;
-		}
-	}
-	else if (pCopyBorn->animFrame < 0.0f)
-	{
-		if (*pIsAnimEnd)
-		{
-			AnimFrameInit(pCopyBorn, (float)frameAnimNum);
-			*pIsAnimEnd = false;
-		}
-		else
-		{
-			*pIsAnimEnd = true;
-			return;
-		}
-	}
 
 	//アニメーション補間
 	if (pAnimMat->size() != 0)
 	{
-		unsigned int frameNum = frameAnimNum;
-		for (unsigned int i = 0; i < frameNum; i++)
+		for (unsigned int i = 0; i < frameAnimNum; i++)
 		{
 			float frameBefore = (float)itFrame[i];
 			float frameAfter = (float)itFrame[i + 1];
-			if ((pCopyBorn->animFrame >= frameBefore) && (pCopyBorn->animFrame <= frameAfter))
+			if ((animFrame >= frameBefore) && (animFrame <= frameAfter))
 			{
 				//フレーム時間
-				float lengeTime = pCopyBorn->animFrame - frameBefore;
+				float lengeTime = animFrame - frameBefore;
 
 				float lenge = frameAfter - frameBefore;
 				float t = lengeTime / lenge;
@@ -851,23 +835,8 @@ void LoadXDynamic::AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn, bool *pIsAnimEnd
 
 	pCopyBorn->worldMat = m;
 
-	if (pCopyBorn->child != nullptr) AnimUpdate(pCopyBorn->child, pBorn->child, nullptr);
-	if (pCopyBorn->brother != nullptr) AnimUpdate(pCopyBorn->brother, pBorn->brother, nullptr);
-}
-
-void LoadXDynamic::AnimFrameInit(CopyBorn *pCopyBorn, float initNum)
-{
-	pCopyBorn->animFrame = initNum;
-
-	if (pCopyBorn->child != nullptr) AnimFrameInit(pCopyBorn->child, initNum);
-	if (pCopyBorn->brother != nullptr) AnimFrameInit(pCopyBorn->brother, initNum);
-}
-
-void LoadXDynamic::DeleteHierarchy(Born *pBorn)
-{
-	if (pBorn->child != nullptr) DeleteHierarchy(pBorn->child);
-	if (pBorn->brother != nullptr) DeleteHierarchy(pBorn->brother);
-	delete pBorn;
+	if (pCopyBorn->child != nullptr) AnimUpdate(pCopyBorn->child, pBorn->child, animNum, animFrame, frameAnimNum);
+	if (pCopyBorn->brother != nullptr) AnimUpdate(pCopyBorn->brother, pBorn->brother, animNum, animFrame, frameAnimNum);
 }
 
 bool LoadXDynamic::AddBoneHierarchy(Born *pBorn, FILE *fp, int hierarchy)

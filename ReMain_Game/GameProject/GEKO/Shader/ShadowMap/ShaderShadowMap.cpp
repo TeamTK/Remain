@@ -1,8 +1,8 @@
 #include "ShaderShadowMap.h"
 #include "../ShaderInfo.h"
 #include "../../System/Window.h"
-#include "../../Mesh/StaticMesh.h"
-#include "../../AnimationMesh/DynamicMesh.h"
+#include "../../Mesh/StaticMesh/StaticMesh.h"
+#include "../../Mesh/DynamicMesh/DynamicMesh.h"
 #include "../../System/Camera.h"
 #include "../../System/DirectionalLight.h"
 #include <list>
@@ -510,7 +510,7 @@ void ShaderShadowMap::StaticMeshUpdate(ID3D11Device *pDevice, ID3D11DeviceContex
 		{
 			ShadowInfo sg;
 			
-			sg.lightWVP = i->m_pMeshData->GetMeshInfo()->localMat * i->m_WorldMatrix * m_pShadowMaPimpl->vpMat;
+			sg.lightWVP = i->m_SynthesisMatrix * m_pShadowMaPimpl->vpMat;
 			D3DXMatrixTranspose(&sg.lightWVP, &sg.lightWVP);
 
 			memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(ShadowInfo));
@@ -561,7 +561,7 @@ void ShaderShadowMap::DynaimcMeshUpdate(ID3D11Device *pDevice, ID3D11DeviceConte
 		if (SUCCEEDED(pDeviceContext->Map(m_pShadowMaPimpl->pSkinBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 		{
 			//ライトから見た視点の行列を格納
-			sg.lightWVP = i->m_LocalMatrix * i->m_WorldMatrix * m_pShadowMaPimpl->vpMat;
+			sg.lightWVP = i->m_SynthesisMatrix * m_pShadowMaPimpl->vpMat;
 			D3DXMatrixTranspose(&sg.lightWVP, &sg.lightWVP);
 
 			//ボーン行列格納
@@ -582,23 +582,23 @@ void ShaderShadowMap::DynaimcMeshUpdate(ID3D11Device *pDevice, ID3D11DeviceConte
 		//バーテックスバッファーをセット
 		UINT Stride = sizeof(SkinVertexInfo);
 		UINT offset = 0;
-		pDeviceContext->IASetVertexBuffers(0, 1, &i->m_pSkinMeshData->GetSkinMeshInfo()->pVertexBuffer, &Stride, &offset);
+		pDeviceContext->IASetVertexBuffers(0, 1, &i->m_pMeshData->GetMeshInfo()->pVertexBuffer, &Stride, &offset);
 
 		//マテリアルごとにレンダリング
-		int num = i->m_pSkinMeshData->GetSkinMeshInfo()->materialNumAll;
+		int num = i->m_pMeshData->GetMeshInfo()->materialNumAll;
 		for (int j = 0; j < num; j++)
 		{
 			//使用されていないマテリアル対策
-			if (i->m_pSkinMeshData->GetSkinMeshInfo()->pMaterial[j].numPolygon == 0) continue;
+			if (i->m_pMeshData->GetMeshInfo()->pMaterial[j].numPolygon == 0) continue;
 			//インデックスバッファーをセット
-			pDeviceContext->IASetIndexBuffer(i->m_pSkinMeshData->GetSkinMeshInfo()->ppIndexBuffer[j], DXGI_FORMAT_R32_UINT, 0);
+			pDeviceContext->IASetIndexBuffer(i->m_pMeshData->GetMeshInfo()->ppIndexBuffer[j], DXGI_FORMAT_R32_UINT, 0);
 
 			//テクスチャーをシェーダーに渡す
-			pDeviceContext->PSSetSamplers(0, 1, &i->m_pSkinMeshData->GetSkinMeshInfo()->pSampleLinear);
-			pDeviceContext->PSSetShaderResources(0, 1, &i->m_pSkinMeshData->GetSkinMeshInfo()->pMaterial[j].pTexture);
+			pDeviceContext->PSSetSamplers(0, 1, &i->m_pMeshData->GetMeshInfo()->pSampleLinear);
+			pDeviceContext->PSSetShaderResources(0, 1, &i->m_pMeshData->GetMeshInfo()->pMaterial[j].pTexture);
 
 			//プリミティブをレンダリング
-			pDeviceContext->DrawIndexed(i->m_pSkinMeshData->GetSkinMeshInfo()->pMaterial[j].numPolygon * 3, 0, 0);
+			pDeviceContext->DrawIndexed(i->m_pMeshData->GetMeshInfo()->pMaterial[j].numPolygon * 3, 0, 0);
 		}
 
 		//テクスチャリソース初期化

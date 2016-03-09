@@ -66,8 +66,6 @@ Monster_A::Monster_A(EnemyState &enemyState) :
 		m_FuncTask.Start("Wandering");
 	}
 
-	m_JudgementAnim = COMMON_BORN_ANIM_ENEMY;
-
 	m_DamegeBlood.SetAsset("Monster_A_2");
 }
 
@@ -77,7 +75,7 @@ Monster_A::~Monster_A()
 
 void Monster_A::Attack()
 {
-	float animNum = m_Model.GetPlayTime(m_JudgementAnim);
+	float animNum = m_Model.GetPlayTime();
 	if(animNum >= 10 && animNum <= 11) m_pHitAttack[3].Awake(); //右腕の当たり判定起動
 	if (animNum >= 20) m_pHitAttack[3].Sleep(); //右腕の当たり判定終了
 

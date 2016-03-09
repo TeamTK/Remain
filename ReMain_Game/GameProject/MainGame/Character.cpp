@@ -4,7 +4,6 @@
 Character::Character(float hp, const char *taskName, unsigned int priority) :
 	Task(taskName, priority),
 	m_Hp(hp),
-	m_JudgementAnim(0),
 	m_IsGravity(false),
 	m_BodyRadius(1.0f)
 {

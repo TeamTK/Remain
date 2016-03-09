@@ -77,7 +77,7 @@ Enemy::~Enemy()
 
 void Enemy::Attack()
 {
-	if (m_Model.GetPlayTime(COMMON_BORN_ANIM_ENEMY) >= m_AnimEndTime)
+	if (m_Model.GetPlayTime() >= m_AnimEndTime)
 	{
 		auto bornNum = m_BoneCapsule.size();
 		for (unsigned int i = 0; i < bornNum; i++) m_pHitAttack[i].Sleep();
@@ -123,7 +123,7 @@ void Enemy::Chase()
 
 void Enemy::HitDamage()
 {
-	if (m_Model.GetPlayTime(m_JudgementAnim) >= m_AnimEndTime)
+	if (m_Model.GetPlayTime() >= m_AnimEndTime)
 	{
 		m_FuncTask.Stop("HitDamage");
 		m_FuncTask.Start("Chase");
@@ -132,7 +132,7 @@ void Enemy::HitDamage()
 
 void Enemy::Die()
 {
-	if (m_Model.GetPlayTime(m_JudgementAnim) >= m_AnimEndTime)
+	if (m_Model.GetPlayTime() >= m_AnimEndTime)
 	{
 		std::random_device rnd;     // 非決定的な乱数生成器を生成
 		std::mt19937 mt(rnd());     //  メルセンヌ・ツイスタの32ビット版、引数は初期シード値
