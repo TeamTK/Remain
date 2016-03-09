@@ -1,5 +1,7 @@
 #include "Boss.h"
+#include "Boss_Fluids.h"
 #include "../Player/Player.h"
+#include "../../GameSystem/Effect/EffectAnimation.h"
 
 #define BOSS_ANIM_ENDTIME 28.5f
 #define JUDGEMENT_ANIM 10
@@ -18,8 +20,10 @@ Boss::Boss(BossState &bossState) :
 	m_AnimSpeed(BOSS_NORMAL_ANIMSPEED),
 	m_Hp(bossState.hp),
 	m_FlinchNum(bossState.flinch),
+	m_FlinchCnt(0),
 	m_Length(0),
 	m_Timer(0),
+	m_Cnt(0),
 	m_isDefence(false)
 {
 	m_RenderTask.Regist(1, REGIST_RENDER_FUNC(Boss::Render));
@@ -35,8 +39,10 @@ Boss::Boss(BossState &bossState) :
 	m_BoneCapsule.emplace_back(0.8f, 22, 24, "Petals3");  //‰Ô‚Ñ‚ç3
 	m_BoneCapsule.emplace_back(0.8f, 25, 27, "Petals4");  //‰Ô‚Ñ‚ç4
 	m_BoneCapsule.emplace_back(0.8f, 28, 30, "Petals5");  //‰Ô‚Ñ‚ç5
-	m_BoneCapsule.emplace_back(0.8f, 37, 39, "Tentacles_L");  //GŽè¶
-	m_BoneCapsule.emplace_back(0.8f, 46, 48, "Tentacles_R");  //GŽè‰E
+	m_BoneCapsule.emplace_back(0.8f, 32, 35, "Tentacles_L1");  //GŽè¶
+	m_BoneCapsule.emplace_back(0.8f, 36, 39, "Tentacles_L2");  //GŽè¶
+	m_BoneCapsule.emplace_back(0.8f, 41, 44, "Tentacles_R1");  //GŽè‰E
+	m_BoneCapsule.emplace_back(0.8f, 45, 48, "Tentacles_R2");  //GŽè‰E
 
 	//ƒ_ƒ[ƒW”{—¦
 	m_DamageMagnification.push_back(0.8f);	//Œs
@@ -47,6 +53,8 @@ Boss::Boss(BossState &bossState) :
 	m_DamageMagnification.push_back(0.8f);	//‰Ô‚Ñ‚ç4
 	m_DamageMagnification.push_back(0.8f);	//‰Ô‚Ñ‚ç5
 	m_DamageMagnification.push_back(0.5f);	//GŽè¶
+	m_DamageMagnification.push_back(0.5f);	//GŽè¶
+	m_DamageMagnification.push_back(0.5f);	//GŽè‰E
 	m_DamageMagnification.push_back(0.5f);	//GŽè‰E
 
 	 //‹…i’ej‚Æ‚Ì”»’è—p
@@ -112,6 +120,15 @@ void Boss::Update()
 		if (!m_FuncTask.Running("Die")) m_pHitAttackBody[i].Awake();
 	}
 
+	m_Cnt += GEKO::GetOneFps();
+	Vector3D pos;
+	if (m_Cnt > 3.0f)
+	{
+		m_Cnt = 0.0f;
+		pos = m_Model.GetBornPos(14);
+		new Boss_Fluids(pos, (*m_pPlayerPos - pos).GetNormalize(), 0.4f, 2.0f);
+	}
+	
 	m_FuncTask.Update();
 	m_Model.ChangeAnimation(m_AnimType);
 	m_Model.SetPlayTime(m_AnimSpeed *m_OneFlameTime);
@@ -124,7 +141,7 @@ void Boss::Render()
 
 void Boss::Attack()
 {
-	m_AnimType = eAnimationAttack;
+	m_AnimType = eAnimationAttack2;
 	m_AnimSpeed = BOSS_ATTACK_ANIMSPEED;
 
 	float animNum = m_Model.GetPlayTime(JUDGEMENT_ANIM);
@@ -142,6 +159,14 @@ void Boss::Attack()
 		m_FuncTask.Stop("Attack");
 		m_FuncTask.Start("Idle");
 	}
+}
+
+
+void Boss::LongAttack()
+{
+	m_AnimType = eAnimationIdle;
+	m_AnimSpeed = BOSS_NORMAL_ANIMSPEED;
+
 }
 
 void Boss::Idle()
@@ -240,6 +265,15 @@ void Boss::Die()
 
 void Boss::HitBullet(Result_Sphere& r)
 {
+	//ŒŒ‚µ‚Ô‚«‚ÌƒGƒtƒFƒNƒg
+	EffectAnimationInfo info;
+	info.frameNum = 8;
+	info.pos = r.position;
+	info.size = 1.0f;
+	info.sizeW = 256;
+	info.sizeH = 256;
+	info.speed = 1.0f;
+	new EffectAnimation("BloodAnim_Green", info);
 
 	float GunPower = 1.0f;
 	if (r.targetName == "HandGun")
