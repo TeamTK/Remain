@@ -196,7 +196,7 @@ Chapter_1_3::Chapter_1_3() :
 	Task("Chapter_1_3", 0)
 {
 	DirectionalLight::SetDistance(160.0f);
-
+/*
 	PData data;
 	data.HP = PlayerData::GetData().HP;
 	data.Shotgun_Ammo = PlayerData::GetData().Shotgun_Ammo;
@@ -205,6 +205,17 @@ Chapter_1_3::Chapter_1_3() :
 	data.Handgun_LoadedAmmo = PlayerData::GetData().Handgun_LoadedAmmo;
 	data.isTakeWeapon = PlayerData::GetData().isTakeWeapon;
 	data.Weapon = PlayerData::GetData().Weapon;
+	new Player(&data, Vector3D(13.0f, 0.0f, 12.0f), -140.0f, -5.0f);
+	*/
+
+	PData data;
+	data.HP = 100.0f;
+	data.Shotgun_Ammo = 6;
+	data.Shotgun_LoadedAmmo = 6;
+	data.Handgun_Ammo = 6;
+	data.Handgun_LoadedAmmo = 6;
+	data.isTakeWeapon = false;
+	data.Weapon = eShotgun;
 	new Player(&data, Vector3D(13.0f, 0.0f, 12.0f), -140.0f, -5.0f);
 
 	//アッセットtxt読み込み
@@ -215,6 +226,7 @@ Chapter_1_3::Chapter_1_3() :
 
 	BossState state;
 	state.hp = 80;
+	state.flinch = 20;
 	state.spawnPos = Vector3D(4.0f, 0.0f, -12.0f);
 	state.spawnRot = Vector3D(0.0f, 180.0f, 0.0f);
 	new Boss(state);

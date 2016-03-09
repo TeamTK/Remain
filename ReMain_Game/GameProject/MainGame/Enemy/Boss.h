@@ -16,7 +16,8 @@ class Boss : public Task
 {
 	enum
 	{
-		eAnimationAttack,
+		eAnimationAttack1,
+		eAnimationAttack2,
 		eAnimationHitDamage,
 		eAnimationDefence,
 		eAnimationDie,
@@ -32,6 +33,7 @@ public:
 	void Render();
 
 	void Attack();
+	void LongAttack();
 	void Defence();
 	void Idle();
 	void HitDamage();
@@ -57,6 +59,7 @@ private:
 	float m_AnimEndTime;	//アニメーションの終わり時間
 	float m_OneFlameTime;	//1フレーム時間
 	float m_Length;
+	float m_Cnt;
 	bool m_isDefence;
 
 };

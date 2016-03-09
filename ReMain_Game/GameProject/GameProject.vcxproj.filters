@@ -135,6 +135,7 @@
     <ClCompile Include="GEKO\Shader\ConstantShader.cpp" />
     <ClCompile Include="GEKO\ImageSystem\ImageAnimation.cpp" />
     <ClCompile Include="MainGame\Enemy\Boss.cpp" />
+    <ClCompile Include="MainGame\Enemy\Boss_Fluids.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
@@ -340,6 +341,7 @@
     <ClInclude Include="GEKO\Shader\ConstantShader.h" />
     <ClInclude Include="GEKO\ImageSystem\ImageAnimation.h" />
     <ClInclude Include="MainGame\Enemy\Boss.h" />
+    <ClInclude Include="MainGame\Enemy\Boss_Fluids.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">
