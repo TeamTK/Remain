@@ -6,7 +6,9 @@
 //ƒ‚ƒfƒ‹‚Ìs—ñ‚ğŠÇ—‚·‚éî•ñ
 struct WorldMatrixInfo
 {
+	Matrix *pLocalMatrix;
 	Matrix *pWorldMatrix;
+	Matrix *pSynthesisMatrix;
 	Vector3D *pRotation;
 	Vector3D *pScale;
 	Vector3D *pTranselate;

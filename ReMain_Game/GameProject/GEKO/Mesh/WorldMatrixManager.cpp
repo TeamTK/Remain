@@ -71,6 +71,7 @@ void WorldMatrixManager::Update()
 		mat._43 = i->pTranselate->z;
 
 		*i->pWorldMatrix = mat;
+		*i->pSynthesisMatrix = *i->pLocalMatrix * *i->pWorldMatrix;
 	}
 }
 

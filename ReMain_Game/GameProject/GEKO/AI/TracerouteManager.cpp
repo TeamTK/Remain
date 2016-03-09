@@ -2,7 +2,7 @@
 #include "TracerouteInfo.h"
 #include "TracerouteSearch.h"
 #include "TracerouteTarget.h"
-#include "..\Mesh\StaticMesh.h"
+#include "..\Mesh\StaticMesh\StaticMesh.h"
 #include "..\Figure\Fiqure.h"
 #include "..\System\Collision.h"
 #include "..\Collider\BaseCollider.h"
@@ -128,9 +128,7 @@ void TracerouteManager::DebugTopography(const char* name)
 	auto *pPoryLinkInfo = pInfo->pPoryLinkInfo;
 	const int polyNum = pMesh->GetFaceAllNum();
 
-	Matrix world = *pMesh->GetWorldMatrix();
-	Matrix local = *pMesh->GetLocalMatrix();
-	Matrix mat = local * world;
+	Matrix mat = *pMesh->GetSynthesisMatrix();
 	Vector3D pos[3];
 
 	for (int i = 0; i < polyNum; i++)
@@ -164,10 +162,8 @@ void TracerouteManager::ProcessBuilding(const char* name, bool isGPU)
 	Vector3D pos[3];
 
 	//メッシュの行列
-	pMesh->WorldMatrixBuilding();
-	Matrix world = *pMesh->GetWorldMatrix();
-	Matrix local = *pMesh->GetLocalMatrix();
-	Matrix mat = local * world;
+	pMesh->SetModelMatrixBuilding();
+	Matrix mat = *pMesh->GetSynthesisMatrix();
 
 	//隣接するポリゴン情報
 	if (pInfo->pPoryLinkInfo != nullptr)
@@ -426,9 +422,7 @@ int TracerouteManager::CheckOnPolyIndex(TracerouteInfo *pInfo, const Vector3D &p
 	else
 	{
 		//モデルの逆行列算出
-		Matrix world = *pInfo->pStaticMesh->GetWorldMatrix();
-		Matrix local = *pInfo->pStaticMesh->GetLocalMatrix();
-		Matrix mat = local * world;
+		Matrix mat = *pInfo->pStaticMesh->GetSynthesisMatrix();
 		Matrix inverse = mat.GetInverse();
 
 		HitResult_SegmentTriangle hit;
@@ -452,7 +446,6 @@ int TracerouteManager::CheckOnPolyIndex(TracerouteInfo *pInfo, const Vector3D &p
 			hit = Collision3D::LineSegmentTriangle(hitLine, hitTriangle, pInfo->pNormal[i]);
 			if (hit.isHit) return i;
 		}
-
 	}
 
 	return -1;
@@ -623,9 +616,7 @@ void TracerouteManager::DebugMigrationPath(const char *name, TracerouteSearch *p
 	const VertexInfo *pVer = pMesh->GetVertex();
 	const IndexInfo *index = pMesh->GetIndex();
 
-	Matrix world = *pMesh->GetWorldMatrix();
-	Matrix local = *pMesh->GetLocalMatrix();
-	Matrix mat = local * world;
+	Matrix mat = *pMesh->GetSynthesisMatrix();
 	Vector3D pos[3];
 
 	//スタート地点かゴール地点が見つからなかったら飛ばす

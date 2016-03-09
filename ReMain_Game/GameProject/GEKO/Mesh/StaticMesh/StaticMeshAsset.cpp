@@ -1,5 +1,5 @@
 #include "StaticMeshAsset.h"
-#include "..\System\Window.h"
+#include "..\..\System\Window.h"
 #include <iostream>
 #include <fstream>
 #include <map>   
@@ -7,7 +7,7 @@
 class StaticMeshAsset::StaticMeshPimpl
 {
 public:
-	std::map<const std::string, MeshData*> m_Map;
+	std::map<const std::string, StaticMeshData*> m_Map;
 };
 
 StaticMeshAsset::StaticMeshAsset()
@@ -26,7 +26,7 @@ StaticMeshAsset *StaticMeshAsset::GetInstance()
 	return &staticMeshAsset;
 }
 
-MeshData *StaticMeshAsset::GetMesh(const std::string name)
+StaticMeshData *StaticMeshAsset::GetMesh(const std::string name)
 {
 	StaticMeshPimpl *meshPimpl = GetInstance()->m_pMeshPimpl;
 
@@ -70,7 +70,7 @@ void StaticMeshAsset::LoadMesh(const std::string filmeName, const std::string na
 			filmeName[filmeName.length() - 2] == 'b' &&
 			filmeName[filmeName.length() - 3] == 'o')
 		{
-			meshPimpl->m_Map[name] = new MeshData();
+			meshPimpl->m_Map[name] = new StaticMeshData();
 			return;
 		}
 

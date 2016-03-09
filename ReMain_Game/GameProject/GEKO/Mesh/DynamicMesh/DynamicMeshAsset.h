@@ -7,7 +7,7 @@ class DynamicMeshAsset
 {
 public:
 	~DynamicMeshAsset();
-	static SkinMeshData* GetMesh(std::string name);
+	static DyanmicMeshData* GetMesh(std::string name);
 	static void LoadMesh(std::string filmeName, std::string name);
 	static void LoadFile(std::string filmeName);
 	static void PartClear(std::string name);

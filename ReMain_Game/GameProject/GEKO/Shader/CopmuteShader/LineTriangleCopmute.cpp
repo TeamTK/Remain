@@ -1,5 +1,5 @@
 #include "LineTriangleCopmute.h"
-#include "../../Mesh/StaticMesh.h"
+#include "../../Mesh/StaticMesh/StaticMesh.h"
 #include "../../Collider/LineSegment.h"
 #include "../../System/Collision.h"
 
@@ -100,9 +100,7 @@ bool LineTriangleCopmute::Calculation(const StaticMesh &staticMesh, const Vector
 	ID3D11DeviceContext* pDeviceContext = Direct3D11::GetInstance()->GetID3D11DeviceContext();
 
 	//モデルの変換行列
-	Matrix world = *staticMesh.GetWorldMatrix();
-	Matrix local = *staticMesh.GetLocalMatrix();
-	Matrix m = local * world;
+	Matrix m = *staticMesh.GetSynthesisMatrix();
 	Matrix inverse = m.GetInverse();
 
 	//頂点データとポリゴンのインデックス
@@ -167,8 +165,8 @@ bool LineTriangleCopmute::Calculation(const StaticMesh &staticMesh, const Vector
 			pPory->materialIndex = index[i].materialIndex;
 			pPory->meshMatrix = m;
 			pPory->PoryIndex = i;
-			pPory->localMatrix = local;
-			pPory->worldMatrix = world;
+			pPory->localMatrix = *staticMesh.GetLocalMatrix();
+			pPory->worldMatrix = *staticMesh.GetWorldMatrix();
 			return true;
 		}
 	}

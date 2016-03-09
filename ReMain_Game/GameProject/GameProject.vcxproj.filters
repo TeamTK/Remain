@@ -15,13 +15,8 @@
     <ClCompile Include="Main.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="GEKO\Mesh\StaticMesh.cpp" />
     <ClCompile Include="GEKO\Mesh\MeshData.cpp" />
     <ClCompile Include="GEKO\Mesh\MeshBase.cpp" />
-    <ClCompile Include="GEKO\Mesh\StaticMeshAsset.cpp" />
-    <ClCompile Include="GEKO\AnimationMesh\DynamicMesh.cpp" />
-    <ClCompile Include="GEKO\AnimationMesh\SkinMeshData.cpp" />
-    <ClCompile Include="GEKO\AnimationMesh\DynamicMeshAsset.cpp" />
     <ClCompile Include="GEKO\Task\RenderTask.cpp" />
     <ClCompile Include="GEKO\Task\Task.cpp" />
     <ClCompile Include="GEKO\System\Camera.cpp">
@@ -57,9 +52,7 @@
     <ClCompile Include="Scene\Title.cpp" />
     <ClCompile Include="GEKO\ImageSystem\Image.cpp" />
     <ClCompile Include="GEKO\ImageSystem\ImageAsset.cpp" />
-    <ClCompile Include="GEKO\Mesh\LoadXStatic.cpp" />
     <ClCompile Include="GEKO\Mesh\WorldMatrixManager.cpp" />
-    <ClCompile Include="GEKO\AnimationMesh\LoadXDynamic.cpp" />
     <ClCompile Include="GEKO\Figure\Fiqure.cpp" />
     <ClCompile Include="GEKO\Figure\FiqureBase.cpp" />
     <ClCompile Include="GEKO\Figure\Line3D.cpp" />
@@ -90,7 +83,6 @@
     <ClCompile Include="MainGame\Weapon\WeaponBase.cpp" />
     <ClCompile Include="MainGame\Weapon\Handgun.cpp" />
     <ClCompile Include="MainGame\Weapon\Shotgun.cpp" />
-    <ClCompile Include="GEKO\Mesh\Shader.cpp" />
     <ClCompile Include="Scene\GameOvar.cpp" />
     <ClCompile Include="Chapter\Chapter.cpp" />
     <ClCompile Include="GameSystem\Effect\Effect.cpp" />
@@ -136,15 +128,17 @@
     <ClCompile Include="GEKO\ImageSystem\ImageAnimation.cpp" />
     <ClCompile Include="MainGame\Enemy\Boss.cpp" />
     <ClCompile Include="MainGame\Enemy\Boss_Fluids.cpp" />
+    <ClCompile Include="GEKO\Mesh\DynamicMesh\DynamicMesh.cpp" />
+    <ClCompile Include="GEKO\Mesh\DynamicMesh\DynamicMeshAsset.cpp" />
+    <ClCompile Include="GEKO\Mesh\DynamicMesh\LoadXDynamic.cpp" />
+    <ClCompile Include="GEKO\Mesh\StaticMesh\StaticMesh.cpp" />
+    <ClCompile Include="GEKO\Mesh\StaticMesh\StaticMeshAsset.cpp" />
+    <ClCompile Include="GEKO\Mesh\StaticMesh\LoadXStatic.cpp" />
+    <ClCompile Include="GEKO\Mesh\RenderManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GEKO\Mesh\StaticMesh.h" />
     <ClInclude Include="GEKO\Mesh\MeshData.h" />
     <ClInclude Include="GEKO\Mesh\MeshBase.h" />
-    <ClInclude Include="GEKO\Mesh\StaticMeshAsset.h" />
-    <ClInclude Include="GEKO\AnimationMesh\DynamicMesh.h" />
-    <ClInclude Include="GEKO\AnimationMesh\DynamicMeshAsset.h" />
-    <ClInclude Include="GEKO\AnimationMesh\SkinMeshData.h" />
     <ClInclude Include="GEKO\Task\CollisionTask.h" />
     <ClInclude Include="GEKO\Task\RenderTask.h" />
     <ClInclude Include="GEKO\Task\Task.h" />
@@ -185,9 +179,7 @@
       <Filter>GEKO3DX</Filter>
     </ClInclude>
     <ClInclude Include="GEKO\ImageSystem\ImageAsset.h" />
-    <ClInclude Include="GEKO\Mesh\LoadXStatic.h" />
     <ClInclude Include="GEKO\Mesh\WorldMatrixManager.h" />
-    <ClInclude Include="GEKO\AnimationMesh\LoadXDynamic.h" />
     <ClInclude Include="GEKO\Include\D2D1Helper.h" />
     <ClInclude Include="GEKO\Include\D2DBaseTypes.h" />
     <ClInclude Include="GEKO\Include\D2Derr.h" />
@@ -296,7 +288,6 @@
     <ClInclude Include="MainGame\Weapon\WeaponBase.h" />
     <ClInclude Include="MainGame\Weapon\Handgun.h" />
     <ClInclude Include="MainGame\Weapon\Shotgun.h" />
-    <ClInclude Include="GEKO\Mesh\Shader.h" />
     <ClInclude Include="Scene\GameOvar.h" />
     <ClInclude Include="Chapter\Chapter.h" />
     <ClInclude Include="GameSystem\Effect\Effect.h" />
@@ -342,6 +333,15 @@
     <ClInclude Include="GEKO\ImageSystem\ImageAnimation.h" />
     <ClInclude Include="MainGame\Enemy\Boss.h" />
     <ClInclude Include="MainGame\Enemy\Boss_Fluids.h" />
+    <ClInclude Include="GEKO\Mesh\DynamicMesh\DynamicMesh.h" />
+    <ClInclude Include="GEKO\Mesh\DynamicMesh\DynamicMeshAsset.h" />
+    <ClInclude Include="GEKO\Mesh\DynamicMesh\LoadXDynamic.h" />
+    <ClInclude Include="GEKO\Mesh\StaticMesh\LoadXStatic.h" />
+    <ClInclude Include="GEKO\Mesh\StaticMesh\StaticMesh.h" />
+    <ClInclude Include="GEKO\Mesh\StaticMesh\StaticMeshAsset.h" />
+    <ClInclude Include="GEKO\Mesh\MeshInfo.h" />
+    <ClInclude Include="GEKO\Mesh\RenderManager.h" />
+    <ClInclude Include="GEKO\Shader\ShaderInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

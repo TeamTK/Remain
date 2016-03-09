@@ -41,14 +41,13 @@ bool DynamicMeshShader::Init()
 		return false;
 	}
 
-	/*
-	//頂点シェーダー初期化
+	//頂点シェーダー初期化（影）
 	if (!InitVertexShader_ShadowMap(pDevice))
 	{
 		MessageBox(0, TEXT("シャドウマップ頂点シェーダー作成失敗"), NULL, MB_OK);
 		return false;
 	}
-*/
+
 	//ピクセルシェーダー初期化
 	if (!InitPixelShader(pDevice))
 	{
@@ -63,14 +62,12 @@ bool DynamicMeshShader::Init()
 		return false;
 	}
 
-	/*
-	//テクスチャーなしピクセルシェーダー初期化
+	//ピクセルシェーダー初期化（影）
 	if (!InitPixelShader_ShadowMap(pDevice))
 	{
 		MessageBox(0, TEXT("シャドウマップピクセルシェーダー作成失敗"), NULL, MB_OK);
 		return false;
 	}
-	*/
 
 	return true;
 }

@@ -1,12 +1,12 @@
 #include "DynamicMeshAsset.h"
-#include "..\System\Window.h"
+#include "..\..\System\Window.h"
 #include <iostream>
 #include <map>   
 
 class DynamicMeshAsset::DynamicMeshPimpl
 {
 public:
-	std::map<std::string, SkinMeshData*> m_Map;
+	std::map<std::string, DyanmicMeshData*> m_Map;
 };
 
 DynamicMeshAsset::DynamicMeshAsset()
@@ -25,7 +25,7 @@ DynamicMeshAsset *DynamicMeshAsset::GetInstance()
 	return &DynamicMeshAsset;
 }
 
-SkinMeshData *DynamicMeshAsset::GetMesh(std::string name)
+DyanmicMeshData *DynamicMeshAsset::GetMesh(std::string name)
 {
 	DynamicMeshPimpl *meshPimpl = GetInstance()->m_pMeshPimpl;
 

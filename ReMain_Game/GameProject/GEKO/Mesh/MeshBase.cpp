@@ -9,6 +9,7 @@ MeshBase::MeshBase() :
 	m_pImage(nullptr)
 {
 	m_WorldMatrixInfo.pWorldMatrix = &m_WorldMatrix;
+	m_WorldMatrixInfo.pSynthesisMatrix = &m_SynthesisMatrix;
 	m_WorldMatrixInfo.pRotation = &m_Rotation;
 	m_WorldMatrixInfo.pScale = &m_Scale;
 	m_WorldMatrixInfo.pTranselate = &m_Transelate;
@@ -96,48 +97,6 @@ void MeshBase::SetTexture(Image *pImage)
 	m_pImage = pImage;
 }
 
-void MeshBase::WorldMatrixBuilding()
-{
-	D3DXQUATERNION qOut(0, 0, 0, 1); //単位クォータニオン
-	D3DXQUATERNION qX(0, 0, 0, 1); //単位クォータニオン
-	D3DXQUATERNION qY(0, 0, 0, 1); //単位クォータニオン
-	D3DXQUATERNION qZ(0, 0, 0, 1); //単位クォータニオン
-	Vector3D xAxis(1, 0, 0); //Xの中心軸
-	Vector3D yAxis(0, 1, 0); //Yの中心軸
-	Vector3D zAxis(0, 0, 1); //Zの中心軸
-	Matrix Mat;
-
-	Matrix mat;
-
-	D3DXQuaternionRotationAxis(&qX, &xAxis, m_Rotation.x);
-	D3DXQuaternionRotationAxis(&qY, &yAxis, m_Rotation.y);
-	D3DXQuaternionRotationAxis(&qZ, &zAxis, m_Rotation.z);
-	qOut = qX * qY * qZ;
-
-	//クオータニオンから行列に変更
-	D3DXMatrixRotationQuaternion(&mat, &qOut);
-
-	//拡大縮小
-	mat._11 *= m_Scale.x;
-	mat._21 *= m_Scale.x;
-	mat._31 *= m_Scale.x;
-
-	mat._12 *= m_Scale.y;
-	mat._22 *= m_Scale.y;
-	mat._32 *= m_Scale.y;
-
-	mat._13 *= m_Scale.z;
-	mat._23 *= m_Scale.z;
-	mat._33 *= m_Scale.z;
-
-	//平行移動
-	mat._41 = m_Transelate.x;
-	mat._42 = m_Transelate.y;
-	mat._43 = m_Transelate.z;
-
-	m_WorldMatrix = mat;
-}
-
 Vector3D MeshBase::GetScale() const
 {
 	return m_Scale;
@@ -203,6 +162,11 @@ Vector3D MeshBase::GetAxisZ(const Matrix &matrix, float length) const
 const Matrix *MeshBase::GetWorldMatrix() const
 {
 	return &m_WorldMatrix;
+}
+
+const Matrix *MeshBase::GetSynthesisMatrix() const
+{
+	return &m_SynthesisMatrix;
 }
 
 void MeshBase::DebugAxis()
