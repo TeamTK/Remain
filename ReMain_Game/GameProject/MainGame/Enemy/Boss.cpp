@@ -18,13 +18,13 @@ Boss::Boss(BossState &bossState) :
 	Task("Boss", 1),
 	m_AnimType(eAnimationIdle),
 	m_AnimSpeed(BOSS_NORMAL_ANIMSPEED),
+	m_MaxHp(bossState.hp),
 	m_Hp(bossState.hp),
 	m_FlinchNum(bossState.flinch),
 	m_FlinchCnt(0),
 	m_PlayTime(0),
 	m_Length(0),
 	m_Timer(0),
-	m_Rand(0),
 	m_Cnt(0),
 	m_isDefence(false)
 {
@@ -79,7 +79,8 @@ Boss::Boss(BossState &bossState) :
 	}
 
 	//関数を登録
-	m_FuncTask.Regist("Attack", REGIST_FUNC_TASK(Boss::Attack));
+	m_FuncTask.Regist("Attack_A", REGIST_FUNC_TASK(Boss::Attack_A));
+	m_FuncTask.Regist("Attack_B", REGIST_FUNC_TASK(Boss::Attack_B));
 	m_FuncTask.Regist("Defence", REGIST_FUNC_TASK(Boss::Defence));
 	m_FuncTask.Regist("Idle", REGIST_FUNC_TASK(Boss::Idle));
 	m_FuncTask.Regist("HitDamage", REGIST_FUNC_TASK(Boss::HitDamage));
@@ -107,10 +108,9 @@ Boss::~Boss()
 
 void Boss::Update()
 {
-	//1フレームタイム
 	m_OneFlameTime = GEKO::GetOneFps();
-	//アニメーション再生中フレーム
 	m_PlayTime = m_Model.GetPlayTime();
+	m_Cnt += GEKO::GetOneFps();
 
 	//プレイヤーとの距離
 	Vector3D distance = (*m_pPlayerPos - m_pos);
@@ -126,13 +126,6 @@ void Boss::Update()
 
 		if (!m_FuncTask.Running("Die")) m_pHitAttackBody[i].Awake();
 	}
-	//printf("%f\n", m_Hp);
-
-	//ランダム
-	std::random_device rnd;
-	std::mt19937 mt(rnd());
-	std::uniform_int_distribution<> rand(0, 39);
-	m_Rand = rand(mt);
 
 	m_FuncTask.Update();
 	m_Model.ChangeAnimation(m_AnimType);
@@ -144,38 +137,63 @@ void Boss::Render()
 	m_Model.Render();
 }
 
-void Boss::Attack()
+void Boss::Attack_A()
 {
-	m_AnimType = eAnimationAttack2;
+	m_AnimType = eAnimationAttack1;
 	m_AnimSpeed = BOSS_ATTACK_ANIMSPEED;
 
-	float animNum = m_Model.GetPlayTime();
-	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[8].Awake(); //右腕の当たり判定起動
-	if (m_PlayTime >= 22) m_pHitAttack[8].Sleep();			//右腕の当たり判定終了
-
-	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[7].Awake(); //左腕の当たり判定起動
-	if (m_PlayTime >= 22) m_pHitAttack[7].Sleep();			//左腕の当たり判定終了
+	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[7].Awake();
+	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[8].Awake();
+	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[9].Awake();
+	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[10].Awake();
+	if (m_PlayTime >= 22) m_pHitAttack[7].Sleep();
+	if (m_PlayTime >= 22) m_pHitAttack[8].Sleep();
+	if (m_PlayTime >= 22) m_pHitAttack[9].Sleep();
+	if (m_PlayTime >= 22) m_pHitAttack[10].Sleep();
 
 	if (m_PlayTime >= BOSS_ANIM_ENDTIME)
 	{
 		auto bornNum = m_BoneCapsule.size();
 		for (unsigned int i = 0; i < bornNum; i++) m_pHitAttack[i].Sleep();
 		m_Model.SetTime(0);
-		m_FuncTask.Stop("Attack");
+		m_FuncTask.Stop("Attac_A");
 		m_FuncTask.Start("Idle");
 	}
 }
 
+void Boss::Attack_B()
+{
+	m_AnimType = eAnimationAttack2;
+	m_AnimSpeed = BOSS_ATTACK_ANIMSPEED;
+
+	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[7].Awake();
+	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[8].Awake();
+	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[9].Awake();
+	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[10].Awake();
+	if (m_PlayTime >= 22) m_pHitAttack[7].Sleep();
+	if (m_PlayTime >= 22) m_pHitAttack[8].Sleep();
+	if (m_PlayTime >= 22) m_pHitAttack[9].Sleep();
+	if (m_PlayTime >= 22) m_pHitAttack[10].Sleep();
+
+	if (m_PlayTime >= BOSS_ANIM_ENDTIME)
+	{
+		auto bornNum = m_BoneCapsule.size();
+		for (unsigned int i = 0; i < bornNum; i++) m_pHitAttack[i].Sleep();
+		m_Model.SetTime(0);
+		m_FuncTask.Stop("Attack_B");
+		m_FuncTask.Start("Idle");
+	}
+}
 
 void Boss::LongAttack()
 {
-	m_AnimType = eAnimationIdle;
+	m_AnimType = eAnimLongAttack;
 	m_AnimSpeed = BOSS_NORMAL_ANIMSPEED;
 
 	if (m_PlayTime >= 12 && m_PlayTime <= 13)
 	{
 		Vector3D pos = m_Model.GetBornPos(14);
-		new Boss_Fluids(pos, ((*m_pPlayerPos + Vector3D(0.0f, 1.0f, 0.0f)) - pos).GetNormalize(), 0.4f, 1.5f);
+		new Boss_Fluids(pos, ((*m_pPlayerPos + Vector3D(0.0f, 1.0f, 0.0f)) - pos).GetNormalize(), 0.3f, 2.0f);
 	}
 
 	if (m_PlayTime >= BOSS_ANIM_ENDTIME)
@@ -190,35 +208,50 @@ void Boss::Idle()
 {
 	m_AnimType = eAnimationIdle;
 	m_AnimSpeed = BOSS_NORMAL_ANIMSPEED;
+	//ランダム
+	std::random_device rnd;
+	std::mt19937 mt(rnd());
+	std::uniform_int_distribution<> rand(0, 29);
 
-	if (m_Length < 8.0f)
+	/*
+	if (m_Hp <= m_MaxHp * 0.3f)
 	{
-		if (m_Hp < m_Hp * 0.3f)
+		m_Model.SetTime(0);
+		m_FuncTask.Stop("Idle");
+		m_FuncTask.Start("Defence");
+		m_isDefence = true;
+	}
+	*/
+
+	if (m_Length < 9.0f &&
+		(rand(mt) == 0 || rand(mt) == 1))
+	{
+		m_Model.SetTime(0);
+		std::random_device rnd;
+		std::mt19937 mt(rnd());
+		std::uniform_int_distribution<> rand(0, 1);
+
+		if (rand(mt) == 0)
 		{
-			m_Model.SetTime(0);
 			m_FuncTask.Stop("Idle");
-			m_FuncTask.Start("Defence");
+			m_FuncTask.Start("Attack_A");
 		}
 		else
 		{
-			if (m_NoActionTime.GetSecond() >= 2.0f)
-				if (m_Rand == 2)
-				{
-					m_Model.SetTime(0);
-					m_FuncTask.Stop("Idle");
-					m_FuncTask.Start("Attack");
-				}
+			m_FuncTask.Stop("Idle");
+			m_FuncTask.Start("Attack_B");
 		}
 	}
 
-	if (m_Length > 14.0f)
+	if (m_Length > 13.0f)
 		m_Timer += GEKO::GetOneFps();
 	else
 		m_Timer = 0.0f;
 
-	if (m_Timer >= DEFENCE_MIGRATION_TIME)
+	if (m_Timer >= DEFENCE_MIGRATION_TIME &&
+		m_NoActionTime.GetSecond() >= 2.0f)
 	{
-		if (m_Rand == 0)
+		if (rand(mt) == 2 || rand(mt) == 3)
 		{
 			m_Timer = 0.0f;
 			m_Model.SetTime(0);
@@ -232,14 +265,21 @@ void Boss::Defence()
 {
 	m_AnimType = eAnimationDefence;
 	m_AnimSpeed = BOSS_NORMAL_ANIMSPEED;
+	//ランダム
+	std::random_device rnd;
+	std::mt19937 mt(rnd());
+	std::uniform_int_distribution<> rand(0, 19);
 
 	//アニメーションを停止
 	if (m_AnimType == eAnimationDefence && m_PlayTime >= 14)
 	{
 		m_Model.StopAnimation();
 	}
-	if (m_Rand == 1)m_isDefence = false;
 
+	if (rand(mt) == 4)
+	{
+		m_isDefence = false;
+	}
 	if (!m_isDefence)
 	{
 		//アニメーションを再生
@@ -247,8 +287,8 @@ void Boss::Defence()
 		if (m_AnimType == eAnimationDefence && m_PlayTime >= BOSS_ANIM_ENDTIME)
 		{
 			m_Model.SetTime(0);
-			m_FuncTask.Stop("Defence");
-			m_FuncTask.Start("Idle");
+			m_FuncTask.Stop("Idle");
+			m_FuncTask.Start("LongAttack");
 
 			//当たり判定を有効
 			auto bornNum = m_BoneCapsule.size();
