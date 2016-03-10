@@ -2,9 +2,8 @@
 #include "Boss_Fluids.h"
 #include "../Player/Player.h"
 #include "../../GameSystem/Effect/EffectAnimation.h"
-#include <random>
 
-#define BOSS_ANIM_ENDTIME 28.0f
+#define BOSS_ANIM_ENDTIME 28.5f
 #define JUDGEMENT_ANIM 10
 
 #define BOSS_ATTACK_ANIMSPEED 20.0f
@@ -13,7 +12,7 @@
 
 #define GUN_POWER_HANDGUN 2.0f //ショットガンの威力
 #define GUN_POWER_SHOTGUN 4.0f //拳銃の威力
-#define DEFENCE_MIGRATION_TIME 1.0f	//ボスから離れて遠距離攻撃に移る時間
+#define DEFENCE_MIGRATION_TIME 1.5f
 
 Boss::Boss(BossState &bossState) :
 	Task("Boss", 1),
@@ -79,7 +78,6 @@ Boss::Boss(BossState &bossState) :
 
 	//関数を登録
 	m_FuncTask.Regist("Attack", REGIST_FUNC_TASK(Boss::Attack));
-	m_FuncTask.Regist("LongAttack", REGIST_FUNC_TASK(Boss::LongAttack));
 	m_FuncTask.Regist("Defence", REGIST_FUNC_TASK(Boss::Defence));
 	m_FuncTask.Regist("Idle", REGIST_FUNC_TASK(Boss::Idle));
 	m_FuncTask.Regist("HitDamage", REGIST_FUNC_TASK(Boss::HitDamage));
@@ -107,10 +105,7 @@ void Boss::Update()
 {
 	//1フレームタイム
 	m_OneFlameTime = GEKO::GetOneFps();
-	//アニメーション再生中フレーム
-	m_PlayTime = m_Model.GetPlayTime(JUDGEMENT_ANIM);
 
-	//プレイヤーとの距離
 	Vector3D distance = (*m_pPlayerPos - m_pos);
 	m_Length = distance.Length();
 
@@ -124,14 +119,16 @@ void Boss::Update()
 
 		if (!m_FuncTask.Running("Die")) m_pHitAttackBody[i].Awake();
 	}
-	printf("%f\n", m_Hp);
 
-	//ランダム
-	std::random_device rnd;
-	std::mt19937 mt(rnd());
-	std::uniform_int_distribution<> rand(0, 39);
-	m_Rand = rand(mt);
-
+	m_Cnt += GEKO::GetOneFps();
+	Vector3D pos;
+	if (m_Cnt > 3.0f)
+	{
+		m_Cnt = 0.0f;
+		pos = m_Model.GetBornPos(14);
+		new Boss_Fluids(pos, (*m_pPlayerPos - pos).GetNormalize(), 0.4f, 2.0f);
+	}
+	
 	m_FuncTask.Update();
 	m_Model.ChangeAnimation(m_AnimType);
 	m_Model.SetPlayTime(m_AnimSpeed *m_OneFlameTime);
@@ -147,16 +144,14 @@ void Boss::Attack()
 	m_AnimType = eAnimationAttack2;
 	m_AnimSpeed = BOSS_ATTACK_ANIMSPEED;
 
-	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[7].Awake(); //左腕の当たり判定起動
-	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[8].Awake(); //左腕の当たり判定起動
-	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[9].Awake(); //右腕の当たり判定起動
-	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[10].Awake(); //右腕の当たり判定起動
-	if (m_PlayTime >= 20) m_pHitAttack[7].Sleep(); 	//左腕の当たり判定終了
-	if (m_PlayTime >= 20) m_pHitAttack[8].Sleep(); 	//左腕の当たり判定終了
-	if (m_PlayTime >= 20) m_pHitAttack[9].Sleep(); 	//右腕の当たり判定終了
-	if (m_PlayTime >= 20) m_pHitAttack[10].Sleep();	//右腕の当たり判定終了
+	float animNum = m_Model.GetPlayTime(JUDGEMENT_ANIM);
+	if (animNum >= 12 && animNum <= 13) m_pHitAttack[8].Awake(); //右腕の当たり判定起動
+	if (animNum >= 22) m_pHitAttack[8].Sleep();			//右腕の当たり判定終了
 
-	if (m_PlayTime >= BOSS_ANIM_ENDTIME)
+	if (animNum >= 12 && animNum <= 13) m_pHitAttack[7].Awake(); //左腕の当たり判定起動
+	if (animNum >= 22) m_pHitAttack[7].Sleep();			//左腕の当たり判定終了
+
+	if (m_Model.GetPlayTime(JUDGEMENT_ANIM) >= BOSS_ANIM_ENDTIME)
 	{
 		auto bornNum = m_BoneCapsule.size();
 		for (unsigned int i = 0; i < bornNum; i++) m_pHitAttack[i].Sleep();
@@ -169,21 +164,9 @@ void Boss::Attack()
 
 void Boss::LongAttack()
 {
-	m_AnimType = eAnimationLongAttack;
+	m_AnimType = eAnimationIdle;
 	m_AnimSpeed = BOSS_NORMAL_ANIMSPEED;
 
-	if (m_PlayTime >= 12 && m_PlayTime <= 13)
-	{
-		Vector3D pos = m_Model.GetBornPos(14);
-		new Boss_Fluids(pos, ((*m_pPlayerPos + Vector3D(0.0f, 1.0f, 0.0f)) - pos).GetNormalize(), 0.4f, 1.5f);
-	}
-
-	if (m_PlayTime >= BOSS_ANIM_ENDTIME)
-	{
-		m_Model.SetTime(0);
-		m_FuncTask.Stop("LongAttack");
-		m_FuncTask.Start("Idle");
-	}
 }
 
 void Boss::Idle()
@@ -193,37 +176,22 @@ void Boss::Idle()
 
 	if (m_Length < 8.0f)
 	{
-		if (m_Hp < m_Hp * 0.3f)
-		{
-			m_Model.SetTime(0);
-			m_FuncTask.Stop("Idle");
-			m_FuncTask.Start("Defence");
-		}
-		else
-		{
-			if (m_Rand == 2)
-			{
-				m_Model.SetTime(0);
-				m_FuncTask.Stop("Idle");
-				m_FuncTask.Start("Attack");
-			}
-		}
+		m_Model.SetTime(0);
+		m_FuncTask.Stop("Idle");
+		m_FuncTask.Start("Attack");
 	}
 
-	if (m_Length > 14.0f)
+	if (m_Length > 15.0f)
 		m_Timer += GEKO::GetOneFps();
 	else
 		m_Timer = 0.0f;
 
 	if (m_Timer >= DEFENCE_MIGRATION_TIME)
 	{
-		if (m_Rand == 0)
-		{
-			m_Timer = 0.0f;
-			m_Model.SetTime(0);
-			m_FuncTask.Stop("Idle");
-			m_FuncTask.Start("LongAttack");
-		}
+		m_Timer = 0.0f;
+		m_Model.SetTime(0);
+		m_FuncTask.Stop("Idle");
+		m_FuncTask.Start("Defence");
 	}
 }
 
@@ -233,17 +201,18 @@ void Boss::Defence()
 	m_AnimSpeed = BOSS_NORMAL_ANIMSPEED;
 
 	//アニメーションを停止
-	if (m_AnimType == eAnimationDefence && m_PlayTime >= 14)
+	if (m_AnimType == eAnimationDefence &&
+		m_Model.GetPlayTime(JUDGEMENT_ANIM) >= 14)
 	{
 		m_Model.StopAnimation();
 	}
-	if (m_Rand == 1)m_isDefence = false;
 
-	if (!m_isDefence)
+	if (m_Length < 15.0f)
 	{
 		//アニメーションを再生
 		m_Model.StartAnimation();
-		if (m_AnimType == eAnimationDefence && m_PlayTime >= BOSS_ANIM_ENDTIME)
+		if (m_AnimType == eAnimationDefence &&
+			m_Model.GetPlayTime(JUDGEMENT_ANIM) >= BOSS_ANIM_ENDTIME)
 		{
 			m_Model.SetTime(0);
 			m_FuncTask.Stop("Defence");
@@ -274,7 +243,7 @@ void Boss::HitDamage()
 	m_AnimType = eAnimationHitDamage;
 	m_AnimSpeed = BOSS_NORMAL_ANIMSPEED;
 
-	if (m_PlayTime >= BOSS_ANIM_ENDTIME)
+	if (m_Model.GetPlayTime(JUDGEMENT_ANIM) >= BOSS_ANIM_ENDTIME)
 	{
 		m_Model.SetTime(0);
 		m_FuncTask.Stop("HitDamage");
@@ -287,7 +256,7 @@ void Boss::Die()
 	m_AnimType = eAnimationDie;
 	m_AnimSpeed = BOSS_DIE_ANIMSPEED;
 
-	if (m_PlayTime >= BOSS_ANIM_ENDTIME)
+	if (m_Model.GetPlayTime(JUDGEMENT_ANIM) >= BOSS_ANIM_ENDTIME)
 	{
 		m_Model.StopAnimation();
 	}

@@ -22,7 +22,6 @@ class Boss : public Task
 		eAnimationDefence,
 		eAnimationDie,
 		eAnimationIdle,
-		eAnimationLongAttack,
 	};
 
 public:
@@ -53,14 +52,12 @@ private:
 	std::vector<float> m_DamageMagnification; //ダメージ倍率
 	unsigned int m_AnimType;	//アニメーションの種類
 	int m_FlinchNum; //耐久値
-	int m_Rand;
 	float m_FlinchCnt; //耐久蓄積値
 	float m_Timer;
 	float m_Hp;			//体力
 	float m_AnimSpeed;	//アニメーションの速度
 	float m_AnimEndTime;	//アニメーションの終わり時間
 	float m_OneFlameTime;	//1フレーム時間
-	float m_PlayTime;
 	float m_Length;
 	float m_Cnt;
 	bool m_isDefence;
