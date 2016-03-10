@@ -17,7 +17,8 @@ namespace GEKO
 			//ダイレクトX11の初期化
 			if (SUCCEEDED(Direct3D11::GetInstance()->InitD3D11(resolutionWidth, resolutionHeight)))
 			{
-				Direct3D11::GetInstance()->Clear(0.4f, 0.4f, 1.0f);
+				Direct3D11::GetInstance()->Clear(0.0f, 0.0f, 0.0f);
+				Direct3D11::GetInstance()->Present();
 				CopmuteManager::GetInstance()->Init();
 				FiqureShaderManager::GetInstance()->Init();
 				Input::KeyManagement::Get().Init();

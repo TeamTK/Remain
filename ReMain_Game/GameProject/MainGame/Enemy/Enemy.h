@@ -5,7 +5,6 @@
 #include "Wanderings.h"
 
 #define ENEMY_NORMAL_SPEED 30.0f
-#define COMMON_BORN_ANIM_ENEMY 20
 
 //敵のステータス
 struct EnemyState

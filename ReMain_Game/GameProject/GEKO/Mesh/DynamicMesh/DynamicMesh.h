@@ -1,11 +1,12 @@
 #ifndef _DYNAMIC_MESH_H_
 #define _DYNAMIC_MESH_H_
 
-#include "..\Mesh\MeshBase.h"
+#include "..\MeshBase.h"
 #include "DynamicMeshAsset.h"
 
 class ShaderShadowMap;
 
+//アニメーションをする動的な3Dモデルを描画
 class DynamicMesh : public MeshBase
 {
 public:
@@ -16,19 +17,13 @@ public:
 	~DynamicMesh();
 	void SetAsset(const std::string &meshName, bool isLightInterrupted = false);
 	void ChangeAnimation(unsigned int num); //アニメーションを変更
-	void PartChangeAnimation(int bornIndex, unsigned int num); //アニメーションを変更
-	void PartRangeChangeAnimation(int bornStart, int bornEnd, unsigned int num); //アニメーションを変更
 	void SetPlayTime(float animSpeed); //アニメーション速度更新
-	void SetPartPlayTime(int bornIndex, float animSpeed); //アニメーション速度更新
-	void SetPartRangePlayTime(int bornStart, int bornEnd, float animSpeed); //アニメーション速度更新
 	void SetTime(float animTime);	   //指定のアニメーション時間に設定
-	void SetPartTime(int bornIndex, float animTime);	   //指定のアニメーション時間に設定
-	void SetPartRangeTime(int bornStart, int bornEnd, float animTime);	   //指定のアニメーション時間に設定
 	void StartAnimation();
 	void StopAnimation();
 	const SkinVertexInfo *GetVertex() const; 
-	float GetPlayTime(int bornIndex) const;
-	int GetPlayAnimation(int bornIndex) const;
+	float GetPlayTime() const;
+	int GetPlayAnimation() const;
 	int GetFaceAllNum() const;
 	int GetBornNum(std::string name) const;
 	int GetBornAllNum() const;
@@ -51,8 +46,10 @@ private:
 private:
 	bool m_IsAnimUpdate;
 	bool m_IsAnimEnd;
+	unsigned int m_AnimNum;
+	float m_AnimFrame;
 	float m_AnimSpeed;
-	SkinMeshData *m_pSkinMeshData;
+	DyanmicMeshData *m_pMeshData;
 	CopyBorn m_Born;
 	std::vector<CopyBorn*> m_CopyBornArray;
 };

@@ -1,5 +1,5 @@
 #include "SphereTriangleCopmute.h"
-#include "../../Mesh/StaticMesh.h"
+#include "../../Mesh/StaticMesh/StaticMesh.h"
 #include "../../Collider/SphereCollider.h"
 #include "../../System/Collision.h"
 

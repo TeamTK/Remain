@@ -42,18 +42,4 @@ void MainGame::Update()
 	SightManager::GetInstance()->Update();
 	AuditoryManager::GetInstance()->Update();
 	TracerouteManager::Update();
-
-	//‰¼
-	if (Input::KeyP.Clicked())
-	{
-		TaskManager::AllKill();
-		new Title();
-	}
-
-	//‰¼
-	if (Input::KeyO.Clicked())
-	{
-		TaskManager::AllKill();
-		new NowLoading(true);
-	}
 }

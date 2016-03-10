@@ -1,8 +1,8 @@
 #ifndef _GEKO_H_
 #define _GEKO_H_
 
-#include "Mesh\StaticMesh.h"
-#include "AnimationMesh\DynamicMesh.h"
+#include "Mesh\StaticMesh\StaticMesh.h"
+#include "Mesh\DynamicMesh\DynamicMesh.h"
 #include "ImageSystem\Image.h"
 #include "ImageSystem\ImageAnimation.h"
 #include "SoundSystem\Sound.h"

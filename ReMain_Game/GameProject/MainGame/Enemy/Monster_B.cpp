@@ -66,8 +66,6 @@ Monster_B::Monster_B(EnemyState &enemyState) :
 		m_FuncTask.Start("Wandering");
 	}
 
-	m_JudgementAnim = MONSTAR_B_BORN_ANIM_ENEMY;
-
 	m_DamegeBlood.SetAsset("Monster_B_2");
 }
 
@@ -77,7 +75,7 @@ Monster_B::~Monster_B()
 
 void Monster_B::Attack()
 {
-	float animNum = m_Model.GetPlayTime(13);
+	float animNum = m_Model.GetPlayTime();
 
 	//•ø‚«‚µ‚ßUŒ‚“–‚½‚è”»’èŠJŽn
 	if (animNum >= 10)

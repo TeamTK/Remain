@@ -1,13 +1,13 @@
 #include "StaticMeshCollider.h"
 #include "ColliderManager.h"
-#include "..\Mesh\StaticMesh.h"
+#include "..\Mesh\StaticMesh\StaticMesh.h"
 
 StaticMesh_vs_LineSegmentCollider::StaticMesh_vs_LineSegmentCollider(StaticMesh *pStaticMeshHitInfo, bool isGPU) :
 	m_pNormal(nullptr),
 	m_isGPU(false)
 {
 	m_pStaticMeshInfo = pStaticMeshHitInfo;
-	pStaticMeshHitInfo->WorldMatrixBuilding();
+	pStaticMeshHitInfo->SetModelMatrixBuilding();
 
 	//当たり判定に使う法線
 	if (m_pNormal != nullptr) delete[] m_pNormal;
@@ -47,7 +47,7 @@ StaticMesh_vs_SphereCollider::StaticMesh_vs_SphereCollider(StaticMesh *pStaticMe
 	m_pNormal(nullptr)
 {
 	m_pStaticMeshInfo = pStaticMeshHitInfo;
-	pStaticMeshHitInfo->WorldMatrixBuilding();
+	pStaticMeshHitInfo->SetModelMatrixBuilding();
 
 	//当たり判定に使う法線
 	if (m_pNormal != nullptr) delete[] m_pNormal;

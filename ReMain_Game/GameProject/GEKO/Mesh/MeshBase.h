@@ -1,7 +1,7 @@
 #ifndef _MESHBASE_H_
 #define _MESHBASE_H_
 
-#include "StaticMeshAsset.h"
+#include "StaticMesh\StaticMeshAsset.h"
 #include "WorldMatrixManager.h"
 
 class Image;
@@ -23,7 +23,6 @@ public:
 	void SetAlpha(int alpha, int materialIndex);
 	void SetAlphaAll(int alpha);
 	void SetTexture(Image *pImage);
-	void WorldMatrixBuilding();
 	Vector3D GetScale() const;
 	Vector3D GetRotation() const;
 	Vector3D GetTranselate() const;
@@ -37,12 +36,13 @@ public:
 	Vector3D GetAxisZ(float length) const;
 	Vector3D GetAxisZ(const Matrix &matrix, float length) const;
 	const Matrix *GetWorldMatrix() const;
+	const Matrix *GetSynthesisMatrix() const;
 	void DebugAxis(const Matrix &matrix);
 	void DebugAxis();
 
 protected:
-	Matrix m_LocalMatrix;			   //モデルのローカル行列
 	Matrix m_WorldMatrix;			   //モデルのワールド行列
+	Matrix m_SynthesisMatrix;		   //モデルのローカル × ワールド行列
 	Vector3D m_Rotation;			   //モデルの回転値（X軸・Y軸・Z軸）
 	Vector3D m_Scale;				   //モデルの拡大率（X軸・Y軸・Z軸）
 	Vector3D m_Transelate;			   //モデルの平行移動（X軸・Y軸・Z軸）

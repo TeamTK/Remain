@@ -7,7 +7,7 @@ class StaticMeshAsset
 {
 public:
 	~StaticMeshAsset();
-	static MeshData* GetMesh(const std::string name);
+	static StaticMeshData* GetMesh(const std::string name);
 	static bool GetIsExistence(const std::string name);
 	static void LoadMesh(const std::string filmeName, const std::string name);
 	static void LoadFile(const std::string filmeName);

@@ -2,7 +2,7 @@
 #define _TRACEROUTE_INFO_H_
 
 #include "..\System\Math.h"
-#include "..\Mesh\StaticMesh.h"
+#include "..\Mesh\StaticMesh\StaticMesh.h"
 #include "..\Shader\CopmuteShader\LineTriangleCopmute.h"
 
 class LineTriangleCopmute;
