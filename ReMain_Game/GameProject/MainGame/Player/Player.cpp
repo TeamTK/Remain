@@ -101,7 +101,7 @@ Player::Player(PData* data, Vector3D pos, float horizontal, float vertical) :
 
 	//敵の攻撃の当たり判定
 	m_HitEnemyAttack.Regist_C_vs_C(&m_pos, &m_SightPos, &m_Radius, REGIST_FUNC(Player::HitEnemyAttack));
-	m_HitEnemyAttack.SetID(eHITID0, eHITID1);
+	m_HitEnemyAttack.SetID(eHITID0, eHITID1 | eHITID2);
 
 	//ステージ移動用
 	m_StageChange.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::StageChange));

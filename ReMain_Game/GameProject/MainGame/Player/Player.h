@@ -58,6 +58,7 @@ private:
 	Collider m_Bullet;		//弾の当たり判定
 	Collider m_HitAmmoBox;	//弾薬箱の当たり判定
 	Collider m_HitEnemyAttack; //敵からの攻撃の当たり判定
+	Collider m_HitBossLngAtk; //ボスの遠距離攻撃の当たり判定
 	Collider m_MapCol;		//敵
 	Collider m_StageChange;		//ステージ移動用
 
