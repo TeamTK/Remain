@@ -1,5 +1,4 @@
 #include "YouAreDead.h"
-#include "../../Scene/GameOvar.h"
 #include "../../Scene/Title.h"
 #include "../../Scene/NowLoading.h"
 

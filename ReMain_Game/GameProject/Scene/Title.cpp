@@ -11,8 +11,8 @@ Title::Title() :
 	Task("Title", 0),
 	m_IsTransferStart(false),
 	m_IsTransferEnd(false),
-	m_SelectPos(-100, -100),
-	m_Select(Select::eNo)
+	m_SelectPos(START_POS),
+	m_Select(Select::eStart)
 {
 	//リソース設定2D
 	m_TitleImage.SetAsset("Remain");
@@ -44,6 +44,8 @@ Title::Title() :
 	//カメラ位置と注視点
 	Camera::SetEye(-1.5f, 2.0f, -2.0f);
 	Camera::SetLookat(-1.0f, 0.0f, -4.0f);
+
+	m_Transfer_Out.Start(3);
 }
 
 Title::~Title()
@@ -52,6 +54,9 @@ Title::~Title()
 
 void Title::Update()
 {
+	m_Transfer_Out.Update();
+	if (!m_Transfer_Out.GetIsEndTransfer()) return;
+
 	//選択上
 	if (Input::KeyUp.Clicked() || Input::XInputPad1.UpClicked())
 	{
@@ -119,4 +124,6 @@ void Title::Render()
 	{
 		m_Transfer.Render();
 	}
+
+	m_Transfer_Out.Render();
 }

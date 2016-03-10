@@ -34,15 +34,6 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 {
 	switch (uMsg)
 	{
-	case WM_KEYDOWN:
-		switch ((char)wParam)
-		{
-		case VK_ESCAPE:
-			//PostQuitMessage(0);
-			DestroyWindow(m_hWnd);
-			break;
-		}
-		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

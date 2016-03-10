@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "YouAreDead.h"
+#include "Menu.h"
 #include "TPSCamera.h"
 #include "PlayerData.h"
 #include "../../MainGame/Bullet/Bullet.h"
@@ -152,6 +153,13 @@ Player::~Player()
 
 void Player::Update()
 {
+	//メニュー画面生成
+	if (Input::KeyEscape.Clicked() && !m_SetupWeapon && !g_pUI_SelectWeapon->isSelected())
+	{
+		new Menu;
+		return;
+	}
+
 	//1フレームタイム
 	m_OneFlameTime = GEKO::GetOneFps();
 
@@ -305,10 +313,14 @@ void Player::Move()
 
 void Player::Attack()
 {
-	//武器の切り替え(ホイールクリック, 方向キー左右)
-	if ((Input::Mouse.WheelClicked() || Input::XInputPad1.ThumbRightClicked()))
+	//銃を構えていなかったら選択
+	if (!m_SetupWeapon)
 	{
-		m_SelectedWeapon = g_pUI_SelectWeapon->Select();
+		//武器の切り替え(ホイールクリック, 方向キー左右)
+		if ((Input::Mouse.WheelClicked() || Input::XInputPad1.ThumbRightClicked()))
+		{
+			m_SelectedWeapon = g_pUI_SelectWeapon->Select();
+		}
 	}
 
 	if (g_pUI_SelectWeapon->isSelected()) return;
@@ -402,16 +414,6 @@ void Player::Attack()
 			//発砲エフェクト生成
 			if (isCanShot)
 			{
-				/*
-				EffectInfo effectData;
-				effectData.imageName = "GunEffect";
-				effectData.num = 15;
-				effectData.pos = m_Model.GetBornPos(24) + m_Model.GetAxisZ(0.9f);
-				effectData.size = 0.05f;
-				effectData.speed = 0.05f;
-				effectData.time = 30;
-				new EffectParabola(effectData, "GunEffect", dir);
-				*/
 				EffectAnimationInfo info;
 				info.frameNum = 8;
 				info.pos = m_Model.GetBornPos(24) + m_Model.GetAxisZ(0.9f);
@@ -776,7 +778,7 @@ void Player::SetupWeapon()
 		m_Model.GetPlayTime() >= 28.0)
 	{
 		m_SphereMap.radius = MAP_HIT_RADIUS_SETWEAPON;
-		m_Model.StopAnimation();
+		m_Model.SetTime(28.0f);
 	}
 }
 

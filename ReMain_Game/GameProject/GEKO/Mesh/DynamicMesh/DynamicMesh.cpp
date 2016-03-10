@@ -10,7 +10,6 @@ DynamicMesh::DynamicMesh() :
 	m_IsAnimEnd(false),
 	m_AnimNum(0),
 	m_AnimFrame(0.0f),
-	m_AnimSpeed(0.0f),
 	m_pMeshData(nullptr)
 {
 }
@@ -60,7 +59,7 @@ void DynamicMesh::ChangeAnimation(unsigned int num)
 
 void DynamicMesh::SetPlayTime(float animSpeed)
 {
-	m_AnimSpeed = animSpeed;
+	m_AnimFrame += animSpeed;
 }
 
 void DynamicMesh::SetTime(float animTime)
@@ -277,7 +276,6 @@ void DynamicMesh::RenderFunc(Matrix &matrix)
 	if (m_IsAnimUpdate) 
 	{
 		m_pMeshData->Update(&m_Born, m_AnimNum, &m_AnimFrame, &m_IsAnimEnd);
-		m_AnimFrame += m_AnimSpeed;
 	}
 	ConstantShader::GetInstance()->SetBornConstantBuffer(pDeviceContext, GetBornAllNum(), m_CopyBornArray);
 
