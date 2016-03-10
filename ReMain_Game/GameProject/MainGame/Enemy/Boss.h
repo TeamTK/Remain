@@ -42,6 +42,7 @@ public:
 private:
 	DynamicMesh m_Model;
 	RenderTask m_RenderTask;
+	Timer m_NoActionTime;
 	CapsuleInfo *m_pCapsule;
 	Collider *m_pHitAttackBody;	//e’e‚Æ‚Ì“–‚½‚è”»’è
 	Collider *m_pHitAttack;		//ƒvƒŒƒCƒ„[‚Ö‚ÌUŒ‚‚Ì“–‚½‚è”»’è

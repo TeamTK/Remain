@@ -5,7 +5,6 @@
 #include <random>
 
 #define BOSS_ANIM_ENDTIME 28.5f
-#define JUDGEMENT_ANIM 10
 
 #define BOSS_ATTACK_ANIMSPEED 20.0f
 #define BOSS_NORMAL_ANIMSPEED 30.0f
@@ -91,6 +90,7 @@ Boss::Boss(BossState &bossState) :
 
 	m_pos = bossState.spawnPos;
 	m_pPlayerPos = g_pPlayerPos;
+	m_NoActionTime.Start();
 }
 
 Boss::~Boss()
@@ -110,7 +110,7 @@ void Boss::Update()
 	//1フレームタイム
 	m_OneFlameTime = GEKO::GetOneFps();
 	//アニメーション再生中フレーム
-	m_PlayTime = m_Model.GetPlayTime(JUDGEMENT_ANIM);
+	m_PlayTime = m_Model.GetPlayTime();
 
 	//プレイヤーとの距離
 	Vector3D distance = (*m_pPlayerPos - m_pos);
@@ -126,14 +126,14 @@ void Boss::Update()
 
 		if (!m_FuncTask.Running("Die")) m_pHitAttackBody[i].Awake();
 	}
-	printf("%f\n", m_Hp);
+	//printf("%f\n", m_Hp);
 
 	//ランダム
 	std::random_device rnd;
 	std::mt19937 mt(rnd());
 	std::uniform_int_distribution<> rand(0, 39);
 	m_Rand = rand(mt);
-	
+
 	m_FuncTask.Update();
 	m_Model.ChangeAnimation(m_AnimType);
 	m_Model.SetPlayTime(m_AnimSpeed *m_OneFlameTime);
@@ -149,7 +149,7 @@ void Boss::Attack()
 	m_AnimType = eAnimationAttack2;
 	m_AnimSpeed = BOSS_ATTACK_ANIMSPEED;
 
-	float animNum = m_Model.GetPlayTime(JUDGEMENT_ANIM);
+	float animNum = m_Model.GetPlayTime();
 	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[8].Awake(); //右腕の当たり判定起動
 	if (m_PlayTime >= 22) m_pHitAttack[8].Sleep();			//右腕の当たり判定終了
 
@@ -201,12 +201,13 @@ void Boss::Idle()
 		}
 		else
 		{
-			if (m_Rand == 2)
-			{
-				m_Model.SetTime(0);
-				m_FuncTask.Stop("Idle");
-				m_FuncTask.Start("Attack");
-			}
+			if (m_NoActionTime.GetSecond() >= 2.0f)
+				if (m_Rand == 2)
+				{
+					m_Model.SetTime(0);
+					m_FuncTask.Stop("Idle");
+					m_FuncTask.Start("Attack");
+				}
 		}
 	}
 
