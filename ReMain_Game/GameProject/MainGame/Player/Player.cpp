@@ -67,7 +67,6 @@ Player::Player(PData* data, Vector3D pos, float horizontal, float vertical) :
 	m_Model.SetScale(1.0f, 1.0f, 1.0f);
 	m_Model.SetTranselate(pos);
 	m_Model.SetRotationRadian(0.0f, m_rot.y, 0.0f);
-	//m_Model.WorldMatrixBuilding();
 	m_Model.SetTime(0);
 	m_Model.Render();
 
@@ -101,7 +100,7 @@ Player::Player(PData* data, Vector3D pos, float horizontal, float vertical) :
 
 	//敵の攻撃の当たり判定
 	m_HitEnemyAttack.Regist_C_vs_C(&m_pos, &m_SightPos, &m_Radius, REGIST_FUNC(Player::HitEnemyAttack));
-	m_HitEnemyAttack.SetID(eHITID0, eHITID1);
+	m_HitEnemyAttack.SetID(eHITID0, eHITID1 | eHITID2);
 
 	//ステージ移動用
 	m_StageChange.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::StageChange));
@@ -224,7 +223,7 @@ void Player::Move()
 	m_isRun = false;
 
 	if (g_pUI_SelectWeapon->isSelected()) return;
-	if (m_NoActionTime.GetSecond() < 2.0f)	return;
+	if (m_NoActionTime.GetSecond() < 1.5f)	return;
 
 	if (Input::XInputPad1.GetIsConnection())
 	{
@@ -403,6 +402,16 @@ void Player::Attack()
 			//発砲エフェクト生成
 			if (isCanShot)
 			{
+				/*
+				EffectInfo effectData;
+				effectData.imageName = "GunEffect";
+				effectData.num = 15;
+				effectData.pos = m_Model.GetBornPos(24) + m_Model.GetAxisZ(0.9f);
+				effectData.size = 0.05f;
+				effectData.speed = 0.05f;
+				effectData.time = 30;
+				new EffectParabola(effectData, "GunEffect", dir);
+				*/
 				EffectAnimationInfo info;
 				info.frameNum = 8;
 				info.pos = m_Model.GetBornPos(24) + m_Model.GetAxisZ(0.9f);
