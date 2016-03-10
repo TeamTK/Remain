@@ -14,11 +14,11 @@ struct XYZ
 	float y;
 	float z;
 
-	XYZ(){};
+	XYZ() {};
 	XYZ(float x, float y, float z) :
 		x(x),
 		y(y),
-		z(z){}
+		z(z) {}
 };
 
 class MapObject;
@@ -80,16 +80,16 @@ class Tree_1 : public StageObject
 {
 public:
 	Tree_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos,rot,sca,name, false, true)
+		StageObject(pos, rot, sca, name, false, true)
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
 
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
-		m_BulletHit.SetID(eHITID4, eHITID2);
+		m_BulletHit.SetID(eHITID4, eHITID2 | eHITID8);
 		m_BulletHit.SetName("Tree_1");
 	}
-	~Tree_1(){}
+	~Tree_1() {}
 
 private:
 	Collider m_BulletHit;
@@ -106,10 +106,10 @@ public:
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
 
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
-		m_BulletHit.SetID(eHITID4, eHITID2);
+		m_BulletHit.SetID(eHITID4, eHITID2 | eHITID8);
 		m_BulletHit.SetName("Tree_2");
 	}
-	~Tree_2(){}
+	~Tree_2() {}
 
 private:
 	Collider m_BulletHit;
@@ -140,8 +140,8 @@ class Grass_1 : public StageObject
 {
 public:
 	Grass_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, false, true){}
-	~Grass_1(){}
+		StageObject(pos, rot, sca, name, false, true) {}
+	~Grass_1() {}
 };
 
 //ëê2
@@ -149,8 +149,8 @@ class Grass_2 : public StageObject
 {
 public:
 	Grass_2(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, false, true){}
-	~Grass_2(){}
+		StageObject(pos, rot, sca, name, false, true) {}
+	~Grass_2() {}
 };
 
 //â∆
@@ -179,7 +179,7 @@ public:
 		m_CameraHIt.Regist_SMesh_vs_L(&m_HitMesh, true);
 		m_CameraHIt.SetID(eHITID3, eHITID2);
 	}
-	~Cabin(){}
+	~Cabin() {}
 
 private:
 	StaticMesh m_HitMesh;
@@ -192,7 +192,7 @@ class Ground_1_1 : public StageObject
 {
 public:
 	Ground_1_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true) 
+		StageObject(pos, rot, sca, name, true)
 	{
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2 | eHITID3);
@@ -248,7 +248,7 @@ public:
 		m_CameraHit.SetID(eHITID1, eHITID0);
 
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
-		m_BulletHit.SetID(eHITID6, eHITID2);
+		m_BulletHit.SetID(eHITID6, eHITID2 | eHITID8);
 		m_BulletHit.SetName("Ground_1_3");
 	}
 	~Ground_1_3() {}
@@ -263,7 +263,7 @@ class RockWall_1_1 : public StageObject
 {
 public:
 	RockWall_1_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true, true) 
+		StageObject(pos, rot, sca, name, true, true)
 	{
 		//ìñÇΩÇËîªíËópÇÃÉÅÉbÉVÉÖèâä˙âª
 		m_HitMesh.SetAsset("Wall_Collision_1_1");
@@ -354,7 +354,7 @@ public:
 
 		//íeÇ∆ï«ÇÃìñÇΩÇËîªíË
 		m_BulletHit.Regist_SMesh_vs_L(&m_BulletHitMesh, true);
-		m_BulletHit.SetID(eHITID7, eHITID2);
+		m_BulletHit.SetID(eHITID7, eHITID2 | eHITID8);
 		m_BulletHit.SetName("RockWall_1_3");
 	}
 	~RockWall_1_3() {}

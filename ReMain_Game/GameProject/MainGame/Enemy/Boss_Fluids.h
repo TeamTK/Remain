@@ -11,11 +11,13 @@ public:
 	~Boss_Fluids();
 	void Update();
 	void HitPlayer(Result_Capsule& data);
+	void HitMap(Result_Porygon& r);
 private:
 	Collider m_Collider;
 	Collider m_ColliderMap;
 	Vector3D m_Dir;
 	Vector3D m_Pos;
+	Vector3D m_Oldpos;
 	float m_Speed;
 	float m_Cnt;
 	float m_LifeTime;
