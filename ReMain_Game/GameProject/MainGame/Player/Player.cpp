@@ -67,7 +67,7 @@ Player::Player(PData* data, Vector3D pos, float horizontal, float vertical) :
 	m_Model.SetScale(1.0f, 1.0f, 1.0f);
 	m_Model.SetTranselate(pos);
 	m_Model.SetRotationRadian(0.0f, m_rot.y, 0.0f);
-	//m_Model.WorldMatrixBuilding();
+	m_Model.WorldMatrixBuilding();
 	m_Model.SetTime(0);
 	m_Model.Render();
 
@@ -101,7 +101,7 @@ Player::Player(PData* data, Vector3D pos, float horizontal, float vertical) :
 
 	//敵の攻撃の当たり判定
 	m_HitEnemyAttack.Regist_C_vs_C(&m_pos, &m_SightPos, &m_Radius, REGIST_FUNC(Player::HitEnemyAttack));
-	m_HitEnemyAttack.SetID(eHITID0, eHITID1);
+	m_HitEnemyAttack.SetID(eHITID0, eHITID1 | eHITID2);
 
 	//ステージ移動用
 	m_StageChange.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::StageChange));
@@ -117,6 +117,8 @@ Player::Player(PData* data, Vector3D pos, float horizontal, float vertical) :
 	m_PlayerSightInfo.SetPos(&m_SightPos);
 
 	g_pPlayerPos = &m_pos;
+
+	m_JudgementAnim = 20; //アニメーション判断（ボーン単位）
 
 	//プレイヤーが出す音
 	m_Volume = VOLUME_WALK;
@@ -180,7 +182,7 @@ void Player::Update()
 	m_MatrixK = m_Model.GetBornMatrix(25, true);	//指のボーン位置
 
 	//プレイヤーのボーン行列の切り替え
-	if ((m_Anim == eAnim_TakeGun && m_Model.GetPlayTime() > 16) ||
+	if ((m_Anim == eAnim_TakeGun && m_Model.GetPlayTime(m_JudgementAnim) > 16) ||
 		m_Anim == eAnim_SetupGun || m_Anim == eAnim_IdleTakeGun ||
 		m_Anim == eAnim_WalkTakeGun || m_Anim == eAnim_RunTakeGun ||
 		m_Anim == eAnim_RecoilGun || m_Anim == eAnim_ReloadGun ||
@@ -195,7 +197,7 @@ void Player::Update()
 		m_MatrixS = m_Model.GetBornMatrix(21, true);
 	}
 
-	if ((m_Anim == eAnim_TakeHandgun && m_Model.GetPlayTime() > 16) ||
+	if ((m_Anim == eAnim_TakeHandgun && m_Model.GetPlayTime(m_JudgementAnim) > 16) ||
 		m_Anim == eAnim_SetupHandgun || m_Anim == eAnim_IdleTakeHandgun ||
 		m_Anim == eAnim_WalkTakeHandgun || m_Anim == eAnim_RunTakeHandgun ||
 		m_Anim == eAnim_RecoilHandgun || m_Anim == eAnim_ReloadHandgun ||
@@ -210,8 +212,8 @@ void Player::Update()
 		m_MatrixH = m_Model.GetBornMatrix(3, true);
 	}
 
-	m_PlayAnim = m_Model.GetPlayAnimation();
-	m_PlayAnimTime = m_Model.GetPlayTime();
+	m_PlayAnim = m_Model.GetPlayAnimation(m_JudgementAnim);
+	m_PlayAnimTime = m_Model.GetPlayTime(m_JudgementAnim);
 
 	//m_Model.GetTranselate().DebugDraw("");
 }
@@ -403,6 +405,16 @@ void Player::Attack()
 			//発砲エフェクト生成
 			if (isCanShot)
 			{
+				/*
+				EffectInfo effectData;
+				effectData.imageName = "GunEffect";
+				effectData.num = 15;
+				effectData.pos = m_Model.GetBornPos(24) + m_Model.GetAxisZ(0.9f);
+				effectData.size = 0.05f;
+				effectData.speed = 0.05f;
+				effectData.time = 30;
+				new EffectParabola(effectData, "GunEffect", dir);
+				*/
 				EffectAnimationInfo info;
 				info.frameNum = 8;
 				info.pos = m_Model.GetBornPos(24) + m_Model.GetAxisZ(0.9f);
@@ -595,7 +607,7 @@ void Player::Crouch()
 			break;
 		}
 		//しまうアニメーションの終わり
-		if (m_Model.GetPlayTime() < 1)
+		if (m_Model.GetPlayTime(m_JudgementAnim) < 1)
 		{
 			m_isTakeWeapon = false;
 		}
@@ -624,7 +636,7 @@ void Player::Crouch()
 			m_isMove = true;
 		}
 
-		if (m_Anim == EPlayerAnim::eAnim_Crouch && m_Model.GetPlayTime() > 28)
+		if (m_Anim == EPlayerAnim::eAnim_Crouch && m_Model.GetPlayTime(m_JudgementAnim) > 28)
 		{
 			m_isShiftCrouch = false;
 			m_isCrouch = true;
@@ -637,7 +649,7 @@ void Player::StandUp()
 	m_Anim = EPlayerAnim::eAnim_Crouch;
 	m_AnimSpeed = -TWICE_ANIM_SPEED;
 
-	if (m_Anim == EPlayerAnim::eAnim_Crouch && m_Model.GetPlayTime() < 1)
+	if (m_Anim == EPlayerAnim::eAnim_Crouch && m_Model.GetPlayTime(m_JudgementAnim) < 1)
 	{
 		m_isShiftCrouch = false;
 		m_isCrouch = false;
@@ -676,7 +688,7 @@ void Player::TakeWeapon()
 			m_AnimSpeed = ANIM_SPEED_40;
 		}
 
-		if (m_Anim == EPlayerAnim::eAnim_TakeGun && m_Model.GetPlayTime() > 28)
+		if (m_Anim == EPlayerAnim::eAnim_TakeGun && m_Model.GetPlayTime(m_JudgementAnim) > 28)
 		{
 			m_ChangeTakeWeapon = false;
 			m_isTakeWeapon = true;
@@ -710,7 +722,7 @@ void Player::TakeWeapon()
 			m_AnimSpeed = ANIM_SPEED_40;
 		}
 
-		if (m_Anim == eAnim_TakeHandgun && m_Model.GetPlayTime() > 28)
+		if (m_Anim == eAnim_TakeHandgun && m_Model.GetPlayTime(m_JudgementAnim) > 28)
 		{
 			m_ChangeTakeWeapon = false;
 			m_isTakeWeapon = true;
@@ -727,7 +739,7 @@ void Player::PutBackWeapon()
 		m_Anim = EPlayerAnim::eAnim_TakeGun;
 		m_AnimSpeed = -DEFAULT_ANIM_SPEED;
 
-		if (m_Model.GetPlayTime() < 1)
+		if (m_Model.GetPlayTime(m_JudgementAnim) < 1)
 		{
 			m_isTakeWeapon = false;
 			m_ChangePutBackWeapon = false;
@@ -737,7 +749,7 @@ void Player::PutBackWeapon()
 		m_Anim = EPlayerAnim::eAnim_TakeHandgun;
 		m_AnimSpeed = -DEFAULT_ANIM_SPEED;
 
-		if (m_Model.GetPlayTime() < 1)
+		if (m_Model.GetPlayTime(m_JudgementAnim) < 1)
 		{
 			m_isTakeWeapon = false;
 			m_ChangePutBackWeapon = false;
@@ -764,7 +776,7 @@ void Player::SetupWeapon()
 	//構え状態で停止
 	if ((m_Anim == EPlayerAnim::eAnim_SetupGun ||
 		m_Anim == EPlayerAnim::eAnim_SetupHandgun) &&
-		m_Model.GetPlayTime() >= 28.0)
+		m_Model.GetPlayTime(m_JudgementAnim) >= 28.0)
 	{
 		m_SphereMap.radius = MAP_HIT_RADIUS_SETWEAPON;
 		m_Model.StopAnimation();
@@ -785,7 +797,7 @@ void Player::Recoil()
 		break;
 	}
 	//アニメーション終了
-	if (m_Model.GetPlayTime() > 20.0)
+	if (m_Model.GetPlayTime(m_JudgementAnim) > 20.0)
 	{
 		m_isShot = false;
 		m_Model.SetTime(28.0);
@@ -826,7 +838,7 @@ void Player::Reload()
 	}
 
 	//アニメーション終了
-	if (m_Model.GetPlayTime() > 28)
+	if (m_Model.GetPlayTime(m_JudgementAnim) > 28)
 	{
 		m_isReload = false;
 		//装弾数を増やす
@@ -848,7 +860,7 @@ void Player::StealthAttack()
 	m_AnimSpeed = DEFAULT_ANIM_SPEED;
 
 	//アニメーション終了
-	if (m_Model.GetPlayTime() > 58)
+	if (m_Model.GetPlayTime(m_JudgementAnim) > 58)
 	{
 		TaskManager::Kill("Knife");
 		m_isSteAttack = false;
@@ -861,7 +873,7 @@ void Player::Die()
 	m_Anim = EPlayerAnim::eAnim_Die;
 	m_AnimSpeed = DEFAULT_ANIM_SPEED - 10;
 
-	if (m_Model.GetPlayTime() > 28)
+	if (m_Model.GetPlayTime(m_JudgementAnim) > 28)
 	{
 		TaskManager::Stop("Player");
 	}
@@ -873,7 +885,7 @@ void Player::Hit()
 	m_AnimSpeed = DEFAULT_ANIM_SPEED;
 
 	//アニメーション終了
-	if (m_Model.GetPlayTime() > 28)
+	if (m_Model.GetPlayTime(m_JudgementAnim) > 28)
 	{
 		m_isHit = false;
 	}

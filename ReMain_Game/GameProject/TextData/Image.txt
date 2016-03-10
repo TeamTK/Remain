@@ -1,6 +1,7 @@
 Image media\ImageData\Reticle.png Reticle
 Image media\ImageData\Blood.png Blood
 Image media\ImageData\GunEffect.png GunEffect
+Image media\ImageData\Fluids_Par.png Fluids_Par
 Image media\ImageData\SelectCircle.png SelectCircle
 Image media\ImageData\SelectedCursor.png SelectedCursor
 Image media\ImageData\UI_FreeHand.png UI_FreeHand
