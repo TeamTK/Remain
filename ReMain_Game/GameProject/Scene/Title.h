@@ -34,6 +34,7 @@ private:
 	Vector2D m_SelectPos;
 	Select m_Select;
 	ScreenTransfer_In m_Transfer;
+	ScreenTransfer_Out m_Transfer_Out;
 };
 
 #endif

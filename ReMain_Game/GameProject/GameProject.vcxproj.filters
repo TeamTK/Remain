@@ -83,7 +83,6 @@
     <ClCompile Include="MainGame\Weapon\WeaponBase.cpp" />
     <ClCompile Include="MainGame\Weapon\Handgun.cpp" />
     <ClCompile Include="MainGame\Weapon\Shotgun.cpp" />
-    <ClCompile Include="Scene\GameOvar.cpp" />
     <ClCompile Include="Chapter\Chapter.cpp" />
     <ClCompile Include="GameSystem\Effect\Effect.cpp" />
     <ClCompile Include="GameSystem\Effect\EffectParabola.cpp" />
@@ -135,6 +134,7 @@
     <ClCompile Include="GEKO\Mesh\StaticMesh\StaticMeshAsset.cpp" />
     <ClCompile Include="GEKO\Mesh\StaticMesh\LoadXStatic.cpp" />
     <ClCompile Include="GEKO\Mesh\RenderManager.cpp" />
+    <ClCompile Include="MainGame\Player\Menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\MeshData.h" />
@@ -288,7 +288,6 @@
     <ClInclude Include="MainGame\Weapon\WeaponBase.h" />
     <ClInclude Include="MainGame\Weapon\Handgun.h" />
     <ClInclude Include="MainGame\Weapon\Shotgun.h" />
-    <ClInclude Include="Scene\GameOvar.h" />
     <ClInclude Include="Chapter\Chapter.h" />
     <ClInclude Include="GameSystem\Effect\Effect.h" />
     <ClInclude Include="GameSystem\Effect\EffectParabola.h" />
@@ -342,6 +341,7 @@
     <ClInclude Include="GEKO\Mesh\MeshInfo.h" />
     <ClInclude Include="GEKO\Mesh\RenderManager.h" />
     <ClInclude Include="GEKO\Shader\ShaderInfo.h" />
+    <ClInclude Include="MainGame\Player\Menu.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">

@@ -35,6 +35,9 @@ MainGame::~MainGame()
 	TaskManager::Kill("Shotgun");
 	TaskManager::Kill("Chapter_1_1");
 	TaskManager::Kill("Chapter_1_2");
+	TaskManager::Kill("BloodAnim");
+	TaskManager::Kill("MuzzleFlash");
+	TaskManager::Kill("Map");
 }
 
 void MainGame::Update()

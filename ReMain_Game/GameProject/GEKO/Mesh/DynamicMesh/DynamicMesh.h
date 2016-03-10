@@ -48,7 +48,6 @@ private:
 	bool m_IsAnimEnd;
 	unsigned int m_AnimNum;
 	float m_AnimFrame;
-	float m_AnimSpeed;
 	DyanmicMeshData *m_pMeshData;
 	CopyBorn m_Born;
 	std::vector<CopyBorn*> m_CopyBornArray;

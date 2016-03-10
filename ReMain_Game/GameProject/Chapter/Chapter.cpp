@@ -97,6 +97,7 @@ void Chapter_1_1::Render()
 
 void Chapter_1_1::StageChange(Result_Sphere &data)
 {
+	TaskManager::Stop("TPSCamera");
 	m_StageChange.Sleep();
 	m_Transfer_In.Start(3);
 }
@@ -109,7 +110,7 @@ void Chapter_1_1::StageChange(Result_Sphere &data)
 
 Chapter_1_2::Chapter_1_2() :
 	Task("Chapter_1_2", 0),
-	m_Radius(2.0f),
+	m_Radius(3.0f),
 	m_StageChangePos(64.0f, 0.0f, 39.0f)
 {
 	DirectionalLight::SetDistance(160.0f);
@@ -167,12 +168,6 @@ void Chapter_1_2::Update()
 		SetKill();
 		new Chapter_1_3();
 	}
-
-	if (Input::KeyO.Clicked()) //“Gíœ
-	{
-		TaskManager::Kill("Monster_A");
-		TaskManager::Kill("Monster_B");
-	}
 }
 
 void Chapter_1_2::Render()
@@ -182,6 +177,7 @@ void Chapter_1_2::Render()
 
 void Chapter_1_2::StageChange(Result_Sphere &data)
 {
+	TaskManager::Stop("TPSCamera");
 	m_StageChange.Sleep();
 	m_Transfer_In.Start(3);
 }

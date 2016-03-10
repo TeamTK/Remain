@@ -82,19 +82,19 @@ private:
 	float m_OneFlameTime;	//1フレームの時間
 
 	bool m_ChangeTakeWeapon;		//銃を持つ
-	bool m_ChangePutBackWeapon;		//銃をしまう
+	bool m_ChangePutBackWeapon;	//銃をしまう
 	bool m_ToggleCrouch;			//しゃがみトグル
 	bool m_isCrouch;				//しゃがんでいるか
 	bool m_isShiftCrouch;			//しゃがんでいるか
 	bool m_isTakeWeapon;			//銃を持っているか
-	bool m_SetupWeapon;				//銃を構えているか
+	bool m_SetupWeapon;			//銃を構えているか
 	bool m_isRun;					//走っているか
 	bool m_isMove;					//移動中か
 	bool m_isAttack;				//攻撃中か
 	bool m_isReload;				//リロード中か
 	bool m_isHit;					//敵の攻撃が当たったか
 	bool m_isShot;					//発砲したか
-	bool m_isSteAttack;				//ステルスアタック
+	bool m_isSteAttack;			//ステルスアタック
 	bool m_isDead;					//死亡判断
 	bool m_IsStop;					//プレイヤーに関係するタスク停止
 };
