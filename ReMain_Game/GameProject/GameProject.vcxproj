@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Chapter\Chapter.cpp" />
-    <ClCompile Include="Chapter\ChapterManager.cpp" />
     <ClCompile Include="GameSystem\Effect\Effect.cpp" />
     <ClCompile Include="GameSystem\Effect\EffectAnimation.cpp" />
     <ClCompile Include="GameSystem\Effect\EffectParabola.cpp" />
@@ -119,7 +118,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chapter\Chapter.h" />
-    <ClInclude Include="Chapter\ChapterManager.h" />
     <ClInclude Include="GameSystem\Effect\Effect.h" />
     <ClInclude Include="GameSystem\Effect\EffectAnimation.h" />
     <ClInclude Include="GameSystem\Effect\EffectParabola.h" />

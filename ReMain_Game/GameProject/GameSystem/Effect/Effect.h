@@ -3,8 +3,7 @@
 
 #include <list>
 
-#include "..\..\GEKO\Figure\Fiqure.h"
-#include "..\..\GEKO\Task\RenderTask.h"
+#include "..\..\GEKO\GEKO.h"
 
 struct EffectInfo
 {
@@ -23,9 +22,11 @@ public:
 	EffectPart(float x, float y, float z, const Vector3D &pos);
 	~EffectPart();
 	void SetDirection(const Vector3D &direction);
+	void Update();
 	void Render(float size, float speed, int time, const std::string &name);
 
 private:
+	float m_Speed;
 	Vector3D m_Direction;
 	Vector3D m_Pos;
 };

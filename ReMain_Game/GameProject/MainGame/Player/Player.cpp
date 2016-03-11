@@ -37,7 +37,7 @@
 
 Vector3D *g_pPlayerPos;
 
-Player::Player(PData* data, Vector3D pos, float horizontal, float vertical) :
+Player::Player(PData* data, Vector3D pos, float rotY, float horizontal, float vertical) :
 	Character(data->HP, "Player", 0),
 	m_LookPos(-47.9f, 1.7f, -11.4f),
 	m_KeyDir(0.0f, 0.0f, 0.0f),
@@ -72,7 +72,7 @@ Player::Player(PData* data, Vector3D pos, float horizontal, float vertical) :
 	m_Model.Render();
 
 	m_pos = pos;
-	m_rot.y = 1.0f;
+	m_rot.y = Math::ChangeToRadian(rotY);
 
 	m_SelectedWeapon = data->Weapon;
 	m_isTakeWeapon = data->isTakeWeapon;
@@ -106,10 +106,6 @@ Player::Player(PData* data, Vector3D pos, float horizontal, float vertical) :
 	//ステージ移動用
 	m_StageChange.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::StageChange));
 	m_StageChange.SetID(eHITID1, eHITID4);
-
-	//敵を出現
-	m_MapCol.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::HitMap));
-	m_MapCol.SetID(eHITID1, eHITID5);
 
 	m_SphereMap.radius = MAP_HIT_RADIUS;
 
@@ -153,6 +149,8 @@ Player::~Player()
 
 void Player::Update()
 {
+	//m_pos.DebugDraw("Pleyr");
+
 	//メニュー画面生成
 	if (Input::KeyEscape.Clicked() && !m_SetupWeapon && !g_pUI_SelectWeapon->isSelected())
 	{
@@ -319,6 +317,17 @@ void Player::Attack()
 		//武器の切り替え(ホイールクリック, 方向キー左右)
 		if ((Input::Mouse.WheelClicked() || Input::XInputPad1.ThumbRightClicked()))
 		{
+			if (g_pUI_SelectWeapon->isSelected())
+			{
+				TaskManager::AllStart();
+			}
+			else
+			{
+				TaskManager::AllStop();
+				TaskManager::Start("UI_SelectWeapon");
+				TaskManager::Start("Gravity");
+				TaskManager::Start("Player");
+			}
 			m_SelectedWeapon = g_pUI_SelectWeapon->Select();
 		}
 	}
@@ -952,12 +961,6 @@ void Player::HitEnemyAttack(Result_Capsule &hitData)
 	}
 }
 
-void Player::HitMap(Result_Sphere &data)
-{
-
-}
-
-
 void Player::StageChange(Result_Sphere &data)
 {
 	PData playerData;
@@ -971,5 +974,6 @@ void Player::StageChange(Result_Sphere &data)
 
 	PlayerData::SetData(&playerData);
 
+	m_HitEnemyAttack.Sleep();
 	Task::Stop();
 }

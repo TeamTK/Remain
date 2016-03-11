@@ -1,8 +1,7 @@
 #ifndef _EFFECT_ANIMATION_H_
 #define _EFFECT_ANIMATION_H_
 
-#include "..\..\GEKO\Figure\Billboard.h"
-#include "..\..\GEKO\Task\RenderTask.h"
+#include "..\..\GEKO\GEKO.h"
 
 //エフェクトアニメーションクラスの設定情報
 struct EffectAnimationInfo
