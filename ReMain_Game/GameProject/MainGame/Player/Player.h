@@ -12,7 +12,7 @@ extern Vector3D *g_pPlayerPos;
 class Player : public Character
 {
 public:
-	Player(PData* data, Vector3D pos, float horizontal, float vertical);
+	Player(PData* data, Vector3D pos, float rotY, float horizontal, float vertical);
 	~Player();
 	void Update();
 	void Move();
@@ -36,7 +36,6 @@ private:
 
 	void HitAmmoBox(Result_Sphere& r);
 	void HitEnemyAttack(Result_Capsule &hitData);
-	void HitMap(Result_Sphere &data);
 	void StageChange(Result_Sphere &data);
 
 private:
@@ -58,8 +57,7 @@ private:
 	Collider m_Bullet;		//弾の当たり判定
 	Collider m_HitAmmoBox;	//弾薬箱の当たり判定
 	Collider m_HitEnemyAttack; //敵からの攻撃の当たり判定
-	Collider m_MapCol;		//敵
-	Collider m_StageChange;		//ステージ移動用
+	Collider m_StageChange; //ステージ移動用
 
 	Sound m_HandGunFire;			//ハンドガンの発砲音
 	Sound m_ShotGunFire;			//ショットガンの発砲音

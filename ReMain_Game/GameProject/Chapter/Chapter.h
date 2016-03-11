@@ -19,6 +19,7 @@ private:
 	Vector3D m_StageChangePos;	//ステージ移動用当たり判定座標
 	Sound m_BGM;
 	ScreenTransfer_In  m_Transfer_In;
+	ScreenTransfer_Out  m_Transfer_Out;
 	RenderTask m_Render;
 };
 
@@ -36,6 +37,7 @@ private:
 	Collider m_StageChange;	//ステージ移動用
 	Vector3D m_StageChangePos;	//ステージ移動用当たり判定座標
 	ScreenTransfer_In  m_Transfer_In;
+	ScreenTransfer_Out  m_Transfer_Out;
 	Sound m_BGM;
 	RenderTask m_Render;
 };
@@ -54,6 +56,7 @@ private:
 	Collider m_MapCol;
 	Sound m_BGM;
 	ScreenTransfer_In  m_Transfer_In;
+	ScreenTransfer_Out  m_Transfer_Out;
 	RenderTask m_Render;
 };
 #endif

@@ -45,7 +45,7 @@ Title::Title() :
 	Camera::SetEye(-1.5f, 2.0f, -2.0f);
 	Camera::SetLookat(-1.0f, 0.0f, -4.0f);
 
-	m_Transfer_Out.Start(3);
+	m_Transfer_Out.Start(4.0f);
 }
 
 Title::~Title()
@@ -80,7 +80,7 @@ void Title::Update()
 			break;
 
 		case Select::eStart:
-			m_Transfer.Start(3.0f);
+			m_Transfer.Start(4.0f);
 			m_IsTransferStart = true;
 			break;
 

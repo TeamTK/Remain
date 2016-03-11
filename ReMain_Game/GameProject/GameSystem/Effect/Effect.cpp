@@ -1,7 +1,7 @@
 #include "Effect.h"
-#include "..\..\GEKO\Figure\Billboard.h"
 
-EffectPart::EffectPart(float x, float y, float z, const Vector3D &pos)
+EffectPart::EffectPart(float x, float y, float z, const Vector3D &pos) :
+	m_Speed(0.0f)
 {
 	m_Direction.x = x;
 	m_Direction.y = y;
@@ -19,9 +19,14 @@ void EffectPart::SetDirection(const Vector3D &direction)
 	m_Direction = direction;
 }
 
+void EffectPart::Update()
+{
+	m_Pos += (m_Direction * m_Speed);
+}
+
 void EffectPart::Render(float size, float speed, int time, const std::string &name)
 {
-	m_Pos += (m_Direction * speed);
+	m_Speed = speed;
 	Fiqure::RenderBillboard(m_Pos, size / (float)time, name);
 };
 
@@ -71,6 +76,7 @@ void Effect::Update()
 	}
 	else
 	{
+		for (auto& i : m_list) i.Update();
 		m_TimeCnt++;
 	}
 };

@@ -4,9 +4,13 @@
 #include "../MainGame/Player/Player.h"
 #include "../MainGame/Enemy/EnemyWave.h"
 #include "../MainGame/AmmoBox/AmmoBox_Shotgun.h"
+#include "../MainGame/AmmoBox/AmmoBox_Handgun.h"
 #include "../MainGame/Player/PlayerData.h"
 #include "../MainGame/Enemy/Wanderings.h"
 #include "../MainGame/Enemy/Boss.h"
+
+#define CHAPTER_TRANSFER_IN_SPEED 4.0f
+#define CHAPTER_TRANSFER_OUT_SPEED 4.0f
 
 void Kill()
 {
@@ -21,6 +25,9 @@ void Kill()
 	TaskManager::Kill("Handgun");
 	TaskManager::Kill("Shotgun");
 	TaskManager::Kill("ScreenBlood");
+	TaskManager::Kill("BloodAnim");
+	TaskManager::Kill("MuzzleFlash");
+	TaskManager::Kill("Map");
 	StageObjectManager::GetInstance()->ClearList();
 }
 
@@ -40,7 +47,7 @@ Chapter_1_1::Chapter_1_1() :
 	data.isTakeWeapon = false;
 	data.Weapon = eShotgun;
 
-	new Player(&data, Vector3D(-45.0f, 0.0f, -11.0f), 64, -2);
+	new Player(&data, Vector3D(-45.0f, 0.0f, -11.0f), 64.0f, 64, -2);
 
 	//Œo˜H’Tõƒf[ƒ^“Ç‚Ýž‚Ý‚Æ\’z
 	static StaticMesh mesh("Chapter_1_1_Traceroute");
@@ -63,13 +70,17 @@ Chapter_1_1::Chapter_1_1() :
 
 	m_Render.Regist(6, REGIST_RENDER_FUNC(Chapter_1_1::Render));
 
+	//•â[—p’e
 	new AmmoBox_Shotgun(Vector3D(-9.5f, 0.0f, 14.4f), Vector3D(0.0f, 200.0f, 0.0f), 6);
+	new AmmoBox_Handgun(Vector3D(19.0f, 0.0f, -13.0f), Vector3D(0.0f, 200.0f, 0.0f), 6);
 
 	m_BGM.SetAseet("Field2");
 	m_BGM.SetLoop(true);
 	m_BGM.Play();
 
 	EnemyStateManager::Generation("Normal_Monster_A", "Chapter1-1", "Chapter_1_1_Traceroute", false);
+
+	m_Transfer_Out.Start(CHAPTER_TRANSFER_OUT_SPEED);
 }
 
 Chapter_1_1::~Chapter_1_1()
@@ -81,6 +92,7 @@ Chapter_1_1::~Chapter_1_1()
 void Chapter_1_1::Update()
 {
 	m_Transfer_In.Update();
+	m_Transfer_Out.Update();
 
 	if (m_Transfer_In.GetIsEndTransfer())
 	{
@@ -93,13 +105,14 @@ void Chapter_1_1::Update()
 void Chapter_1_1::Render()
 {
 	m_Transfer_In.Render();
+	m_Transfer_Out.Render();
 }
 
 void Chapter_1_1::StageChange(Result_Sphere &data)
 {
 	TaskManager::Stop("TPSCamera");
 	m_StageChange.Sleep();
-	m_Transfer_In.Start(3);
+	m_Transfer_In.Start(CHAPTER_TRANSFER_IN_SPEED);
 }
 
 
@@ -124,7 +137,7 @@ Chapter_1_2::Chapter_1_2() :
 	data.isTakeWeapon = PlayerData::GetData().isTakeWeapon;
 	data.Weapon = PlayerData::GetData().Weapon;
 
-	new Player(&data, Vector3D(-28.0f, 0.0f, -98.0f), -2.5f, -0.1f);
+	new Player(&data, Vector3D(-28.0f, 0.0f, -98.0f), 34.0f, 34.0f, -1.3f);
 
 	//Œo˜H’Tõƒf[ƒ^“Ç‚Ýž‚Ý‚Æ\’z
 	static StaticMesh mesh("Chapter_1_2_Traceroute");
@@ -138,18 +151,27 @@ Chapter_1_2::Chapter_1_2() :
 	m_StageChange.Regist_S_vs_S(&m_StageChangePos, &m_Radius, REGIST_FUNC(Chapter_1_2::StageChange));
 	m_StageChange.SetID(eHITID4, eHITID1);
 
+	//“Gœpœjƒpƒ^[ƒ““Ç‚Ýž‚Ý
+	WanderingsManager::LoadFile("TextData\\Wandering_Chapter_1_2.txt");
+
 	//“G¶¬
 	EnemyStateManager::LoadFileState("TextData\\EnemyState.txt");
 	EnemyStateManager::LoadFileSpawn("TextData\\EnemySpawn_Chapter_1-2.txt");
-	//EnemyStateManager::Generation("Normal_Monster_A", "Chapter1-1_Start", "Chapter_1_2_Traceroute", false);
+	EnemyStateManager::Generation("Normal_Monster_A", "Chapter1-2", "Chapter_1_2_Traceroute", false);
 
 	m_Render.Regist(6, REGIST_RENDER_FUNC(Chapter_1_2::Render));
 
-	new AmmoBox_Shotgun(Vector3D(-9.5f, 0.0f, 14.4f), Vector3D(0.0f, 200.0f, 0.0f), 6);
+	//•â[—p’e
+	new AmmoBox_Shotgun(Vector3D(-18.0f, 0.0f, 2.0f), Vector3D(0.0f, 200.0f, 0.0f), 6);
+	new AmmoBox_Handgun(Vector3D(-8.0f, 0.0f, -27.0f), Vector3D(0.0f, 200.0f, 0.0f), 6);
+	new AmmoBox_Handgun(Vector3D(32.0f, 0.0f, 9.8f), Vector3D(0.0f, 200.0f, 0.0f), 6);
+	new AmmoBox_Handgun(Vector3D(20.0f, 0.0f, 48.0f), Vector3D(0.0f, 200.0f, 0.0f), 6);
 
 	m_BGM.SetAseet("Field1");
 	m_BGM.SetLoop(true);
 	m_BGM.Play();
+
+	m_Transfer_Out.Start(CHAPTER_TRANSFER_OUT_SPEED);
 }
 
 Chapter_1_2::~Chapter_1_2()
@@ -161,6 +183,7 @@ Chapter_1_2::~Chapter_1_2()
 void Chapter_1_2::Update()
 {
 	m_Transfer_In.Update();
+	m_Transfer_Out.Update();
 
 	if (m_Transfer_In.GetIsEndTransfer())
 	{
@@ -173,13 +196,14 @@ void Chapter_1_2::Update()
 void Chapter_1_2::Render()
 {
 	m_Transfer_In.Render();
+	m_Transfer_Out.Render();
 }
 
 void Chapter_1_2::StageChange(Result_Sphere &data)
 {
 	TaskManager::Stop("TPSCamera");
 	m_StageChange.Sleep();
-	m_Transfer_In.Start(3);
+	m_Transfer_In.Start(CHAPTER_TRANSFER_IN_SPEED);
 }
 
 
@@ -212,13 +236,13 @@ Chapter_1_3::Chapter_1_3() :
 	data.Handgun_LoadedAmmo = 6;
 	data.isTakeWeapon = false;
 	data.Weapon = eShotgun;
-	new Player(&data, Vector3D(13.0f, 0.0f, 12.0f), -140.0f, -5.0f);
+	new Player(&data, Vector3D(13.0f, 0.0f, 12.0f), -134.0f, -140.0f, -5.0f);
 
 	//ƒAƒbƒZƒbƒgtxt“Ç‚Ýž‚Ý
 	StageObjectManager::GetInstance()->ClearList();
 	StageObjectManager::GetInstance()->LoadObject("TextData\\StageObject_Cha1_3.txt");
 
-	new AmmoBox_Shotgun(Vector3D(-9.5f, 0.0f, 14.4f), Vector3D(0.0f, 200.0f, 0.0f), 6);
+	new AmmoBox_Shotgun(Vector3D(-6.0f, 0.0f, -2.0f), Vector3D(0.0f, 200.0f, 0.0f), 6);
 
 	BossState state;
 	state.hp = 80;
@@ -230,6 +254,8 @@ Chapter_1_3::Chapter_1_3() :
 	m_BGM.SetAseet("Field1");
 	m_BGM.SetLoop(true);
 	m_BGM.Play();
+
+	m_Transfer_Out.Start(CHAPTER_TRANSFER_OUT_SPEED);
 }
 
 Chapter_1_3::~Chapter_1_3()
@@ -241,12 +267,13 @@ Chapter_1_3::~Chapter_1_3()
 void Chapter_1_3::Update()
 {
 	m_Transfer_In.Update();
-	
+	m_Transfer_Out.Update();
 }
 
 void Chapter_1_3::Render()
 {
 	m_Transfer_In.Render();
+	m_Transfer_Out.Render();
 }
 
 void Chapter_1_3::HitPlayer(Result_Sphere &data)

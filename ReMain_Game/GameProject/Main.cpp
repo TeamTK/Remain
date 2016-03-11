@@ -22,8 +22,6 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 
 	ImageAsset::LoadFile("TextData\\Image.txt");
 	StaticMeshAsset::LoadFile("TextData\\StaticMesh1.txt");
-	StaticMeshAsset::LoadMesh("media\\Traceroute_1_1.x", "Chapter_1_1_Traceroute");
-	StaticMeshAsset::LoadMesh("media\\Traceroute_1_2.x", "Chapter_1_2_Traceroute");
 
 	new Title();
 

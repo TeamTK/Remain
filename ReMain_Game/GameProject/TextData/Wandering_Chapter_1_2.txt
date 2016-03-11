@@ -1,0 +1,71 @@
+WanderingsInfo
+Chapter_1_2_Monstar_A_1
+3
+Speed
+2.0
+2.0
+2.0
+
+StopTime
+300.0
+300.0
+300.0
+
+TargetPos
+-6.3, 1.0, -25.0
+-15.0, 1.0, -39.0
+3.6, 1.0, -13.6
+
+WanderingsInfo
+Chapter_1_2_Monstar_A_2
+3
+Speed
+2.0
+2.0
+2.0
+
+StopTime
+300.0
+300.0
+300.0
+
+TargetPos
+-29.0, 1.0, -25.0
+2.0, 1.0, 0.7
+21.0, 1.0, 16.0
+
+WanderingsInfo
+Chapter_1_2_Monstar_B_1
+3
+Speed
+2.0
+2.0
+2.0
+
+StopTime
+300.0
+300.0
+300.0
+
+TargetPos
+22.0, 1.0, 48.0
+43.0, 1.0, 33.0
+29.0, 1.0, 56.0
+
+WanderingsInfo
+Chapter_1_2_Monstar_B_2
+3
+Speed
+2.0
+2.0
+2.0
+
+StopTime
+300.0
+300.0
+300.0
+
+TargetPos
+-11.0, 1.0, 24.0
+29.0, 1.0, 32.0
+11.0, 1.0, -12.7

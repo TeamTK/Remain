@@ -19,6 +19,8 @@ NowLoading::NowLoading(bool isResource) :
 
 		auto func = []
 		{
+			StaticMeshAsset::LoadMesh("media\\Traceroute_1_1.x", "Chapter_1_1_Traceroute");
+			StaticMeshAsset::LoadMesh("media\\Traceroute_1_2.x", "Chapter_1_2_Traceroute");
 			StaticMeshAsset::LoadFile("TextData\\StaticMesh2.txt");
 			DynamicMeshAsset::LoadFile("TextData\\DynamicMesh.txt");
 			SoundAsset::LoadFile("TextData\\Sound.txt");
