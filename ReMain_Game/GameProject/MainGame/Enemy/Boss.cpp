@@ -211,6 +211,7 @@ void Boss::Idle()
 {
 	m_AnimType = eAnimationIdle;
 	m_AnimSpeed = BOSS_NORMAL_ANIMSPEED;
+	m_Timer.Start();
 	
 	//ƒ‰ƒ“ƒ_ƒ€
 	std::random_device rnd;
@@ -226,7 +227,7 @@ void Boss::Idle()
 		m_isDefence = true;
 	}
 	*/
-	if (m_Length < 9.0f && rand(mt) == 0)
+	if (m_Length < 9.0f && rand(mt) == 0 && m_Timer.GetSecond() < 1.0f)
 	{
 		m_Model.SetTime(0);
 		m_Rot = m_Model.GetRotation();
@@ -246,7 +247,8 @@ void Boss::Idle()
 		}
 	}
 
-	if (m_Length > 10.0f && m_NoActionTime.GetSecond() >= 2.0f)
+	if (m_Length > 10.0f && m_NoActionTime.GetSecond() >= 2.0f
+		&& m_Timer.GetSecond() < 1.0f)
 	{
 		if (rand(mt) == 2)
 		{
