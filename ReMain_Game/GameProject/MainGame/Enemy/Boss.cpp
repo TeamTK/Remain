@@ -21,10 +21,11 @@ Boss::Boss(BossState &bossState) :
 	m_MaxHp(bossState.hp),
 	m_Hp(bossState.hp),
 	m_FlinchNum(bossState.flinch),
+	m_Pos(bossState.spawnPos),
+	m_Rot(0.0f, 0.0f, 0.0f),
 	m_FlinchCnt(0),
 	m_PlayTime(0),
 	m_Length(0),
-	m_Timer(0),
 	m_Cnt(0),
 	m_isDefence(false)
 {
@@ -89,7 +90,6 @@ Boss::Boss(BossState &bossState) :
 	m_FuncTask.AllStop();
 	m_FuncTask.Start("Idle");
 
-	m_pos = bossState.spawnPos;
 	m_pPlayerPos = g_pPlayerPos;
 	m_NoActionTime.Start();
 }
@@ -113,7 +113,7 @@ void Boss::Update()
 	m_Cnt += GEKO::GetOneFps();
 
 	//プレイヤーとの距離
-	Vector3D distance = (*m_pPlayerPos - m_pos);
+	Vector3D distance = (*m_pPlayerPos - m_Pos);
 	m_Length = distance.Length();
 
 	//攻撃される側の当たり判定更新
@@ -130,6 +130,9 @@ void Boss::Update()
 	m_FuncTask.Update();
 	m_Model.ChangeAnimation(m_AnimType);
 	m_Model.SetPlayTime(m_AnimSpeed *m_OneFlameTime);
+	//プレイヤーの方向に向く
+	float rot = atan2f((m_Pos - *m_pPlayerPos).x, (m_Pos - *m_pPlayerPos).z);
+	m_Model.SetRotationRadian(0.0f, rot, 0.0f);
 }
 
 void Boss::Render()
@@ -142,10 +145,10 @@ void Boss::Attack_A()
 	m_AnimType = eAnimationAttack1;
 	m_AnimSpeed = BOSS_ATTACK_ANIMSPEED;
 
-	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[7].Awake();
-	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[8].Awake();
-	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[9].Awake();
-	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[10].Awake();
+	if (m_PlayTime >= 19 && m_PlayTime <= 20) m_pHitAttack[7].Awake();
+	if (m_PlayTime >= 19 && m_PlayTime <= 20) m_pHitAttack[8].Awake();
+	if (m_PlayTime >= 19 && m_PlayTime <= 20) m_pHitAttack[9].Awake();
+	if (m_PlayTime >= 19 && m_PlayTime <= 20) m_pHitAttack[10].Awake();
 	if (m_PlayTime >= 22) m_pHitAttack[7].Sleep();
 	if (m_PlayTime >= 22) m_pHitAttack[8].Sleep();
 	if (m_PlayTime >= 22) m_pHitAttack[9].Sleep();
@@ -166,10 +169,10 @@ void Boss::Attack_B()
 	m_AnimType = eAnimationAttack2;
 	m_AnimSpeed = BOSS_ATTACK_ANIMSPEED;
 
-	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[7].Awake();
-	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[8].Awake();
-	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[9].Awake();
-	if (m_PlayTime >= 12 && m_PlayTime <= 13) m_pHitAttack[10].Awake();
+	if (m_PlayTime >= 14 && m_PlayTime <= 15) m_pHitAttack[7].Awake();
+	if (m_PlayTime >= 14 && m_PlayTime <= 15) m_pHitAttack[8].Awake();
+	if (m_PlayTime >= 14 && m_PlayTime <= 15) m_pHitAttack[9].Awake();
+	if (m_PlayTime >= 14 && m_PlayTime <= 15) m_pHitAttack[10].Awake();
 	if (m_PlayTime >= 22) m_pHitAttack[7].Sleep();
 	if (m_PlayTime >= 22) m_pHitAttack[8].Sleep();
 	if (m_PlayTime >= 22) m_pHitAttack[9].Sleep();
@@ -208,10 +211,11 @@ void Boss::Idle()
 {
 	m_AnimType = eAnimationIdle;
 	m_AnimSpeed = BOSS_NORMAL_ANIMSPEED;
+	
 	//ランダム
 	std::random_device rnd;
 	std::mt19937 mt(rnd());
-	std::uniform_int_distribution<> rand(0, 29);
+	std::uniform_int_distribution<> rand(0, 49);
 
 	/*
 	if (m_Hp <= m_MaxHp * 0.3f)
@@ -222,11 +226,10 @@ void Boss::Idle()
 		m_isDefence = true;
 	}
 	*/
-
-	if (m_Length < 9.0f &&
-		(rand(mt) == 0 || rand(mt) == 1))
+	if (m_Length < 9.0f && rand(mt) == 0)
 	{
 		m_Model.SetTime(0);
+		m_Rot = m_Model.GetRotation();
 		std::random_device rnd;
 		std::mt19937 mt(rnd());
 		std::uniform_int_distribution<> rand(0, 1);
@@ -243,17 +246,11 @@ void Boss::Idle()
 		}
 	}
 
-	if (m_Length > 13.0f)
-		m_Timer += GEKO::GetOneFps();
-	else
-		m_Timer = 0.0f;
-
-	if (m_Timer >= DEFENCE_MIGRATION_TIME &&
-		m_NoActionTime.GetSecond() >= 2.0f)
+	if (m_Length > 10.0f && m_NoActionTime.GetSecond() >= 2.0f)
 	{
-		if (rand(mt) == 2 || rand(mt) == 3)
+		if (rand(mt) == 2)
 		{
-			m_Timer = 0.0f;
+			m_Rot = m_Model.GetRotation();
 			m_Model.SetTime(0);
 			m_FuncTask.Stop("Idle");
 			m_FuncTask.Start("LongAttack");
