@@ -49,14 +49,14 @@ private:
 	Collider *m_pHitAttackBody;	//銃弾との当たり判定
 	Collider *m_pHitAttack;		//プレイヤーへの攻撃の当たり判定
 	FunctionTask m_FuncTask;	//AI管理
-	Vector3D m_pos;
+	Vector3D m_Pos;
+	Vector3D m_Rot;
 	Vector3D* m_pPlayerPos;
 	std::vector<BoneCalpule> m_BoneCapsule; //ボーン情報（カプセル）
 	std::vector<float> m_DamageMagnification; //ダメージ倍率
 	unsigned int m_AnimType;	//アニメーションの種類
 	int m_FlinchNum; //耐久値
 	float m_FlinchCnt; //耐久蓄積値
-	float m_Timer;
 	float m_Hp;			//体力
 	float m_MaxHp;		//最大体力
 	float m_AnimSpeed;	//アニメーションの速度
