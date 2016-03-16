@@ -3,11 +3,12 @@
 
 #include "../GEKO/Task/RenderTask.h"
 #include "../GameSystem/ScreenTransfer.h"
+#include "MainGame.h"
 
 class NowLoading : public Task
 {
 public:
-	NowLoading(bool isResource);
+	NowLoading(ChapterType type, bool isResource);
 	~NowLoading();
 	void Update();
 	void Render();
@@ -15,6 +16,7 @@ public:
 private:
 	ScreenTransfer_Out m_Transfer;
 	RenderTask m_Render;
+	ChapterType m_ChapterType;
 };
 
 #endif

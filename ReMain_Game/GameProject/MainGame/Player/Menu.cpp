@@ -56,7 +56,7 @@ void Menu::Update()
 				break;
 
 			case SelectState::eRetry:
-				new NowLoading(true);
+				new NowLoading(g_ChapterType, true);
 				break;
 
 			case SelectState::eQuit:

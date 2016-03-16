@@ -4,6 +4,15 @@
 #include "../GEKO/GEKO.h"
 #include "../GameSystem/ScreenTransfer.h"
 
+enum ChapterType
+{
+	eChapter_1_1,
+	eChapter_1_2,
+	eChapter_1_3,
+};
+
+extern ChapterType g_ChapterType;
+
 class Chapter_1_1 : public Task
 {
 public:

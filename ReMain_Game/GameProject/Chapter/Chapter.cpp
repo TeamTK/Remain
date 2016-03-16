@@ -12,6 +12,8 @@
 #define CHAPTER_TRANSFER_IN_SPEED 4.0f
 #define CHAPTER_TRANSFER_OUT_SPEED 4.0f
 
+ChapterType g_ChapterType;
+
 void Kill()
 {
 	TaskManager::Kill("Player");
@@ -28,6 +30,7 @@ void Kill()
 	TaskManager::Kill("BloodAnim");
 	TaskManager::Kill("MuzzleFlash");
 	TaskManager::Kill("Map");
+	TaskManager::Kill("RecoveryItem");
 	StageObjectManager::GetInstance()->ClearList();
 }
 
@@ -36,6 +39,8 @@ Chapter_1_1::Chapter_1_1() :
 	m_Radius(4.0f),
 	m_StageChangePos(40.0f, 0.0f, -17.0f)
 {
+	g_ChapterType = ChapterType::eChapter_1_1;
+
 	DirectionalLight::SetDistance(140.0f);
 
 	PData data;
@@ -130,6 +135,8 @@ Chapter_1_2::Chapter_1_2() :
 	m_Radius(3.0f),
 	m_StageChangePos(64.0f, 0.0f, 39.0f)
 {
+	g_ChapterType = ChapterType::eChapter_1_2;
+
 	DirectionalLight::SetDistance(160.0f);
 
 	PData data;
@@ -220,8 +227,10 @@ void Chapter_1_2::StageChange(Result_Sphere &data)
 Chapter_1_3::Chapter_1_3() :
 	Task("Chapter_1_3", 0)
 {
-	DirectionalLight::SetDistance(160.0f);
-/*
+	g_ChapterType = ChapterType::eChapter_1_3;
+
+	DirectionalLight::SetDistance(100.0f);
+
 	PData data;
 	data.HP = PlayerData::GetData().HP;
 	data.Shotgun_Ammo = PlayerData::GetData().Shotgun_Ammo;
@@ -230,17 +239,6 @@ Chapter_1_3::Chapter_1_3() :
 	data.Handgun_LoadedAmmo = PlayerData::GetData().Handgun_LoadedAmmo;
 	data.isTakeWeapon = PlayerData::GetData().isTakeWeapon;
 	data.Weapon = PlayerData::GetData().Weapon;
-	new Player(&data, Vector3D(13.0f, 0.0f, 12.0f), -140.0f, -5.0f);
-	*/
-
-	PData data;
-	data.HP = 100.0f;
-	data.Shotgun_Ammo = 6;
-	data.Shotgun_LoadedAmmo = 6;
-	data.Handgun_Ammo = 6;
-	data.Handgun_LoadedAmmo = 6;
-	data.isTakeWeapon = false;
-	data.Weapon = eShotgun;
 	new Player(&data, Vector3D(13.0f, 0.0f, 12.0f), -134.0f, -140.0f, -5.0f);
 
 	//アッセットtxt読み込み

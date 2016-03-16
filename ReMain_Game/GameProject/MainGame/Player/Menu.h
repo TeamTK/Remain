@@ -1,8 +1,7 @@
 #ifndef _MENU_H_
 #define _MENU_H_
 
-#include "../../GEKO/GEKO.h"
-#include "..\..\GameSystem\ScreenTransfer.h"
+#include "../../Chapter/Chapter.h"
 
 class Menu : public Task
 {
