@@ -1,22 +1,27 @@
 #include "MainGame.h"
 #include "../GameSystem/StageObject/StageObject.h"
 #include "../MainGame/Player/Player.h"
-#include "../MainGame/Enemy/EnemyStateManager.h"
-#include "../Chapter/Chapter.h"
-#include "../Scene/Title.h"
-#include "../Scene/NowLoading.h"
 
-//#define BOSS_DEBUG_MODE
-
-MainGame::MainGame() :
+MainGame::MainGame(ChapterType type) :
 	Task("MainGame", 0)
 {
-#ifndef BOSS_DEBUG_MODE
-	new Chapter_1_1();
-#endif
-#ifdef BOSS_DEBUG_MODE
-	new Chapter_1_3();
-#endif
+	switch (type)
+	{
+	case eChapter_1_1:
+		new Chapter_1_1();
+		break;
+
+	case eChapter_1_2:
+		new Chapter_1_2();
+		break;
+
+	case eChapter_1_3:
+		new Chapter_1_3();
+		break;
+
+	default:
+		break;
+	}
 }
 
 MainGame::~MainGame()

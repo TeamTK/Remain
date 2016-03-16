@@ -1,8 +1,7 @@
 #ifndef _YOU_ARE_DEAD_H_
 #define _YOU_ARE_DEAD_H_
 
-#include "..\..\GEKO\GEKO.h"
-#include "..\..\GameSystem\ScreenTransfer.h"
+#include "../../Chapter/Chapter.h"
 
 class YouAreDead : public Task
 {

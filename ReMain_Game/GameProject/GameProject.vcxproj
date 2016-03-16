@@ -19,11 +19,13 @@
     <ClCompile Include="GameSystem\GUI\BaseGui.cpp" />
     <ClCompile Include="GameSystem\GUI\Number.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_AmmoNum.cpp" />
+    <ClCompile Include="GameSystem\GUI\UI_Life.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_Reticle.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_SelectWeapon.cpp" />
     <ClCompile Include="GameSystem\FiveSenses\Auditory.cpp" />
     <ClCompile Include="GameSystem\FiveSenses\SightSystem.cpp" />
     <ClCompile Include="GameSystem\ScreenBlood.cpp" />
+    <ClCompile Include="GameSystem\ScreenRecovery.cpp" />
     <ClCompile Include="GameSystem\ScreenTransfer.cpp" />
     <ClCompile Include="GameSystem\StageObject\StageObject.cpp" />
     <ClCompile Include="GEKO\AI\TracerouteManager.cpp" />
@@ -128,11 +130,13 @@
     <ClInclude Include="GameSystem\GUI\Number.h" />
     <ClInclude Include="GameSystem\GUI\SelectWeapon.h" />
     <ClInclude Include="GameSystem\GUI\UI_AmmoNum.h" />
+    <ClInclude Include="GameSystem\GUI\UI_Life.h" />
     <ClInclude Include="GameSystem\GUI\UI_Reticle.h" />
     <ClInclude Include="GameSystem\GUI\UI_SelectWeapon.h" />
     <ClInclude Include="GameSystem\FiveSenses\Auditory.h" />
     <ClInclude Include="GameSystem\FiveSenses\SightSystem.h" />
     <ClInclude Include="GameSystem\ScreenBlood.h" />
+    <ClInclude Include="GameSystem\ScreenRecovery.h" />
     <ClInclude Include="GameSystem\ScreenTransfer.h" />
     <ClInclude Include="GameSystem\StageObject\StageObject.h" />
     <ClInclude Include="GEKO\AI\TracerouteInfo.h" />

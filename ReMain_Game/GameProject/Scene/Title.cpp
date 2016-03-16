@@ -99,7 +99,7 @@ void Title::Update()
 
 		SetKill();
 		m_Render.Sleep();
-		new NowLoading(g_isResource);
+		new NowLoading(ChapterType::eChapter_1_1, g_isResource);
 		g_isResource = true;
 	}
 

@@ -1,12 +1,12 @@
 #ifndef _MAINGAME_H_
 #define _MAINGAME_H_
 
-#include "..\GEKO\Task\Task.h"
+#include "../Chapter/Chapter.h"
 
 class MainGame : public Task
 {
 public:
-	MainGame();
+	MainGame(ChapterType type);
 	~MainGame();
 	void Update();
 

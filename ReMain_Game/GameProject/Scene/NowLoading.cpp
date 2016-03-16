@@ -1,7 +1,4 @@
 #include "NowLoading.h"
-#include "..\GEKO\GEKO.h"
-#include "../GameSystem/StageObject/StageObject.h"
-#include "MainGame.h"
 #include <thread>
 
 #define NOW_LOADING_POS 500, 500
@@ -9,9 +6,11 @@
 ImageAnimation g_NowLodingImage;
 bool g_isLoad = false;
 
-NowLoading::NowLoading(bool isResource) :
+NowLoading::NowLoading(ChapterType type, bool isResource) :
 	Task("NowLoading", 0)
 {
+	m_ChapterType = type;
+
 	//リソース読み込み既に読み込んでいたら実行しない
 	if (!isResource)
 	{
@@ -63,7 +62,7 @@ void NowLoading::Update()
 {
 	if (m_Transfer.GetIsEndTransfer())
 	{
-		new MainGame;
+		new MainGame(m_ChapterType);
 		Task::SetKill();
 	}
 	m_Transfer.Update();
