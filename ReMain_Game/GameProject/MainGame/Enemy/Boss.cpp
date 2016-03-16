@@ -2,6 +2,7 @@
 #include "Boss_Fluids.h"
 #include "../Player/Player.h"
 #include "../../GameSystem/Effect/EffectAnimation.h"
+#include "../Player/GameClear.h"
 #include <random>
 
 #define BOSS_ANIM_ENDTIME 28.5f
@@ -26,8 +27,8 @@ Boss::Boss(BossState &bossState) :
 	m_FlinchCnt(0),
 	m_PlayTime(0),
 	m_Length(0),
-	m_Cnt(0),
-	m_isDefence(false)
+	m_isDefence(false),
+	m_isAlive(true)
 {
 	m_RenderTask.Regist(1, REGIST_RENDER_FUNC(Boss::Render));
 
@@ -48,13 +49,13 @@ Boss::Boss(BossState &bossState) :
 	m_BoneCapsule.emplace_back(0.8f, 45, 48, "Tentacles_R2");  //触手右
 
 	//ダメージ倍率
-	m_DamageMagnification.push_back(0.8f);	//茎
+	m_DamageMagnification.push_back(0.5f);	//茎
 	m_DamageMagnification.push_back(2.0f);	//めしべ
-	m_DamageMagnification.push_back(0.8f);	//花びら1
-	m_DamageMagnification.push_back(0.8f);	//花びら2
-	m_DamageMagnification.push_back(0.8f);	//花びら3
-	m_DamageMagnification.push_back(0.8f);	//花びら4
-	m_DamageMagnification.push_back(0.8f);	//花びら5
+	m_DamageMagnification.push_back(1.0f);	//花びら1
+	m_DamageMagnification.push_back(1.0f);	//花びら2
+	m_DamageMagnification.push_back(1.0f);	//花びら3
+	m_DamageMagnification.push_back(1.0f);	//花びら4
+	m_DamageMagnification.push_back(1.0f);	//花びら5
 	m_DamageMagnification.push_back(0.5f);	//触手左
 	m_DamageMagnification.push_back(0.5f);	//触手左
 	m_DamageMagnification.push_back(0.5f);	//触手右
@@ -92,6 +93,7 @@ Boss::Boss(BossState &bossState) :
 
 	m_pPlayerPos = g_pPlayerPos;
 	m_NoActionTime.Start();
+	m_Timer.Start();
 }
 
 Boss::~Boss()
@@ -110,7 +112,6 @@ void Boss::Update()
 {
 	m_OneFlameTime = GEKO::GetOneFps();
 	m_PlayTime = m_Model.GetPlayTime();
-	m_Cnt += GEKO::GetOneFps();
 
 	//プレイヤーとの距離
 	Vector3D distance = (*m_pPlayerPos - m_Pos);
@@ -130,9 +131,13 @@ void Boss::Update()
 	m_FuncTask.Update();
 	m_Model.ChangeAnimation(m_AnimType);
 	m_Model.SetPlayTime(m_AnimSpeed *m_OneFlameTime);
+
 	//プレイヤーの方向に向く
-	float rot = atan2f((m_Pos - *m_pPlayerPos).x, (m_Pos - *m_pPlayerPos).z);
-	m_Model.SetRotationRadian(0.0f, rot, 0.0f);
+	if (m_isAlive)
+	{
+		float rot = atan2f((m_Pos - *m_pPlayerPos).x, (m_Pos - *m_pPlayerPos).z);
+		m_Model.SetRotationRadian(0.0f, rot, 0.0f);
+	}
 }
 
 void Boss::Render()
@@ -211,13 +216,6 @@ void Boss::Idle()
 {
 	m_AnimType = eAnimationIdle;
 	m_AnimSpeed = BOSS_NORMAL_ANIMSPEED;
-	m_Timer.Start();
-	
-	//ランダム
-	std::random_device rnd;
-	std::mt19937 mt(rnd());
-	std::uniform_int_distribution<> rand(0, 49);
-
 	/*
 	if (m_Hp <= m_MaxHp * 0.3f)
 	{
@@ -227,8 +225,9 @@ void Boss::Idle()
 		m_isDefence = true;
 	}
 	*/
-	if (m_Length < 9.0f && rand(mt) == 0 && m_Timer.GetSecond() < 1.0f)
+	if (m_Length < 9.0f && m_Timer.GetSecond() > 3.0)
 	{
+		m_Timer.Start();
 		m_Model.SetTime(0);
 		m_Rot = m_Model.GetRotation();
 		std::random_device rnd;
@@ -247,11 +246,11 @@ void Boss::Idle()
 		}
 	}
 
-	if (m_Length > 10.0f && m_NoActionTime.GetSecond() >= 2.0f
-		&& m_Timer.GetSecond() < 1.0f)
+	if (m_Length > 10.0f && m_NoActionTime.GetSecond() >= 2.0f)
 	{
-		if (rand(mt) == 2)
+		if (m_Timer.GetSecond() > 3.0)
 		{
+			m_Timer.Start();
 			m_Rot = m_Model.GetRotation();
 			m_Model.SetTime(0);
 			m_FuncTask.Stop("Idle");
@@ -264,17 +263,15 @@ void Boss::Defence()
 {
 	m_AnimType = eAnimationDefence;
 	m_AnimSpeed = BOSS_NORMAL_ANIMSPEED;
-	//ランダム
 	std::random_device rnd;
 	std::mt19937 mt(rnd());
-	std::uniform_int_distribution<> rand(0, 19);
+	std::uniform_int_distribution<> rand(0, 1);
 
 	//アニメーションを停止
 	if (m_AnimType == eAnimationDefence && m_PlayTime >= 14)
 	{
 		m_Model.StopAnimation();
 	}
-
 	if (rand(mt) == 4)
 	{
 		m_isDefence = false;
@@ -395,6 +392,9 @@ void Boss::HitBullet(Result_Sphere& r)
 		m_Model.SetTime(0);
 		m_FuncTask.AllStop();
 		m_FuncTask.Start("Die");
+		m_isAlive = false;
+
+		new GameClear();
 	}
 }
 

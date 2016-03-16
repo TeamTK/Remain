@@ -63,10 +63,10 @@ private:
 	float m_AnimSpeed;	//アニメーションの速度
 	float m_AnimEndTime;	//アニメーションの終わり時間
 	float m_OneFlameTime;	//1フレーム時間
-	float m_PlayTime;
-	float m_Length;
-	float m_Cnt;
-	bool m_isDefence;
+	float m_PlayTime;		//アニメーション再生フレーム
+	float m_Length;			//プレイヤーとの距離
+	bool m_isDefence;		//防御しているか
+	bool m_isAlive;			//生きているか
 
 };
 
