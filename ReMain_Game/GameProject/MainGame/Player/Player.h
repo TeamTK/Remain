@@ -37,6 +37,7 @@ private:
 	void HitAmmoBox(Result_Sphere& r);
 	void HitEnemyAttack(Result_Capsule &hitData);
 	void StageChange(Result_Sphere &data);
+	void HitRecoveryItem(Result_Sphere &data);
 
 private:
 	Vector3D m_KeyDir;		//キー入力軸
@@ -58,6 +59,7 @@ private:
 	Collider m_HitAmmoBox;	//弾薬箱の当たり判定
 	Collider m_HitEnemyAttack; //敵からの攻撃の当たり判定
 	Collider m_StageChange; //ステージ移動用
+	Collider m_HitRecoveryItem; //回復アイテムの当たり判定
 
 	Sound m_HandGunFire;			//ハンドガンの発砲音
 	Sound m_ShotGunFire;			//ショットガンの発砲音

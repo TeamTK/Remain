@@ -100,9 +100,11 @@
     <ClCompile Include="MainGame\Enemy\Monster_B.cpp" />
     <ClCompile Include="MainGame\Enemy\Wanderings.cpp" />
     <ClCompile Include="MainGame\Gravity.cpp" />
+    <ClCompile Include="MainGame\Player\GameClear.cpp" />
     <ClCompile Include="MainGame\Player\Menu.cpp" />
     <ClCompile Include="MainGame\Player\Player.cpp" />
     <ClCompile Include="MainGame\Player\PlayerData.cpp" />
+    <ClCompile Include="MainGame\Player\RecoveryItem.cpp" />
     <ClCompile Include="MainGame\Player\TPSCamera.cpp" />
     <ClCompile Include="MainGame\Player\YouAreDead.cpp" />
     <ClCompile Include="MainGame\Weapon\Handgun.cpp" />
@@ -286,10 +288,12 @@
     <ClInclude Include="MainGame\Enemy\Wanderings.h" />
     <ClInclude Include="MainGame\Gravity.h" />
     <ClInclude Include="MainGame\Monster_A.h" />
+    <ClInclude Include="MainGame\Player\GameClear.h" />
     <ClInclude Include="MainGame\Player\Menu.h" />
     <ClInclude Include="MainGame\Player\Player.h" />
     <ClInclude Include="MainGame\Player\PlayerData.h" />
     <ClInclude Include="MainGame\Player\PlayerInfo.h" />
+    <ClInclude Include="MainGame\Player\RecoveryItem.h" />
     <ClInclude Include="MainGame\Player\TPSCamera.h" />
     <ClInclude Include="MainGame\Player\YouAreDead.h" />
     <ClInclude Include="MainGame\Weapon\Handgun.h" />

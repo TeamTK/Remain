@@ -134,6 +134,8 @@
     <ClCompile Include="GEKO\Mesh\StaticMesh\LoadXStatic.cpp" />
     <ClCompile Include="GEKO\Mesh\RenderManager.cpp" />
     <ClCompile Include="MainGame\Player\Menu.cpp" />
+    <ClCompile Include="MainGame\Player\RecoveryItem.cpp" />
+    <ClCompile Include="MainGame\Player\GameClear.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\MeshData.h" />
@@ -340,6 +342,8 @@
     <ClInclude Include="GEKO\Mesh\RenderManager.h" />
     <ClInclude Include="GEKO\Shader\ShaderInfo.h" />
     <ClInclude Include="MainGame\Player\Menu.h" />
+    <ClInclude Include="MainGame\Player\RecoveryItem.h" />
+    <ClInclude Include="MainGame\Player\GameClear.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">
