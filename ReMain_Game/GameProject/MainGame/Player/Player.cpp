@@ -107,6 +107,10 @@ Player::Player(PData* data, Vector3D pos, float rotY, float horizontal, float ve
 	m_StageChange.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::StageChange));
 	m_StageChange.SetID(eHITID1, eHITID4);
 
+	//回復アイテムの当たり判定
+	m_HitRecoveryItem.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::HitRecoveryItem));
+	m_HitRecoveryItem.SetID(eHITID1, eHITID5);
+
 	m_SphereMap.radius = MAP_HIT_RADIUS;
 
 	//視界対象位置
@@ -976,4 +980,9 @@ void Player::StageChange(Result_Sphere &data)
 
 	m_HitEnemyAttack.Sleep();
 	Task::Stop();
+}
+
+void Player::HitRecoveryItem(Result_Sphere &data)
+{
+	printf("HitRecoveryItem");
 }

@@ -50,10 +50,8 @@ public:
 	~Chapter_1_3();
 	void Update();
 	void Render();
-	void HitPlayer(Result_Sphere &data);
 
 private:
-	Collider m_MapCol;
 	Sound m_BGM;
 	ScreenTransfer_In  m_Transfer_In;
 	ScreenTransfer_Out  m_Transfer_Out;

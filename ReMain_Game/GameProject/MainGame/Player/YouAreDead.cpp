@@ -57,7 +57,6 @@ void YouAreDead::Update()
 			if (m_Transfer_In.GetIsEndTransfer())
 			{
 				TaskManager::AllKill();
-				SetKill();
 
 				switch (m_SelectState)
 				{

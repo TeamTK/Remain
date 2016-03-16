@@ -1,13 +1,13 @@
 #include "Chapter.h"
 #include "../MainGame/Enemy/EnemyStateManager.h"
-#include "../GameSystem/StageObject/StageObject.h"
-#include "../MainGame/Player/Player.h"
-#include "../MainGame/Enemy/EnemyWave.h"
-#include "../MainGame/AmmoBox/AmmoBox_Shotgun.h"
-#include "../MainGame/AmmoBox/AmmoBox_Handgun.h"
-#include "../MainGame/Player/PlayerData.h"
 #include "../MainGame/Enemy/Wanderings.h"
 #include "../MainGame/Enemy/Boss.h"
+#include "../GameSystem/StageObject/StageObject.h"
+#include "../MainGame/Player/Player.h"
+#include "../MainGame/Player/PlayerData.h"
+#include "../MainGame/Player/RecoveryItem.h"
+#include "../MainGame/AmmoBox/AmmoBox_Shotgun.h"
+#include "../MainGame/AmmoBox/AmmoBox_Handgun.h"
 
 #define CHAPTER_TRANSFER_IN_SPEED 4.0f
 #define CHAPTER_TRANSFER_OUT_SPEED 4.0f
@@ -74,6 +74,10 @@ Chapter_1_1::Chapter_1_1() :
 	new AmmoBox_Shotgun(Vector3D(-9.5f, 0.0f, 14.4f), Vector3D(0.0f, 200.0f, 0.0f), 6);
 	new AmmoBox_Handgun(Vector3D(19.0f, 0.0f, -13.0f), Vector3D(0.0f, 200.0f, 0.0f), 6);
 
+	//回復アイテム生成
+	new RecoveryItem(-15.0f, 0.0f, 0.0f);
+
+	//ステージBGM
 	m_BGM.SetAseet("Field2");
 	m_BGM.SetLoop(true);
 	m_BGM.Play();
@@ -167,6 +171,7 @@ Chapter_1_2::Chapter_1_2() :
 	new AmmoBox_Handgun(Vector3D(32.0f, 0.0f, 9.8f), Vector3D(0.0f, 200.0f, 0.0f), 6);
 	new AmmoBox_Handgun(Vector3D(20.0f, 0.0f, 48.0f), Vector3D(0.0f, 200.0f, 0.0f), 6);
 
+	//ステージBGM
 	m_BGM.SetAseet("Field1");
 	m_BGM.SetLoop(true);
 	m_BGM.Play();
@@ -251,6 +256,7 @@ Chapter_1_3::Chapter_1_3() :
 	state.spawnRot = Vector3D(0.0f, 180.0f, 0.0f);
 	new Boss(state);
 
+	//ステージBGM
 	m_BGM.SetAseet("Field1");
 	m_BGM.SetLoop(true);
 	m_BGM.Play();
@@ -274,18 +280,4 @@ void Chapter_1_3::Render()
 {
 	m_Transfer_In.Render();
 	m_Transfer_Out.Render();
-}
-
-void Chapter_1_3::HitPlayer(Result_Sphere &data)
-{
-	EnemyWaveInfo info;
-	info.isSearch = true;
-	info.waveAllNum = 1;
-	info.intervalTime = 1;
-	info.spawnName = "Chapter1-1";
-	info.stateName = "Normal_Monster_A";
-	info.tracerouteName = "Chapter_1_3_Traceroute";
-	new EnemyWave(info);
-
-	m_MapCol.Sleep();
 }
