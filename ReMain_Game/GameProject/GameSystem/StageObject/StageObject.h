@@ -6,7 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include "../../GEKO/Collider/Collider.h"
-#include "../../GEKO/Mesh/StaticMesh/StaticMesh.h"
+#include "../../GEKO/GEKO.h"
 
 struct XYZ
 {
@@ -82,16 +82,22 @@ public:
 	Tree_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
 		StageObject(pos, rot, sca, name, false, true)
 	{
-		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
+		m_Collision.SetAsset("Tree_1");
+		m_Collision.SetTranselate(pos.x, pos.y, pos.z);
+		m_Collision.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
+		m_Collision.SetScale(sca.x, sca.y, sca.z);
+
+		m_CharacterHit.Regist_SMesh_vs_S(&m_Collision);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
 
-		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
+		m_BulletHit.Regist_SMesh_vs_L(&m_Collision, true);
 		m_BulletHit.SetID(eHITID4, eHITID2 | eHITID8);
 		m_BulletHit.SetName("Tree_1");
 	}
 	~Tree_1() {}
 
 private:
+	StaticMesh m_Collision;
 	Collider m_BulletHit;
 };
 
@@ -102,16 +108,22 @@ public:
 	Tree_2(XYZ pos, XYZ rot, XYZ sca, std::string name) :
 		StageObject(pos, rot, sca, name, false, true)
 	{
-		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
+		m_Collision.SetAsset("Tree_2");
+		m_Collision.SetTranselate(pos.x, pos.y, pos.z);
+		m_Collision.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
+		m_Collision.SetScale(sca.x, sca.y, sca.z);
+
+		m_CharacterHit.Regist_SMesh_vs_S(&m_Collision);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
 
-		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
+		m_BulletHit.Regist_SMesh_vs_L(&m_Collision, true);
 		m_BulletHit.SetID(eHITID4, eHITID2 | eHITID8);
 		m_BulletHit.SetName("Tree_2");
 	}
 	~Tree_2() {}
 
 private:
+	StaticMesh m_Collision;
 	Collider m_BulletHit;
 };
 
