@@ -1,0 +1,3 @@
+Sound media\SoundData\Decision.wav Decision
+Sound media\SoundData\Cursor.wav Cursor
+

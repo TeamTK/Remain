@@ -1,5 +1,4 @@
 Image media\ImageData\Reticle.png Reticle
-Image media\ImageData\Blood.png Blood
 Image media\ImageData\GunEffect.png GunEffect
 Image media\ImageData\Fluids_Par.png Fluids_Par
 Image media\ImageData\SelectCircle.png SelectCircle
@@ -10,12 +9,7 @@ Image media\ImageData\UI_Handgun.png UI_Handgun
 Image media\ImageData\UI_RecoveryItem.png UI_RecoveryItem
 Image media\ImageData\Number.png Number
 Image media\ImageData\MapHit.png MapHit
-Image media\ImageData\Remain.png Remain
-Image media\ImageData\Start.png Start
-Image media\ImageData\Exit.png Exit
-Image media\ImageData\NowLoading.png NowLoading
 Image media\ImageData\YouAreDead.png YouAreDead
-Image media\ImageData\Transfer_Black.png Transfer_Black
 Image media\ImageData\BloodAnim.png BloodAnim
 Image media\ImageData\BloodAnim_Green.png BloodAnim_Green
 Image media\ImageData\MuzzleFlash.png MuzzleFlash
@@ -27,5 +21,5 @@ Image media\ImageData\Retry.png Retry
 Image media\ImageData\Quit.png Quit
 Image media\ImageData\GameClear.png GameClear
 Image media\ImageData\UI_Life.png UI_Life
+Image media\ImageData\UI_LifeFrame.png UI_LifeFrame
 Image media\ImageData\ScreenRecovery.png ScreenRecovery
-

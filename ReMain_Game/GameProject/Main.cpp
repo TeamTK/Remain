@@ -2,6 +2,8 @@
 #include "GameSystem\StageObject\StageObject.h"
 #include "Scene\Title.h"
 
+#include "GameSystem\GUI\UI_Life.h"
+
 INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 {
 	Debug::Start();
@@ -19,8 +21,9 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 
 	GEKO::ChangeFps(30);
 
-	ImageAsset::LoadFile("TextData\\Image.txt");
+	ImageAsset::LoadFile("TextData\\Image1.txt");
 	StaticMeshAsset::LoadFile("TextData\\StaticMesh1.txt");
+	SoundAsset::LoadFile("TextData\\Sound_Title.txt");
 
 	new Title();
 

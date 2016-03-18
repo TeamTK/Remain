@@ -5,3 +5,5 @@ Sound media\SoundData\GunADS.wav GunADS
 Sound media\SoundData\HitEnemyAttack.wav HitEnemyAttack
 Sound media\SoundData\Field1.wav Field1
 Sound media\SoundData\Field1.wav Field2
+Sound media\SoundData\MenuOpen.wav MenuOpen
+Sound media\SoundData\YouAreDead.wav YouAreDea

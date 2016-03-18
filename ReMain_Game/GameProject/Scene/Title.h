@@ -35,6 +35,8 @@ private:
 	Select m_Select;
 	ScreenTransfer_In m_Transfer;
 	ScreenTransfer_Out m_Transfer_Out;
+	Sound m_DecisionSound;
+	Sound m_CursorSound;
 };
 
 #endif

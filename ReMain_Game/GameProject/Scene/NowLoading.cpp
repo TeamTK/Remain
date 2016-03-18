@@ -18,6 +18,7 @@ NowLoading::NowLoading(ChapterType type, bool isResource) :
 
 		auto func = []
 		{
+			ImageAsset::LoadFile("TextData\\Image2.txt");
 			StaticMeshAsset::LoadMesh("media\\Traceroute_1_1.x", "Chapter_1_1_Traceroute");
 			StaticMeshAsset::LoadMesh("media\\Traceroute_1_2.x", "Chapter_1_2_Traceroute");
 			StaticMeshAsset::LoadFile("TextData\\StaticMesh2.txt");
