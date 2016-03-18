@@ -178,6 +178,10 @@ Chapter_1_2::Chapter_1_2() :
 	new AmmoBox_Handgun(Vector3D(32.0f, 0.0f, 9.8f), Vector3D(0.0f, 200.0f, 0.0f), 6);
 	new AmmoBox_Handgun(Vector3D(20.0f, 0.0f, 48.0f), Vector3D(0.0f, 200.0f, 0.0f), 6);
 
+	//回復アイテム生成
+	new RecoveryItem(10.0f, 0.0f, -14.0f);
+	new RecoveryItem(17.0f, 0.0f, 15.0f);
+
 	//ステージBGM
 	m_BGM.SetAseet("Field1");
 	m_BGM.SetLoop(true);
@@ -246,6 +250,7 @@ Chapter_1_3::Chapter_1_3() :
 	StageObjectManager::GetInstance()->LoadObject("TextData\\StageObject_Cha1_3.txt");
 
 	new AmmoBox_Shotgun(Vector3D(-6.0f, 0.0f, -2.0f), Vector3D(0.0f, 200.0f, 0.0f), 6);
+	new RecoveryItem(-2.0f, 0.0f, 0.0f);
 
 	BossState state;
 	state.hp = 80;

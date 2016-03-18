@@ -1,5 +1,5 @@
-StaticMesh media\Tree_1.x Tree_1
-StaticMesh media\Tree_2.x Tree_2
+StaticMesh media\Tree_1_Collision.x Tree_1
+StaticMesh media\Tree_2_Collision.x Tree_2
 StaticMesh media\Tree_1_Trunk.x Tree_1_Trunk
 StaticMesh media\Grass_1.x Grass_1
 StaticMesh media\Grass_2.x Grass_2
