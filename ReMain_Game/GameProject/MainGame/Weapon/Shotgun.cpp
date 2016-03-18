@@ -52,9 +52,17 @@ void Shotgun::Reload()
 	//ŽèŽ‚¿’e”‚ª0‚æ‚è‘å‚«‚¢•e‚É“ü‚Á‚Ä‚¢‚é’e”‚ªÅ‘å‘•’e”‚æ‚è¬‚³‚¢
 	if (m_Ammo > 0 && m_LoadedAmmo < AMMO_LOADED_SHOTGUN)
 	{
-		int num = AMMO_LOADED_SHOTGUN - m_LoadedAmmo;
-		m_LoadedAmmo += num;
-		m_Ammo -= num;
+		int temp = AMMO_LOADED_SHOTGUN - m_LoadedAmmo;
+		if (m_Ammo <= temp)
+		{
+			m_LoadedAmmo += m_Ammo;
+			m_Ammo = 0;
+		}
+		else
+		{
+			m_LoadedAmmo += temp;
+			m_Ammo -= temp;
+		}
 		if (m_Ammo < 0)m_Ammo = 0;
 	}
 }

@@ -7,7 +7,7 @@ Image media\ImageData\SelectedCursor.png SelectedCursor
 Image media\ImageData\UI_FreeHand.png UI_FreeHand
 Image media\ImageData\UI_Shotgun.png UI_Shotgun
 Image media\ImageData\UI_Handgun.png UI_Handgun
-Image media\ImageData\UI_None.png UI_None
+Image media\ImageData\UI_RecoveryItem.png UI_RecoveryItem
 Image media\ImageData\Number.png Number
 Image media\ImageData\MapHit.png MapHit
 Image media\ImageData\Remain.png Remain

@@ -7,7 +7,7 @@ enum EWeapons
 	eHand,
 	eShotgun,
 	eHandgun,
-	eNone,
+	eRecoveryItem,
 	eWeaponAll
 };
 

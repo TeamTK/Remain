@@ -74,6 +74,7 @@ private:
 	int m_Phase;
 	int m_PlayAnim;			//武器に渡す用
 	int m_Volume;			//プレイヤーが出す音の音量
+	int m_RecoveryItemNum;	//回復薬の携帯数
 
 	float m_MoveSpeed;		//移動速度
 	float m_AnimSpeed;		//アニメーションスピード

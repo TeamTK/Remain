@@ -1,8 +1,8 @@
 #include "ScreenRecovery.h"
 
-#define RECOVERY_ALPHA_FADE_IN_SPEED 3.0f
-#define RECOVERY_ALPHA_FADE_OUT_SPEED 3.0f
-#define RECOVERY_ALPHA_MAX 100
+#define RECOVERY_ALPHA_FADE_IN_SPEED 4.0f
+#define RECOVERY_ALPHA_FADE_OUT_SPEED 4.0f
+#define RECOVERY_ALPHA_MAX 60
 
 ScreenRecovery::ScreenRecovery() :
 	Task("ScreenRecovery", 0),

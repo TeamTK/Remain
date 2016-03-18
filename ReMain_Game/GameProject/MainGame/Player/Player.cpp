@@ -11,6 +11,7 @@
 #include "../../GameSystem/Effect/EffectAnimation.h"
 #include "../../GameSystem/GUI/UI_SelectWeapon.h"
 #include "../../GameSystem/ScreenBlood.h"
+#include "../../GameSystem/ScreenRecovery.h"
 
 #define WALK_SPEED 3.0f			  //歩くスピード
 #define RUN_SPEED 6.0f				  //走るスピード
@@ -46,6 +47,7 @@ Player::Player(PData* data, Vector3D pos, float rotY, float horizontal, float ve
 	m_Radius(0.5f),
 	m_Phase(0),
 	m_OneFlameTime(0),
+	m_RecoveryItemNum(0),
 	m_isCrouch(false),
 	m_isAttack(false),
 	m_isMove(false),
@@ -223,6 +225,7 @@ void Player::Update()
 	m_PlayAnimTime = m_Model.GetPlayTime();
 
 	//m_Model.GetTranselate().DebugDraw("");
+	std::cout << m_Hp << "\n";
 }
 
 void Player::Move()
@@ -319,7 +322,7 @@ void Player::Attack()
 	if (!m_SetupWeapon)
 	{
 		//武器の切り替え(ホイールクリック, 方向キー左右)
-		if ((Input::Mouse.WheelClicked() || Input::XInputPad1.ThumbRightClicked()))
+		if ((Input::Mouse.WheelClicked() || Input::XInputPad1.ThumbRightClicked()) && g_pUI_SelectWeapon->GetSelect() != 3)
 		{
 			if (g_pUI_SelectWeapon->isSelected())
 			{
@@ -333,6 +336,17 @@ void Player::Attack()
 				TaskManager::Start("Player");
 			}
 			m_SelectedWeapon = g_pUI_SelectWeapon->Select();
+		}
+	}
+	//回復薬
+	if (g_pUI_SelectWeapon->GetSelect() == 3)
+	{
+		if ((Input::Mouse.LClicked() || Input::XInputPad1.AClicked()) && m_RecoveryItemNum > 0  )
+		{
+			new ScreenRecovery();
+			m_RecoveryItemNum--;
+			m_Hp += 50;
+			if (m_Hp > 100)m_Hp = 100;
 		}
 	}
 
@@ -985,4 +999,5 @@ void Player::StageChange(Result_Sphere &data)
 void Player::HitRecoveryItem(Result_Sphere &data)
 {
 	printf("HitRecoveryItem");
+	m_RecoveryItemNum++;
 }
