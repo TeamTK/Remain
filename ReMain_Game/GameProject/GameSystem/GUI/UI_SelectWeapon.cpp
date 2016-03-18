@@ -18,7 +18,7 @@ static SData WeaponData[] =
 	{ Vector3D(400.0f, 445.0f, 0.0f), eHand		},	//Down
 	{ Vector3D(400.0f, 155.0f, 0.0f), eShotgun	},	//Up
 	{ Vector3D(255.0f, 300.0f, 0.0f), eHandgun	},	//Left
-	{ Vector3D(545.0f, 300.0f, 0.0f), eNone		},	//Right
+	{ Vector3D(545.0f, 300.0f, 0.0f), eRecoveryItem },	//Right
 };
 
 #define CIRCLE_SIZE 260
@@ -45,8 +45,9 @@ UI_SelectWeapon::UI_SelectWeapon() :
 	m_WeaponUI[0].SetAsset("UI_FreeHand");
 	m_WeaponUI[1].SetAsset("UI_Shotgun");
 	m_WeaponUI[2].SetAsset("UI_Handgun");
-	m_WeaponUI[3].SetAsset("UI_None");
-	for (int i = 0; i < 4; i++) {
+	m_WeaponUI[3].SetAsset("UI_RecoveryItem");
+	for (int i = 0; i < 4; i++)
+	{
 		m_WeaponUI[i].SetCenter(96, 96);
 		m_UIPos[i] = Vector3D(400.0f, 300.0f, 0.0f);
 	}
@@ -95,14 +96,14 @@ void UI_SelectWeapon::Update()
 				//if (PadDir.y < -CURSOR_VALUE)	m_Selected = 0;
 				if (PadDir.y > CURSOR_VALUE)	m_Selected = 1;
 				if (PadDir.x < -CURSOR_VALUE)	m_Selected = 2;
-				//if (PadDir.x > CURSOR_VALUE)	m_Selected = 3;
+				if (PadDir.x > CURSOR_VALUE)	m_Selected = 3;
 			}
 			else
 			{
 				//if (Input::KeyS.Clicked())	m_Selected = 0;
 				if (Input::KeyW.Clicked())	m_Selected = 1;
 				if (Input::KeyA.Clicked())	m_Selected = 2;
-				//if (Input::KeyD.Clicked())	m_Selected = 3;
+				if (Input::KeyD.Clicked())	m_Selected = 3;
 			}
 
 			//ÉJÅ[É\Éãà⁄ìÆ
@@ -145,6 +146,11 @@ void UI_SelectWeapon::Update()
 EWeapons UI_SelectWeapon::Select()
 {
 	m_isSelected = !m_isSelected;
+	return WeaponData[m_Selected].weapons;
+}
+
+EWeapons UI_SelectWeapon::GetSelect()
+{
 	return WeaponData[m_Selected].weapons;
 }
 

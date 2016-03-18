@@ -14,6 +14,7 @@ public:
 	bool isSelected();
 	bool HitCheck(Vector3D pos1, Vector3D pos2, float radius1, float radius2);
 	EWeapons Select();
+	EWeapons GetSelect();
 
 private:
 	Image m_Circle;

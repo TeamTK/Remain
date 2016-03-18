@@ -31,7 +31,7 @@ void Handgun::Update()
 	}
 	else if ((*m_PlayerAnim == eAnim_TakeHandgun  && *m_PlayerAnimFrame >= 15) ||
 		*m_PlayerAnim == eAnim_IdleTakeHandgun || *m_PlayerAnim == eAnim_WalkTakeHandgun ||
-		*m_PlayerAnim == eAnim_ReloadHandgun ||	*m_PlayerAnim == eAnim_RunTakeHandgun ||
+		*m_PlayerAnim == eAnim_ReloadHandgun || *m_PlayerAnim == eAnim_RunTakeHandgun ||
 		*m_PlayerAnim == eAnim_WalkReloadHandgun)
 	{
 		//Žè‚ÉŽ‚Á‚Ä‚¢‚éó‘Ô
@@ -51,9 +51,17 @@ void Handgun::Reload()
 	//ŽèŽ‚¿’e”‚ª0‚æ‚è‘å‚«‚¢•e‚É“ü‚Á‚Ä‚¢‚é’e”‚ªÅ‘å‘•’e”‚æ‚è¬‚³‚¢
 	if (m_Ammo > 0 && m_LoadedAmmo < AMMO_LOADED_HANDGUN)
 	{
-		int temp = AMMO_LOADED_SHOTGUN - m_LoadedAmmo;
-		m_LoadedAmmo += temp;
-		m_Ammo -= temp;
+		int temp = AMMO_LOADED_HANDGUN - m_LoadedAmmo;
+		if (m_Ammo <= temp)
+		{
+			m_LoadedAmmo += m_Ammo;
+			m_Ammo = 0;
+		}
+		else
+		{
+			m_LoadedAmmo += temp;
+			m_Ammo -= temp;
+		}
 		if (m_Ammo < 0)m_Ammo = 0;
 	}
 }

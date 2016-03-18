@@ -16,6 +16,7 @@ private:
 
 private:
 	float m_Radius;
+	StaticMesh m_Model;
 	Vector3D m_Pos;
 	RenderTask m_Render;
 	Collider m_HitSphere;
