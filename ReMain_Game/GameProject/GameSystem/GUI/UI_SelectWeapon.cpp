@@ -33,6 +33,7 @@ UI_SelectWeapon::UI_SelectWeapon() :
 	m_CircleSize(0),
 	m_WeponUISize(0),
 	m_Selected(1),
+	m_OldSelected(1),
 	m_ScPos(400.0f, 155.0f, 0.0f)
 {
 	m_RenderTask.Regist(5, REGIST_RENDER_FUNC(UI_SelectWeapon::Draw));
@@ -51,6 +52,8 @@ UI_SelectWeapon::UI_SelectWeapon() :
 		m_WeaponUI[i].SetCenter(96, 96);
 		m_UIPos[i] = Vector3D(400.0f, 300.0f, 0.0f);
 	}
+
+	m_CursorSound.SetAseet("Cursor");
 }
 
 UI_SelectWeapon::~UI_SelectWeapon()
@@ -93,18 +96,26 @@ void UI_SelectWeapon::Update()
 				{
 					PadDir = Vector3D(0.0f, 0.0f, 0.0f);
 				}
+
 				//if (PadDir.y < -CURSOR_VALUE)	m_Selected = 0;
-				if (PadDir.y > CURSOR_VALUE)	m_Selected = 1;
+				if (PadDir.y > CURSOR_VALUE)	m_Selected = 1; 
 				if (PadDir.x < -CURSOR_VALUE)	m_Selected = 2;
 				if (PadDir.x > CURSOR_VALUE)	m_Selected = 3;
 			}
 			else
 			{
 				//if (Input::KeyS.Clicked())	m_Selected = 0;
-				if (Input::KeyW.Clicked())	m_Selected = 1;
-				if (Input::KeyA.Clicked())	m_Selected = 2;
-				if (Input::KeyD.Clicked())	m_Selected = 3;
+				if (Input::KeyW.Clicked())	m_Selected = 1; m_CursorSound.Play();
+				if (Input::KeyA.Clicked())	m_Selected = 2; m_CursorSound.Play();
+				if (Input::KeyD.Clicked())	m_Selected = 3; m_CursorSound.Play();
 			}
+
+			if (m_OldSelected != m_Selected)
+			{
+				m_CursorSound.Play();
+			}
+
+			m_OldSelected = m_Selected;
 
 			//ÉJÅ[É\Éãà⁄ìÆ
 			m_ScPos = Vector3D::Lerp(m_ScPos, WeaponData[m_Selected].pos, 0.6f);

@@ -32,6 +32,9 @@ private:
 	Image m_BackgroundImage;
 	ScreenTransfer_In m_Transfer_In;
 	SelectState m_SelectState;
+	Sound m_OpenSound;
+	Sound m_DecisionSound;
+	Sound m_CursorSound;
 };
 
 #endif

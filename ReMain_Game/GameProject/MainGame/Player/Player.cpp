@@ -12,6 +12,7 @@
 #include "../../GameSystem/GUI/UI_SelectWeapon.h"
 #include "../../GameSystem/ScreenBlood.h"
 #include "../../GameSystem/ScreenRecovery.h"
+#include "../../GameSystem/GUI/UI_Life.h"
 
 #define WALK_SPEED 3.0f			  //歩くスピード
 #define RUN_SPEED 6.0f				  //走るスピード
@@ -158,7 +159,7 @@ void Player::Update()
 	//m_pos.DebugDraw("Pleyr");
 
 	//メニュー画面生成
-	if (Input::KeyEscape.Clicked() && !m_SetupWeapon && !g_pUI_SelectWeapon->isSelected())
+	if ((Input::KeyEscape.Clicked() || Input::XInputPad1.StartClicked()) && !m_SetupWeapon && !g_pUI_SelectWeapon->isSelected())
 	{
 		new Menu;
 		return;
@@ -181,9 +182,15 @@ void Player::Update()
 	Animation();
 	Character::Update();
 
+	//無敵時間解除
 	if ((m_Timer.GetSecond() >= 1.2) && !m_isDead)
 	{
 		m_HitEnemyAttack.Awake();
+	}
+
+	//プレイヤーの血表示時間
+	if (m_Timer.GetSecond() >= 11.0)
+	{
 		m_Model.SetTexture(nullptr);
 	}
 
@@ -327,6 +334,7 @@ void Player::Attack()
 			if (g_pUI_SelectWeapon->isSelected())
 			{
 				TaskManager::AllStart();
+				TaskManager::Kill("UI_Life");
 			}
 			else
 			{
@@ -334,6 +342,7 @@ void Player::Attack()
 				TaskManager::Start("UI_SelectWeapon");
 				TaskManager::Start("Gravity");
 				TaskManager::Start("Player");
+				new UI_Life(100, &m_Hp);
 			}
 			m_SelectedWeapon = g_pUI_SelectWeapon->Select();
 		}
@@ -936,7 +945,7 @@ void Player::HitEnemyAttack(Result_Capsule &hitData)
 	EffectAnimationInfo info;
 	info.frameNum = 8;
 	info.pos = hitData.end;
-	info.size = 2.0f;
+	info.size = 4.0f;
 	info.sizeW = 256;
 	info.sizeH = 256;
 	info.speed = 32;

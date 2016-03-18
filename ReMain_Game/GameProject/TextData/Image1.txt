@@ -1,0 +1,6 @@
+Image media\ImageData\Blood.png Blood
+Image media\ImageData\Remain.png Remain
+Image media\ImageData\Start.png Start
+Image media\ImageData\Exit.png Exit
+Image media\ImageData\NowLoading.png NowLoading
+Image media\ImageData\Transfer_Black.png Transfer_Black

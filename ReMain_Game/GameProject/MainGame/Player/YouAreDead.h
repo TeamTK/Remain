@@ -34,6 +34,9 @@ private:
 	Image m_SelectImage;
 	ScreenTransfer_In m_Transfer_In;
 	SelectState m_SelectState;
+	Sound m_YouAreDeadSound;
+	Sound m_DecisionSound;
+	Sound m_CursorSound;
 };
 
 #endif

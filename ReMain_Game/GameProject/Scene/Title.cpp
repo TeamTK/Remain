@@ -26,6 +26,9 @@ Title::Title() :
 	m_HandGun.SetAsset("Handgun");
 	m_AmmoBox.SetAsset("AmmoBox");
 
+	m_DecisionSound.SetAseet("Decision");
+	m_CursorSound.SetAseet("Cursor");
+
 	//‘I‘ğ‰æ‘œİ’è
 	m_SelectImage.SetSize(m_SelectImage.GetWidth() / 4, m_SelectImage.GetHeight() / 5);
 	m_SelectImage.SetCenter(m_SelectImage.GetWidth() / 2, m_SelectImage.GetHeight() / 2);
@@ -60,6 +63,7 @@ void Title::Update()
 	//‘I‘ğã
 	if (Input::KeyUp.Clicked() || Input::XInputPad1.UpClicked())
 	{
+		m_CursorSound.Play();
 		m_SelectPos = Vector2D(START_POS);
 		m_Select = Select::eStart;
 	}
@@ -67,6 +71,7 @@ void Title::Update()
 	//‘I‘ğ‰º
 	if (Input::KeyDown.Clicked() || Input::XInputPad1.DownClicked())
 	{
+		m_CursorSound.Play();
 		m_SelectPos = Vector2D(EXIT_POS);
 		m_Select = Select::eExit;
 	}
@@ -80,6 +85,7 @@ void Title::Update()
 			break;
 
 		case Select::eStart:
+			m_DecisionSound.Play();
 			m_Transfer.Start(4.0f);
 			m_IsTransferStart = true;
 			break;

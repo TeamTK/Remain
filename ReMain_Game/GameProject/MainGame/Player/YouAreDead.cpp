@@ -26,6 +26,11 @@ YouAreDead::YouAreDead(int endTime) :
 
 	m_YouAreDeadImage.SetCenter(m_YouAreDeadImage.GetWidth() / 2, m_YouAreDeadImage.GetHeight() / 2);
 
+	//音楽リソース割り当て
+	m_YouAreDeadSound.SetAseet("YouAreDead");
+	m_DecisionSound.SetAseet("Decision");
+	m_CursorSound.SetAseet("Cursor");
+
 	//アルファ値0
 	m_YouAreDeadImage.SetAlpha(0);
 	m_RetryImage.SetAlpha(0);
@@ -37,6 +42,8 @@ YouAreDead::YouAreDead(int endTime) :
 	m_SelectImage.SetCenter(m_SelectImage.GetWidth() / 2, m_SelectImage.GetHeight() / 2);
 
 	m_Transfer_In.Start(5);
+
+	m_YouAreDeadSound.Play();
 }
 
 YouAreDead::~YouAreDead()
@@ -90,6 +97,7 @@ void YouAreDead::Select()
 	//選択上
 	if (Input::KeyUp.Clicked() || Input::XInputPad1.UpClicked())
 	{
+		m_CursorSound.Play();
 		m_SelectPos = Vector2D(RETRY_POS);
 		m_SelectState = SelectState::eRetry;
 	}
@@ -97,6 +105,7 @@ void YouAreDead::Select()
 	//選択下
 	if (Input::KeyDown.Clicked() || Input::XInputPad1.DownClicked())
 	{
+		m_CursorSound.Play();
 		m_SelectPos = Vector2D(QUIT_POS);
 		m_SelectState = SelectState::eQuit;
 	}
@@ -104,6 +113,8 @@ void YouAreDead::Select()
 	//決定ボタン
 	if ((Input::KeyEnter.Clicked() || Input::XInputPad1.AClicked()))
 	{
+		m_DecisionSound.Play();
+
 		switch (m_SelectState)
 		{
 		case SelectState::eNo:

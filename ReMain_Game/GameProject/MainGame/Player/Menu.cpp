@@ -26,11 +26,18 @@ Menu::Menu() :
 
 	m_BackgroundImage.SetAlpha(100);
 
+	//音楽リソース割り当て
+	m_OpenSound.SetAseet("MenuOpen");
+	m_DecisionSound.SetAseet("Decision");
+	m_CursorSound.SetAseet("Cursor");
+
 	//選択画像設定
 	m_SelectImage.SetSize(m_SelectImage.GetWidth() / 4, m_SelectImage.GetHeight() / 5);
 	m_SelectImage.SetCenter(m_SelectImage.GetWidth() / 2, m_SelectImage.GetHeight() / 2);
 
 	m_Transfer_In.Start(5);
+
+	m_OpenSound.Play();
 }
 
 Menu::~Menu()
@@ -88,7 +95,7 @@ void Menu::Render()
 
 void Menu::Select()
 {
-	if (Input::KeyEscape.Clicked() && !m_IsStop)
+	if ((Input::KeyEscape.Clicked() || Input::XInputPad1.StartClicked()) && !m_IsStop)
 	{
 		TaskManager::AllStart();
 		SetKill();
@@ -99,6 +106,7 @@ void Menu::Select()
 	//選択上
 	if (Input::KeyUp.Clicked() || Input::XInputPad1.UpClicked())
 	{
+		m_CursorSound.Play();
 		m_SelectPos = Vector2D(MENU_RETRY_POS);
 		m_SelectState = SelectState::eRetry;
 	}
@@ -106,6 +114,7 @@ void Menu::Select()
 	//選択下
 	if (Input::KeyDown.Clicked() || Input::XInputPad1.DownClicked())
 	{
+		m_CursorSound.Play();
 		m_SelectPos = Vector2D(MENU_QUIT_POS);
 		m_SelectState = SelectState::eQuit;
 	}
@@ -113,6 +122,8 @@ void Menu::Select()
 	//決定ボタン
 	if ((Input::KeyEnter.Clicked() || Input::XInputPad1.AClicked()))
 	{
+		m_DecisionSound.Play();
+
 		switch (m_SelectState)
 		{
 		case SelectState::eNo:

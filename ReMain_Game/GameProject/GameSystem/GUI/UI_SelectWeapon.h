@@ -20,12 +20,14 @@ private:
 	Image m_Circle;
 	Image m_SelectedCursor;
 	Image m_WeaponUI[4];
+	Sound m_CursorSound;
 	Vector3D m_ScPos;	//カーソルの座標 XYのみ使用
 	Vector3D m_UIPos[4];	//各武器UI座標 XYのみ使用
 	RenderTask m_RenderTask;
 	int m_CircleSize;
 	int m_WeponUISize;
 	int m_Selected;
+	int m_OldSelected;
 	bool m_isSelected;
 };
 extern UI_SelectWeapon* g_pUI_SelectWeapon;
