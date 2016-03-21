@@ -16,6 +16,7 @@
     <ClCompile Include="GameSystem\Effect\EffectAnimation.cpp" />
     <ClCompile Include="GameSystem\Effect\EffectParabola.cpp" />
     <ClCompile Include="GameSystem\Effect\EffectSphere.cpp" />
+    <ClCompile Include="GameSystem\Effect\SoundEffect.cpp" />
     <ClCompile Include="GameSystem\GUI\BaseGui.cpp" />
     <ClCompile Include="GameSystem\GUI\Number.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_AmmoNum.cpp" />
@@ -138,6 +139,7 @@
     <ClInclude Include="GameSystem\ScreenBlood.h" />
     <ClInclude Include="GameSystem\ScreenRecovery.h" />
     <ClInclude Include="GameSystem\ScreenTransfer.h" />
+    <ClInclude Include="GameSystem\Effect\SoundEffect.h" />
     <ClInclude Include="GameSystem\StageObject\StageObject.h" />
     <ClInclude Include="GEKO\AI\TracerouteInfo.h" />
     <ClInclude Include="GEKO\AI\TracerouteManager.h" />
