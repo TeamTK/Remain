@@ -136,7 +136,7 @@ Player::Player(PData* data, Vector3D pos, float rotY, float horizontal, float ve
 	m_GunEmpty.SetAseet("GunEmpty");
 	m_GunADS.SetAseet("GunADS");
 	m_HitEnemyAttackSound.SetAseet("HitEnemyAttack");
-
+	m_RecoveryItem.SetAseet("RecoveryItem");
 	m_DamegeBlood.SetAsset("Player_2");
 
 	m_BodyRadius = 0.5f;
@@ -349,9 +349,10 @@ void Player::Attack()
 	//‰ñ•œ–ò
 	if (g_pUI_SelectWeapon->GetSelect() == 3)
 	{
-		if ((Input::Mouse.LClicked() || Input::XInputPad1.AClicked()) && m_RecoveryItemNum > 0)
+		if ((Input::Mouse.LClicked() || Input::XInputPad1.AClicked()) && m_RecoveryItemNum > 0 && m_Hp < 100)
 		{
 			new ScreenRecovery();
+			m_RecoveryItem.Play();
 			m_RecoveryItemNum--;
 			m_Hp += 50;
 			if (m_Hp > 100)m_Hp = 100;
