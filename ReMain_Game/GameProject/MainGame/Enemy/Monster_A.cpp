@@ -10,7 +10,7 @@
 Monster_A::Monster_A(EnemyState &enemyState) :
 	Enemy("Monster_A", enemyState)
 {
-	//各部位のカプセルの情報
+	//各部位のカプセルの情報(半径　ボーン番号　ボーン番号　部位名)
 	m_BoneCapsule.emplace_back(0.4f, 25, 26, "Head");		  //頭
 	m_BoneCapsule.emplace_back(0.6f, 2, 5, "Body");         //胴体
 	m_BoneCapsule.emplace_back(0.5f, 6, 8, "Left arm");     //左腕

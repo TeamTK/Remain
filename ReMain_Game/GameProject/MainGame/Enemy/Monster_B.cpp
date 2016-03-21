@@ -8,7 +8,7 @@
 Monster_B::Monster_B(EnemyState &enemyState) :
 	Enemy("Monster_B", enemyState)
 {
-	//各部位のカプセルの情報
+	//各部位のカプセルの情報(半径　ボーン番号　ボーン番号　部位名)
 	m_BoneCapsule.emplace_back(0.4f, 15, 16, "Head");		 //頭
 	m_BoneCapsule.emplace_back(0.6f, 2, 5, "Body");	     //胴体
 	m_BoneCapsule.emplace_back(0.5f, 6, 8, "Left arm");    //左腕
@@ -17,7 +17,7 @@ Monster_B::Monster_B(EnemyState &enemyState) :
 	m_BoneCapsule.emplace_back(0.5f, 21, 23, "Rgiht leg"); //右足
 
 	//ダメージ倍率部位ごと
-	m_DamageMagnification.push_back(4.0f); //頭
+	m_DamageMagnification.push_back(2.0f); //頭
 	m_DamageMagnification.push_back(2.5f); //胴体
 	m_DamageMagnification.push_back(1.0f); //左腕
 	m_DamageMagnification.push_back(1.0f); //右腕

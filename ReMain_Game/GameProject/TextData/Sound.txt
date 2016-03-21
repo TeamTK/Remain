@@ -7,3 +7,4 @@ Sound media\SoundData\Field1.wav Field1
 Sound media\SoundData\Field1.wav Field2
 Sound media\SoundData\MenuOpen.wav MenuOpen
 Sound media\SoundData\YouAreDead.wav YouAreDea
+Sound media\SoundData\Blood.wav Blood

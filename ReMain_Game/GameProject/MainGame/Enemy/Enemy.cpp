@@ -3,6 +3,7 @@
 #include "../../GameSystem/Effect/EffectAnimation.h"
 #include "../AmmoBox/AmmoBox_Shotgun.h"
 #include "../AmmoBox/AmmoBox_Handgun.h"
+#include "../../GameSystem/Effect/SoundEffect.h"
 #include <random>
 
 #define SEARCH_INTERVAL 60 //åoòHíTçıäJénä‘äu
@@ -225,6 +226,8 @@ void Enemy::HitBullet(Result_Sphere& r)
 	info.sizeH = 256;
 	info.speed = 1.0f;
 	new EffectAnimation("BloodAnim", info);
+
+	new SoundEffect("Blood", 5);
 
 	m_Model.SetTexture(&m_DamegeBlood);
 
