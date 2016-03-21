@@ -232,7 +232,6 @@ void Player::Update()
 	m_PlayAnimTime = m_Model.GetPlayTime();
 
 	//m_Model.GetTranselate().DebugDraw("");
-	std::cout << m_Hp << "\n";
 }
 
 void Player::Move()
@@ -350,7 +349,7 @@ void Player::Attack()
 	//‰ñ•œ–ò
 	if (g_pUI_SelectWeapon->GetSelect() == 3)
 	{
-		if ((Input::Mouse.LClicked() || Input::XInputPad1.AClicked()) && m_RecoveryItemNum > 0  )
+		if ((Input::Mouse.LClicked() || Input::XInputPad1.AClicked()) && m_RecoveryItemNum > 0)
 		{
 			new ScreenRecovery();
 			m_RecoveryItemNum--;
@@ -359,8 +358,11 @@ void Player::Attack()
 		}
 	}
 
-	if (g_pUI_SelectWeapon->isSelected()) return;
-
+	if (g_pUI_SelectWeapon->isSelected())
+	{
+		m_RecItemNumber.NumDraw(Vector2D(590.0f, 340.0f), m_RecoveryItemNum, false);
+		return;
+	}
 	//•Ší‚ğ‚Æ‚é
 	if ((Input::KeyF.Clicked() || Input::XInputPad1.BClicked()) && !m_isCrouch && !m_SetupWeapon)
 	{
