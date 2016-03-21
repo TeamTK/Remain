@@ -37,7 +37,7 @@ void Boss_Fluids::Update()
 	effectData.imageName = "Fluids_Par";
 	effectData.num = 12;
 	effectData.pos = m_Pos;
-	effectData.size = 0.2f;
+	effectData.size = 0.4f;
 	effectData.speed = 0.1f;
 	effectData.time = 40;
 	new EffectParabola(effectData, "Fluids", m_Dir);

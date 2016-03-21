@@ -68,6 +68,7 @@ private:
 	Sound m_GunEmpty;			    //’e‚ª’eØ‚ê‚É‚È‚Á‚½‚Ì‰¹
 	Sound m_GunADS;					//e‚ğ\‚¦‚½‚Ì‰¹
 	Sound m_HitEnemyAttackSound;	//“G‚©‚çUŒ‚‚ğH‚ç‚Á‚½‰¹
+	Sound m_RecoveryItem;			//‰ñ•œ–ò‚ğg—p‚µ‚½‰¹
 
 	Image m_DamegeBlood;
 
