@@ -138,6 +138,7 @@
     <ClCompile Include="MainGame\Player\GameClear.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_Life.cpp" />
     <ClCompile Include="GameSystem\ScreenRecovery.cpp" />
+    <ClCompile Include="GameSystem\Effect\SoundEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Mesh\MeshData.h" />
@@ -348,6 +349,7 @@
     <ClInclude Include="MainGame\Player\GameClear.h" />
     <ClInclude Include="GameSystem\GUI\UI_Life.h" />
     <ClInclude Include="GameSystem\ScreenRecovery.h" />
+    <ClInclude Include="GameSystem\Effect\SoundEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\MESH.hlsl">
