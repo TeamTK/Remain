@@ -1,6 +1,6 @@
 #include "UI_Life.h"
 
-#define UI_LIFE_IMAGE_POS 20, 120
+#define UI_LIFE_IMAGE_POS 35, 115
 #define UI_LIFE_FRAME_IMAGE_POS 15, 115
 #define UI_LIFE_MAX 100.0f
 #define UI_LIFE_DRAW_MAX 200.0f
@@ -13,7 +13,6 @@ UI_Life::UI_Life(float hpMax, float* pHp) :
 	m_Render.Regist(5, REGIST_RENDER_FUNC(UI_Life::Render));
 	m_LifeImage.SetAsset("UI_Life");
 	m_LifeFrameImage.SetAsset("UI_LifeFrame");
-	m_LifeFrameImage.SetSize(m_LifeFrameImage.GetWidth() + 10, m_LifeFrameImage.GetHeight() + 10);
 	m_LifeBackImage.SetAsset("UI_Life");
 	m_LifeBackImage.SetRGB(0, 0, 0);
 }
@@ -30,7 +29,7 @@ void UI_Life::Update()
 
 void UI_Life::Render()
 {
-	m_LifeFrameImage.Draw(UI_LIFE_FRAME_IMAGE_POS);
 	m_LifeBackImage.Draw(UI_LIFE_IMAGE_POS);
 	m_LifeImage.Draw(UI_LIFE_IMAGE_POS);
+	m_LifeFrameImage.Draw(UI_LIFE_FRAME_IMAGE_POS);
 }

@@ -105,9 +105,9 @@ void UI_SelectWeapon::Update()
 			else
 			{
 				//if (Input::KeyS.Clicked())	m_Selected = 0;
-				if (Input::KeyW.Clicked())	m_Selected = 1; m_CursorSound.Play();
-				if (Input::KeyA.Clicked())	m_Selected = 2; m_CursorSound.Play();
-				if (Input::KeyD.Clicked())	m_Selected = 3; m_CursorSound.Play();
+				if (Input::KeyW.Clicked())	m_Selected = 1;
+				if (Input::KeyA.Clicked())	m_Selected = 2;
+				if (Input::KeyD.Clicked())	m_Selected = 3;
 			}
 
 			if (m_OldSelected != m_Selected)
