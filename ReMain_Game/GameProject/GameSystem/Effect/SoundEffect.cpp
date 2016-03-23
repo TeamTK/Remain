@@ -6,7 +6,7 @@ SoundEffect::SoundEffect(const std::string &aseetName, double endTime) :
 {
 	m_Sound.SetAseet(aseetName);
 	m_Timer.Start();
-	m_Sound.SetVolume(50);
+	//m_Sound.SetVolume(1);
 	m_Sound.Play();
 }
 

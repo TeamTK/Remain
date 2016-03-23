@@ -1001,6 +1001,7 @@ void Player::StageChange(Result_Sphere &data)
 	playerData.Handgun_Ammo = g_pHandgun->GetAmmo();
 	playerData.isTakeWeapon = m_isTakeWeapon;
 	playerData.Weapon = m_SelectedWeapon;
+	playerData.RecoveryItemNum = m_RecoveryItemNum;
 
 	PlayerData::SetData(&playerData);
 
