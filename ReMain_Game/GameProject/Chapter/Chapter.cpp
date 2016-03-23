@@ -51,7 +51,7 @@ Chapter_1_1::Chapter_1_1() :
 	data.Handgun_LoadedAmmo = 6;
 	data.isTakeWeapon = false;
 	data.Weapon = eShotgun;
-
+	data.RecoveryItemNum = 0;
 	new Player(&data, Vector3D(-45.0f, 0.0f, -11.0f), 64.0f, 64, -2);
 
 	//経路探索データ読み込みと構築
@@ -147,7 +147,7 @@ Chapter_1_2::Chapter_1_2() :
 	data.Handgun_LoadedAmmo = PlayerData::GetData().Handgun_LoadedAmmo;
 	data.isTakeWeapon = PlayerData::GetData().isTakeWeapon;
 	data.Weapon = PlayerData::GetData().Weapon;
-
+	data.RecoveryItemNum = PlayerData::GetData().RecoveryItemNum;
 	new Player(&data, Vector3D(-28.0f, 0.0f, -98.0f), 34.0f, 34.0f, -1.3f);
 
 	//経路探索データ読み込みと構築
@@ -243,6 +243,7 @@ Chapter_1_3::Chapter_1_3() :
 	data.Handgun_LoadedAmmo = PlayerData::GetData().Handgun_LoadedAmmo;
 	data.isTakeWeapon = PlayerData::GetData().isTakeWeapon;
 	data.Weapon = PlayerData::GetData().Weapon;
+	data.RecoveryItemNum = PlayerData::GetData().RecoveryItemNum;
 	new Player(&data, Vector3D(13.0f, 0.0f, 12.0f), -134.0f, -140.0f, -5.0f);
 
 	//アッセットtxt読み込み
@@ -253,7 +254,7 @@ Chapter_1_3::Chapter_1_3() :
 	new RecoveryItem(-2.0f, 0.0f, 0.0f);
 
 	BossState state;
-	state.hp = 80;
+	state.hp = 60;
 	state.flinch = 20;
 	state.spawnPos = Vector3D(4.0f, 0.0f, -12.0f);
 	state.spawnRot = Vector3D(0.0f, 180.0f, 0.0f);

@@ -2,6 +2,7 @@
 #include "Boss_Fluids.h"
 #include "../Player/Player.h"
 #include "../../GameSystem/Effect/EffectAnimation.h"
+#include "../../GameSystem/Effect/SoundEffect.h"
 #include "../Player/GameClear.h"
 #include <random>
 
@@ -50,7 +51,7 @@ Boss::Boss(BossState &bossState) :
 
 	//É_ÉÅÅ[ÉWî{ó¶
 	m_DamageMagnification.push_back(0.5f);	//ås
-	m_DamageMagnification.push_back(2.0f);	//ÇﬂÇµÇ◊
+	m_DamageMagnification.push_back(1.5f);	//ÇﬂÇµÇ◊
 	m_DamageMagnification.push_back(1.0f);	//â‘Ç—ÇÁ1
 	m_DamageMagnification.push_back(1.0f);	//â‘Ç—ÇÁ2
 	m_DamageMagnification.push_back(1.0f);	//â‘Ç—ÇÁ3
@@ -225,7 +226,7 @@ void Boss::Idle()
 		m_isDefence = true;
 	}
 	*/
-	if (m_Length < 9.0f && m_Timer.GetSecond() > 3.0)
+	if (m_Length < 9.0f && m_Timer.GetSecond() > 4.0)
 	{
 		m_Timer.Start();
 		m_Model.SetTime(0);
@@ -337,11 +338,13 @@ void Boss::HitBullet(Result_Sphere& r)
 	EffectAnimationInfo info;
 	info.frameNum = 8;
 	info.pos = r.position;
-	info.size = 1.0f;
+	info.size = 2.0f;
 	info.sizeW = 256;
 	info.sizeH = 256;
 	info.speed = 1.0f;
 	new EffectAnimation("BloodAnim_Green", info);
+
+	new SoundEffect("Blood", 3);
 
 	float GunPower = 1.0f;
 	if (r.targetName == "HandGun")
