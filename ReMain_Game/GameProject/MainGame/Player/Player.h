@@ -34,6 +34,7 @@ private:
 	void StealthAttack();
 	void Die();
 	void Hit();
+	void Footsteps(float volume);
 
 	void HitAmmoBox(Result_Sphere& r);
 	void HitEnemyAttack(Result_Capsule &hitData);
@@ -63,12 +64,14 @@ private:
 	Collider m_StageChange; //ステージ移動用
 	Collider m_HitRecoveryItem; //回復アイテムの当たり判定
 
-	Sound m_HandGunFire;			//ハンドガンの発砲音
-	Sound m_ShotGunFire;			//ショットガンの発砲音
-	Sound m_GunEmpty;			    //弾が弾切れになった時の音
-	Sound m_GunADS;					//銃を構えた時の音
+	Sound m_HandGunFire;		//ハンドガンの発砲音
+	Sound m_ShotGunFire;		//ショットガンの発砲音
+	Sound m_GunEmpty;			//弾が弾切れになった時の音
+	Sound m_GunADS;				//銃を構えた時の音
 	Sound m_HitEnemyAttackSound;	//敵から攻撃を食らった音
-	Sound m_RecoveryItem;			//回復薬を使用した音
+	Sound m_RecoveryItem;		//回復薬を使用した音
+	Sound m_GetItem;			//アイテム取得音
+	Sound m_Footstep;			//足音
 
 	Image m_DamegeBlood;
 
@@ -81,26 +84,26 @@ private:
 
 	float m_MoveSpeed;		//移動速度
 	float m_AnimSpeed;		//アニメーションスピード
-	float m_PlayAnimTime;	//武器に渡す用
+	float m_PlayAnimTime;	//アニメーションの再生中フレーム
 	float m_Radius;			//弾薬箱との当たり判定の半径
 	float m_OneFlameTime;	//1フレームの時間
 
-	bool m_ChangeTakeWeapon;		//銃を持つ
+	bool m_ChangeTakeWeapon;	//銃を持つ
 	bool m_ChangePutBackWeapon;	//銃をしまう
-	bool m_ToggleCrouch;			//しゃがみトグル
-	bool m_isCrouch;				//しゃがんでいるか
-	bool m_isShiftCrouch;			//しゃがんでいるか
-	bool m_isTakeWeapon;			//銃を持っているか
+	bool m_ToggleCrouch;		//しゃがみトグル
+	bool m_isCrouch;			//しゃがんでいるか
+	bool m_isShiftCrouch;		//しゃがんでいるか
+	bool m_isTakeWeapon;		//銃を持っているか
 	bool m_SetupWeapon;			//銃を構えているか
-	bool m_isRun;					//走っているか
-	bool m_isMove;					//移動中か
-	bool m_isAttack;				//攻撃中か
-	bool m_isReload;				//リロード中か
-	bool m_isHit;					//敵の攻撃が当たったか
-	bool m_isShot;					//発砲したか
+	bool m_isRun;				//走っているか
+	bool m_isMove;				//移動中か
+	bool m_isAttack;			//攻撃中か
+	bool m_isReload;			//リロード中か
+	bool m_isHit;				//敵の攻撃が当たったか
+	bool m_isShot;				//発砲したか
 	bool m_isSteAttack;			//ステルスアタック
-	bool m_isDead;					//死亡判断
-	bool m_IsStop;					//プレイヤーに関係するタスク停止
+	bool m_isDead;				//死亡判断
+	bool m_IsStop;				//プレイヤーに関係するタスク停止
 };
 
 #endif

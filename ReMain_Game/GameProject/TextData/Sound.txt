@@ -9,3 +9,5 @@ Sound media\SoundData\MenuOpen.wav MenuOpen
 Sound media\SoundData\YouAreDead.wav YouAreDead
 Sound media\SoundData\Blood.wav Blood
 Sound media\SoundData\RecoveryItem.wav RecoveryItem
+Sound media\SoundData\GetItem.wav GetItem
+Sound media\SoundData\Footstep.wav Footstep

@@ -37,6 +37,10 @@
 #define VOLUME_RUN 3
 #define VOLUME_ATTACK 3
 
+//プレイヤーの足音
+#define FOOTSTEP_WALK 1.0f
+#define FOOTSTEP_CROUCH 0.5f
+
 Vector3D *g_pPlayerPos;
 
 Player::Player(PData* data, Vector3D pos, float rotY, float horizontal, float vertical) :
@@ -48,7 +52,7 @@ Player::Player(PData* data, Vector3D pos, float rotY, float horizontal, float ve
 	m_Radius(0.5f),
 	m_Phase(0),
 	m_OneFlameTime(0),
-	m_RecoveryItemNum(0),
+	m_RecoveryItemNum(data->RecoveryItemNum),
 	m_isCrouch(false),
 	m_isAttack(false),
 	m_isMove(false),
@@ -138,6 +142,8 @@ Player::Player(PData* data, Vector3D pos, float rotY, float horizontal, float ve
 	m_HitEnemyAttackSound.SetAseet("HitEnemyAttack");
 	m_RecoveryItem.SetAseet("RecoveryItem");
 	m_DamegeBlood.SetAsset("Player_2");
+	m_GetItem.SetAseet("GetItem");
+	m_Footstep.SetAseet("Footstep");
 
 	m_BodyRadius = 0.5f;
 
@@ -156,8 +162,6 @@ Player::~Player()
 
 void Player::Update()
 {
-	//m_pos.DebugDraw("Pleyr");
-
 	//メニュー画面生成
 	if ((Input::KeyEscape.Clicked() || Input::XInputPad1.StartClicked()) && !m_SetupWeapon && !g_pUI_SelectWeapon->isSelected())
 	{
@@ -597,6 +601,7 @@ void Player::Walk()
 		m_Anim = EPlayerAnim::eAnim_Walk;
 		m_AnimSpeed = DEFAULT_ANIM_SPEED;
 	}
+	Footsteps(FOOTSTEP_WALK);
 }
 
 void Player::Run()
@@ -624,6 +629,7 @@ void Player::Run()
 		m_Anim = EPlayerAnim::eAnim_Run;
 		m_AnimSpeed = RUN_ANIM_SPEED;
 	}
+	Footsteps(FOOTSTEP_WALK);
 }
 
 void Player::Crouch()
@@ -680,6 +686,7 @@ void Player::Crouch()
 			m_isCrouch = true;
 		}
 	}
+	Footsteps(FOOTSTEP_CROUCH);
 }
 
 void Player::StandUp()
@@ -929,6 +936,15 @@ void Player::Hit()
 	}
 }
 
+void Player::Footsteps(float volume)
+{
+	if ((m_PlayAnimTime >= 15 && m_PlayAnimTime <= 16) || m_PlayAnimTime >= 29)
+	{
+		m_Footstep.SetVolume(volume);
+		m_Footstep.Play();
+	}
+}
+
 void Player::HitAmmoBox(Result_Sphere& r)
 {
 	//取った弾の種類によって取得する弾薬数が決まる
@@ -940,6 +956,7 @@ void Player::HitAmmoBox(Result_Sphere& r)
 	{
 		if (r.targetName == "AmmoBox_Handgun_12") g_pHandgun->AddAmmo(12);
 	}
+	m_GetItem.Play();
 }
 
 void Player::HitEnemyAttack(Result_Capsule &hitData)
@@ -1011,6 +1028,6 @@ void Player::StageChange(Result_Sphere &data)
 
 void Player::HitRecoveryItem(Result_Sphere &data)
 {
-	printf("HitRecoveryItem");
+	m_GetItem.Play();
 	m_RecoveryItemNum++;
 }
