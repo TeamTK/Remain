@@ -674,6 +674,7 @@ void Player::Crouch()
 		//‚µ‚á‚ª‚Ý•à‚«
 		else if (m_isMove && m_isCrouch)
 		{
+			Footsteps(FOOTSTEP_CROUCH);
 			m_MoveSpeed = CROUCH_WALK_SPPED;
 			m_Anim = EPlayerAnim::eAnim_CrouchWalk;
 			m_AnimSpeed = DEFAULT_ANIM_SPEED;
@@ -686,7 +687,6 @@ void Player::Crouch()
 			m_isCrouch = true;
 		}
 	}
-	Footsteps(FOOTSTEP_CROUCH);
 }
 
 void Player::StandUp()
