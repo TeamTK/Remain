@@ -6,7 +6,7 @@
 #include "../Player/GameClear.h"
 #include <random>
 
-#define BOSS_ANIM_ENDTIME 28.5f
+#define BOSS_ANIM_ENDTIME 28.0f
 
 #define BOSS_ATTACK_ANIMSPEED 20.0f
 #define BOSS_NORMAL_ANIMSPEED 30.0f
@@ -57,10 +57,10 @@ Boss::Boss(BossState &bossState) :
 	m_DamageMagnification.push_back(1.0f);	//‰Ô‚Ñ‚ç3
 	m_DamageMagnification.push_back(1.0f);	//‰Ô‚Ñ‚ç4
 	m_DamageMagnification.push_back(1.0f);	//‰Ô‚Ñ‚ç5
-	m_DamageMagnification.push_back(0.5f);	//Gè¶
-	m_DamageMagnification.push_back(0.5f);	//Gè¶
-	m_DamageMagnification.push_back(0.5f);	//Gè‰E
-	m_DamageMagnification.push_back(0.5f);	//Gè‰E
+	m_DamageMagnification.push_back(0.8f);	//Gè¶
+	m_DamageMagnification.push_back(0.8f);	//Gè¶
+	m_DamageMagnification.push_back(0.8f);	//Gè‰E
+	m_DamageMagnification.push_back(0.8f);	//Gè‰E
 
 	 //‹…i’ej‚Æ‚Ì”»’è—p
 	m_pHitAttackBody = new Collider[m_BoneCapsule.size()];
@@ -164,7 +164,6 @@ void Boss::Attack_A()
 	{
 		auto bornNum = m_BoneCapsule.size();
 		for (unsigned int i = 0; i < bornNum; i++) m_pHitAttack[i].Sleep();
-		m_Model.SetTime(0);
 		m_FuncTask.Stop("Attac_A");
 		m_FuncTask.Start("Idle");
 	}
@@ -188,7 +187,6 @@ void Boss::Attack_B()
 	{
 		auto bornNum = m_BoneCapsule.size();
 		for (unsigned int i = 0; i < bornNum; i++) m_pHitAttack[i].Sleep();
-		m_Model.SetTime(0);
 		m_FuncTask.Stop("Attack_B");
 		m_FuncTask.Start("Idle");
 	}
@@ -207,7 +205,6 @@ void Boss::LongAttack()
 
 	if (m_PlayTime >= BOSS_ANIM_ENDTIME)
 	{
-		m_Model.SetTime(0);
 		m_FuncTask.Stop("LongAttack");
 		m_FuncTask.Start("Idle");
 	}
@@ -226,7 +223,7 @@ void Boss::Idle()
 		m_isDefence = true;
 	}
 	*/
-	if (m_Length < 9.0f && m_Timer.GetSecond() > 4.0)
+	if (m_Length < 9.0f && m_Timer.GetSecond() > 3.0)
 	{
 		m_Timer.Start();
 		m_Model.SetTime(0);
@@ -283,7 +280,7 @@ void Boss::Defence()
 		m_Model.StartAnimation();
 		if (m_AnimType == eAnimationDefence && m_PlayTime >= BOSS_ANIM_ENDTIME)
 		{
-			m_Model.SetTime(0);
+			//m_Model.SetTime(0);
 			m_FuncTask.Stop("Idle");
 			m_FuncTask.Start("LongAttack");
 
@@ -314,7 +311,6 @@ void Boss::HitDamage()
 
 	if (m_PlayTime >= BOSS_ANIM_ENDTIME)
 	{
-		m_Model.SetTime(0);
 		m_FuncTask.Stop("HitDamage");
 		m_FuncTask.Start("Idle");
 	}
@@ -380,11 +376,6 @@ void Boss::HitBullet(Result_Sphere& r)
 			m_FuncTask.Start("HitDamage");
 			m_FlinchCnt = 0;
 			for (unsigned int i = 0; i < bornNum; i++) m_pHitAttack[i].Sleep();
-		}
-		else
-		{
-			m_Model.SetTime(0);
-			m_FuncTask.Start("Idle");
 		}
 	}
 	else
