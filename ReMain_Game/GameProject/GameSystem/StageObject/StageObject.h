@@ -27,10 +27,18 @@ class StageObject
 public:
 	StageObject();
 	virtual ~StageObject();
-	void Update();
+	virtual void Update();
 
 protected:
 	void SetObjectMesh(StaticMesh *pMesh, XYZ &pos, XYZ &rot, XYZ &sca, std::string &name)
+	{
+		pMesh->SetAsset(name);
+		pMesh->SetTranselate(pos.x, pos.y, pos.z);
+		pMesh->SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
+		pMesh->SetScale(sca.x, sca.y, sca.z);
+	}
+
+	void SetObjectDynamicMesh(DynamicMesh *pMesh, XYZ &pos, XYZ &rot, XYZ &sca, std::string &name)
 	{
 		pMesh->SetAsset(name);
 		pMesh->SetTranselate(pos.x, pos.y, pos.z);
@@ -80,9 +88,9 @@ class Tree_1 : public StageObject
 public:
 	Tree_1(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
-		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetRenderingRegister(true, 0, 1);
 		m_Object.SetMeshState(eBlockingLight);
-		SetObjectMesh(&m_Object, pos, rot, sca, name);
+		SetObjectDynamicMesh(&m_Object, pos, rot, sca, name);
 
 		m_Collision.SetAsset("Tree_1");
 		m_Collision.SetTranselate(pos.x, pos.y, pos.z);
@@ -97,9 +105,13 @@ public:
 		m_BulletHit.SetName("Tree_1");
 	}
 	~Tree_1() {}
+	virtual void Update()
+	{
+		m_Object.SetPlayTime(8.0f * GEKO::GetOneFps());
+	}
 
 private:
-	StaticMesh m_Object;
+	DynamicMesh m_Object;
 	StaticMesh m_Collision;
 	Collider m_CharacterHit;
 	Collider m_BulletHit;
@@ -111,9 +123,9 @@ class Tree_2 : public StageObject
 public:
 	Tree_2(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
-		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetRenderingRegister(true, 0, 1);
 		m_Object.SetMeshState(eBlockingLight);
-		SetObjectMesh(&m_Object, pos, rot, sca, name);
+		SetObjectDynamicMesh(&m_Object, pos, rot, sca, name);
 
 		m_Collision.SetAsset("Tree_2");
 		m_Collision.SetTranselate(pos.x, pos.y, pos.z);
@@ -129,8 +141,13 @@ public:
 	}
 	~Tree_2() {}
 
+	virtual void Update()
+	{
+		m_Object.SetPlayTime(8.0f * GEKO::GetOneFps());
+	}
+
 private:
-	StaticMesh m_Object;
+	DynamicMesh m_Object;
 	StaticMesh m_Collision;
 	Collider m_BulletHit;
 	Collider m_CharacterHit;
