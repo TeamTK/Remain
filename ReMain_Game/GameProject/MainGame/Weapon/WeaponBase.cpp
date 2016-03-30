@@ -12,7 +12,7 @@ WeaponBase::WeaponBase(int* anim, float* frame, bool* take, Matrix* m, const cha
 	m_PlayerAnim = anim;
 	m_TakeWeapon= take;
 	m_PlayerAnimFrame = frame;
-	m_RenderTask.Regist(1, REGIST_RENDER_FUNC(WeaponBase::Render));
+	m_Model.SetRenderingRegister(true, 1, 0);
 }
 
 WeaponBase::~WeaponBase()
@@ -22,11 +22,6 @@ WeaponBase::~WeaponBase()
 
 void WeaponBase::Update()
 {
-}
-
-void WeaponBase::Render()
-{
-	m_Model.RenderMatrix(*m_BoneMtx);
 }
 
 void WeaponBase::Shot()

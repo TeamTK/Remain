@@ -9,11 +9,10 @@ public:
 	UI_Reticle(bool* setupGun);
 	~UI_Reticle();
 	void Update();
-	void Draw();
 
 private:
 	Image m_Reticle;
-	RenderTask m_RenderTask;
 	bool* m_isSetupWeapon;	//プレイヤーが武器を構えているか
+	bool m_isOldSetupWeapon;
 };
 #endif

@@ -10,14 +10,15 @@ ImageAnimation::ImageAnimation() :
 {
 }
 
-ImageAnimation::ImageAnimation(const std::string &assetName, int frameNum, int sizeW, int sizeH) :
+ImageAnimation::ImageAnimation(const std::string &assetName, unsigned int priorityGroup, unsigned int priority, int frameNum, int divW, int divH) :
 	m_pLeftX(nullptr),
 	m_pLeftY(nullptr),
 	m_pRightX(nullptr),
 	m_pRightY(nullptr),
 	m_Speed(0.0f)
 {
-	FrameDivision(assetName, frameNum, sizeW, sizeH);
+	m_Image.SetDrawRegister(true, priorityGroup, priority);
+	FrameDivision(assetName, frameNum, divW, divH);
 }
 
 ImageAnimation::~ImageAnimation()
@@ -36,9 +37,15 @@ bool ImageAnimation::GetIsEnd() const
 	return m_IsEnd;
 }
 
-void ImageAnimation::FrameDivision(const std::string &assetName, int frameNum, int sizeW, int sizeH)
+void ImageAnimation::SetDrawRegister(bool isRegister, unsigned int priorityGroup, unsigned int priority)
+{
+	m_Image.SetDrawRegister(isRegister, priorityGroup, priority);
+}
+
+void ImageAnimation::FrameDivision(const std::string &assetName, int frameNum, int divW, int divH)
 {
 	m_Image.SetAsset(assetName);
+
 	m_FrameAllNum = frameNum;
 	m_FrameNum = 0;
 	m_Speed = 0.0f;
@@ -51,18 +58,17 @@ void ImageAnimation::FrameDivision(const std::string &assetName, int frameNum, i
 		delete[] m_pRightX;
 		delete[] m_pRightY;
 	}
+	m_pLeftX = new int[m_FrameAllNum];
+	m_pLeftY = new int[m_FrameAllNum];
+	m_pRightX = new int[m_FrameAllNum];
+	m_pRightY = new int[m_FrameAllNum];
 
 	int width = m_Image.GetWidth();
 	int height = m_Image.GetHeight();
 
 	//幅縦の分割数カウント変数
-	int DivW = width / sizeW;
-	int DivH = height / sizeH;
-
-	m_pLeftX = new int[m_FrameAllNum];
-	m_pLeftY = new int[m_FrameAllNum];
-	m_pRightX = new int[m_FrameAllNum];
-	m_pRightY = new int[m_FrameAllNum];
+	int sizeW = width / divW;
+	int sizeH = height / divH;
 
 	//幅縦の分割数カウント変数
 	int cntW = 0;
@@ -84,7 +90,7 @@ void ImageAnimation::FrameDivision(const std::string &assetName, int frameNum, i
 		cntSizeW += sizeW;
 
 		//横方向の分割更新
-		if (cntW == DivW)
+		if (cntW == divW)
 		{
 			cntW = 0;
 			cntSizeW = 0;
@@ -93,7 +99,7 @@ void ImageAnimation::FrameDivision(const std::string &assetName, int frameNum, i
 		}
 
 		//縦方向の分割更新
-		if (cntH > DivH)
+		if (cntH > divH)
 		{
 			cntH = 0;
 			cntSizeH = 0;
@@ -101,6 +107,7 @@ void ImageAnimation::FrameDivision(const std::string &assetName, int frameNum, i
 		}
 	}
 	m_Image.SetSize(sizeW, sizeH);
+	m_Image.SetDrawArea(m_pLeftX[0], m_pLeftY[0], m_pRightX[0], m_pRightY[0]);
 }
 
 void ImageAnimation::PlayFrame(float frame)
@@ -108,7 +115,22 @@ void ImageAnimation::PlayFrame(float frame)
 	m_Speed += frame;
 }
 
-void ImageAnimation::Draw(const Vector2D &pos)
+void ImageAnimation::SetPosition(float x, float y)
+{
+	m_Image.SetPosition(x, y);
+}
+
+void ImageAnimation::SetPosition(const Vector2D &positio)
+{
+	m_Image.SetPosition(positio);
+}
+
+void ImageAnimation::SetDrawPriority(unsigned int priorityGroup, unsigned int priority)
+{
+	m_Image.SetDrawPriority(priorityGroup, priority);
+}
+
+void ImageAnimation::Update()
 {
 	m_FrameNum = (int)m_Speed;
 
@@ -120,8 +142,7 @@ void ImageAnimation::Draw(const Vector2D &pos)
 		m_IsEnd = true;
 	}
 
-	m_Image.SetDrawPos(m_pLeftX[m_FrameNum], m_pLeftY[m_FrameNum], m_pRightX[m_FrameNum], m_pRightY[m_FrameNum]);
-	m_Image.Draw(pos);
+	m_Image.SetDrawArea(m_pLeftX[m_FrameNum], m_pLeftY[m_FrameNum], m_pRightX[m_FrameNum], m_pRightY[m_FrameNum]);
 }
 
 void ImageAnimation::DebugFrame()

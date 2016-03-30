@@ -821,7 +821,7 @@ bool ColliderManager::HitCheckStaticMesh_vs_LineSegment(StaticMesh &hitData1, Ve
 	HitResult_SegmentTriangle hit;
 
 	//モデルの変換行列
-	Matrix m = *hitData1.GetSynthesisMatrix();
+	Matrix m = *hitData1.GetModelMatrix();
 	Matrix inverse = m.GetInverse();
 
 	//当たり判定の形状
@@ -866,7 +866,7 @@ bool ColliderManager::HitCheckStaticMesh_vs_LineSegment_Group(StaticMesh &hitDat
 	HitResult_SegmentTriangle hit;
 
 	//モデルの変換行列
-	Matrix m = *hitData1.GetSynthesisMatrix();
+	Matrix m = *hitData1.GetModelMatrix();
 	Matrix inverse = m.GetInverse();
 
 	//当たり判定の形状
@@ -955,7 +955,7 @@ bool ColliderManager::HitCheckStaticMesh_vs_Sphere(StaticMesh &hitData1, Vector3
 	HitResult_SphereTriangle Hitdata;
 
 	//モデルの変換行列
-	Matrix m = *hitData1.GetSynthesisMatrix();
+	Matrix m = *hitData1.GetModelMatrix();
 
 	//当たり判定の形状
 	TriangleInfo hitTriangle;

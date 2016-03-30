@@ -17,7 +17,6 @@
     <ClCompile Include="GameSystem\Effect\EffectParabola.cpp" />
     <ClCompile Include="GameSystem\Effect\EffectSphere.cpp" />
     <ClCompile Include="GameSystem\Effect\SoundEffect.cpp" />
-    <ClCompile Include="GameSystem\GUI\BaseGui.cpp" />
     <ClCompile Include="GameSystem\GUI\Number.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_AmmoNum.cpp" />
     <ClCompile Include="GameSystem\GUI\UI_Life.cpp" />
@@ -49,7 +48,6 @@
     <ClCompile Include="GEKO\Mesh\DynamicMesh\DynamicMesh.cpp" />
     <ClCompile Include="GEKO\Mesh\DynamicMesh\DynamicMeshAsset.cpp" />
     <ClCompile Include="GEKO\Mesh\DynamicMesh\LoadXDynamic.cpp" />
-    <ClCompile Include="GEKO\Mesh\RenderManager.cpp" />
     <ClCompile Include="GEKO\Mesh\StaticMesh\LoadXStatic.cpp" />
     <ClCompile Include="GEKO\Mesh\StaticMesh\StaticMesh.cpp" />
     <ClCompile Include="GEKO\Mesh\StaticMesh\StaticMeshAsset.cpp" />
@@ -61,6 +59,10 @@
     <ClCompile Include="GEKO\Shader\DynamicMeshShader\DynamicMeshShader.cpp" />
     <ClCompile Include="GEKO\Shader\DynamicMeshShader\DynamicMesh_PixelInit.cpp" />
     <ClCompile Include="GEKO\Shader\DynamicMeshShader\DynamicMesh_VertexInit.cpp" />
+    <ClCompile Include="GEKO\Shader\Light\DirectionalLight.cpp" />
+    <ClCompile Include="GEKO\Shader\Light\PointLight.cpp" />
+    <ClCompile Include="GEKO\Shader\Light\PointLightManager.cpp" />
+    <ClCompile Include="GEKO\Shader\RenderingManager.cpp" />
     <ClCompile Include="GEKO\Shader\ShadowMap\ShaderShadowMap.cpp" />
     <ClCompile Include="GEKO\Shader\StaticMeshShader\StaticMeshShader.cpp" />
     <ClCompile Include="GEKO\Shader\StaticMeshShader\StaticMesh_PixelInit.cpp" />
@@ -72,7 +74,6 @@
     <ClCompile Include="GEKO\ImageSystem\Image.cpp" />
     <ClCompile Include="GEKO\System\Debug.cpp" />
     <ClCompile Include="GEKO\System\Direct3D11.cpp" />
-    <ClCompile Include="GEKO\System\DirectionalLight.cpp" />
     <ClCompile Include="GEKO\Figure\FiqureBase.cpp" />
     <ClCompile Include="GEKO\Figure\Fiqure.cpp" />
     <ClCompile Include="GEKO\Figure\Line3D.cpp" />
@@ -118,7 +119,6 @@
     <ClCompile Include="Scene\EventScene\EventSceneBase.cpp" />
     <ClCompile Include="Scene\MainGame.cpp" />
     <ClCompile Include="Scene\NowLoading.cpp" />
-    <ClCompile Include="Scene\Opening.cpp" />
     <ClCompile Include="Scene\Title.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -127,7 +127,6 @@
     <ClInclude Include="GameSystem\Effect\EffectAnimation.h" />
     <ClInclude Include="GameSystem\Effect\EffectParabola.h" />
     <ClInclude Include="GameSystem\Effect\EffectSphere.h" />
-    <ClInclude Include="GameSystem\GUI\BaseGui.h" />
     <ClInclude Include="GameSystem\GUI\Number.h" />
     <ClInclude Include="GameSystem\GUI\SelectWeapon.h" />
     <ClInclude Include="GameSystem\GUI\UI_AmmoNum.h" />
@@ -238,7 +237,6 @@
     <ClInclude Include="GEKO\Mesh\DynamicMesh\DynamicMeshAsset.h" />
     <ClInclude Include="GEKO\Mesh\DynamicMesh\LoadXDynamic.h" />
     <ClInclude Include="GEKO\Mesh\MeshInfo.h" />
-    <ClInclude Include="GEKO\Mesh\RenderManager.h" />
     <ClInclude Include="GEKO\Mesh\StaticMesh\LoadXStatic.h" />
     <ClInclude Include="GEKO\Mesh\StaticMesh\StaticMesh.h" />
     <ClInclude Include="GEKO\Mesh\StaticMesh\StaticMeshAsset.h" />
@@ -249,6 +247,10 @@
     <ClInclude Include="GEKO\Shader\CopmuteShader\LineTriangleCopmute.h" />
     <ClInclude Include="GEKO\Shader\CopmuteShader\SphereTriangleCopmute.h" />
     <ClInclude Include="GEKO\Shader\DynamicMeshShader\DynamicMeshShader.h" />
+    <ClInclude Include="GEKO\Shader\Light\DirectionalLight.h" />
+    <ClInclude Include="GEKO\Shader\Light\PointLight.h" />
+    <ClInclude Include="GEKO\Shader\Light\PointLightManager.h" />
+    <ClInclude Include="GEKO\Shader\RenderingManager.h" />
     <ClInclude Include="GEKO\Shader\ShaderInfo.h" />
     <ClInclude Include="GEKO\Shader\ShadowMap\ShaderShadowMap.h" />
     <ClInclude Include="GEKO\Shader\StaticMeshShader\StaticMeshShader.h" />
@@ -260,7 +262,6 @@
     <ClInclude Include="GEKO\Task\CollisionTask.h" />
     <ClInclude Include="GEKO\System\Debug.h" />
     <ClInclude Include="GEKO\System\Direct3D11.h" />
-    <ClInclude Include="GEKO\System\DirectionalLight.h" />
     <ClInclude Include="GEKO\Figure\Fiqure.h" />
     <ClInclude Include="GEKO\Figure\FiqureBase.h" />
     <ClInclude Include="GEKO\Figure\Line3D.h" />
@@ -311,7 +312,6 @@
     <ClInclude Include="Scene\EventScene\EventSceneBase.h" />
     <ClInclude Include="Scene\MainGame.h" />
     <ClInclude Include="Scene\NowLoading.h" />
-    <ClInclude Include="Scene\Opening.h" />
     <ClInclude Include="Scene\Title.h" />
   </ItemGroup>
   <ItemGroup>

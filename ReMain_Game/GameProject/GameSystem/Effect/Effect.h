@@ -19,16 +19,15 @@ struct EffectInfo
 class EffectPart
 {
 public:
-	EffectPart(float x, float y, float z, const Vector3D &pos);
+	EffectPart(const Vector3D &dir, const Vector3D &pos, const std::string &name);
 	~EffectPart();
 	void SetDirection(const Vector3D &direction);
-	void Update();
-	void Render(float size, float speed, int time, const std::string &name);
+	void Update(float speed, float size, int time);
 
 private:
-	float m_Speed;
 	Vector3D m_Direction;
 	Vector3D m_Pos;
+	Billboard m_Billboard;
 };
 
 //基底エフェクト
@@ -40,7 +39,6 @@ public:
 	void SetSpeed(float speed);
 	void SetSize(float size);
 	virtual void Update();
-	void Render();
 
 protected:
 	std::list<EffectPart> m_list;
@@ -50,8 +48,6 @@ private:
 	int m_AllTime;
 	float m_Size;
 	float m_Speed;
-	std::string m_ImageName;
-	RenderTask m_RenderTask;
 };
 
 #endif

@@ -1,7 +1,6 @@
 #ifndef _TITLE_H_
 #define _TITLE_H_
 
-#include "..\GEKO\GEKO.h"
 #include "..\GameSystem\ScreenTransfer.h"
 
 class Title : public Task
@@ -22,7 +21,6 @@ private:
 
 	bool m_IsTransferStart;
 	bool m_IsTransferEnd;
-	RenderTask m_Render;
 	Image m_TitleImage;
 	Image m_StartImage;
 	Image m_ExitImage;

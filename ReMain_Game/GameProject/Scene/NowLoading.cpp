@@ -10,11 +10,14 @@ NowLoading::NowLoading(ChapterType type, bool isResource) :
 	Task("NowLoading", 0)
 {
 	m_ChapterType = type;
+	GEKO::BackgroundColor(0, 0, 0);
+	g_NowLodingImage.SetDrawRegister(true, 11, 0);
 
 	//リソース読み込み既に読み込んでいたら実行しない
 	if (!isResource)
 	{
-		g_NowLodingImage.FrameDivision("NowLoading", 12, 256, 80);
+		g_NowLodingImage.FrameDivision("NowLoading", 12, 3, 4);
+		g_NowLodingImage.SetPosition(NOW_LOADING_POS);
 
 		auto func = []
 		{
@@ -33,10 +36,10 @@ NowLoading::NowLoading(ChapterType type, bool isResource) :
 			{
 				if (g_isLoad) break;
 				GEKO::ScreenUpdate();
-				GEKO::ClearColor(10, 10, 10);
-
+				GEKO::ClearColor();
+				GEKO::ManualRendering();
 				g_NowLodingImage.PlayFrame(0.007f);
-				g_NowLodingImage.Draw(Vector2D(NOW_LOADING_POS));
+				g_NowLodingImage.Update();
 			}
 		};
 
@@ -52,7 +55,6 @@ NowLoading::NowLoading(ChapterType type, bool isResource) :
 	{
 		m_Transfer.Start(1.0f);
 	}
-	m_Render.Regist(6, REGIST_RENDER_FUNC(NowLoading::Render));
 }
 
 NowLoading::~NowLoading()
@@ -64,14 +66,10 @@ void NowLoading::Update()
 	if (m_Transfer.GetIsEndTransfer())
 	{
 		new MainGame(m_ChapterType);
+		g_NowLodingImage.SetDrawRegister(false, 11, 0);
 		Task::SetKill();
 	}
 	m_Transfer.Update();
-}
-
-void NowLoading::Render()
-{
-	m_Transfer.Render();
 	g_NowLodingImage.PlayFrame(0.2f);
-	g_NowLodingImage.Draw(Vector2D(NOW_LOADING_POS));
+	g_NowLodingImage.Update();
 }

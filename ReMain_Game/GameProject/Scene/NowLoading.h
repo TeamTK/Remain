@@ -1,7 +1,6 @@
 #ifndef _NOW_LOADING_H_
 #define _NOW_LOADING_H_
 
-#include "../GEKO/Task/RenderTask.h"
 #include "../GameSystem/ScreenTransfer.h"
 #include "MainGame.h"
 
@@ -11,11 +10,9 @@ public:
 	NowLoading(ChapterType type, bool isResource);
 	~NowLoading();
 	void Update();
-	void Render();
 
 private:
 	ScreenTransfer_Out m_Transfer;
-	RenderTask m_Render;
 	ChapterType m_ChapterType;
 };
 

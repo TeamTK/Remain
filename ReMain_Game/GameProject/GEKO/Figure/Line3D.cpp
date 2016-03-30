@@ -36,8 +36,8 @@ void Line3D::Render(const Vector3D &Spos, const Vector3D &Epos, const Vector3D &
 	if (SUCCEEDED(pDeviceContext->Map(m_FigureInfo.pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
 		//カメラ、射影行列を渡す
-		D3DXMATRIX m = *Camera::GetViewProjection();
-		D3DXMatrixTranspose(&cb.mWVP, &m);
+		cb.mWVP = *Camera::GetViewProjection();
+		D3DXMatrixTranspose(&cb.mWVP, &cb.mWVP);
 
 		cb.Color = Vector4D(Color.x, Color.y, Color.z, 1.0f);
 
@@ -45,7 +45,6 @@ void Line3D::Render(const Vector3D &Spos, const Vector3D &Epos, const Vector3D &
 		pDeviceContext->Unmap(m_FigureInfo.pConstantBuffer, 0);
 	}
 
-	//このコンスタントバッファーをどのシェーダーで使うか
 	pDeviceContext->VSSetConstantBuffers(0, 1, &m_FigureInfo.pConstantBuffer);
 	pDeviceContext->PSSetConstantBuffers(0, 1, &m_FigureInfo.pConstantBuffer);
 
@@ -60,22 +59,16 @@ void Line3D::Render(const Vector3D &Spos, const Vector3D &Epos, const Vector3D &
 		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cbLine3D), sizeof(cbLine3D));
 		pDeviceContext->Unmap(m_FigureInfo.pConstantBuffer, 0);
 	}
-	//このコンスタントバッファーをどのシェーダーで使うか
 	pDeviceContext->VSSetConstantBuffers(1, 1, &m_pConstantBufferLine3D);
 	pDeviceContext->PSSetConstantBuffers(1, 1, &m_pConstantBufferLine3D);
 
-	//バーテックスバッファーをセット
+	//頂点バッファーをセット
 	UINT stride = sizeof(UINT);
 	UINT offset = 0;
 	Direct3D11::GetInstance()->GetID3D11DeviceContext()->IASetVertexBuffers(0, 1, &m_FigureInfo.pVertexBuffer, &stride, &offset);
 
-	//頂点インプットレイアウトをセット
 	pDeviceContext->IASetInputLayout(m_FigureInfo.pVertexLayout);
-
-	//プリミティブ・トポロジーをセット
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-
-	//プリミティブをレンダリング
 	pDeviceContext->Draw(2, 0);
 }
 
@@ -92,13 +85,16 @@ HRESULT Line3D::InitShader()
 	if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\Line3D.hlsl"), NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 	{
 		MessageBox(0, TEXT("hlsl読み込み失敗"), NULL, MB_OK);
+		SAFE_RELEASE(pCompiledShader);
+		SAFE_RELEASE(pErrors);
 		return E_FAIL;
 	}
 
 	if (FAILED(pDevice->CreateVertexShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_FigureInfo.pVertexShader)))
 	{
-		SAFE_RELEASE(pCompiledShader);
 		MessageBox(0, TEXT("バーテックスシェーダー作成失敗"), NULL, MB_OK);
+		SAFE_RELEASE(pCompiledShader);
+		SAFE_RELEASE(pErrors);
 		return E_FAIL;
 	}
 
@@ -118,19 +114,24 @@ HRESULT Line3D::InitShader()
 		pCompiledShader->GetBufferSize(), &m_FigureInfo.pVertexLayout)))
 	{
 		return FALSE;
+		SAFE_RELEASE(pCompiledShader);
+		SAFE_RELEASE(pErrors);
 	}
 
 	//ブロブからピクセルシェーダー作成
 	if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\Line3D.hlsl"), NULL, NULL, "PS", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 	{
 		MessageBox(0, TEXT("hlsl読み込み失敗"), NULL, MB_OK);
+		SAFE_RELEASE(pCompiledShader);
+		SAFE_RELEASE(pErrors);
 		return E_FAIL;
 	}
 
 	if (FAILED(pDevice->CreatePixelShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_FigureInfo.pPixelShader)))
 	{
-		SAFE_RELEASE(pCompiledShader);
 		MessageBox(0, TEXT("ピクセルシェーダー作成失敗"), NULL, MB_OK);
+		SAFE_RELEASE(pCompiledShader);
+		SAFE_RELEASE(pErrors);
 		return E_FAIL;
 	}
 
@@ -144,6 +145,8 @@ HRESULT Line3D::InitShader()
 
 	if (FAILED(pDevice->CreateBuffer(&cb, NULL, &m_FigureInfo.pConstantBuffer)))
 	{
+		SAFE_RELEASE(pCompiledShader);
+		SAFE_RELEASE(pErrors);
 		return E_FAIL;
 	}
 
@@ -156,6 +159,8 @@ HRESULT Line3D::InitShader()
 
 	if (FAILED(pDevice->CreateBuffer(&cb, NULL, &m_pConstantBufferLine3D)))
 	{
+		SAFE_RELEASE(pCompiledShader);
+		SAFE_RELEASE(pErrors);
 		return E_FAIL;
 	}
 

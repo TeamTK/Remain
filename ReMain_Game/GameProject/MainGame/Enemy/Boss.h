@@ -1,7 +1,6 @@
 #ifndef BOSS_H
 #define BOSS_H
 
-#include "../../GEKO/GEKO.h"
 #include "../Enemy/Enemy.h"
 
 struct BossState
@@ -31,7 +30,6 @@ public:
 	void HitBullet(Result_Sphere& r);	//e’e‚Æ‚Ì“–‚½‚è”»’è
 	void HitAttack(Result_Capsule &hitData);	//ƒvƒŒƒCƒ„[‚Ö‚ÌUŒ‚‚Ì“–‚½‚è”»’è
 	void Update();
-	void Render();
 
 	void Attack_A();
 	void Attack_B();
@@ -43,7 +41,6 @@ public:
 
 private:
 	DynamicMesh m_Model;
-	RenderTask m_RenderTask;
 	Timer m_Timer;
 	Timer m_NoActionTime;
 	CapsuleInfo *m_pCapsule;

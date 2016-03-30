@@ -2,11 +2,12 @@
 #define _FIQUREBASE_H_
 
 #include "..\System\Direct3D11.h"
+#include "..\Shader\RenderingManager.h"
 
 struct ConstantBufferFiqure
 {
-	D3DXMATRIX mWVP;		//ワールドから射影までの変換行列
-	D3DXVECTOR4 Color;
+	Matrix mWVP;		//ワールドから射影までの変換行列
+	Vector4D Color;
 };
 
 struct FigureInfo

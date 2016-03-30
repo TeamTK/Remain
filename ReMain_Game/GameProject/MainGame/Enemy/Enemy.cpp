@@ -16,7 +16,8 @@ Enemy::Enemy(const char* name, EnemyState &enemyState) :
 	m_FlinchCnt(0.0f),
 	m_AnimSpeed(ENEMY_NORMAL_SPEED),
 	m_SearchCnt(0),
-	m_OneFlameTime(0)
+	m_OneFlameTime(0),
+	m_MonsterType(eNoMonster)
 {
 	//各種設定値割り当て
 	m_SphereMap.radius = enemyState.mapHitRadius; //マップとの半径
@@ -28,7 +29,7 @@ Enemy::Enemy(const char* name, EnemyState &enemyState) :
 	m_AuditoryRange = 10.0f;
 	m_pos = enemyState.posSpawn;
 	m_rot = enemyState.rotation;
-	m_Model.SetAsset(name, true);
+	m_Model.SetAsset(name);
 
 	//視界システム
 	m_SightData.angle = enemyState.sightAngle;
@@ -177,8 +178,8 @@ void Enemy::Update()
 	for (unsigned int i = 0; i < bornNum; i++)
 	{
 		m_pCapsule[i].radius = m_BoneCapsule[i].radius;
-		m_pCapsule[i].segment.start = m_Model.GetBornPos(m_BoneCapsule[i].start);
-		m_pCapsule[i].segment.end = m_Model.GetBornPos(m_BoneCapsule[i].end);
+		m_pCapsule[i].segment.start = m_Model.GetBonePos(m_BoneCapsule[i].start);
+		m_pCapsule[i].segment.end = m_Model.GetBonePos(m_BoneCapsule[i].end);
 
 		if (!m_FuncTask.Running("Die")) m_pHitAttackBody[i].Awake();
 	}
@@ -188,7 +189,7 @@ void Enemy::Update()
 	//視界の更新
 	m_SightPos = m_pos;
 	m_SightPos.y += 2.0f;
-	m_SightVec = m_Model.GetAxisZ(1.0f);
+	m_SightVec = m_Model.GetAxisZ(MatrixType::eWorldMatrix);
 
 	//アニメーション切り替えと速度
 	m_Model.SetPlayTime(m_AnimSpeed * m_OneFlameTime);
@@ -222,14 +223,30 @@ void Enemy::HitBullet(Result_Sphere& r)
 	info.frameNum = 8;
 	info.pos = r.position;
 	info.size = 2.0f;
-	info.sizeW = 256;
-	info.sizeH = 256;
+	info.sizeW = 8;
+	info.sizeH = 1;
 	info.speed = 1.0f;
 	new EffectAnimation("BloodAnim", info);
 
 	new SoundEffect("Blood", 5);
 
-	m_Model.SetTexture(&m_DamegeBlood);
+	switch (m_MonsterType)
+	{
+	case eNoMonster:
+		m_Model.SetTexture("Blood");
+		break;
+
+	case eMonster_A:
+		m_Model.SetTexture("Monster_A_2");
+		break;
+
+	case eMonster_B:
+		m_Model.SetTexture("Monster_B_2");
+		break;
+
+	default:
+		break;
+	}
 
 	//銃の種類ごとの威力
 	float GunPower = 1.0f;

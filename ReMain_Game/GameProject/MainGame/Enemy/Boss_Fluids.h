@@ -2,7 +2,6 @@
 #define BOSS_FLUIDS_H
 
 #include "../../GEKO/GEKO.h"
-#include "../../MainGame/Player/Player.h"
 
 class Boss_Fluids : public Task
 {

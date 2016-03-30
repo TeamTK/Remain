@@ -11,12 +11,8 @@ public:
 	void Update();
 
 private:
-	void Render();
-
-private:
 	float m_HpMax;
 	float* m_pHp;
-	RenderTask m_Render;
 	Image m_LifeImage;
 	Image m_LifeFrameImage;
 	Image m_LifeBackImage;

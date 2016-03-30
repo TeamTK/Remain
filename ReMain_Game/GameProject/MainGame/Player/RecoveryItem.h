@@ -9,7 +9,6 @@ public:
 	RecoveryItem(float x, float y, float z);
 	~RecoveryItem();
 	void Update();
-	void Render();
 
 private:
 	void HitPlayer(Result_Sphere data);
@@ -17,8 +16,8 @@ private:
 private:
 	float m_Radius;
 	StaticMesh m_Model;
+	Billboard m_ItemBillboard;
 	Vector3D m_Pos;
-	RenderTask m_Render;
 	Collider m_HitSphere;
 };
 

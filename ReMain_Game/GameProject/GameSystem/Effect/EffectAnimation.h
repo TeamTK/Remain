@@ -21,10 +21,8 @@ public:
 	EffectAnimation(const std::string &assetName, const EffectAnimationInfo &info);
 	~EffectAnimation();
 	void Update();
-	void Render();
 
 private:
-	RenderTask m_Render;
 	BillboardAnimation m_Anim;
 	Vector3D m_Pos;
 	float m_Size;

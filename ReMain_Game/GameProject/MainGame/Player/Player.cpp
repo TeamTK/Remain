@@ -71,12 +71,11 @@ Player::Player(PData* data, Vector3D pos, float rotY, float horizontal, float ve
 	m_State(EPlayerState::eState_Idle)
 {
 	//プレイヤーモデル初期化
-	m_Model.SetAsset("Player", true);
-	m_Model.SetScale(1.0f, 1.0f, 1.0f);
+	m_Model.SetAsset("Player");
+	m_Model.SetMeshState(eBlockingLight);
 	m_Model.SetTranselate(pos);
 	m_Model.SetRotationRadian(0.0f, m_rot.y, 0.0f);
 	m_Model.SetTime(0);
-	m_Model.Render();
 
 	m_pos = pos;
 	m_rot.y = Math::ChangeToRadian(rotY);
@@ -195,11 +194,11 @@ void Player::Update()
 	//プレイヤーの血表示時間
 	if (m_Timer.GetSecond() >= 11.0)
 	{
-		m_Model.SetTexture(nullptr);
+		//m_Model.SetTexture(nullptr);
 	}
 
-	m_SightPos = m_Model.GetBornPos(6); //頭のボーン位置
-	m_MatrixK = m_Model.GetBornMatrix(25, true);	//指のボーン位置
+	m_SightPos = m_Model.GetBonePos(6); //頭のボーン位置
+	m_MatrixK = m_Model.GetBoneMatrix(25, true);	//指のボーン位置
 
 	//プレイヤーのボーン行列の切り替え
 	if ((m_Anim == eAnim_TakeGun && m_Model.GetPlayTime() > 16) ||
@@ -209,12 +208,12 @@ void Player::Update()
 		(m_Anim == eAnim_Hit && m_isTakeWeapon) || m_Anim == eAnim_WalkReloadGun)
 	{
 		//手のボーン
-		m_MatrixS = m_Model.GetBornMatrix(24, true);
+		m_MatrixS = m_Model.GetBoneMatrix(24, true);
 	}
 	else
 	{
 		//肩のボーン
-		m_MatrixS = m_Model.GetBornMatrix(21, true);
+		m_MatrixS = m_Model.GetBoneMatrix(21, true);
 	}
 
 	if ((m_Anim == eAnim_TakeHandgun && m_Model.GetPlayTime() > 16) ||
@@ -224,12 +223,12 @@ void Player::Update()
 		(m_Anim == eAnim_Hit && m_isTakeWeapon) || m_Anim == eAnim_WalkReloadHandgun)
 	{
 		//手のボーン
-		m_MatrixH = m_Model.GetBornMatrix(24, true);
+		m_MatrixH = m_Model.GetBoneMatrix(24, true);
 	}
 	else
 	{
 		//腰のボーン
-		m_MatrixH = m_Model.GetBornMatrix(3, true);
+		m_MatrixH = m_Model.GetBoneMatrix(3, true);
 	}
 
 	m_PlayAnim = m_Model.GetPlayAnimation();
@@ -311,8 +310,8 @@ void Player::Move()
 		if (m_SetupWeapon)
 		{
 			//武器を構えた状態の移動
-			m_pos += m_Model.GetAxisX(1.0f) * m_KeyDir.x * m_MoveSpeed * m_OneFlameTime;
-			m_pos += m_Model.GetAxisZ(1.0f) * m_KeyDir.z * m_MoveSpeed * m_OneFlameTime;
+			m_pos += m_Model.GetAxisX(MatrixType::eWorldMatrix) * m_KeyDir.x * m_MoveSpeed * m_OneFlameTime;
+			m_pos += m_Model.GetAxisZ(MatrixType::eWorldMatrix) * m_KeyDir.z * m_MoveSpeed * m_OneFlameTime;
 			//プレイヤーの上下移動
 			m_Phase++;
 			m_pos.y += sinf(m_Phase * (PI * 10) / 150.0f) / 120.0f;
@@ -459,10 +458,10 @@ void Player::Attack()
 			{
 				EffectAnimationInfo info;
 				info.frameNum = 8;
-				info.pos = m_Model.GetBornPos(24) + m_Model.GetAxisZ(0.9f);
+				info.pos = m_Model.GetBonePos(24) + m_Model.GetAxisZ(MatrixType::eWorldMatrix);
 				info.size = 0.1f;
-				info.sizeW = 256;
-				info.sizeH = 256;
+				info.sizeW = 8;
+				info.sizeH = 1;
 				info.speed = 40;
 				new EffectAnimation("MuzzleFlash", info);
 			}
@@ -966,12 +965,12 @@ void Player::HitEnemyAttack(Result_Capsule &hitData)
 	info.frameNum = 8;
 	info.pos = hitData.end;
 	info.size = 4.0f;
-	info.sizeW = 256;
-	info.sizeH = 256;
+	info.sizeW = 8;
+	info.sizeH = 1;
 	info.speed = 32;
 	new EffectAnimation("BloodAnim", info);
 
-	m_Model.SetTexture(&m_DamegeBlood);
+	m_Model.SetTexture("Player_2");
 
 	m_Timer.Start();
 	m_HitEnemyAttack.Sleep();
@@ -1000,9 +999,9 @@ void Player::HitEnemyAttack(Result_Capsule &hitData)
 		TaskManager::Kill("UI_SelectWeapon");
 
 		//プレイヤーから右斜め上にカメラを設置して注視点はプレイヤーの前方に設置
-		Vector3D z = m_Model.GetAxisZ(*m_Model.GetWorldMatrix(), 1.0f);
-		Vector3D x = m_Model.GetAxisX(*m_Model.GetWorldMatrix(), 1.0f);
-		Vector3D y = m_Model.GetAxisY(*m_Model.GetWorldMatrix(), 1.0f);
+		Vector3D z = m_Model.GetAxisZ(MatrixType::eWorldMatrix);
+		Vector3D x = m_Model.GetAxisX(MatrixType::eWorldMatrix);
+		Vector3D y = m_Model.GetAxisY(MatrixType::eWorldMatrix);
 		Camera::SetEye(m_pos + (z + x + y) * 3.0f);
 		Camera::SetLookat(m_pos + z);
 	}

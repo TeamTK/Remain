@@ -66,7 +66,7 @@ Monster_A::Monster_A(EnemyState &enemyState) :
 		m_FuncTask.Start("Wandering");
 	}
 
-	m_DamegeBlood.SetAsset("Monster_A_2");
+	m_MonsterType = eMonster_A;
 }
 
 Monster_A::~Monster_A()

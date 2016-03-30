@@ -41,11 +41,11 @@ void Sphere3D::Render(const Vector3D &pos, const Vector3D &scale, const Vector3D
 	if (SUCCEEDED(pDeviceContext->Map(m_FigureInfo.pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
 		//ワールド、カメラ、射影行列を渡す
-		D3DXMATRIX m = world * (*Camera::GetView()) * (*Camera::GetProjection());
+		Matrix m = world * (*Camera::GetViewProjection());
 		D3DXMatrixTranspose(&m, &m);
 		cb.mWVP = m;
 
-		cb.Color = D3DXVECTOR4(color.x, color.y, color.z, 1.0f);
+		cb.Color = Vector4D(color.x, color.y, color.z, 1.0f);
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));
 		pDeviceContext->Unmap(m_FigureInfo.pConstantBuffer, 0);
@@ -56,7 +56,7 @@ void Sphere3D::Render(const Vector3D &pos, const Vector3D &scale, const Vector3D
 	pDeviceContext->PSSetConstantBuffers(0, 1, &m_FigureInfo.pConstantBuffer);
 
 	//バーテックスバッファーをセット
-	UINT stride = sizeof(D3DXVECTOR4);
+	UINT stride = sizeof(Vector4D);
 	UINT offset = 0;
 	Direct3D11::GetInstance()->GetID3D11DeviceContext()->IASetVertexBuffers(0, 1, &m_FigureInfo.pVertexBuffer, &stride, &offset);
 
@@ -144,9 +144,9 @@ HRESULT Sphere3D::InitShader()
 	return S_OK;
 }
 
-D3DXVECTOR4 ConvertRTPToXYZ(float r, float fTheta, float fPhi)
+Vector4D ConvertRTPToXYZ(float r, float fTheta, float fPhi)
 {
-	D3DXVECTOR4	vResult;
+	Vector4D	vResult;
 
 	vResult.x = r * sinf(fTheta) * cosf(fPhi);
 	vResult.y = r * cosf(fTheta);
@@ -158,7 +158,7 @@ D3DXVECTOR4 ConvertRTPToXYZ(float r, float fTheta, float fPhi)
 
 HRESULT Sphere3D::InitVertex()
 {
-	D3DXVECTOR4	vertices[20 * 20];	// 頂点データ
+	Vector4D		vertices[20 * 20];	// 頂点データ
 	float				fTheta1, fTheta2;
 	float				fPhi1, fPhi2;
 	float				fAngleDelta;

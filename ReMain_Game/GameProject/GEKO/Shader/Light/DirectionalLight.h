@@ -1,7 +1,8 @@
 #ifndef _DIRECTIONAL_LIGHT_
 #define _DIRECTIONAL_LIGHT_
 
-#include "Direct3D11.h"
+class Vector3D;
+class Vector4D;
 
 class DirectionalLight
 {
@@ -24,8 +25,8 @@ private:
 	static DirectionalLight* GetInstance();
 
 private:
-	Vector4D m_Direction;
-	Vector4D m_LightColor;
+	struct LightPimpl;
+	LightPimpl *m_pLightPimpl;
 };
 
 #endif

@@ -1,13 +1,11 @@
 #include "Effect.h"
 
-EffectPart::EffectPart(float x, float y, float z, const Vector3D &pos) :
-	m_Speed(0.0f)
+EffectPart::EffectPart(const Vector3D &dir, const Vector3D &pos, const std::string &name) :
+	m_Direction(dir),
+	m_Pos(pos)
 {
-	m_Direction.x = x;
-	m_Direction.y = y;
-	m_Direction.z = z;
-
-	m_Pos = pos;
+	m_Billboard.SetRenderingRegister(true, 10, 0);
+	m_Billboard.SetImageAsset(name);
 };
 
 EffectPart::~EffectPart()
@@ -19,31 +17,23 @@ void EffectPart::SetDirection(const Vector3D &direction)
 	m_Direction = direction;
 }
 
-void EffectPart::Update()
+void EffectPart::Update(float speed, float size, int time)
 {
-	m_Pos += (m_Direction * m_Speed);
+	m_Pos += (m_Direction * speed);
+	m_Billboard.SetPosition(m_Pos);
+	m_Billboard.SetSize(size / (float)time);
 }
-
-void EffectPart::Render(float size, float speed, int time, const std::string &name)
-{
-	m_Speed = speed;
-	Fiqure::RenderBillboard(m_Pos, size / (float)time, name);
-};
 
 Effect::Effect(const EffectInfo &info, const char* effectName) :
 	m_TimeCnt(0),
 	m_AllTime(0),
 	m_Speed(1.0f),
 	m_Size(1.0f),
-	m_ImageName("NULL"),
 	Task(effectName, 0)
 {
 	m_Speed = info.speed;
-	m_ImageName = info.imageName;
 	m_Size = info.size;
 	m_AllTime = info.time;
-
-	m_RenderTask.Regist(0, REGIST_RENDER_FUNC(Effect::Render));
 };
 
 Effect::~Effect()
@@ -76,12 +66,7 @@ void Effect::Update()
 	}
 	else
 	{
-		for (auto& i : m_list) i.Update();
+		for (auto& i : m_list) i.Update(m_Size, m_Speed, m_TimeCnt);
 		m_TimeCnt++;
 	}
-};
-
-void Effect::Render()
-{
-	for (auto& i : m_list) i.Render(m_Size, m_Speed, m_TimeCnt, m_ImageName);
 };

@@ -13,9 +13,10 @@ public:
 	friend ShaderShadowMap;
 
 	DynamicMesh();
-	DynamicMesh(const std::string &meshName, bool isLightInterrupted = false);
+	DynamicMesh(const std::string &meshName, unsigned int priorityGroup, unsigned int priority, unsigned int meshState = MeshState::eNothing);
 	~DynamicMesh();
-	void SetAsset(const std::string &meshName, bool isLightInterrupted = false);
+	void SetMeshState(unsigned int meshState);
+	void SetAsset(const std::string &meshName);
 	void ChangeAnimation(unsigned int num); //アニメーションを変更
 	void SetPlayTime(float animSpeed); //アニメーション速度更新
 	void SetTime(float animTime);	   //指定のアニメーション時間に設定
@@ -25,23 +26,23 @@ public:
 	float GetPlayTime() const;
 	int GetPlayAnimation() const;
 	int GetFaceAllNum() const;
-	int GetBornNum(std::string name) const;
-	int GetBornAllNum() const;
-	std::string GetBornName(int bornIndex) const;
-	Matrix GetBornMatrix(int bornIndex, bool isWorld) const;
-	Matrix GetBornMatrix(std::string name, bool isWorld) const;
-	Vector3D GetBornPos(int bornIndex) const;
-	Vector3D GetBornPos(std::string name) const;
-	void Render();
+	int GetBoneNum(std::string name) const;
+	int GetBoneAllNum() const;
+	std::string GetBoneName(int boneIndex) const;
+	Matrix GetBoneMatrix(int boneIndex, bool isWorld) const;
+	Matrix GetBoneMatrix(std::string name, bool isWorld) const;
+	Vector3D GetBonePos(int boneIndex) const;
+	Vector3D GetBonePos(std::string name) const;
 	void RenderOutline(float size);
-	void RenderMatrix(Matrix &matrix);
-	void BornDebug(eBornDebug eBornDebug) const;
+	void BoneDebug(eBoneDebug eBoneDebug) const;
 	void AnimationDebug(int animNum) const;
 
 private:
+	void ForwardRendering();
+	void DeferredRendering();
 	void AllocationSkinMeshData(const std::string &meshName);
-	void RenderFunc(Matrix &matrix);
-	void ReleseCopyBornTree(CopyBorn *pBornCopy) const;
+	void RenderFunc(Matrix &matrix, bool isShadow);
+	void ReleseCopyBoneTree(CopyBone *pBoneCopy) const;
 
 private:
 	bool m_IsAnimUpdate;
@@ -49,8 +50,8 @@ private:
 	unsigned int m_AnimNum;
 	float m_AnimFrame;
 	DyanmicMeshData *m_pMeshData;
-	CopyBorn m_Born;
-	std::vector<CopyBorn*> m_CopyBornArray;
+	CopyBone m_Bone;
+	std::vector<CopyBone*> m_CopyBoneArray;
 };
 
 #endif

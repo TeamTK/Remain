@@ -20,12 +20,28 @@ Title::Title() :
 	m_ExitImage.SetAsset("Exit");
 	m_SelectImage.SetAsset("Blood");
 
+	m_TitleImage.SetDrawRegister(true, 0, 0);
+	m_StartImage.SetDrawRegister(true, 0, 1);
+	m_ExitImage.SetDrawRegister(true, 0, 2);
+	m_SelectImage.SetDrawRegister(true, 0, 3);
+
+	m_TitleImage.SetPosition(TITLE_POS);
+	m_StartImage.SetPosition(START_POS);
+	m_ExitImage.SetPosition(EXIT_POS);
+	m_SelectImage.SetPosition(m_SelectPos);
+
 	//リソース設定3D
 	m_Cabin.SetAsset("Cabin");
 	m_ShotGun.SetAsset("Shotgun");
 	m_HandGun.SetAsset("Handgun");
 	m_AmmoBox.SetAsset("AmmoBox");
 
+	m_Cabin.SetRenderingRegister(true, 0, 0);
+	m_ShotGun.SetRenderingRegister(true, 0, 1);
+	m_HandGun.SetRenderingRegister(true, 0, 2);
+	m_AmmoBox.SetRenderingRegister(true, 0, 3);
+
+	//リソース設定サウンド
 	m_DecisionSound.SetAseet("Decision");
 	m_CursorSound.SetAseet("Cursor");
 
@@ -41,8 +57,6 @@ Title::Title() :
 	m_HandGun.SetTranselate(-1.5f, 1.0f, -2.8f);
 	m_AmmoBox.SetTranselate(-1.7f, 1.0f, -3.1f);
 	m_AmmoBox.SetScale(0.5f, 0.5f, 0.5f);
-
-	m_Render.Regist(0, REGIST_RENDER_FUNC(Title::Render));
 
 	//カメラ位置と注視点
 	Camera::SetEye(-1.5f, 2.0f, -2.0f);
@@ -92,7 +106,6 @@ void Title::Update()
 
 		case Select::eExit:
 			SetKill();
-			m_Render.Sleep();
 			GEKO::LoopEnd();
 
 			break;
@@ -103,33 +116,21 @@ void Title::Update()
 	{
 		m_IsTransferEnd = true;
 
+		m_TitleImage.SetDrawRegister(false, 0, 0);
+		m_StartImage.SetDrawRegister(false, 0, 1);
+		m_ExitImage.SetDrawRegister(false, 0, 2);
+		m_SelectImage.SetDrawRegister(false, 0, 3);
+
+		m_Cabin.SetRenderingRegister(false, 0, 0);
+		m_ShotGun.SetRenderingRegister(false, 0, 1);
+		m_HandGun.SetRenderingRegister(false, 0, 2);
+		m_AmmoBox.SetRenderingRegister(false, 0, 3);
+
 		SetKill();
-		m_Render.Sleep();
 		new NowLoading(ChapterType::eChapter_1_1, g_isResource);
 		g_isResource = true;
 	}
 
 	m_Transfer.Update();
-}
-
-void Title::Render()
-{
-	//3Dオブジェクト
-	m_Cabin.Render();
-	m_ShotGun.Render();
-	m_HandGun.Render();
-	m_AmmoBox.Render();
-
-	//2Dオブジェクト
-	m_TitleImage.Draw(TITLE_POS);
-	m_StartImage.Draw(START_POS);
-	m_ExitImage.Draw(EXIT_POS);
-	m_SelectImage.Draw(m_SelectPos);
-
-	if (m_IsTransferStart)
-	{
-		m_Transfer.Render();
-	}
-
-	m_Transfer_Out.Render();
+	m_SelectImage.SetPosition(m_SelectPos);
 }

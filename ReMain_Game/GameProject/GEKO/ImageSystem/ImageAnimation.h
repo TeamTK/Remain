@@ -7,12 +7,16 @@ class ImageAnimation
 {
 public:
 	ImageAnimation();
-	ImageAnimation(const std::string &assetName, int frameNum, int sizeW, int sizeH);
+	ImageAnimation(const std::string &assetName, unsigned int priorityGroup, unsigned int priority, int frameNum, int divW, int divH);
 	~ImageAnimation();
 	bool GetIsEnd() const;
-	void FrameDivision(const std::string &assetName, int frameNum, int sizeW, int sizeH);
+	void SetDrawRegister(bool isRegister, unsigned int priorityGroup, unsigned int priority);
+	void FrameDivision(const std::string &assetName, int frameNum, int divW, int divH);
 	void PlayFrame(float frame);
-	void Draw(const Vector2D &pos);
+	void SetPosition(float x, float y);
+	void SetPosition(const Vector2D &position);
+	void SetDrawPriority(unsigned int priorityGroup, unsigned int priority);
+	void Update();
 	void DebugFrame();
 
 private:

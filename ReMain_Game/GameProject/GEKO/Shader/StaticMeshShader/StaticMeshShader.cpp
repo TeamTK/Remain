@@ -3,6 +3,8 @@
 
 StaticMeshShader::StaticMeshShader()
 {
+	INIT_NULLPOINTR(m_pCompiledShader);
+	INIT_NULLPOINTR(m_pErrors);
 	INIT_NULLPOINTR(m_pVertexShader);
 	INIT_NULLPOINTR(m_pVertexShader_NoTexture);
 	INIT_NULLPOINTR(m_pVertexShader_ShadowMap);
@@ -30,6 +32,7 @@ bool StaticMeshShader::Init()
 	//頂点シェーダー初期化
 	if (!InitVertexShader(pDevice))
 	{
+		ReleaseBlod();
 		MessageBox(0, TEXT("頂点シェーダー作成失敗"), NULL, MB_OK);
 		return false;
 	}
@@ -37,6 +40,7 @@ bool StaticMeshShader::Init()
 	//テクスチャーなし頂点シェーダー初期化
 	if (!InitVertexShader_NoTexture(pDevice))
 	{
+		ReleaseBlod();
 		MessageBox(0, TEXT("テクスチャーなし頂点シェーダー作成失敗"), NULL, MB_OK);
 		return false;
 	}
@@ -44,6 +48,7 @@ bool StaticMeshShader::Init()
 	//頂点シェーダー初期化
 	if (!InitVertexShader_ShadowMap(pDevice))
 	{
+		ReleaseBlod();
 		MessageBox(0, TEXT("シャドウマップ頂点シェーダー作成失敗"), NULL, MB_OK);
 		return false;
 	}
@@ -51,6 +56,7 @@ bool StaticMeshShader::Init()
 	//ピクセルシェーダー初期化
 	if (!InitPixelShader(pDevice))
 	{
+		ReleaseBlod();
 		MessageBox(0, TEXT("ピクセルシェーダー作成失敗"), NULL, MB_OK);
 		return false;
 	}
@@ -58,6 +64,7 @@ bool StaticMeshShader::Init()
 	//テクスチャーなしピクセルシェーダー初期化
 	if (!InitPixelShader_NoTexture(pDevice))
 	{
+		ReleaseBlod();
 		MessageBox(0, TEXT("テクスチャーなしピクセルシェーダー作成失敗"), NULL, MB_OK);
 		return false;
 	}
@@ -65,6 +72,7 @@ bool StaticMeshShader::Init()
 	//テクスチャーなしピクセルシェーダー初期化
 	if (!InitPixelShader_ShadowMap(pDevice))
 	{
+		ReleaseBlod();
 		MessageBox(0, TEXT("シャドウマップピクセルシェーダー作成失敗"), NULL, MB_OK);
 		return false;
 	}
@@ -109,6 +117,8 @@ void StaticMeshShader::SetShader(ID3D11DeviceContext *pDeviceContext, bool isTex
 
 void StaticMeshShader::Release()
 {	
+	ReleaseBlod();
+
 	//シェーダー
 	SAFE_RELEASE(m_pVertexShader);
 	SAFE_RELEASE(m_pVertexShader_NoTexture);
@@ -120,4 +130,10 @@ void StaticMeshShader::Release()
 	//頂点レイアウト
 	SAFE_RELEASE(m_pVertexLayout);
 	SAFE_RELEASE(m_pVertexLayout_NoTexture);
+}
+
+void StaticMeshShader::ReleaseBlod()
+{
+	SAFE_RELEASE(m_pCompiledShader);
+	SAFE_RELEASE(m_pErrors);
 }

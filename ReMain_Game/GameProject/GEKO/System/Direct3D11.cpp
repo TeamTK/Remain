@@ -298,6 +298,11 @@ ID3D11DeviceContext* Direct3D11::GetID3D11DeviceContext() const
 	return m_pDeviceContext;
 }
 
+ID3D11DepthStencilView* Direct3D11::GetDepthStencilView() const
+{
+	return m_pDepthStencilView;
+}
+
 ID3D11BlendState* Direct3D11::GetBlendState() const
 {
 	return m_pBlendState;
@@ -320,10 +325,25 @@ int Direct3D11::GetResolutionHeight() const
 	return m_ResolutionHeight;
 }
 
-void Direct3D11::Clear(float r, float g, float b)
+float Direct3D11::GetClearColorRed() const
+{
+	return m_Red;
+}
+
+float Direct3D11::GetClearColorGreen() const
+{
+	return m_Green;
+}
+
+float Direct3D11::GetClearColorBlue() const
+{
+	return m_Blue;
+}
+
+void Direct3D11::Clear()
 {
 	//画面クリア
-	float ClearColor[4] = { r, g, b, 1 }; //クリア色RGBAの順
+	float ClearColor[4] = { m_Red, m_Green, m_Blue, 1 }; //クリア色RGBAの順
 	m_pDeviceContext->ClearRenderTargetView(m_pRenderTargetView, ClearColor); //カラーバッファクリア
 	m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0); //デプスステンシルバッファクリア
 }
@@ -365,6 +385,13 @@ void Direct3D11::SetViewport(float width, float height, float x, float y)
 	vp.TopLeftX = x;
 	vp.TopLeftY = y;
 	m_pDeviceContext->RSSetViewports(1, &vp);
+}
+
+void Direct3D11::SetClearColor(float red, float green, float blue)
+{
+	m_Red = red;
+	m_Green = green;
+	m_Blue = blue;
 }
 
 void Direct3D11::DestroyD3D11()

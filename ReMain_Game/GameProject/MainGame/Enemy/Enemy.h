@@ -6,6 +6,14 @@
 
 #define ENEMY_NORMAL_SPEED 30.0f
 
+//敵ーの種類
+enum MonsterType
+{
+	eNoMonster,
+	eMonster_A,
+	eMonster_B,
+};
+
 //敵のステータス
 struct EnemyState
 {
@@ -62,19 +70,19 @@ private:
 
 protected:
 	unsigned int m_AnimType; //アニメーションの種類
-	int m_FlinchNum; //耐久値
-	float m_FlinchCnt; //耐久蓄積値
-	float m_WalkSpeed; //歩く速度
-	float m_RunSpeed; //走る速度
-	float m_AnimSpeed; //アニメーションの速度
-	float m_AnimEndTime; //アニメーションの終わり時間
-	float m_OneFlameTime;	//1フレームの時間
+	int m_FlinchNum;		  //耐久値
+	float m_FlinchCnt;		  //耐久蓄積値
+	float m_WalkSpeed;		  //歩く速度
+	float m_RunSpeed;		  //走る速度
+	float m_AnimSpeed;		  //アニメーションの速度
+	float m_AnimEndTime;	  //アニメーションの終わり時間
+	float m_OneFlameTime;	  //1フレームの時間
 
 	//敵の視界
-	EnemySight m_Sight; //視界システム
+	EnemySight m_Sight;     //視界システム
 	SightData m_SightData; //視界のデータ
-	Vector3D m_SightPos; //視界の位置
-	Vector3D m_SightVec; //視界の方向
+	Vector3D m_SightPos;   //視界の位置
+	Vector3D m_SightVec;   //視界の方向
 
 	//聴覚探知
 	enum {eOblivious = 1, eCaution = 2, eDiscovery = 3};
@@ -97,7 +105,8 @@ protected:
 	FunctionTask m_FuncTask; //AI管理
 	TracerouteSearch m_Search; //経路探索
 	int m_SearchCnt; //経路探索間隔カウント
-	Image m_DamegeBlood; //攻撃を受けた時の血の演出用
+
+	MonsterType m_MonsterType; //敵の種類
 };
 
 #endif

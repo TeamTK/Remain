@@ -4,7 +4,7 @@
 #include "ShaderInfo.h"
 #include <vector>
 
-struct CopyBorn;
+struct CopyBone;
 
 //シェーダーに送るコンスタントバッファーを管理(StaticMesh・DynamicMeshのみ)
 class ConstantShader
@@ -17,17 +17,21 @@ public:
 	void SetTransformMatrixConstantBuffer(ID3D11DeviceContext *pDeviceContext, Matrix &mat, bool isShadow);
 	void SetMaterialConstantBuffer(ID3D11DeviceContext *pDeviceContext, 
 								   const Vector4D &diffuse, const Vector4D &specular, const Vector4D &ambient);
-	void SetBornConstantBuffer(ID3D11DeviceContext *pDeviceContext, int bornAllNum, std::vector<CopyBorn*> &pCopyBornArray);
+	void SetBoneConstantBuffer(ID3D11DeviceContext *pDeviceContext, int bornAllNum, std::vector<CopyBone*> &pCopyBornArray);
+	void SetForwardLightConstantBuffer(ID3D11DeviceContext *pDeviceContext);
+	void SetDeferredLightConstantBuffer(ID3D11DeviceContext *pDeviceContext);
 	void Release();
 
 private:
 	ConstantShader();
 
 private:
-	ID3D11Buffer* m_pCommonInfoConstantBuffer;		 //コンスタントバッファー（共通情報）
-	ID3D11Buffer* m_pTransformMatrixConstantBuffer;  //コンスタントバッファー（変換行列）
-	ID3D11Buffer* m_pMaterialConstantBuffer;		 //コンスタントバッファー（マテリアル）
-	ID3D11Buffer* m_pBornConstantBuffer;			 //コンスタントバッファー（ボーン）
+	ID3D11Buffer* m_pCommonInfoConstantBuffer;		 //定数バッファー（共通情報）
+	ID3D11Buffer* m_pTransformMatrixConstantBuffer;  //定数バッファー（変換行列）
+	ID3D11Buffer* m_pMaterialConstantBuffer;		 //定数バッファー（マテリアル）
+	ID3D11Buffer* m_pBoneConstantBuffer;			 //定数バッファー（ボーン）
+	ID3D11Buffer* m_pForwardConstantBuffer;			 //定数バッファー（前方レンダリング用ライト）
+	ID3D11Buffer* m_pDeferredConstantBuffer;		 //定数バッファー（後方レンダリング用ライト）
 };
 
 #endif

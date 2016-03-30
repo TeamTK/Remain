@@ -10,7 +10,6 @@ public:
 	Line3D m_Line3D;
 	Triangle3D m_Triangle3D;
 	//Sphere3D m_Sphere3D;
-	Billboard m_Billboard;
 };
 
 Fiqure::Fiqure()
@@ -42,9 +41,4 @@ void Fiqure::RenderTriangle3D(const Vector3D &pos1, const Vector3D &pos2, const 
 void Fiqure::RenderSphere3D(const Vector3D &pos, const Vector3D &scale, const Vector3D &color)
 {
 	//GetInstance()->m_Fiqure->m_Sphere3D.Render(pos, scale, color);
-}
-
-void Fiqure::RenderBillboard(const Vector3D &pos, float size, const std::string &name)
-{
-	GetInstance()->m_Fiqure->m_Billboard.Render(pos, size, name);
 }

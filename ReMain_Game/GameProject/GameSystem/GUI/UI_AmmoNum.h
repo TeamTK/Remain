@@ -9,11 +9,9 @@ public:
 	UI_AmmoNum();
 	~UI_AmmoNum();
 	void Update();
-	void Draw();
 
 private:
 	Number m_Num;
 	Image m_Slash;
-	RenderTask m_RenderTask;
 };
 #endif

@@ -36,16 +36,16 @@ public:
 	DyanmicMeshData();
 	virtual ~DyanmicMeshData();
 	SkinVertexInfo* GetVertex();
-	const BornInfo *GetBornInfo() const;
-	virtual void Update(CopyBorn *pCopyBorn, unsigned int animNum, float *animFrame, bool *pIsAnimEnd);
-	virtual void CopyBornTree(CopyBorn *pBornCopy, std::vector<CopyBorn*> *pCopyBornArray, Born *pBornOriginal);
+	const BoneInfo *GetBoneInfo() const;
+	virtual void Update(CopyBone *pCopyBone, unsigned int animNum, float *animFrame, bool *pIsAnimEnd);
+	virtual void CopyBoneTree(CopyBone *pBoneCopy, std::vector<CopyBone*> *pCopyBoneArray, Bone *pBoneOriginal);
 
 private:
-	void DeleteHierarchy(Born *pBorn);
+	void DeleteHierarchy(Bone *pBone);
 
 protected:
 	SkinVertexInfo* m_pVertex; //í∏ì_èÓïÒ
-	BornInfo m_BornInfo;
+	BoneInfo m_BoneInfo;
 };
 
 #endif 

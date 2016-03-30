@@ -1,17 +1,21 @@
-#ifndef _MESHBASE_H_
-#define _MESHBASE_H_
+#ifndef _MESH_BASE_H_
+#define _MESH_BASE_H_
 
 #include "StaticMesh\StaticMeshAsset.h"
 #include "WorldMatrixManager.h"
+#include "../Shader/RenderingManager.h"
 
-class Image;
+struct ImageInfo;
 
 //StaticMesh・DynamicMesh型の基底メッシュ二つの共通項目を定義
 class MeshBase
 {
 public:
-	MeshBase();
-	~MeshBase();
+	MeshBase(bool isRegister, unsigned int priorityGroup, unsigned int priority, unsigned int meshState);
+	virtual ~MeshBase();
+	void SetRenderingRegister(bool isRegister, unsigned int priorityGroup, unsigned int priority);
+	void SetRenderingType(RenderingType renderingType);
+	void SetPriority(unsigned int priorityGroup, unsigned int priority);
 	void SetScale(float x, float y, float z);
 	void SetRotationRadian(float x, float y, float z);
 	void SetRotationDegree(int x, int y, int z);
@@ -22,27 +26,33 @@ public:
 	void SetAmbient(int r, int g, int b, int materialIndex);
 	void SetAlpha(int alpha, int materialIndex);
 	void SetAlphaAll(int alpha);
-	void SetTexture(Image *pImage);
+	void SetTexture(const std::string &assetName);
+	void SetModelMatrixBuilding();
+	void SetSynthesisMatirx(Matrix &matrix);
 	Vector3D GetScale() const;
 	Vector3D GetRotation() const;
 	Vector3D GetTranselate() const;
 	Vector3D GetDiffuse(int materialIndex) const;
 	Vector3D GetSpecular(int materialIndex) const;
 	Vector3D GetAmbient(int materialIndex) const;
-	Vector3D GetAxisX(float length) const;
-	Vector3D GetAxisX(const Matrix &matrix, float length) const;
-	Vector3D GetAxisY(float length) const;
-	Vector3D GetAxisY(const Matrix &matrix, float length) const;
-	Vector3D GetAxisZ(float length) const;
-	Vector3D GetAxisZ(const Matrix &matrix, float length) const;
+	Vector3D GetAxisX(MatrixType matrixType) const;
+	Vector3D GetAxisY(MatrixType matrixType) const;
+	Vector3D GetAxisZ(MatrixType matrixType) const;
+	const Matrix *GetLocalMatrix() const;
 	const Matrix *GetWorldMatrix() const;
-	const Matrix *GetSynthesisMatrix() const;
-	void DebugAxis(const Matrix &matrix);
-	void DebugAxis();
+	const Matrix *GetModelMatrix() const;
+	void DebugAxis(MatrixType matrixType);
 
 protected:
+	virtual void ForwardRendering();
+	virtual void DeferredRendering();
+
+protected:
+	bool m_IsRenderingRegister;		   //レンダリング登録判断
+	unsigned int m_MeshState;		   //モデルの状態を判断
+	Matrix *m_pLocalMatrix;			   //モデルのローカル行列へのポインタ
 	Matrix m_WorldMatrix;			   //モデルのワールド行列
-	Matrix m_SynthesisMatrix;		   //モデルのローカル × ワールド行列
+	Matrix m_ModelMatrix;		       //モデルのローカル × ワールド行列
 	Vector3D m_Rotation;			   //モデルの回転値（X軸・Y軸・Z軸）
 	Vector3D m_Scale;				   //モデルの拡大率（X軸・Y軸・Z軸）
 	Vector3D m_Transelate;			   //モデルの平行移動（X軸・Y軸・Z軸）
@@ -50,7 +60,9 @@ protected:
 	std::vector<Vector4D> m_Diffuse;   //モデルの拡散反射率
 	std::vector<Vector3D> m_Specular;  //モデルの鏡面反射率
 	std::vector<Vector3D> m_Ambient;   //モデルの環境光率
-	Image *m_pImage;				   //マルチテクスチャ適用の画像
+	ImageInfo *m_pImageInfo;		   //マルチテクスチャ適用の画像情報へのポインタ
+	RenderingType m_RenderingType;	   //レンダリングの種類
+	RenderingInfo m_RenderingInfo;	   //レンダリング管理情報
 };
 
 #endif

@@ -4,7 +4,7 @@
 #include "../../Mesh/StaticMesh/StaticMesh.h"
 #include "../../Mesh/DynamicMesh/DynamicMesh.h"
 #include "../../System/Camera.h"
-#include "../../System/DirectionalLight.h"
+#include "../Light/DirectionalLight.h"
 #include <list>
 
 #define SHADOW_MAP_FORMAT DXGI_FORMAT_R16_FLOAT
@@ -62,7 +62,7 @@ ShaderShadowMap::ShaderShadowMap() :
 	m_Width(1920.0f),
 	m_Height(1080.0f),
 	m_Near(1.0f),
-	m_Far(1000.0f),
+	m_Far(200.0f),
 	m_ViewAngle(Math::ChangeToRadian(45.0f)),
 	m_Distance(0.0f)
 {
@@ -267,6 +267,8 @@ void ShaderShadowMap::Release()
 	SAFE_RELEASE(m_pShadowMaPimpl->pRenderTargetView);
 }
 
+#include "../../System/Input.h"
+
 void ShaderShadowMap::Update()
 {
 	ID3D11Device *pDevice = Direct3D11::GetInstance()->GetID3D11Device();
@@ -285,10 +287,8 @@ void ShaderShadowMap::Update()
 	pDeviceContext->ClearDepthStencilView(m_pShadowMaPimpl->pStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);//深度バッファクリア
 
 	const Vector4D *v = DirectionalLight::GetDirection();
-	//m_pShadowMaPimpl->lookatPt = Camera::GetEyePosition();
-	//m_pShadowMaPimpl->pos = m_pShadowMaPimpl->lookatPt + (Vector3D(-v->x, -v->y, -v->z).GetNormalize() * m_Distance);
 
-	//m_pShadowMaPimpl->lookatPt = Vector3D(0.0f, 0.0f, 0.0f);
+	//m_pShadowMaPimpl->lookatPt = Camera::GetEyePosition();
 	m_pShadowMaPimpl->pos = m_pShadowMaPimpl->lookatPt + (Vector3D(-v->x, -v->y, -v->z).GetNormalize() * m_Distance);
 
 	// ビュートランスフォーム（視点座標変換）
@@ -297,9 +297,17 @@ void ShaderShadowMap::Update()
 
 	// プロジェクショントランスフォーム（射影変換）
 	D3DXMatrixPerspectiveFovLH(&m_pShadowMaPimpl->proj, (FLOAT)m_ViewAngle, (FLOAT)m_Width / (FLOAT)m_Height, m_Near, m_Far);
+
+	//static int h = 30;
+	//if (Input::KeyZ.Pressed()) h--;
+	//if (Input::KeyX.Pressed()) h++;
+	//printf("h = %d\n", h);
+	//D3DXMatrixOrthoLH(&m_pShadowMaPimpl->proj, m_Width / h, m_Height / h, m_Near, m_Far);
+
 	m_pShadowMaPimpl->vpMat = m_pShadowMaPimpl->view * m_pShadowMaPimpl->proj;
 
 	Direct3D11::GetInstance()->SetRasterizer(D3D11_CULL_FRONT, D3D11_FILL_SOLID);
+	//Direct3D11::GetInstance()->SetRasterizer(D3D11_CULL_NONE, D3D11_FILL_SOLID);
 
 	//フレームバッファに深度情報を書き込む(staticMesh)
 	StaticMeshUpdate(pDevice, pDeviceContext);
@@ -509,8 +517,8 @@ void ShaderShadowMap::StaticMeshUpdate(ID3D11Device *pDevice, ID3D11DeviceContex
 		if (SUCCEEDED(pDeviceContext->Map(m_pShadowMaPimpl->pBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 		{
 			ShadowInfo sg;
-			
-			sg.lightWVP = i->m_SynthesisMatrix * m_pShadowMaPimpl->vpMat;
+
+			sg.lightWVP = i->m_ModelMatrix * m_pShadowMaPimpl->vpMat;
 			D3DXMatrixTranspose(&sg.lightWVP, &sg.lightWVP);
 
 			memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(ShadowInfo));
@@ -561,14 +569,14 @@ void ShaderShadowMap::DynaimcMeshUpdate(ID3D11Device *pDevice, ID3D11DeviceConte
 		if (SUCCEEDED(pDeviceContext->Map(m_pShadowMaPimpl->pSkinBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 		{
 			//ライトから見た視点の行列を格納
-			sg.lightWVP = i->m_SynthesisMatrix * m_pShadowMaPimpl->vpMat;
+			sg.lightWVP = i->m_ModelMatrix * m_pShadowMaPimpl->vpMat;
 			D3DXMatrixTranspose(&sg.lightWVP, &sg.lightWVP);
 
 			//ボーン行列格納
-			int bornNum = i->GetBornAllNum();
+			int bornNum = i->GetBoneAllNum();
 			for (int j = 0; j < bornNum; j++)
 			{
-				Matrix m = i->m_CopyBornArray[j]->bornMat;
+				Matrix m = i->m_CopyBoneArray[j]->boneMat;
 				D3DXMatrixTranspose(&m, &m);
 				sg.bornMat[j] = m;
 			}

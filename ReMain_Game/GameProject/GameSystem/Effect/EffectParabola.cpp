@@ -18,7 +18,7 @@ EffectParabola::EffectParabola(const EffectInfo &info, const char* effectName, c
 		dir += normal;
 		dir.SetNormalize();
 
-		m_list.emplace_back(dir.x, dir.y, dir.z, info.pos);
+		m_list.emplace_back(dir, info.pos, info.imageName);
 	}
 }
 

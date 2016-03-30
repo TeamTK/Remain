@@ -15,6 +15,8 @@ public:
 
 private:
 	DynamicMeshShader();
+	void ReleaseBlod();
+
 	bool InitVertexShader(ID3D11Device *pDevice);
 	bool InitVertexShader_NoTexture(ID3D11Device *pDevice);
 	bool InitVertexShader_ShadowMap(ID3D11Device *pDevice);
@@ -24,6 +26,10 @@ private:
 	bool InitPixelShader_ShadowMap(ID3D11Device *pDevice);
 
 private:
+	//hlslファイル読み込みブロブ
+	ID3D10Blob *m_pCompiledShader;
+	ID3D10Blob *m_pErrors;
+
 	ID3D11InputLayout*	 m_pVertexLayout;			//頂点レイアウト
 	ID3D11InputLayout*	 m_pVertexLayout_NoTexture;	//テクスチャーなし頂点レイアウト
 	ID3D11VertexShader*  m_pVertexShader;			//頂点シェーダー

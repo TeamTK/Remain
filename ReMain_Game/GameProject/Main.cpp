@@ -2,8 +2,6 @@
 #include "GameSystem\StageObject\StageObject.h"
 #include "Scene\Title.h"
 
-#include "GameSystem\GUI\UI_Life.h"
-
 INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 {
 	Debug::Start();
@@ -31,9 +29,9 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 	{
 		GEKO::BackgroundColor(0, 0, 0);
 		GEKO::DrawFps();
-		StageObjectManager::GetInstance()->Render();
+		//StageObjectManager::GetInstance()->Update();
 		TaskManager::Update();
-		RenderManager::Render();
+		//TaskManager::DrawName();
 	}
 
 	GEKO::End();

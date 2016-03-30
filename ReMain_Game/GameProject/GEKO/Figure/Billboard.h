@@ -2,6 +2,10 @@
 #define _BILLBOARD_H_
 
 #include "FiqureBase.h"
+#include "../Shader/RenderingManager.h"
+#include "../Mesh/MeshInfo.h"
+
+struct ImageInfo;
 
 //ビルボードの頂点情報
 struct VertexBillboardInfo
@@ -13,7 +17,7 @@ struct VertexBillboardInfo
 	Vector3D rightDwonPos;	 //右下の座標
 
 	//テクスチャUV座標
-	Vector2D leftTopUV;	 //左上UV座標
+	Vector2D leftTopUV;		 //左上UV座標
 	Vector2D leftDwonUV;	 //左下UV座標
 	Vector2D rightTopUV;	 //右上UV座標
 	Vector2D rightDwonUV;	 //右下UV座標
@@ -36,13 +40,31 @@ class Billboard
 {
 public:
 	Billboard();
+	Billboard(const std::string &assetName, unsigned int priorityGroup, unsigned int priority);
 	~Billboard();
-	void ChangeVertex(const VertexBillboardInfo& info);
-	void Render(const Vector3D &pos, float size, const std::string &name);
+	void SetRenderingRegister(bool isRegister, unsigned int priorityGroup, unsigned int priority);
+	void SetRenderingType(RenderingType renderingType);
+	void SetPriority(unsigned int priorityGroup, unsigned int priority);
+	void SetImageAsset(const std::string &assetName);
+	void SetPosition(float x, float y);
+	void SetPosition(const Vector3D &position);
+	void SetColor(int r, int g, int b);
+	void SetAlpha(int alpha);
+	void SetSize(float size);
 
 private:
-	ID3D11Buffer* m_pVertexBuffer; //頂点バッファー
+	void InitVertex(const VertexBillboardInfo& info);
+	void Render();
 
+private:
+	bool m_IsRenderingRegister;    //レンダリング登録判断
+	float m_Size;				   //ビルボードの大きさ
+	ID3D11Buffer* m_pVertexBuffer; //頂点バッファー
+	ImageInfo *m_pImageInfo;	   //画像情報へのポインタ
+	RenderingType m_RenderingType; //レンダリングの種類
+	RenderingInfo m_Rendering;	   //レンダリング管理情報
+	Vector3D m_Position;		   //ビルボードの座標
+	Vector4D m_Color;			   //ビルボードの色
 };
 
 //ビルボードアニメーション
@@ -50,21 +72,43 @@ class BillboardAnimation
 {
 public:
 	BillboardAnimation();
-	BillboardAnimation(const std::string &assetName, int frameNum, int sizeW, int sizeH);
+	BillboardAnimation(const std::string &assetName, unsigned int priorityGroup, unsigned int priority, int totalFrameNum, int divW, int divH);
 	~BillboardAnimation();
 	bool GetIsEnd() const;
-	void FrameDivision(const std::string &assetName, int frameNum, int sizeW, int sizeH);
+	void SetRenderingRegister(bool isRegister, unsigned int priorityGroup, unsigned int priority);
+	void SetRenderingType(RenderingType renderingType);
+	void SetPriority(unsigned int priorityGroup, unsigned int priority);
+	void SetPosition(float x, float y);
+	void SetPosition(const Vector3D &position);
+	void SetColor(int r, int g, int b);
+	void SetAlpha(int alpha);
+	void SetSize(float size);
+	void FrameDivision(const std::string &assetName, int totalFrameNum, int divW, int divH);
 	void PlayFrame(float frame);
-	void Render(const Vector3D &pos, float size);
 	void DebugFrame();
 
 private:
-	bool m_IsEnd;
-	int m_FrameNum;
-	int m_FrameAllNum;
-	float m_Speed;
-	Billboard *m_pBillboard;
-	std::string m_Name;
+	void InitVertex(const VertexBillboardInfo& info);
+	void Render();
+
+private:
+	bool m_IsRenderingRegister;    //レンダリング登録判断
+	bool m_IsEnd;				   //アニメーションの終わり判断
+	int m_CurrentFrameNum;		   //現在のアニメーションフレーム番号
+	int m_PastFrameNum;			   //過去のアニメーションフレーム番号
+	int m_TotalFrameNum;		   //アニメーションフレームの合計
+	float m_Speed;				   //アニメーション速度
+	float m_Size;				   //ビルボードの大きさ
+	ID3D11Buffer *m_pVertexBuffer; //頂点バッファー
+	ImageInfo *m_pImageInfo;       //画像情報へのポインタ
+	RenderingType m_RenderingType; //レンダリングの種類
+	RenderingInfo m_Rendering;	   //レンダリング管理情報
+	Vector2D *m_pLeftTopUV;		   //左上UV座標
+	Vector2D *m_pLeftDwonUV;	   //左下UV座標
+	Vector2D *m_pRightTopUV;	   //右上UV座標
+	Vector2D *m_pRightDwonUV;	   //右下UV座標
+	Vector3D m_Position;		   //ビルボードの座標
+	Vector4D m_Color;			   //ビルボードの色
 };
 
 #endif

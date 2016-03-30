@@ -7,7 +7,6 @@
 #include "ImageSystem\ImageAnimation.h"
 #include "SoundSystem\Sound.h"
 #include "System\Camera.h"
-#include "System\DirectionalLight.h"
 #include "System\Input.h"
 #include "System\Debug.h"
 #include "System\Change.h"
@@ -23,14 +22,17 @@
 #include "AI\TracerouteManager.h"
 #include "AI\TracerouteSearch.h"
 #include "AI\TracerouteTarget.h"
+#include "Shader\Light\DirectionalLight.h"
+#include "Shader\Light\PointLight.h"
 
 namespace GEKO
 {
 	bool Init(const char* winName, int winWidth, int winHeight, int resolutionWidth, int resolutionHeight);
 	bool Loop();
 	void BackgroundColor(int red, int green, int blue);
-	void ClearColor(int red, int green, int blue);
+	void ClearColor();
 	void ScreenUpdate();
+	void ManualRendering();
 	void WindowFixing();
 	void FullScreen(bool isFullScreen);
 	void SetResolution_And_RefreshRate(int width, int height, int refreshRateNum);
@@ -40,6 +42,7 @@ namespace GEKO
 	void DrawFps();
 	void RenderSpaceLine();
 	void ChangeFps(int fps);
+	void ControlFps(bool isControl);
 	void LoopEnd();
 	void End();
 	const WindowSize *GetWindowSize();

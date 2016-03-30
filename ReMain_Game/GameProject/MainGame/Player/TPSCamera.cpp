@@ -77,7 +77,7 @@ void TPSCamera::Update()
 		info->pModel->SetTranselate(*info->pPos);
 		info->pModel->SetRotationRadian(info->pRot->x, info->pRot->y, info->pRot->z);
 
-		Matrix mat = info->pModel->GetBornMatrix(6, true);
+		Matrix mat = info->pModel->GetBoneMatrix(6, true);
 		Vector4D eye = Vector4D(-0.25f, 0.15f, -0.2f, 1.0f) * mat;
 		Vector4D at = Vector4D(-0.25f, 0.2f, 0.2f, 1.0f) *  mat;
 		m_CameraPos = Vector3D(eye.x, eye.y, eye.z);
@@ -95,7 +95,7 @@ void TPSCamera::Update()
 		if (m_Vertical <= -0.9f) m_Vertical = -0.9f;	//カメラ角度上限
 
 		info->pRot->x = 0.0f;
-		*info->pLookPos = info->pModel->GetBornPos(6) + mat.GetAxisX() * 0.4f;
+		*info->pLookPos = info->pModel->GetBonePos(6) + mat.GetAxisX() * 0.4f;
 
 		//カメラの座標
 		m_CameraPos = *info->pLookPos;
@@ -136,7 +136,7 @@ void TPSCamera::HitCamera(Result_Porygon &hitData)
 void TPSCamera::HitCamera_Group(Result_Porygon_Group_LineSegment &hitData)
 {
 	Vector3D pos = hitData.pArray[0].contactPos * hitData.meshMatrix;
-	Vector3D pos2 = m_pCameraInfo->pModel->GetBornPos(6);
+	Vector3D pos2 = m_pCameraInfo->pModel->GetBonePos(6);
 	Vector3D temp;
 	float dist = 0.0f;
 	float distPrev = 0.0f;

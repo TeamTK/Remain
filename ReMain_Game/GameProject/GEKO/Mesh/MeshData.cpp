@@ -87,19 +87,19 @@ DyanmicMeshData::~DyanmicMeshData()
 	SAFE_DELETE_ARRAY(m_pVertex);
 
 	//ボーンリスト削除
-	m_BornInfo.BornList.clear();
-	m_BornInfo.BornList.shrink_to_fit();
+	m_BoneInfo.BoneList.clear();
+	m_BoneInfo.BoneList.shrink_to_fit();
 
 	//アニメーションフレーム数
-	for (auto& i : m_BornInfo.AnimationSetFrameNum)
+	for (auto& i : m_BoneInfo.AnimationSetFrameNum)
 	{
 		i.second.clear();
 		i.second.shrink_to_fit();
 	}
-	m_BornInfo.AnimationSetFrameNum.clear();
+	m_BoneInfo.AnimationSetFrameNum.clear();
 
 	//フレーム階層構造削除
-	DeleteHierarchy(m_BornInfo.sBorn.child);
+	DeleteHierarchy(m_BoneInfo.bone.child);
 }
 
 SkinVertexInfo *DyanmicMeshData::GetVertex()
@@ -107,22 +107,22 @@ SkinVertexInfo *DyanmicMeshData::GetVertex()
 	return m_pVertex;
 }
 
-const BornInfo *DyanmicMeshData::GetBornInfo() const
+const BoneInfo *DyanmicMeshData::GetBoneInfo() const
 {
-	return &m_BornInfo;
+	return &m_BoneInfo;
 }
 
-void DyanmicMeshData::Update(CopyBorn *pCopyBorn, unsigned int animNum, float *animFrame, bool *pIsAnimEnd)
-{
-}
-
-void DyanmicMeshData::CopyBornTree(CopyBorn *pBornCopy, std::vector<CopyBorn*> *pCopyBornArray, Born *pBornOriginal)
+void DyanmicMeshData::Update(CopyBone *pCopyBone, unsigned int animNum, float *animFrame, bool *pIsAnimEnd)
 {
 }
 
-void DyanmicMeshData::DeleteHierarchy(Born *pBorn)
+void DyanmicMeshData::CopyBoneTree(CopyBone *pBoneCopy, std::vector<CopyBone*> *pCopyBoneArray, Bone *pBoneOriginal)
 {
-	if (pBorn->child != nullptr) DeleteHierarchy(pBorn->child);
-	if (pBorn->brother != nullptr) DeleteHierarchy(pBorn->brother);
-	delete pBorn;
+}
+
+void DyanmicMeshData::DeleteHierarchy(Bone *pBone)
+{
+	if (pBone->child != nullptr) DeleteHierarchy(pBone->child);
+	if (pBone->brother != nullptr) DeleteHierarchy(pBone->brother);
+	delete pBone;
 }
