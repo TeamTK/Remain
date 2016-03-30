@@ -45,6 +45,8 @@ UI_SelectWeapon::UI_SelectWeapon() :
 	m_SelectedCursor.SetAsset("SelectedCursor");
 	m_SelectedCursor.SetSize(256, 256);
 	m_SelectedCursor.SetCenter(128, 128);
+	m_SelectedCursor.SetPosition(400.0f, 155.0f);
+
 
 	m_WeaponUI[0].SetAsset("UI_FreeHand");
 	m_WeaponUI[1].SetAsset("UI_Shotgun");
