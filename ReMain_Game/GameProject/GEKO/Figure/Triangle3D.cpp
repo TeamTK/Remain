@@ -39,7 +39,7 @@ void Triangle3D::Render(const Vector3D &pos1, const Vector3D &pos2, const Vector
 		Matrix m = *Camera::GetViewProjection();
 		D3DXMatrixTranspose(&cb.mWVP, &m);
 
-		cb.Color = D3DXVECTOR4(color.x, color.y, color.z, 1.0f);
+		cb.Color = Vector4D(color.x, color.y, color.z, 1.0f);
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));
 		pDeviceContext->Unmap(m_FigureInfo.pConstantBuffer, 0);

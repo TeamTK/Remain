@@ -3,54 +3,74 @@
 #include "..\..\Shader\ShadowMap\ShaderShadowMap.h"
 #include "..\..\Shader\ConstantShader.h"
 #include "..\..\ImageSystem\Image.h"
-#include <assert.h>
 
 DynamicMesh::DynamicMesh() :
+	MeshBase(false, 0, 0, MeshState::eNothing),
 	m_IsAnimUpdate(true),
 	m_IsAnimEnd(false),
 	m_AnimNum(0),
 	m_AnimFrame(0.0f),
 	m_pMeshData(nullptr)
 {
+
 }
 
 DynamicMesh::~DynamicMesh()
 {
-	ShaderShadowMap::GetInstance()->Clear(this);
-	ReleseCopyBornTree(&m_Born);
+	if (m_MeshState & MeshState::eBlockingLight)
+	{
+		ShaderShadowMap::GetInstance()->Clear(this);
+	}
+
+	ReleseCopyBoneTree(&m_Bone);
 	m_pMeshData = nullptr;
-	m_CopyBornArray.clear();
-	m_CopyBornArray.shrink_to_fit();
+	m_CopyBoneArray.clear();
+	m_CopyBoneArray.shrink_to_fit();
 }
 
-DynamicMesh::DynamicMesh(const std::string &meshName, bool isLightInterrupted) :
+DynamicMesh::DynamicMesh(const std::string &meshName, unsigned int priorityGroup, unsigned int priority, unsigned int meshState) :
+	MeshBase(true, priorityGroup, priority, meshState),
 	m_IsAnimUpdate(true),
 	m_IsAnimEnd(false),
 	m_pMeshData(nullptr)
 {
 	AllocationSkinMeshData(meshName);
-	if (isLightInterrupted)
+
+	//モデルが光を遮って影になる対象
+	if (meshState & MeshState::eBlockingLight)
 	{
-		ShaderShadowMap::GetInstance()->Clear(this);
 		ShaderShadowMap::GetInstance()->Add(this);
 	}
 }
 
-void DynamicMesh::SetAsset(const std::string &meshName, bool isLightInterrupted)
+void DynamicMesh::SetMeshState(unsigned int meshState)
 {
-	AllocationSkinMeshData(meshName);
-	if (isLightInterrupted)
+	//事前に登録していたら解除
+	if (m_MeshState & MeshState::eBlockingLight)
 	{
 		ShaderShadowMap::GetInstance()->Clear(this);
+	}
+
+	m_MeshState = meshState;
+
+	//モデルが光を遮って影になる対象
+	if (m_MeshState & MeshState::eBlockingLight)
+	{
+		assert(m_IsRenderingRegister && "レンダリングが登録されていないため「eBlockingLight」ができません");
 		ShaderShadowMap::GetInstance()->Add(this);
 	}
+}
+
+void DynamicMesh::SetAsset(const std::string &meshName)
+{
+	AllocationSkinMeshData(meshName);
 }
 
 void DynamicMesh::ChangeAnimation(unsigned int num)
 {	
 	//アニメーションセットの範囲外アクセス防止
-	const BornInfo *pBornData = m_pMeshData->GetBornInfo();
-	unsigned int AnimSetAllNum = pBornData->AnimationSetFrameNum.size();
+	const BoneInfo *pBoneData = m_pMeshData->GetBoneInfo();
+	unsigned int AnimSetAllNum = pBoneData->AnimationSetFrameNum.size();
 	if (num >= AnimSetAllNum) num = AnimSetAllNum - 1;
 	else if (num <= 0) num = 0;
 
@@ -97,13 +117,13 @@ int DynamicMesh::GetFaceAllNum() const
 	return m_pMeshData->GetMeshInfo()->faceNumAll;
 }
 
-int DynamicMesh::GetBornNum(std::string name) const
+int DynamicMesh::GetBoneNum(std::string name) const
 {
-	const BornInfo *pBornData = m_pMeshData->GetBornInfo();
-	unsigned int bornNum = pBornData->BornList.size();
-	for (unsigned int i = 0; i < bornNum; i++)
+	const BoneInfo *pBoneData = m_pMeshData->GetBoneInfo();
+	unsigned int boneNum = pBoneData->BoneList.size();
+	for (unsigned int i = 0; i < boneNum; i++)
 	{
-		if (pBornData->BornList[i]->BornName == name)
+		if (pBoneData->BoneList[i]->boneName == name)
 		{
 			return i;
 		}
@@ -111,34 +131,34 @@ int DynamicMesh::GetBornNum(std::string name) const
 	return -1;
 }
 
-int DynamicMesh::GetBornAllNum() const
+int DynamicMesh::GetBoneAllNum() const
 {
-	return m_pMeshData->GetBornInfo()->BornList.size();
+	return m_pMeshData->GetBoneInfo()->BoneList.size();
 }
 
-std::string DynamicMesh::GetBornName(int bornIndex) const
+std::string DynamicMesh::GetBoneName(int boneIndex) const
 {
-	const BornInfo *pBornData = m_pMeshData->GetBornInfo();
-	return pBornData->BornList[bornIndex]->BornName;
+	const BoneInfo *pBoneData = m_pMeshData->GetBoneInfo();
+	return pBoneData->BoneList[boneIndex]->boneName;
 }
 
-Matrix DynamicMesh::GetBornMatrix(int bornIndex, bool isWorld) const
+Matrix DynamicMesh::GetBoneMatrix(int boneIndex, bool isWorld) const
 {
-	if (isWorld) return m_CopyBornArray[bornIndex]->ParentAndChildMat * m_SynthesisMatrix;
-	return m_CopyBornArray[bornIndex]->ParentAndChildMat;
+	if (isWorld) return m_CopyBoneArray[boneIndex]->parentAndChildMat * m_ModelMatrix;
+	return m_CopyBoneArray[boneIndex]->parentAndChildMat;
 }
 
-Matrix DynamicMesh::GetBornMatrix(std::string name, bool isWorld) const
+Matrix DynamicMesh::GetBoneMatrix(std::string name, bool isWorld) const
 {
-	const BornInfo *pBornData = m_pMeshData->GetBornInfo();
+	const BoneInfo *pBoneData = m_pMeshData->GetBoneInfo();
 
 	int cnt = 0;
-	for (auto& i : pBornData->BornList)
+	for (auto& i : pBoneData->BoneList)
 	{
-		if (i->BornName == name)
+		if (i->boneName == name)
 		{
-			if (isWorld) return m_CopyBornArray[cnt]->ParentAndChildMat * m_SynthesisMatrix;
-			return m_CopyBornArray[cnt]->ParentAndChildMat;
+			if (isWorld) return m_CopyBoneArray[cnt]->parentAndChildMat * m_ModelMatrix;
+			return m_CopyBoneArray[cnt]->parentAndChildMat;
 		}
 		cnt++;
 	}
@@ -146,23 +166,23 @@ Matrix DynamicMesh::GetBornMatrix(std::string name, bool isWorld) const
 	return Matrix();
 }
 
-Vector3D DynamicMesh::GetBornPos(int bornIndex) const
+Vector3D DynamicMesh::GetBonePos(int boneIndex) const
 {
-	Matrix m = m_CopyBornArray[bornIndex]->ParentAndChildMat;
-	return Vector3D(m._41, m._42, m._43) * m_SynthesisMatrix;
+	Matrix m = m_CopyBoneArray[boneIndex]->parentAndChildMat;
+	return Vector3D(m._41, m._42, m._43) * m_ModelMatrix;
 }
 
-Vector3D DynamicMesh::GetBornPos(std::string name) const
+Vector3D DynamicMesh::GetBonePos(std::string name) const
 {
-	const BornInfo *pBornData = m_pMeshData->GetBornInfo();
+	const BoneInfo *pBoneData = m_pMeshData->GetBoneInfo();
 
 	int cnt = 0;
-	for (auto& i : pBornData->BornList)
+	for (auto& i : pBoneData->BoneList)
 	{
-		if (i->BornName == name)
+		if (i->boneName == name)
 		{
-			Matrix m = m_CopyBornArray[cnt]->ParentAndChildMat;
-			return Vector3D(m._41, m._42, m._43) * m_SynthesisMatrix;
+			Matrix m = m_CopyBoneArray[cnt]->parentAndChildMat;
+			return Vector3D(m._41, m._42, m._43) * m_ModelMatrix;
 		}
 		cnt++;
 	}
@@ -170,14 +190,9 @@ Vector3D DynamicMesh::GetBornPos(std::string name) const
 	return Vector3D();
 }
 
-void DynamicMesh::Render()
-{
-	RenderFunc(m_SynthesisMatrix);
-}
-
 void DynamicMesh::RenderOutline(float size = 1.0f)
 {
-	RenderFunc(m_WorldMatrix);
+	//RenderFunc(m_WorldMatrix);
 
 	Matrix m = m_WorldMatrix;
 	m._11 *= size;
@@ -185,23 +200,18 @@ void DynamicMesh::RenderOutline(float size = 1.0f)
 	m._33 *= size;
 
 	Direct3D11::GetInstance()->SetRasterizer(D3D11_CULL_FRONT, D3D11_FILL_SOLID);
-	RenderFunc(m);
+	//RenderFunc(m);
 	Direct3D11::GetInstance()->SetRasterizer(D3D11_CULL_BACK, D3D11_FILL_SOLID);
 }
 
-void DynamicMesh::RenderMatrix(Matrix &matrix)
-{
-	RenderFunc(m_SynthesisMatrix * matrix);
-}
-
-void DynamicMesh::BornDebug(eBornDebug eBornDebug) const
+void DynamicMesh::BoneDebug(eBoneDebug eBoneDebug) const
 {
 	int cnt = 0;
-	for (auto& i : m_pMeshData->GetBornInfo()->BornList)
+	for (auto& i : m_pMeshData->GetBoneInfo()->BoneList)
 	{
-		printf("%s\n", i->BornName.c_str());
+		printf("%s\n", i->boneName.c_str());
 
-		Matrix m = m_CopyBornArray[cnt]->bornMat;
+		Matrix m = m_CopyBoneArray[cnt]->boneMat;
 		printf("%f %f %f %f\n", m._11, m._12, m._13, m._14);
 		printf("%f %f %f %f\n", m._21, m._22, m._23, m._24);
 		printf("%f %f %f %f\n", m._31, m._32, m._33, m._34);
@@ -212,6 +222,23 @@ void DynamicMesh::BornDebug(eBornDebug eBornDebug) const
 }
 
 void DynamicMesh::AnimationDebug(int animNum) const
+{
+
+}
+
+void DynamicMesh::ForwardRendering()
+{
+	if (m_MeshState & eShadow)
+	{
+		RenderFunc(m_ModelMatrix, true);
+	}
+	else
+	{
+		RenderFunc(m_ModelMatrix, false);
+	}
+}
+
+void DynamicMesh::DeferredRendering()
 {
 
 }
@@ -244,40 +271,37 @@ void DynamicMesh::AllocationSkinMeshData(const std::string &meshName)
 		m_Specular.emplace_back(specular.x, specular.y, specular.z);
 		m_Ambient.emplace_back(ambient.x, ambient.y, ambient.z);
 	}
-	const BornInfo *pBornData = m_pMeshData->GetBornInfo();
+	const BoneInfo *pBoneData = m_pMeshData->GetBoneInfo();
 
 	//ボーン初期化
-	m_CopyBornArray.clear();
-	m_CopyBornArray.shrink_to_fit();
+	m_CopyBoneArray.clear();
+	m_CopyBoneArray.shrink_to_fit();
 
 	//ボーンをコピー
-	m_CopyBornArray.emplace_back(&m_Born);
-	ReleseCopyBornTree(&m_Born);
-	m_pMeshData->CopyBornTree(&m_Born, &m_CopyBornArray, pBornData->sBorn.child);
+	m_CopyBoneArray.emplace_back(&m_Bone);
+	ReleseCopyBoneTree(&m_Bone);
+	m_pMeshData->CopyBoneTree(&m_Bone, &m_CopyBoneArray, pBoneData->bone.child);
 
-	m_WorldMatrixInfo.pLocalMatrix = &data->localMatrix;
+	m_pLocalMatrix = &data->localMatrix;
+	m_WorldMatrixInfo.pLocalMatrix = m_pLocalMatrix;
 }
 
-void DynamicMesh::RenderFunc(Matrix &matrix)
+void DynamicMesh::RenderFunc(Matrix &matrix, bool isShadow)
 {
 	ID3D11DeviceContext *pDeviceContext;
 	pDeviceContext = Direct3D11::GetInstance()->GetID3D11DeviceContext();
 
-	assert(m_pMeshData != nullptr && "メッシュ情報がありません");
-
 	const MeshInfo *data = m_pMeshData->GetMeshInfo();
 
-	DynamicMeshShader::GetInstance()->SetShader(pDeviceContext, data->isTexture, false);
-
-	ConstantShader::GetInstance()->SetCommonInfoConstantBuffer();
-	ConstantShader::GetInstance()->SetTransformMatrixConstantBuffer(pDeviceContext, matrix, false);
+	DynamicMeshShader::GetInstance()->SetShader(pDeviceContext, data->isTexture, isShadow);
+	ConstantShader::GetInstance()->SetTransformMatrixConstantBuffer(pDeviceContext, matrix, isShadow);
 
 	//アニメーション更新
 	if (m_IsAnimUpdate) 
 	{
-		m_pMeshData->Update(&m_Born, m_AnimNum, &m_AnimFrame, &m_IsAnimEnd);
+		m_pMeshData->Update(&m_Bone, m_AnimNum, &m_AnimFrame, &m_IsAnimEnd);
 	}
-	ConstantShader::GetInstance()->SetBornConstantBuffer(pDeviceContext, GetBornAllNum(), m_CopyBornArray);
+	ConstantShader::GetInstance()->SetBoneConstantBuffer(pDeviceContext, GetBoneAllNum(), m_CopyBoneArray);
 
 	//属性ごとにレンダリング
 
@@ -287,9 +311,9 @@ void DynamicMesh::RenderFunc(Matrix &matrix)
 	pDeviceContext->IASetVertexBuffers(0, 1, &data->pVertexBuffer, &Stride, &offset);
 
 	//マルチテクスチャ
-	if (m_pImage != nullptr)
+	if (m_pImageInfo != nullptr)
 	{
-		pDeviceContext->PSSetShaderResources(2, 1, &m_pImage->m_pImageData->GetImageInfo()->pTexture);
+		pDeviceContext->PSSetShaderResources(2, 1, &m_pImageInfo->pTexture);
 	}
 
 	Vector4D specular;
@@ -330,19 +354,19 @@ void DynamicMesh::RenderFunc(Matrix &matrix)
 	pDeviceContext->PSSetShaderResources(2, 1, &pShaderResource);
 }
 
-void DynamicMesh::ReleseCopyBornTree(CopyBorn *pBornCopy) const
+void DynamicMesh::ReleseCopyBoneTree(CopyBone *pBoneCopy) const
 {
 	//子ボーン
-	if (pBornCopy->child != nullptr)
+	if (pBoneCopy->child != nullptr)
 	{
-		ReleseCopyBornTree(pBornCopy->child);
-		delete pBornCopy->child;
+		ReleseCopyBoneTree(pBoneCopy->child);
+		delete pBoneCopy->child;
 	}
 
 	//親ボーン
-	if (pBornCopy->brother != nullptr)
+	if (pBoneCopy->brother != nullptr)
 	{
-		ReleseCopyBornTree(pBornCopy->brother);
-		delete pBornCopy->brother;
+		ReleseCopyBoneTree(pBoneCopy->brother);
+		delete pBoneCopy->brother;
 	}
 }

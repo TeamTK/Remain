@@ -128,7 +128,7 @@ void TracerouteManager::DebugTopography(const char* name)
 	auto *pPoryLinkInfo = pInfo->pPoryLinkInfo;
 	const int polyNum = pMesh->GetFaceAllNum();
 
-	Matrix mat = *pMesh->GetSynthesisMatrix();
+	Matrix mat = *pMesh->GetModelMatrix();
 	Vector3D pos[3];
 
 	for (int i = 0; i < polyNum; i++)
@@ -163,7 +163,7 @@ void TracerouteManager::ProcessBuilding(const char* name, bool isGPU)
 
 	//メッシュの行列
 	pMesh->SetModelMatrixBuilding();
-	Matrix mat = *pMesh->GetSynthesisMatrix();
+	Matrix mat = *pMesh->GetModelMatrix();
 
 	//隣接するポリゴン情報
 	if (pInfo->pPoryLinkInfo != nullptr)
@@ -422,7 +422,7 @@ int TracerouteManager::CheckOnPolyIndex(TracerouteInfo *pInfo, const Vector3D &p
 	else
 	{
 		//モデルの逆行列算出
-		Matrix mat = *pInfo->pStaticMesh->GetSynthesisMatrix();
+		Matrix mat = *pInfo->pStaticMesh->GetModelMatrix();
 		Matrix inverse = mat.GetInverse();
 
 		HitResult_SegmentTriangle hit;
@@ -616,7 +616,7 @@ void TracerouteManager::DebugMigrationPath(const char *name, TracerouteSearch *p
 	const VertexInfo *pVer = pMesh->GetVertex();
 	const IndexInfo *index = pMesh->GetIndex();
 
-	Matrix mat = *pMesh->GetSynthesisMatrix();
+	Matrix mat = *pMesh->GetModelMatrix();
 	Vector3D pos[3];
 
 	//スタート地点かゴール地点が見つからなかったら飛ばす

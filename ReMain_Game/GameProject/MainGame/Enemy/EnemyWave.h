@@ -1,8 +1,7 @@
 #ifndef _ENEMY_WAVE_H_
 #define _ENEMY_WAVE_H_
 
-#include "..\..\GEKO\Task\Task.h"
-#include "..\..\GEKO\System\Timer.h"
+#include "..\..\GEKO\GEKO.h"
 
 struct EnemyWaveInfo
 {

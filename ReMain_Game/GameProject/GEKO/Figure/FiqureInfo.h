@@ -5,15 +5,24 @@
 
 struct ConstantBufferFiqureBillboard
 {
-	D3DXMATRIX mWVP;		//ワールドから射影までの変換行列
+	Matrix mWVP;		//ワールドから射影までの変換行列
+	Vector4D color;
+};
+
+struct ConstantBufferFiqureBillboardAnimation
+{
+	Matrix mWVP;		//ワールドから射影までの変換行列
+	Vector4D color;
+	//ALIGN16 Vector2D uv;
 };
 
 struct VertexBillboard
 {
-	D3DXVECTOR3 pos;
-	D3DXVECTOR2 uv;
+	Vector3D pos;
+	Vector2D uv;
 };
 
+//シェーダーで必要なビルボードの情報
 struct FigureBillboardInfo
 {
 	ID3D11InputLayout*	 pVertexLayout;	 //頂点レイアウト
@@ -37,6 +46,5 @@ struct FigureBillboardInfo
 		SAFE_RELEASE(pVertexLayout);
 	}
 };
-
 
 #endif

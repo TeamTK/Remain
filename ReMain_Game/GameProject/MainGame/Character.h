@@ -33,7 +33,6 @@ protected:
 	Collider m_ColliderBody;
 	float m_BodyRadius;
 
-	RenderTask m_RenderTask;
 	Gravity *m_pGravity;
 };
 

@@ -8,10 +8,25 @@
 #include <fstream>
 #include <map>
 
+enum RenderingType
+{
+	eForward,
+	eDeferred,
+};
+
 enum MeshState
 {
-	eShadow = (1 << 0),
+	eNothing = (1 << 0),
+	eBlockingLight = (1 << 1),
+	eShadow = (1 << 2),
 };
+
+enum MatrixType
+{
+	eLocalMatrix,
+	eWorldMatrix,
+	eModelMatrix,
+};	 
 
 //マテリアル構造体
 struct MaterialInfo
@@ -90,48 +105,48 @@ struct SkinVertexInfo
 	}
 };
 
-enum eBornDebug
+enum eBoneDebug
 {
 	eInitMat,
 	eOffsetMat,
 	eWorld,
-	eBornMat
+	eBoneMat
 };
 
 //ボーン階層構造
-struct Born
+struct Bone
 {
 	int indexId;
-	Born *brother;
-	Born *child;
-	std::string BornName;
+	Bone *brother;
+	Bone *child;
+	std::string boneName;
 	Matrix initMat;
 	Matrix offsetMat;
-	Born() :
+	Bone() :
 		indexId(0),
 		brother(nullptr),
 		child(nullptr),
-		BornName("NoName") {}
+		boneName("NoName") {}
 };
 
 //コピーするボーン
-struct CopyBorn
+struct CopyBone
 {
-	CopyBorn *brother;
-	CopyBorn *child;
+	CopyBone *brother;
+	CopyBone *child;
 	Matrix worldMat;
-	Matrix bornMat;
-	Matrix ParentAndChildMat;
-	CopyBorn() :
+	Matrix boneMat;
+	Matrix parentAndChildMat;
+	CopyBone() :
 		brother(nullptr),
 		child(nullptr) {}
 };
 
 //ボーン情報
-struct BornInfo
+struct BoneInfo
 {
-	Born sBorn;	//ボーン階層構造
-	std::vector<Born *> BornList; //ボーンアドレス格納
+	Bone bone;	//ボーン階層構造
+	std::vector<Bone *> BoneList; //ボーンアドレス格納
 	std::map<int, std::vector<int>> AnimationSetFrameNum; //各アニメーションのフレーム時間
 	std::map<int, std::map<std::string, std::vector<Matrix>>> AnimationSetMat; //各アニメーションの変換行列
 };

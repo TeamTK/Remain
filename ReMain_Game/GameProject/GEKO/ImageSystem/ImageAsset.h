@@ -6,10 +6,10 @@
 //シェーダー用のコンスタントバッファーのアプリ側構造体
 struct SHADER_CONSTANT_BUFFER
 {
-	ALIGN16 D3DXMATRIX mW;
+	ALIGN16 Matrix mW;
 	ALIGN16 float ViewPortWidth;
 	ALIGN16 float ViewPortHeight;
-	ALIGN16 D3DXVECTOR4 Color;
+	ALIGN16 Vector4D Color;
 };
 
 struct ImageInfo

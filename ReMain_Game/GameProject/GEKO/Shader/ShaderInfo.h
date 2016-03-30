@@ -4,12 +4,15 @@
 #include "..\System\Direct3D11.h"
 
 #define MAX_BONES 255
+#define FORWARD_LIGHT_MAX 10
+#define DEFERRED_LIGHT_MAX 100
+#define SHADER_TYPE_TOTAL 2
 
 //全てのメッシュに共通
 struct CommonInfoConstantBuffer
 {
 	Vector4D lightDir;	//ライト方向
-	Vector4D intensity;	//ライトの明るさ
+	Vector4D intensity;	//ライトの明るさと色
 	Vector4D eyePos;	//カメラ位置
 };
 
@@ -30,16 +33,38 @@ struct MaterialConstantBuffer
 };
 
 //シェーダーに渡す用（ボーン）
-struct BornConstantBuffer
+struct BoneConstantBuffer
 {
-	Matrix bornMat[MAX_BONES];
-	BornConstantBuffer()
+	Matrix boneMat[MAX_BONES];
+	BoneConstantBuffer()
 	{
 		for (int i = 0; i < MAX_BONES; i++)
 		{
-			D3DXMatrixIdentity(&bornMat[i]);
+			D3DXMatrixIdentity(&boneMat[i]);
 		}
 	}
+};
+
+//シェーダーに渡す用（前方レンダリング用ライト）
+struct ForwardLightConstantBuffer
+{
+	Vector4D lihgtPos[FORWARD_LIGHT_MAX];
+	Vector4D range[FORWARD_LIGHT_MAX];
+	ALIGN16 float lightNum;
+};
+
+//シェーダーに渡す用（後方レンダリング用ライト）
+struct DeferredLightConstantBuffer
+{
+	Vector4D lihgtPos[DEFERRED_LIGHT_MAX];
+	Vector4D range[DEFERRED_LIGHT_MAX];
+	ALIGN16 float lightNum;
+};
+
+enum class ShaderType
+{
+	eNormal = 0,
+	eShadow = 1,
 };
 
 #endif

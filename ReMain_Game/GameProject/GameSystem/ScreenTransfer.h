@@ -1,7 +1,7 @@
 #ifndef _SCREEN_TRANSFER_H_
 #define _SCREEN_TRANSFER_H_
 
-#include "..\GEKO\ImageSystem\Image.h"
+#include "..\GEKO\GEKO.h"
 
 //フェードイン
 class ScreenTransfer_In
@@ -12,7 +12,6 @@ public:
 	bool GetIsEndTransfer();
 	void Start(float TransferSpeed);
 	void Update();
-	void Render();
 
 private:
 	bool m_IsStart;
@@ -30,7 +29,6 @@ public:
 	bool GetIsEndTransfer();
 	void Start(float TransferSpeed);
 	void Update();
-	void Render();
 
 private:
 	bool m_IsStart;

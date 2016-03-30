@@ -2,6 +2,7 @@
 #include <Windows.h>
 
 Fps::Fps() :
+	m_IsControl(true),
 	m_StartTime(0),
 	m_Count(0),
 	m_Fps(0),
@@ -34,8 +35,12 @@ int Fps::GetSettingFPS()
 
 void Fps::SetFps(int fps)
 {
-	Fps* p_Fps = GetInstance();
-	p_Fps->FPS = fps;
+	GetInstance()->FPS = fps;
+}
+
+void Fps::SetControl(bool isControl)
+{
+	GetInstance()->m_IsControl = isControl;
 }
 
 void Fps::Update()
@@ -68,7 +73,14 @@ void Fps::Update()
 void Fps::Wait()
 {
 	Fps* p_Fps = GetInstance();
-	int tookTime = timeGetTime() - p_Fps->m_StartTime;				//‚©‚©‚Á‚½ŽžŠÔ
-	int waitTime = p_Fps->m_Count * 1000 / p_Fps->FPS - tookTime;	//‘Ò‚Â‚×‚«ŽžŠÔ
-	if (waitTime > 0) Sleep(waitTime);								//‘Ò‹@
+	if (p_Fps->m_IsControl)
+	{
+		int tookTime = timeGetTime() - p_Fps->m_StartTime;				//‚©‚©‚Á‚½ŽžŠÔ
+		int waitTime = p_Fps->m_Count * 1000 / p_Fps->FPS - tookTime;	//‘Ò‚Â‚×‚«ŽžŠÔ
+		if (waitTime > 0) Sleep(waitTime);								//‘Ò‹@
+	}
+	else
+	{
+		Sleep(0);
+	}
 }

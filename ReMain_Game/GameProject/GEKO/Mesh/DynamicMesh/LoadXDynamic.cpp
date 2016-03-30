@@ -18,7 +18,7 @@ struct AnimationInfo
 
 LoadXDynamic::LoadXDynamic(std::string fileName) :
 	m_Back(-1),
-	m_BornIndex(0)
+	m_BoneIndex(0)
 {
 	//メッシュの読み込み
 	if (FAILED(LoadXMesh(fileName)))
@@ -383,13 +383,13 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	}
 
 	fseek(fp, 0, SEEK_SET);
-	AddBoneHierarchy(&m_BornInfo.sBorn, fp, 0); //ボーン階層構造読み込み
+	AddBoneHierarchy(&m_BoneInfo.bone, fp, 0); //ボーン階層構造読み込み
 
 	fseek(fp, 0, SEEK_SET);
 	LoadAnimation(fp, m_pVertex); //アニメーションとスキンウェイト読み込み
 
 	//ローカル行列格納
-	m_MeshInfo.localMatrix = m_BornInfo.BornList[0]->initMat *m_BornInfo.BornList[m_BornInfo.BornList.size() - 1]->initMat;
+	m_MeshInfo.localMatrix = m_BoneInfo.BoneList[0]->initMat *m_BoneInfo.BoneList[m_BoneInfo.BoneList.size() - 1]->initMat;
 
 	//バーテックスバッファーを作成
 	bd.Usage = D3D11_USAGE_DEFAULT;
@@ -428,28 +428,28 @@ HRESULT LoadXDynamic::LoadXMesh(std::string fileName)
 	return S_OK;
 }
 
-void LoadXDynamic::CopyBornTree(CopyBorn *pBornCopy, std::vector<CopyBorn*> *pCopyBornArray, Born *pBornOriginal)
+void LoadXDynamic::CopyBoneTree(CopyBone *pBoneCopy, std::vector<CopyBone*> *pCopyBoneArray, Bone *pBoneOriginal)
 {
 	//子ボーン
-	if (pBornOriginal->child != nullptr)
+	if (pBoneOriginal->child != nullptr)
 	{
-		pBornCopy->child = new CopyBorn;
-		pCopyBornArray->emplace_back(pBornCopy->child);
-		CopyBornTree(pBornCopy->child, pCopyBornArray, pBornOriginal->child);
+		pBoneCopy->child = new CopyBone;
+		pCopyBoneArray->emplace_back(pBoneCopy->child);
+		CopyBoneTree(pBoneCopy->child, pCopyBoneArray, pBoneOriginal->child);
 	}
 
 	//親ボーン
-	if (pBornOriginal->brother != nullptr)
+	if (pBoneOriginal->brother != nullptr)
 	{
-		pBornCopy->brother = new CopyBorn;
-		pCopyBornArray->emplace_back(pBornCopy->brother);
-		CopyBornTree(pBornCopy->brother, pCopyBornArray, pBornOriginal->brother);
+		pBoneCopy->brother = new CopyBone;
+		pCopyBoneArray->emplace_back(pBoneCopy->brother);
+		CopyBoneTree(pBoneCopy->brother, pCopyBoneArray, pBoneOriginal->brother);
 	}
 }
 
-void LoadXDynamic::Update(CopyBorn *pCopyBorn, unsigned int animNum, float *animFrame, bool *pIsAnimEnd)
+void LoadXDynamic::Update(CopyBone *pCopyBone, unsigned int animNum, float *animFrame, bool *pIsAnimEnd)
 {
-	auto frameAnimNum = m_BornInfo.AnimationSetFrameNum[(int)animNum].size() - 1;
+	auto frameAnimNum = m_BoneInfo.AnimationSetFrameNum[(int)animNum].size() - 1;
 
 	//指定のアニメーションフレームを超えたら戻す
 	if (*animFrame > (float)frameAnimNum)
@@ -479,11 +479,11 @@ void LoadXDynamic::Update(CopyBorn *pCopyBorn, unsigned int animNum, float *anim
 		}
 	}
 
-	AnimUpdate(pCopyBorn, m_BornInfo.sBorn.child, (int)animNum, *animFrame, frameAnimNum);
+	AnimUpdate(pCopyBone, m_BoneInfo.bone.child, (int)animNum, *animFrame, frameAnimNum);
 
 	//ボーン更新
 	Matrix m;
-	BornMatUpdate(pCopyBorn, m_BornInfo.sBorn.child, m);
+	BoneMatUpdate(pCopyBone, m_BoneInfo.bone.child, m);
 }
 
 void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
@@ -515,24 +515,24 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 			fscanf_s(fp, "%s", key, sizeof(key));
 
 			//余分な文字削除
-			std::string bornName = key;
-			for (int nameCnt = 0; nameCnt < (int)bornName.size(); nameCnt++)
+			std::string boneName = key;
+			for (int nameCnt = 0; nameCnt < (int)boneName.size(); nameCnt++)
 			{
-				if (bornName[nameCnt] == '"') bornName.erase(bornName.begin() + nameCnt);
-				if (bornName[nameCnt] == ';') bornName.erase(bornName.begin() + nameCnt);
+				if (boneName[nameCnt] == '"') boneName.erase(boneName.begin() + nameCnt);
+				if (boneName[nameCnt] == ';') boneName.erase(boneName.begin() + nameCnt);
 			}
 
 			//重みリスト数
 			int num;
 			fscanf_s(fp, "%d;", &num);
-			SkinWeightInfo[bornName].listNumAll = num;
+			SkinWeightInfo[boneName].listNumAll = num;
 
 			//重みリスト読み込み		
 			for (int index = 0, i = 0; i < num; i++)
 			{
 				fscanf_s(fp, "%d,", &index);
 				//fscanf_s(fp, "%s", key, sizeof(key));
-				SkinWeightInfo[bornName].weightList.emplace_back(index);
+				SkinWeightInfo[boneName].weightList.emplace_back(index);
 			}
 			fscanf_s(fp, "%s", key, sizeof(key));
 
@@ -540,7 +540,7 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 			for (float weight = 0.0f, i = 0; i < num; i++)
 			{
 				fscanf_s(fp, "%f,", &weight);
-				SkinWeightInfo[bornName].weight.emplace_back(weight);
+				SkinWeightInfo[boneName].weight.emplace_back(weight);
 			}
 
 			fgets(key, sizeof(key), fp);
@@ -552,10 +552,10 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 				fgets(key, sizeof(key), fp);
 				sscanf_s(key, "%f, %f, %f, %f,", &x, &y, &z, &w);
 
-				SkinWeightInfo[bornName].offsetMat.m[matCnt][0] = x;
-				SkinWeightInfo[bornName].offsetMat.m[matCnt][1] = y;
-				SkinWeightInfo[bornName].offsetMat.m[matCnt][2] = z;
-				SkinWeightInfo[bornName].offsetMat.m[matCnt][3] = w;
+				SkinWeightInfo[boneName].offsetMat.m[matCnt][0] = x;
+				SkinWeightInfo[boneName].offsetMat.m[matCnt][1] = y;
+				SkinWeightInfo[boneName].offsetMat.m[matCnt][2] = z;
+				SkinWeightInfo[boneName].offsetMat.m[matCnt][3] = w;
 			}
 		}
 
@@ -592,11 +592,11 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 					fscanf_s(fp, "%s", key, sizeof(key));
 
 					//瓜括弧排除
-					std::string bornName = key;
-					for (int j = 0; j < (int)bornName.size(); j++)
+					std::string boneName = key;
+					for (int j = 0; j < (int)boneName.size(); j++)
 					{
-						if (bornName[j] == '{') bornName.erase(bornName.begin() + j);
-						if (bornName[j] == '}') bornName.erase(bornName.begin() + j);
+						if (boneName[j] == '{') boneName.erase(boneName.begin() + j);
+						if (boneName[j] == '}') boneName.erase(boneName.begin() + j);
 					}
 
 					//改行
@@ -615,12 +615,12 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 						sscanf_s(key, "%d;%d; %f, %f, %f, %f;;,", &frameNum, &temp, &w, &x, &y, &z);
 						fgets(key, sizeof(key), fp);
 
-						AnimationSet[AnimSetNumAll][bornName].rotation.emplace_back(x, y, z, w);
+						AnimationSet[AnimSetNumAll][boneName].rotation.emplace_back(x, y, z, w);
 
 						//アニメーションセットのフレーム読み込みセットに一つだけ
 						if (!isFrameLoad)
 						{
-							m_BornInfo.AnimationSetFrameNum[AnimSetNumAll].emplace_back(frameNum);
+							m_BoneInfo.AnimationSetFrameNum[AnimSetNumAll].emplace_back(frameNum);
 						}
 					}
 					isFrameLoad = true;
@@ -637,7 +637,7 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 						sscanf_s(key, "%d;%d; %f, %f, %f;;,", &frameNum, &temp, &x, &y, &z);
 						fgets(key, sizeof(key), fp);
 
-						AnimationSet[AnimSetNumAll][bornName].scale.emplace_back(x, y, z);
+						AnimationSet[AnimSetNumAll][boneName].scale.emplace_back(x, y, z);
 					}
 					fgets(key, sizeof(key), fp);
 					fgets(key, sizeof(key), fp);
@@ -652,7 +652,7 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 						sscanf_s(key, "%d;%d; %f, %f, %f;;,", &frameNum, &temp, &x, &y, &z);
 						fgets(key, sizeof(key), fp);
 
-						AnimationSet[AnimSetNumAll][bornName].position.emplace_back(x, y, z);
+						AnimationSet[AnimSetNumAll][boneName].position.emplace_back(x, y, z);
 					}
 				}
 			}
@@ -673,7 +673,7 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 	int cnt = 0;
 	for (auto& i : AnimationSet)
 	{
-		int loopNum = m_BornInfo.AnimationSetFrameNum[cnt].size();
+		int loopNum = m_BoneInfo.AnimationSetFrameNum[cnt].size();
 		for (auto& j : i.second)
 		{
 			for (int k = 0; k < loopNum; k++)
@@ -697,7 +697,7 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 				m._42 = position.y;
 				m._43 = position.z;
 
-				m_BornInfo.AnimationSetMat[cnt][j.first].emplace_back(m);
+				m_BoneInfo.AnimationSetMat[cnt][j.first].emplace_back(m);
 			}
 		}
 		cnt++;
@@ -706,39 +706,39 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 	//頂点にボーンの番号とウェイト値を割り当てる
 	for (auto& i : SkinWeightInfo)
 	{
-		int cntBorn = 0;
+		int cntBone = 0;
 		for (int j = 0; j < i.second.listNumAll; j++)
 		{
 			//一つの頂点にボーンは4つまで空いているとこに格納
-			int index = i.second.weightList[cntBorn];
+			int index = i.second.weightList[cntBone];
 			for (int k = 0; k < 4; k++)
 			{
 				if (pVB[index].boneIndex[k] == 0)
 				{
 					//該当するボーンのインデックス番号格納
-					int bornNum = 0;
-					for (auto& m : m_BornInfo.BornList)
+					int boneNum = 0;
+					for (auto& m : m_BoneInfo.BoneList)
 					{
-						if (m->BornName == i.first)
+						if (m->boneName == i.first)
 						{
-							bornNum = m->indexId;
+							boneNum = m->indexId;
 							break;
 						}
 					}
 					//ボーンインデックスとウェイト値格納
-					pVB[index].boneIndex[k] = bornNum;
+					pVB[index].boneIndex[k] = boneNum;
 					pVB[index].boneWeight[k] = i.second.weight[j];
 					break;
 				}
 			}
-			cntBorn++;
+			cntBone++;
 		}
 	}
 
 	//オフセット行列格納
-	for (auto& i : m_BornInfo.BornList)
+	for (auto& i : m_BoneInfo.BoneList)
 	{
-		i->offsetMat = SkinWeightInfo[i->BornName].offsetMat;
+		i->offsetMat = SkinWeightInfo[i->boneName].offsetMat;
 	}
 
 	//アニメーションセット削除
@@ -769,7 +769,7 @@ void LoadXDynamic::LoadAnimation(FILE* fp, SkinVertexInfo* pVB)
 	SkinWeightInfo.clear();
 }
 
-void LoadXDynamic::LoadMat(Born *pBorn, FILE *fp)
+void LoadXDynamic::LoadMat(Bone *pBone, FILE *fp)
 {
 	char key[256];
 	fgets(key, sizeof(key), fp);
@@ -786,26 +786,26 @@ void LoadXDynamic::LoadMat(Born *pBorn, FILE *fp)
 		fgets(key, sizeof(key), fp);
 	}
 
-	pBorn->initMat = m;
+	pBone->initMat = m;
 }
 
-void LoadXDynamic::BornMatUpdate(CopyBorn *pCopyBorn, Born *pBorn, Matrix &bornMat)
+void LoadXDynamic::BoneMatUpdate(CopyBone *pCopyBone, Bone *pBone, Matrix &boneMat)
 {
-	pCopyBorn->ParentAndChildMat = pCopyBorn->worldMat * bornMat;
-	pCopyBorn->bornMat = pBorn->offsetMat * pCopyBorn->ParentAndChildMat;
+	pCopyBone->parentAndChildMat = pCopyBone->worldMat * boneMat;
+	pCopyBone->boneMat = pBone->offsetMat * pCopyBone->parentAndChildMat;
 
-	if (pBorn->child != nullptr) BornMatUpdate(pCopyBorn->child, pBorn->child, pCopyBorn->ParentAndChildMat);
-	if (pBorn->brother != nullptr) BornMatUpdate(pCopyBorn->brother, pBorn->brother, bornMat);
+	if (pBone->child != nullptr) BoneMatUpdate(pCopyBone->child, pBone->child, pCopyBone->parentAndChildMat);
+	if (pBone->brother != nullptr) BoneMatUpdate(pCopyBone->brother, pBone->brother, boneMat);
 }
 
-void LoadXDynamic::AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn, int animNum, float animFrame, unsigned int frameAnimNum)
+void LoadXDynamic::AnimUpdate(CopyBone *pCopyBone, Bone *pBone, int animNum, float animFrame, unsigned int frameAnimNum)
 {
 	Matrix m;
 
 	//アニメーションセットのフレーム時間
-	auto itFrame = m_BornInfo.AnimationSetFrameNum[animNum].begin();
+	auto itFrame = m_BoneInfo.AnimationSetFrameNum[animNum].begin();
 
-	std::vector<Matrix> *pAnimMat = &m_BornInfo.AnimationSetMat[animNum][pBorn->BornName];
+	std::vector<Matrix> *pAnimMat = &m_BoneInfo.AnimationSetMat[animNum][pBone->boneName];
 	auto itAnimMat = pAnimMat->begin();
 
 	//アニメーション補間
@@ -833,13 +833,13 @@ void LoadXDynamic::AnimUpdate(CopyBorn *pCopyBorn, Born *pBorn, int animNum, flo
 		}
 	}
 
-	pCopyBorn->worldMat = m;
+	pCopyBone->worldMat = m;
 
-	if (pCopyBorn->child != nullptr) AnimUpdate(pCopyBorn->child, pBorn->child, animNum, animFrame, frameAnimNum);
-	if (pCopyBorn->brother != nullptr) AnimUpdate(pCopyBorn->brother, pBorn->brother, animNum, animFrame, frameAnimNum);
+	if (pCopyBone->child != nullptr) AnimUpdate(pCopyBone->child, pBone->child, animNum, animFrame, frameAnimNum);
+	if (pCopyBone->brother != nullptr) AnimUpdate(pCopyBone->brother, pBone->brother, animNum, animFrame, frameAnimNum);
 }
 
-bool LoadXDynamic::AddBoneHierarchy(Born *pBorn, FILE *fp, int hierarchy)
+bool LoadXDynamic::AddBoneHierarchy(Bone *pBone, FILE *fp, int hierarchy)
 {
 	int begin = 0, end = 0;
 	int current = hierarchy; //現在の階層
@@ -868,35 +868,35 @@ bool LoadXDynamic::AddBoneHierarchy(Born *pBorn, FILE *fp, int hierarchy)
 			//子を追加
 			if ((begin == 0) && (end == 0) || (end - begin == -1))
 			{
-				pBorn->child = new Born;
-				pBorn->child->BornName = key;
-				pBorn->child->indexId = m_BornIndex++;
-				m_BornInfo.BornList.emplace_back(pBorn->child);
+				pBone->child = new Bone;
+				pBone->child->boneName = key;
+				pBone->child->indexId = m_BoneIndex++;
+				m_BoneInfo.BoneList.emplace_back(pBone->child);
 
 				//行列読み込み
 				filePos = ftell(fp);
-				LoadMat(pBorn->child, fp);
+				LoadMat(pBone->child, fp);
 				int e = fseek(fp, filePos, SEEK_SET);
 
 				hierarchy++;
-				AddBoneHierarchy(pBorn->child, fp, hierarchy);
+				AddBoneHierarchy(pBone->child, fp, hierarchy);
 			}
 
 			//階層戻り先にきた場合、同一階層追加
 			if (m_Back == current)
 			{
 				m_Back = -1;
-				pBorn->brother = new Born;
-				pBorn->brother->BornName = m_buffer;
-				pBorn->brother->indexId = m_BornIndex++;
-				m_BornInfo.BornList.emplace_back(pBorn->brother);
+				pBone->brother = new Bone;
+				pBone->brother->boneName = m_buffer;
+				pBone->brother->indexId = m_BoneIndex++;
+				m_BoneInfo.BoneList.emplace_back(pBone->brother);
 
 				//行列読み込み
 				filePos = ftell(fp);
-				LoadMat(pBorn->brother, fp);
+				LoadMat(pBone->brother, fp);
 				fseek(fp, filePos, SEEK_SET);
 
-				AddBoneHierarchy(pBorn->brother, fp, current);
+				AddBoneHierarchy(pBone->brother, fp, current);
 			}
 
 			//"}"が"{"より多い時は階層を戻る
@@ -909,17 +909,17 @@ bool LoadXDynamic::AddBoneHierarchy(Born *pBorn, FILE *fp, int hierarchy)
 			//同一階層追加
 			if ((end - begin == 0) && ((begin != 0) && (end != 0)))
 			{
-				pBorn->brother = new Born;
-				pBorn->brother->BornName = key;
-				pBorn->brother->indexId = m_BornIndex++;
-				m_BornInfo.BornList.emplace_back(pBorn->brother);
+				pBone->brother = new Bone;
+				pBone->brother->boneName = key;
+				pBone->brother->indexId = m_BoneIndex++;
+				m_BoneInfo.BoneList.emplace_back(pBone->brother);
 
 				//行列読み込み
 				filePos = ftell(fp);
-				LoadMat(pBorn->brother, fp);
+				LoadMat(pBone->brother, fp);
 				fseek(fp, filePos, SEEK_SET);
 
-				AddBoneHierarchy(pBorn->brother, fp, current);
+				AddBoneHierarchy(pBone->brother, fp, current);
 			}
 
 			//階層を戻る

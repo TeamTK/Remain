@@ -2,9 +2,11 @@
 #define _SIGHT_SYSTEM_H_
 
 #include <functional>
-#include "..\..\GEKO\Collider\Collider.h"
+
+struct Result_Porygon;
 
 class SightManager;
+class Vector3D;
 
 struct SightData
 {

@@ -9,14 +9,11 @@ public:
 	ScreenBlood();
 	~ScreenBlood();
 	void Update();
-	void Draw();
 
 private:
 	Image m_Blood;
 	Timer m_Timer;
 	int m_Alpha;
-	RenderTask m_RenderTask;
-
 };
 
 #endif

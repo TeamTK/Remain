@@ -5,6 +5,7 @@ ScreenTransfer_In::ScreenTransfer_In() :
 	m_AlphaNum(0.0f),
 	m_TransferSpeed(0.0f)
 {
+	m_BlackImage.SetDrawRegister(true, 10, 0);
 	m_BlackImage.SetAsset("Transfer_Black");
 	m_BlackImage.SetAlpha(0);
 }
@@ -38,15 +39,11 @@ void ScreenTransfer_In::Update()
 	}
 }
 
-void ScreenTransfer_In::Render()
-{
-	m_BlackImage.Draw(0, 0);
-}
-
 ScreenTransfer_Out::ScreenTransfer_Out() :
 	m_IsStart(false),
 	m_AlphaNum(255.0f)
 {
+	m_BlackImage.SetDrawRegister(true, 10, 0);
 	m_BlackImage.SetAsset("Transfer_Black");
 	m_BlackImage.SetAlpha(255);
 }
@@ -78,9 +75,4 @@ void ScreenTransfer_Out::Update()
 		m_BlackImage.SetAlpha((int)m_AlphaNum);
 		m_AlphaNum -= m_TransferSpeed;
 	}
-}
-
-void ScreenTransfer_Out::Render()
-{
-	m_BlackImage.Draw(0, 0);
 }

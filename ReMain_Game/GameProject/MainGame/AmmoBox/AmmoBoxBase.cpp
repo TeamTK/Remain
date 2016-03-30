@@ -1,9 +1,10 @@
 #include "AmmoBoxBase.h"
 
-AmmoBoxBase::AmmoBoxBase(Vector3D pos, Vector3D rot, const char *taskName, unsigned int priority) :
-	Task(taskName, priority), m_Radius(BOX_RADIUS), m_Pos(pos)
+AmmoBoxBase::AmmoBoxBase(const char *taskName, unsigned int priority) :
+	Task(taskName, priority), m_Radius(BOX_RADIUS)
 {
-	m_RenderTask.Regist(1, REGIST_RENDER_FUNC(AmmoBoxBase::Render));
+	m_Box.SetRenderingRegister(true, 1, 0);
+	m_Billboard.SetRenderingRegister(true, 1, 0);
 }
 
 AmmoBoxBase::AmmoBoxBase()
@@ -19,11 +20,6 @@ AmmoBoxBase::~AmmoBoxBase()
 void AmmoBoxBase::Update()
 {
 
-}
-
-void AmmoBoxBase::Render()
-{
-	m_Box.Render();
 }
 
 void AmmoBoxBase::HitPlayer(Result_Sphere& r)

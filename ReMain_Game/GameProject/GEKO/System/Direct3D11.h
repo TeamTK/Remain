@@ -24,6 +24,8 @@
 #define ALIGN16				 _declspec(align(16))
 #define RGB 0.003921568627451f
 
+class Vector3D;
+
 class Direct3D11
 {
 public:
@@ -73,6 +75,8 @@ public:
 	/// </returns>
 	ID3D11DeviceContext* GetID3D11DeviceContext() const;
 
+	ID3D11DepthStencilView* GetDepthStencilView() const;
+
 	ID3D11BlendState* GetBlendState() const;
 
 	D3D11_VIEWPORT* GetViewportD3D11();
@@ -81,29 +85,14 @@ public:
 
 	int GetResolutionHeight() const;
 
-	/// <summary>
-	///　画面クリアのRGBを指定
-	/// </summary>
-	/// <param name="r">
-	/// 赤色
-	/// </param>
-	/// <param name="r">
-	/// 緑色
-	/// </param>
-	/// <param name="r">
-	/// 青色
-	/// </param>
-	/// <returns>
-	/// なし
-	/// </returns>
-	void Clear(float r, float g, float b);
+	float GetClearColorRed() const;
 
-	/// <summary>
-	/// 画面更新
-	/// </summary>
-	/// <returns>
-	/// なし
-	/// </returns>
+	float GetClearColorGreen() const;
+
+	float GetClearColorBlue() const;
+
+	void Clear();
+
 	void Present();
 
 	void RenderTarget();
@@ -144,6 +133,8 @@ public:
 	/// </returns>
 	void SetViewport(float width, float height, float x, float y);
 
+	void SetClearColor(float red, float green, float blue);
+
 	/// <summary>
 	/// ダイレクトXのリソースの破棄
 	/// </summary>
@@ -169,6 +160,9 @@ private:
 	D3D11_VIEWPORT			m_Viewport;				//ビューポート
 	int m_ResolutionWidth;							//解像度幅
 	int m_ResolutionHeight;							//解像度高さ
+	float m_Red;
+	float m_Green;
+	float m_Blue;
 };
 
 #endif

@@ -5,7 +5,6 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include "../../GEKO/Collider/Collider.h"
 #include "../../GEKO/GEKO.h"
 
 struct XYZ
@@ -27,16 +26,17 @@ class StageObject
 {
 public:
 	StageObject();
-	StageObject(XYZ pos, XYZ rot, XYZ sca, std::string name, bool isShadow = false, bool isLightInterrupted = false);
 	virtual ~StageObject();
 	void Update();
-	void Render();
 
 protected:
-	bool m_IsShadow;
-	StaticMesh m_Object;
-	Collider m_CharacterHit;
-
+	void SetObjectMesh(StaticMesh *pMesh, XYZ &pos, XYZ &rot, XYZ &sca, std::string &name)
+	{
+		pMesh->SetAsset(name);
+		pMesh->SetTranselate(pos.x, pos.y, pos.z);
+		pMesh->SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
+		pMesh->SetScale(sca.x, sca.y, sca.z);
+	}
 };
 
 class StageObjectManager
@@ -46,7 +46,6 @@ public:
 	~StageObjectManager();
 	void LoadObject(char* filename);
 	void Update();
-	void Render();
 	void ClearList();
 	static StageObjectManager* GetInstance();
 
@@ -68,7 +67,7 @@ public:
 	MapObject();
 	MapObject(XYZ &pos, XYZ &rot, XYZ &sca, std::string name);
 	~MapObject();
-	void Render();
+	void Update();
 	void Relese();
 
 private:
@@ -79,9 +78,12 @@ private:
 class Tree_1 : public StageObject
 {
 public:
-	Tree_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, false, true)
+	Tree_1(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eBlockingLight);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+
 		m_Collision.SetAsset("Tree_1");
 		m_Collision.SetTranselate(pos.x, pos.y, pos.z);
 		m_Collision.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
@@ -97,7 +99,9 @@ public:
 	~Tree_1() {}
 
 private:
+	StaticMesh m_Object;
 	StaticMesh m_Collision;
+	Collider m_CharacterHit;
 	Collider m_BulletHit;
 };
 
@@ -105,9 +109,12 @@ private:
 class Tree_2 : public StageObject
 {
 public:
-	Tree_2(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, false, true)
+	Tree_2(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eBlockingLight);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+
 		m_Collision.SetAsset("Tree_2");
 		m_Collision.SetTranselate(pos.x, pos.y, pos.z);
 		m_Collision.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
@@ -123,17 +130,22 @@ public:
 	~Tree_2() {}
 
 private:
+	StaticMesh m_Object;
 	StaticMesh m_Collision;
 	Collider m_BulletHit;
+	Collider m_CharacterHit;
 };
 
 //枯れ木
 class Tree_1_Trunk : public StageObject
 {
 public:
-	Tree_1_Trunk(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, false, true)
+	Tree_1_Trunk(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eBlockingLight);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
 
@@ -144,6 +156,8 @@ public:
 	~Tree_1_Trunk() {}
 
 private:
+	StaticMesh m_Object;
+	Collider m_CharacterHit;
 	Collider m_BulletHit;
 };
 
@@ -151,27 +165,42 @@ private:
 class Grass_1 : public StageObject
 {
 public:
-	Grass_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, false, true) {}
+	Grass_1(XYZ pos, XYZ rot, XYZ sca, std::string name)
+	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eBlockingLight);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+	}
 	~Grass_1() {}
+private:
+	StaticMesh m_Object;
 };
 
 //草2
 class Grass_2 : public StageObject
 {
 public:
-	Grass_2(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, false, true) {}
+	Grass_2(XYZ pos, XYZ rot, XYZ sca, std::string name)
+	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eBlockingLight);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+	}
 	~Grass_2() {}
+private:
+	StaticMesh m_Object;
 };
 
 //家
 class Cabin : public StageObject
 {
 public:
-	Cabin(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true, true)
+	Cabin(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eShadow | eBlockingLight);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+
 		//当たり判定用メッシュ
 		m_HitMesh.SetAsset("Cabin_Collision");
 		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
@@ -194,7 +223,9 @@ public:
 	~Cabin() {}
 
 private:
+	StaticMesh m_Object;
 	StaticMesh m_HitMesh;
+	Collider m_CharacterHit;
 	Collider m_BulletHit;
 	Collider m_CameraHIt;
 };
@@ -203,9 +234,12 @@ private:
 class Ground_1_1 : public StageObject
 {
 public:
-	Ground_1_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true)
+	Ground_1_1(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eShadow);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2 | eHITID3);
 
@@ -219,6 +253,8 @@ public:
 	~Ground_1_1() {}
 
 private:
+	StaticMesh m_Object;
+	Collider m_CharacterHit;
 	Collider m_CameraHit;
 	Collider m_BulletHit;
 };
@@ -226,9 +262,12 @@ private:
 class Ground_1_2 : public StageObject
 {
 public:
-	Ground_1_2(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true)
+	Ground_1_2(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eShadow);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2 | eHITID3);
 
@@ -242,6 +281,8 @@ public:
 	~Ground_1_2() {}
 
 private:
+	StaticMesh m_Object;
+	Collider m_CharacterHit;
 	Collider m_CameraHit;
 	Collider m_BulletHit;
 };
@@ -250,9 +291,12 @@ private:
 class Ground_1_3 : public StageObject
 {
 public:
-	Ground_1_3(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true)
+	Ground_1_3(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eShadow);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2 | eHITID3);
 
@@ -266,6 +310,8 @@ public:
 	~Ground_1_3() {}
 
 private:
+	StaticMesh m_Object;
+	Collider m_CharacterHit;
 	Collider m_CameraHit;
 	Collider m_BulletHit;
 };
@@ -274,9 +320,12 @@ private:
 class RockWall_1_1 : public StageObject
 {
 public:
-	RockWall_1_1(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true, true)
+	RockWall_1_1(XYZ pos, XYZ rot, XYZ sca, std::string name) 
 	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eShadow | eBlockingLight);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+
 		//当たり判定用のメッシュ初期化
 		m_HitMesh.SetAsset("Wall_Collision_1_1");
 		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
@@ -299,7 +348,9 @@ public:
 	~RockWall_1_1() {}
 
 private:
+	StaticMesh m_Object;
 	StaticMesh m_HitMesh;
+	Collider m_CharacterHit;
 	Collider m_CameraHit;
 	Collider m_BulletHit;
 };
@@ -308,9 +359,12 @@ private:
 class RockWall_1_2 : public StageObject
 {
 public:
-	RockWall_1_2(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true, true)
+	RockWall_1_2(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eShadow | eBlockingLight);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+
 		//当たり判定用のメッシュ初期化
 		m_HitMesh.SetAsset("Wall_Collision_1_2");
 		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
@@ -333,7 +387,9 @@ public:
 	~RockWall_1_2() {}
 
 private:
+	StaticMesh m_Object;
 	StaticMesh m_HitMesh;
+	Collider m_CharacterHit;
 	Collider m_CameraHit;
 	Collider m_BulletHit;
 };
@@ -342,9 +398,12 @@ private:
 class RockWall_1_3 : public StageObject
 {
 public:
-	RockWall_1_3(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true, true)
+	RockWall_1_3(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eShadow | eBlockingLight);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+
 		//当たり判定用のメッシュ初期化
 		m_BulletHitMesh.SetAsset("RockWall_1_3");
 		m_BulletHitMesh.SetTranselate(pos.x, pos.y, pos.z);
@@ -372,8 +431,10 @@ public:
 	~RockWall_1_3() {}
 
 private:
+	StaticMesh m_Object;
 	StaticMesh m_HitMesh;
 	StaticMesh m_BulletHitMesh;
+	Collider m_CharacterHit;
 	Collider m_CameraHit;
 	Collider m_BulletHit;
 };
@@ -382,45 +443,71 @@ private:
 class SkyDome : public StageObject
 {
 public:
-	SkyDome(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name) {}
+	SkyDome(XYZ pos, XYZ rot, XYZ sca, std::string name)
+	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+	}
 	~SkyDome() {}
+private:
+	StaticMesh m_Object;
 };
 
 //茂み
 class Bush : public StageObject
 {
 public:
-	Bush(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true, false) {}
+	Bush(XYZ pos, XYZ rot, XYZ sca, std::string name)
+	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eShadow);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+	}
 	~Bush() {}
+private:
+	StaticMesh m_Object;
 };
 
 //クローバー
 class Clover : public StageObject
 {
 public:
-	Clover(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true, false) {}
+	Clover(XYZ pos, XYZ rot, XYZ sca, std::string name)
+	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eShadow);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+	}
 	~Clover() {}
+private:
+	StaticMesh m_Object;
 };
 
 //シダ
 class Fern : public StageObject
 {
 public:
-	Fern(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true, true) {}
+	Fern(XYZ pos, XYZ rot, XYZ sca, std::string name) 
+	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eShadow | eBlockingLight);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+	}
 	~Fern() {}
+private:
+	StaticMesh m_Object;
 };
 
 //フェンス
 class Fence : public StageObject
 {
 public:
-	Fence(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true, true)
+	Fence(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eShadow | eBlockingLight);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+
 		m_HitMesh.SetAsset("Fence_Collision");
 		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
 		m_HitMesh.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
@@ -432,16 +519,21 @@ public:
 	}
 	~Fence() {}
 private:
+	StaticMesh m_Object;
 	StaticMesh m_HitMesh;
+	Collider m_CharacterHit;
 };
 
 //石A
 class Stone_A : public StageObject
 {
 public:
-	Stone_A(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true, true)
+	Stone_A(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eShadow | eBlockingLight);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+
 		m_HitMesh.SetAsset("Stone_A_Collision");
 		m_HitMesh.SetTranselate(pos.x, pos.y, pos.z);
 		m_HitMesh.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
@@ -457,7 +549,9 @@ public:
 	}
 	~Stone_A() {}
 private:
+	StaticMesh m_Object;
 	StaticMesh m_HitMesh;
+	Collider m_CharacterHit;
 	Collider m_CameraHit;
 };
 
@@ -465,9 +559,16 @@ private:
 class Fallen_leaves : public StageObject
 {
 public:
-	Fallen_leaves(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true) {}
+	Fallen_leaves(XYZ pos, XYZ rot, XYZ sca, std::string name)
+	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eShadow);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+	}
 	~Fallen_leaves() {}
+
+private:
+	StaticMesh m_Object;
 };
 
 
@@ -476,27 +577,48 @@ public:
 class Shrub : public StageObject
 {
 public:
-	Shrub(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, false, true) {}
-	~Shrub() {}
+	Shrub(XYZ pos, XYZ rot, XYZ sca, std::string name) 
+	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eBlockingLight);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+	}
+	~Shrub() 
+	{
+
+	}
+
+private:
+	StaticMesh m_Object;
 };
 
 //低木
 class Weeds : public StageObject
 {
 public:
-	Weeds(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, false, true) {}
+	Weeds(XYZ pos, XYZ rot, XYZ sca, std::string name)
+	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eBlockingLight);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+	}
 	~Weeds() {}
+
+private:
+	StaticMesh m_Object;
+
 };
 
 //木箱
 class WoodBox : public StageObject
 {
 public:
-	WoodBox(XYZ pos, XYZ rot, XYZ sca, std::string name) :
-		StageObject(pos, rot, sca, name, true, true)
+	WoodBox(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
+		m_Object.SetRenderingRegister(true, 0, 0);
+		m_Object.SetMeshState(eShadow | eBlockingLight);
+		SetObjectMesh(&m_Object, pos, rot, sca, name);
+
 		//プレイヤーの判定は仮
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
 		m_CharacterHit.SetID(eHITID0, eHITID1 | eHITID2);
@@ -507,6 +629,8 @@ public:
 	~WoodBox() {}
 
 private:
+	StaticMesh m_Object;
+	Collider m_CharacterHit;
 	Collider m_BulletHit;
 };
 #endif

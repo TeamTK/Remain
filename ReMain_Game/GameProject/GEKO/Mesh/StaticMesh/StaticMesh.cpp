@@ -6,77 +6,53 @@
 #include "..\..\ImageSystem\Image.h"
 
 StaticMesh::StaticMesh() :
+	MeshBase(false, 0, 0, MeshState::eNothing),
 	m_pMeshData(nullptr)
 {
 }
 
-StaticMesh::StaticMesh(const std::string &meshName, bool isLightInterrupted)
+StaticMesh::StaticMesh(const std::string &meshName, unsigned int priorityGroup, unsigned int priority, unsigned int meshState) :
+	MeshBase(true, priorityGroup, priority, meshState)
 {
 	AllocationMeshData(meshName);
-	if (isLightInterrupted)
+
+	//モデルが光を遮って影になる対象
+	if (meshState & MeshState::eBlockingLight)
 	{
-		ShaderShadowMap::GetInstance()->Clear(this);
 		ShaderShadowMap::GetInstance()->Add(this);
 	}
 }
 
 StaticMesh::~StaticMesh()
 {
-	ShaderShadowMap::GetInstance()->Clear(this);
+	if (m_MeshState & MeshState::eBlockingLight)
+	{
+		ShaderShadowMap::GetInstance()->Clear(this);
+	}
 	m_pMeshData = nullptr;
 }
 
-void StaticMesh::SetAsset(const std::string &meshName, bool isLightInterrupted)
+void StaticMesh::SetMeshState(unsigned int meshState)
 {
-	AllocationMeshData(meshName);
-	if (isLightInterrupted)
+	//事前に登録していたら解除
+	if (m_MeshState & MeshState::eBlockingLight)
 	{
 		ShaderShadowMap::GetInstance()->Clear(this);
+	}
+
+	m_MeshState = meshState;
+
+	//モデルが光を遮って影になる対象
+	if (m_MeshState & MeshState::eBlockingLight)
+	{
+		assert(m_IsRenderingRegister && "レンダリングが登録されていないため「eBlockingLight」ができません");
 		ShaderShadowMap::GetInstance()->Add(this);
 	}
 }
 
-void StaticMesh::SetModelMatrixBuilding()
+void StaticMesh::SetAsset(const std::string &meshName)
 {
-	D3DXQUATERNION qOut(0, 0, 0, 1); //単位クォータニオン
-	D3DXQUATERNION qX(0, 0, 0, 1); //単位クォータニオン
-	D3DXQUATERNION qY(0, 0, 0, 1); //単位クォータニオン
-	D3DXQUATERNION qZ(0, 0, 0, 1); //単位クォータニオン
-	Vector3D xAxis(1, 0, 0); //Xの中心軸
-	Vector3D yAxis(0, 1, 0); //Yの中心軸
-	Vector3D zAxis(0, 0, 1); //Zの中心軸
-	Matrix Mat;
-
-	Matrix mat;
-
-	D3DXQuaternionRotationAxis(&qX, &xAxis, m_Rotation.x);
-	D3DXQuaternionRotationAxis(&qY, &yAxis, m_Rotation.y);
-	D3DXQuaternionRotationAxis(&qZ, &zAxis, m_Rotation.z);
-	qOut = qX * qY * qZ;
-
-	//クオータニオンから行列に変更
-	D3DXMatrixRotationQuaternion(&mat, &qOut);
-
-	//拡大縮小
-	mat._11 *= m_Scale.x;
-	mat._21 *= m_Scale.x;
-	mat._31 *= m_Scale.x;
-
-	mat._12 *= m_Scale.y;
-	mat._22 *= m_Scale.y;
-	mat._32 *= m_Scale.y;
-
-	mat._13 *= m_Scale.z;
-	mat._23 *= m_Scale.z;
-	mat._33 *= m_Scale.z;
-
-	//平行移動
-	mat._41 = m_Transelate.x;
-	mat._42 = m_Transelate.y;
-	mat._43 = m_Transelate.z;
-
-	m_WorldMatrix = mat;
-	m_SynthesisMatrix = m_pMeshData->GetMeshInfo()->localMatrix * m_WorldMatrix;
+	AllocationMeshData(meshName);
 }
 
 const IndexInfo *StaticMesh::GetIndex() const
@@ -94,11 +70,6 @@ const MaterialInfo *StaticMesh::GetMaterial() const
 	return m_pMeshData->GetMeshInfo()->pMaterial;
 }
 
-const Matrix *StaticMesh::GetLocalMatrix() const
-{
-	return &m_pMeshData->GetMeshInfo()->localMatrix;
-}
-
 const int StaticMesh::GetFaceAllNum() const
 {
 	return m_pMeshData->GetMeshInfo()->faceNumAll;
@@ -107,18 +78,6 @@ const int StaticMesh::GetFaceAllNum() const
 const int StaticMesh::GetMaterialAllNum() const
 {
 	return m_pMeshData->GetMeshInfo()->materialNumAll;
-}
-
-void StaticMesh::Render(bool isShadow)
-{
-	RenderFunc(m_SynthesisMatrix, isShadow);
-}
-
-void StaticMesh::RenderMatrix(Matrix &matrix, bool isShadow)
-{
-	Matrix local = m_pMeshData->GetMeshInfo()->localMatrix;;
-	m_SynthesisMatrix = local * m_SynthesisMatrix * matrix;
-	RenderFunc(m_SynthesisMatrix, isShadow);
 }
 
 void StaticMesh::DebugNormal() const
@@ -132,13 +91,13 @@ void StaticMesh::DebugNormal() const
 	//全ての頂点の法線描画
 	for (int i = 0; i < polyNum; i++)
 	{
-		v1 = vertex[index[i].vertexIndex[0]].pos * m_SynthesisMatrix;
-		v2 = vertex[index[i].vertexIndex[1]].pos * m_SynthesisMatrix;
-		v3 = vertex[index[i].vertexIndex[2]].pos * m_SynthesisMatrix;
+		v1 = vertex[index[i].vertexIndex[0]].pos * m_ModelMatrix;
+		v2 = vertex[index[i].vertexIndex[1]].pos * m_ModelMatrix;
+		v3 = vertex[index[i].vertexIndex[2]].pos * m_ModelMatrix;
 
-		normal1 = Vector3D::Matrix3x3(vertex[index[i].vertexIndex[0]].normal, m_SynthesisMatrix).GetNormalize();
-		normal2 = Vector3D::Matrix3x3(vertex[index[i].vertexIndex[1]].normal, m_SynthesisMatrix).GetNormalize();
-		normal3 = Vector3D::Matrix3x3(vertex[index[i].vertexIndex[2]].normal, m_SynthesisMatrix).GetNormalize();
+		normal1 = Vector3D::Matrix3x3(vertex[index[i].vertexIndex[0]].normal, m_ModelMatrix).GetNormalize();
+		normal2 = Vector3D::Matrix3x3(vertex[index[i].vertexIndex[1]].normal, m_ModelMatrix).GetNormalize();
+		normal3 = Vector3D::Matrix3x3(vertex[index[i].vertexIndex[2]].normal, m_ModelMatrix).GetNormalize();
 
 		Fiqure::RenderLine3D(v1, normal1 + v1, Vector3D(0.0f, 1.0f, 0.8f));
 		Fiqure::RenderLine3D(v2, normal2 + v2, Vector3D(0.0f, 1.0f, 0.8f));
@@ -156,14 +115,31 @@ void StaticMesh::DebugPolygon() const
 	//全ての頂点の描画
 	for (int i = 0; i < polyNum; i++)
 	{
-		v1 = vertex[index[i].vertexIndex[0]].pos * m_SynthesisMatrix;
-		v2 = vertex[index[i].vertexIndex[1]].pos * m_SynthesisMatrix;
-		v3 = vertex[index[i].vertexIndex[2]].pos * m_SynthesisMatrix;
+		v1 = vertex[index[i].vertexIndex[0]].pos * m_ModelMatrix;
+		v2 = vertex[index[i].vertexIndex[1]].pos * m_ModelMatrix;
+		v3 = vertex[index[i].vertexIndex[2]].pos * m_ModelMatrix;
 
 		Fiqure::RenderLine3D(v1, v2, Vector3D(0.0f, 0.0f, 0.0f));
 		Fiqure::RenderLine3D(v2, v3, Vector3D(0.0f, 0.0f, 0.0f));
 		Fiqure::RenderLine3D(v3, v1, Vector3D(0.0f, 0.0f, 0.0f));
 	}
+}
+
+void StaticMesh::ForwardRendering()
+{
+	if (m_MeshState & eShadow)
+	{
+		RenderFunc(m_ModelMatrix, true);
+	}
+	else
+	{
+		RenderFunc(m_ModelMatrix, false);
+	}
+}
+
+void StaticMesh::DeferredRendering()
+{
+
 }
 
 void StaticMesh::AllocationMeshData(const std::string &meshName)
@@ -195,27 +171,22 @@ void StaticMesh::AllocationMeshData(const std::string &meshName)
 		m_Ambient.emplace_back(ambient.x, ambient.y, ambient.z);
 	}
 
-	m_WorldMatrixInfo.pLocalMatrix = &data->localMatrix;
+	m_pLocalMatrix = &data->localMatrix;
+	m_WorldMatrixInfo.pLocalMatrix = m_pLocalMatrix;
 }
 
 void StaticMesh::RenderFunc(Matrix &matrix, bool isShadow) const
 {
 	ID3D11DeviceContext *pDeviceContext = Direct3D11::GetInstance()->GetID3D11DeviceContext();
-
-	assert(m_pMeshData != nullptr && "メッシュ情報がありません");
-
 	MeshInfo *data = m_pMeshData->GetMeshInfo();
 
-	ConstantShader::GetInstance()->SetCommonInfoConstantBuffer();
-
 	ConstantShader::GetInstance()->SetTransformMatrixConstantBuffer(pDeviceContext, matrix, isShadow);
-
 	StaticMeshShader::GetInstance()->SetShader(pDeviceContext, data->isTexture, isShadow);
 
 	//マルチテクスチャ
-	if (m_pImage != nullptr)
+	if (m_pImageInfo != nullptr)
 	{
-		pDeviceContext->PSSetShaderResources(2, 1, &m_pImage->m_pImageData->GetImageInfo()->pTexture);
+		pDeviceContext->PSSetShaderResources(2, 1, &m_pImageInfo->pTexture);
 	}
 
 	//バーテックスバッファーをセット

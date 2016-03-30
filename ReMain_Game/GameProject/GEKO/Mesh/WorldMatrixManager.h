@@ -8,7 +8,7 @@ struct WorldMatrixInfo
 {
 	Matrix *pLocalMatrix;
 	Matrix *pWorldMatrix;
-	Matrix *pSynthesisMatrix;
+	Matrix *pModelMatrix;
 	Vector3D *pRotation;
 	Vector3D *pScale;
 	Vector3D *pTranselate;

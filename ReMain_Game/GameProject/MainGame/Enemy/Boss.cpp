@@ -31,9 +31,8 @@ Boss::Boss(BossState &bossState) :
 	m_isDefence(false),
 	m_isAlive(true)
 {
-	m_RenderTask.Regist(1, REGIST_RENDER_FUNC(Boss::Render));
-
-	m_Model.SetAsset("Boss", true);
+	m_Model.SetRenderingRegister(true, 1, 0);
+	m_Model.SetAsset("Boss");
 	m_Model.SetTranselate(bossState.spawnPos);
 	m_Model.SetRotationDegree(0, (int)bossState.spawnRot.y, 0);
 
@@ -123,8 +122,8 @@ void Boss::Update()
 	for (unsigned int i = 0; i < bornNum; i++)
 	{
 		m_pCapsule[i].radius = m_BoneCapsule[i].radius;
-		m_pCapsule[i].segment.start = m_Model.GetBornPos(m_BoneCapsule[i].start);
-		m_pCapsule[i].segment.end = m_Model.GetBornPos(m_BoneCapsule[i].end);
+		m_pCapsule[i].segment.start = m_Model.GetBonePos(m_BoneCapsule[i].start);
+		m_pCapsule[i].segment.end = m_Model.GetBonePos(m_BoneCapsule[i].end);
 
 		if (!m_FuncTask.Running("Die")) m_pHitAttackBody[i].Awake();
 	}
@@ -139,11 +138,6 @@ void Boss::Update()
 		float rot = atan2f((m_Pos - *m_pPlayerPos).x, (m_Pos - *m_pPlayerPos).z);
 		m_Model.SetRotationRadian(0.0f, rot, 0.0f);
 	}
-}
-
-void Boss::Render()
-{
-	m_Model.Render();
 }
 
 void Boss::Attack_A()
@@ -199,7 +193,7 @@ void Boss::LongAttack()
 
 	if (m_PlayTime >= 12 && m_PlayTime <= 13)
 	{
-		Vector3D pos = m_Model.GetBornPos(14);
+		Vector3D pos = m_Model.GetBonePos(14);
 		new Boss_Fluids(pos, ((*m_pPlayerPos + Vector3D(0.0f, 1.0f, 0.0f)) - pos).GetNormalize(), 0.3f, 2.0f);
 	}
 
@@ -335,8 +329,8 @@ void Boss::HitBullet(Result_Sphere& r)
 	info.frameNum = 8;
 	info.pos = r.position;
 	info.size = 2.0f;
-	info.sizeW = 256;
-	info.sizeH = 256;
+	info.sizeW = 8;
+	info.sizeH = 1;
 	info.speed = 1.0f;
 	new EffectAnimation("BloodAnim_Green", info);
 

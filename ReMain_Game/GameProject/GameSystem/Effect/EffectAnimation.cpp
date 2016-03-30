@@ -6,8 +6,8 @@ EffectAnimation::EffectAnimation(const std::string &assetName, const EffectAnima
 	m_Size(info.size),
 	m_Speed(info.speed)
 {
+	m_Anim.SetRenderingRegister(true, 10, 0);
 	m_Anim.FrameDivision(assetName, info.frameNum, info.sizeW, info.sizeH);
-	m_Render.Regist(0, REGIST_RENDER_FUNC(EffectAnimation::Render));
 }
 
 EffectAnimation::~EffectAnimation()
@@ -21,9 +21,6 @@ void EffectAnimation::Update()
 		SetKill();
 	}
 	m_Anim.PlayFrame(m_Speed);
-}
-
-void EffectAnimation::Render()
-{
-	m_Anim.Render(m_Pos, m_Size);
+	m_Anim.SetPosition(m_Pos);
+	m_Anim.SetSize(m_Size);
 }

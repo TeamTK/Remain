@@ -1,5 +1,6 @@
 #include "ConstantShader.h"
-#include "..\System\DirectionalLight.h"
+#include "Light\DirectionalLight.h"
+#include "Light\PointLightManager.h"
 #include "..\System\Camera.h"
 #include "..\Shader\ShadowMap\ShaderShadowMap.h"
 #include "..\Mesh\MeshInfo.h"
@@ -9,7 +10,9 @@ ConstantShader::ConstantShader()
 	INIT_NULLPOINTR(m_pCommonInfoConstantBuffer);
 	INIT_NULLPOINTR(m_pTransformMatrixConstantBuffer);
 	INIT_NULLPOINTR(m_pMaterialConstantBuffer);
-	INIT_NULLPOINTR(m_pBornConstantBuffer);
+	INIT_NULLPOINTR(m_pBoneConstantBuffer);
+	INIT_NULLPOINTR(m_pForwardConstantBuffer);
+	INIT_NULLPOINTR(m_pDeferredConstantBuffer);
 }
 
 ConstantShader::~ConstantShader()
@@ -37,17 +40,25 @@ bool ConstantShader::Init()
 	cb.Usage = D3D11_USAGE_DYNAMIC;
 	if (FAILED(pDevice->CreateBuffer(&cb, NULL, &m_pCommonInfoConstantBuffer))) return false;
 
-	//コンスタントバッファー作成　変換行列渡し用
+	//変換行列渡し用
 	cb.ByteWidth = sizeof(TransformMatrixConstantBuffer);
 	if (FAILED(pDevice->CreateBuffer(&cb, NULL, &m_pTransformMatrixConstantBuffer))) return false;
 
-	//コンスタントバッファー作成  マテリアル渡し用
+	//マテリアル渡し用
 	cb.ByteWidth = sizeof(MaterialConstantBuffer);
 	if (FAILED(pDevice->CreateBuffer(&cb, NULL, &m_pMaterialConstantBuffer))) return false;
 
-	//コンスタントバッファー作成 ボーン用  
-	cb.ByteWidth = sizeof(BornConstantBuffer);
-	if (FAILED(pDevice->CreateBuffer(&cb, NULL, &m_pBornConstantBuffer))) return false;
+	//ボーン用  
+	cb.ByteWidth = sizeof(BoneConstantBuffer);
+	if (FAILED(pDevice->CreateBuffer(&cb, NULL, &m_pBoneConstantBuffer))) return false;
+
+	//前方レンダリング用ライト
+	cb.ByteWidth = sizeof(ForwardLightConstantBuffer);
+	if (FAILED(pDevice->CreateBuffer(&cb, NULL, &m_pForwardConstantBuffer))) return false;
+
+	//後方レンダリング用ライト  
+	cb.ByteWidth = sizeof(DeferredLightConstantBuffer);
+	if (FAILED(pDevice->CreateBuffer(&cb, NULL, &m_pDeferredConstantBuffer))) return false;
 
 	return true;
 }
@@ -127,31 +138,110 @@ void ConstantShader::SetMaterialConstantBuffer(ID3D11DeviceContext *pDeviceConte
 	pDeviceContext->PSSetConstantBuffers(2, 1, &m_pMaterialConstantBuffer);
 }
 
-void ConstantShader::SetBornConstantBuffer(ID3D11DeviceContext *pDeviceContext, int bornAllNum, std::vector<CopyBorn*> &pCopyBornArray)
+void ConstantShader::SetBoneConstantBuffer(ID3D11DeviceContext *pDeviceContext, int bornAllNum, std::vector<CopyBone*> &pCopyBornArray)
 {
 	D3D11_MAPPED_SUBRESOURCE pData;
 
 	//ボーン情報格納
-	if (SUCCEEDED(pDeviceContext->Map(m_pBornConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+	if (SUCCEEDED(pDeviceContext->Map(m_pBoneConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
-		BornConstantBuffer sg;
+		BoneConstantBuffer sg;
 		for (int i = 0; i < bornAllNum; i++)
 		{
-			D3DXMatrixTranspose(&sg.bornMat[i], &pCopyBornArray[i]->bornMat);
+			D3DXMatrixTranspose(&sg.boneMat[i], &pCopyBornArray[i]->boneMat);
 		}
-		memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(BornConstantBuffer));
-		pDeviceContext->Unmap(m_pBornConstantBuffer, 0);
+		memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(BoneConstantBuffer));
+		pDeviceContext->Unmap(m_pBoneConstantBuffer, 0);
 	}
 
-	pDeviceContext->VSSetConstantBuffers(3, 1, &m_pBornConstantBuffer);
-	pDeviceContext->PSSetConstantBuffers(3, 1, &m_pBornConstantBuffer);
+	pDeviceContext->VSSetConstantBuffers(3, 1, &m_pBoneConstantBuffer);
+	pDeviceContext->PSSetConstantBuffers(3, 1, &m_pBoneConstantBuffer);
+}
+
+void ConstantShader::SetForwardLightConstantBuffer(ID3D11DeviceContext *pDeviceContext)
+{
+	D3D11_MAPPED_SUBRESOURCE pData;
+
+	auto *plight = PointLightManager::GetInstance();
+	int lightNum = plight->GetForwardLightNum();
+	Vector3D vec;
+	Vector3D color;
+	const PointLight* pPointLight = nullptr;
+
+	//ポイントライト格納
+	if (SUCCEEDED(pDeviceContext->Map(m_pForwardConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+	{
+		ForwardLightConstantBuffer sg;
+
+		//ライトがない場合格納しない
+		if (lightNum != 0)
+		{
+			//生成されているタイトの数格納
+			for (int i = 0; i < lightNum; i++)
+			{
+				pPointLight = plight->GetForwardLight(i);
+				vec = pPointLight->GetPosition();
+				color = pPointLight->GetColor();
+				sg.lihgtPos[i] = Vector4D(vec.x, vec.y, vec.z, pPointLight->GetIntensity());
+				sg.range[i] = Vector4D(color.x, color.y, color.z, pPointLight->GetRange());
+			}
+		}
+
+		sg.lightNum = (float)lightNum; //ライトの最大個数格納
+
+		memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(ForwardLightConstantBuffer));
+		pDeviceContext->Unmap(m_pForwardConstantBuffer, 0);
+	}
+
+	pDeviceContext->VSSetConstantBuffers(4, 1, &m_pForwardConstantBuffer);
+	pDeviceContext->PSSetConstantBuffers(4, 1, &m_pForwardConstantBuffer);
+}
+
+void ConstantShader::SetDeferredLightConstantBuffer(ID3D11DeviceContext *pDeviceContext)
+{
+	D3D11_MAPPED_SUBRESOURCE pData;
+
+	auto *plight = PointLightManager::GetInstance();
+	int lightNum = plight->GetForwardLightNum();
+	Vector3D vec;
+	Vector3D color;
+	const PointLight* pPointLight = nullptr;
+
+	//ポイントライト格納
+	if (SUCCEEDED(pDeviceContext->Map(m_pDeferredConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+	{
+		DeferredLightConstantBuffer sg;
+
+		//ライトがない場合格納しない
+		if (lightNum != 0)
+		{
+			//生成されているタイトの数格納
+			for (int i = 0; i < lightNum; i++)
+			{
+				pPointLight = plight->GetDeferreLight(i);
+				vec = pPointLight->GetPosition();
+				sg.lihgtPos[i] = Vector4D(vec.x, vec.y, vec.z, pPointLight->GetIntensity());
+				sg.range[i] = Vector4D(color.x, color.y, color.z, pPointLight->GetRange());
+			}
+		}
+
+		sg.lightNum = (float)lightNum; //ライトの最大個数格納
+
+		memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(DeferredLightConstantBuffer));
+		pDeviceContext->Unmap(m_pDeferredConstantBuffer, 0);
+	}
+
+	pDeviceContext->VSSetConstantBuffers(4, 1, &m_pDeferredConstantBuffer);
+	pDeviceContext->PSSetConstantBuffers(4, 1, &m_pDeferredConstantBuffer);
 }
 
 void ConstantShader::Release()
 {
-	//コンスタントバッファー
+	//定数バッファー
 	SAFE_RELEASE(m_pCommonInfoConstantBuffer);
 	SAFE_RELEASE(m_pTransformMatrixConstantBuffer);
 	SAFE_RELEASE(m_pMaterialConstantBuffer);
-	SAFE_RELEASE(m_pBornConstantBuffer);
+	SAFE_RELEASE(m_pBoneConstantBuffer);
+	SAFE_RELEASE(m_pForwardConstantBuffer);
+	SAFE_RELEASE(m_pDeferredConstantBuffer);
 }

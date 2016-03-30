@@ -33,15 +33,6 @@ StageObject::StageObject()
 
 }
 
-StageObject::StageObject(XYZ pos, XYZ rot, XYZ sca, std::string name, bool isShadow, bool isLightInterrupted)
-{
-	m_Object.SetAsset(name, isLightInterrupted);
-	m_Object.SetTranselate(pos.x, pos.y, pos.z);
-	m_Object.SetRotationDegree((int)rot.x, (int)rot.y, (int)rot.z);
-	m_Object.SetScale(sca.x, sca.y, sca.z);
-	m_IsShadow = isShadow;
-}
-
 StageObject::~StageObject()
 {
 
@@ -51,15 +42,6 @@ void StageObject::Update()
 {
 
 }
-
-void StageObject::Render()
-{
-	m_Object.SetAlphaAll(255);
-	m_Object.Render(m_IsShadow);
-}
-
-
-
 
 //***************************
 //	  StageObjectManager	*
@@ -169,17 +151,14 @@ void StageObjectManager::LoadObject(char* filepath)
 
 void StageObjectManager::Update()
 {
-
-}
-
-void StageObjectManager::Render()
-{
+	/*
 	auto it = m_MapObjectList.begin();
 	for (; it != m_MapObjectList.end();)
 	{
-		it->Render();
+		it->Update();
 		it++;
 	}
+	*/
 }
 
 void StageObjectManager::ClearList()
@@ -304,9 +283,9 @@ MapObject::~MapObject()
 {
 }
 
-void MapObject::Render()
+void MapObject::Update()
 {
-	mp_StageObject->Render();
+	mp_StageObject->Update();
 }
 
 void MapObject::Relese()

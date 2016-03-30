@@ -15,7 +15,7 @@ Character::Character(float hp, const char *taskName, unsigned int priority) :
 	m_ColliderBody.Regist_S_vs_S(&m_pos, &m_BodyRadius, REGIST_FUNC(Character::PushBody));
 	m_ColliderBody.SetID(eHITID0, eHITID0);
 
-	m_RenderTask.Regist(1, REGIST_RENDER_FUNC(Character::Render));
+	m_Model.SetRenderingRegister(true, 1, 0);
 
 	m_pGravity = new Gravity(&m_pos, &m_IsGravity);
 }
@@ -33,11 +33,6 @@ void Character::Update()
 	m_SphereMap.pos = m_pos + Vector3D(0, m_SphereMap.radius, 0);
 	m_Model.SetTranselate(m_pos);
 	m_Model.SetRotationRadian(m_rot.x, m_rot.y, m_rot.z);
-}
-
-void Character::Render()
-{
-	m_Model.Render();
 }
 
 void Character::HitMap(Result_Porygon_Group_Sphere& r)

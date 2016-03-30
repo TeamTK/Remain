@@ -3,6 +3,7 @@
 
 Number::Number()
 {
+	m_Img.SetDrawRegister(true, 0, 0);
 	m_Img.SetAsset("Number");
 }
 
@@ -18,9 +19,9 @@ void Number::NumDraw(const Vector2D pos, int number, const bool leftShift)
 
 	if (number == 0)
 	{
-		m_Img.SetDrawPos(0, 0, NUM_WIDTH, NUM_HEIGHT);
+		m_Img.SetDrawArea(0, 0, NUM_WIDTH, NUM_HEIGHT);
 		m_Img.SetSize(NUM_WIDTH, NUM_HEIGHT);
-		m_Img.Draw((int)(pos.x - NUM_WIDTH * 8) + NUM_WIDTH * 8, (int)pos.y);
+		m_Img.SetPosition((pos.x - NUM_WIDTH * 8) + NUM_WIDTH * 8, pos.y);
 		return;
 	}
 
@@ -35,9 +36,9 @@ void Number::NumDraw(const Vector2D pos, int number, const bool leftShift)
 			if (num == 0 && !shift) continue;
 			else shift = true;
 
-			m_Img.SetDrawPos(NUM_WIDTH * num, 0, NUM_WIDTH * num + NUM_WIDTH, NUM_HEIGHT);
+			m_Img.SetDrawArea(NUM_WIDTH * num, 0, NUM_WIDTH * num + NUM_WIDTH, NUM_HEIGHT);
 			m_Img.SetSize(NUM_WIDTH, NUM_HEIGHT);
-			m_Img.Draw(((int)pos.x - NUM_WIDTH * 8) + NUM_WIDTH * (8 - i), (int)pos.y);
+			m_Img.SetPosition((pos.x - NUM_WIDTH * 8) + NUM_WIDTH * (8 - i), pos.y);
 		}
 	}
 	else
@@ -51,9 +52,9 @@ void Number::NumDraw(const Vector2D pos, int number, const bool leftShift)
 			if (num == 0 && shift == -1) continue;
 			else shift++;
 
-			m_Img.SetDrawPos(NUM_WIDTH * num, 0, NUM_WIDTH * num + NUM_WIDTH, NUM_HEIGHT);
+			m_Img.SetDrawArea(NUM_WIDTH * num, 0, NUM_WIDTH * num + NUM_WIDTH, NUM_HEIGHT);
 			m_Img.SetSize(NUM_WIDTH, NUM_HEIGHT);
-			m_Img.Draw((int)pos.x + NUM_WIDTH * shift, (int)pos.y);
+			m_Img.SetPosition(pos.x + NUM_WIDTH * shift, pos.y);
 		}
 	}
 

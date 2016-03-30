@@ -322,8 +322,7 @@ float Vector3D::Distance(const Vector3D &v1, const Vector3D &v2)
 
 void Vector3D::DebugDraw(const char *name) const
 {
-	printf("%s\n", name);
-	printf("Vector3D :X = %f :Y = %f :Z = %f\n", x, y, z);
+	printf("%s :X = %f :Y = %f :Z = %f\n", name, x, y, z);
 }
 
 /////Vector4D/////
@@ -381,9 +380,7 @@ Vector4D Vector4D::operator * (const D3DXMATRIX &d3dxMatrix) const
 
 void Vector4D::DebugDraw(const char *name) const
 {
-	printf("******************************************************************************\n");
-	printf("%s\n", name);
-	printf("Vector4D : X = %f : Y = %f : Z = %f : W = %f\n", x, y, z, w);
+	printf("%s : X = %f : Y = %f : Z = %f : W = %f\n", name, x, y, z, w);
 }
 
 Matrix::Matrix()
@@ -414,10 +411,10 @@ Matrix::Matrix(const D3DXMATRIX &d3dxMatrix)
 void Matrix::Indentity()
 {
 	ZeroMemory(this, sizeof(Matrix));
-	D3DXMATRIX::_11 = 1.0f;
-	D3DXMATRIX::_22 = 1.0f;
-	D3DXMATRIX::_33 = 1.0f;
-	D3DXMATRIX::_44 = 1.0f;
+	_11 = 1.0f;
+	_22 = 1.0f;
+	_33 = 1.0f;
+	_44 = 1.0f;
 }
 
 void Matrix::SetAxisX(float _11, float _21, float _31, float _41)
@@ -667,7 +664,6 @@ void Matrix::operator = (const D3DXMATRIX &d3dxMatrix)
 	_21 = d3dxMatrix._21, _22 = d3dxMatrix._22, _23 = d3dxMatrix._23, _24 = d3dxMatrix._24;
 	_31 = d3dxMatrix._31, _32 = d3dxMatrix._32, _33 = d3dxMatrix._33, _34 = d3dxMatrix._34;
 	_41 = d3dxMatrix._41, _42 = d3dxMatrix._42, _43 = d3dxMatrix._43, _44 = d3dxMatrix._44;
-	
 }
 
 Matrix Matrix::operator + (const Matrix &matrix)

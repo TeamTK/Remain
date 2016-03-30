@@ -1,14 +1,23 @@
 #include "DirectionalLight.h"
-#include "../Shader/ShadowMap/ShaderShadowMap.h"
+#include "../ShadowMap/ShaderShadowMap.h"
+#include "../../System/Math.h"
 
-DirectionalLight::DirectionalLight() :
-	m_Direction(0.0f, -1.0f, 0.0f, 0.0f),
-	m_LightColor(1.0f, 1.0f, 1.0f, 1.0f)
+struct DirectionalLight::LightPimpl
 {
+	Vector4D direction;
+	Vector4D lightColor;
+};
+
+DirectionalLight::DirectionalLight()
+{
+	m_pLightPimpl = new LightPimpl;
+	m_pLightPimpl->direction = Vector4D(0.0f, -1.0f, 0.0f, 0.0f);
+	m_pLightPimpl->lightColor = Vector4D(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 DirectionalLight::~DirectionalLight()
 {
+	delete m_pLightPimpl;
 }
 
 DirectionalLight* DirectionalLight::GetInstance()
@@ -19,12 +28,12 @@ DirectionalLight* DirectionalLight::GetInstance()
 
 const Vector4D* DirectionalLight::GetDirection()
 {
-	return &GetInstance()->m_Direction;
+	return &GetInstance()->m_pLightPimpl->direction;
 }
 
 Vector4D *DirectionalLight::GetLightColor()
 {
-	return &GetInstance()->m_LightColor;
+	return &GetInstance()->m_pLightPimpl->lightColor;
 }
 
 void DirectionalLight::SetDirection(float x, float y)
@@ -36,22 +45,22 @@ void DirectionalLight::SetDirection(float x, float y)
 	Vector3D vec = Vector3D(0.0f, -1.0f, 0.0f) * (RX * RY);
 	vec.SetNormalize();
 
-	GetInstance()->m_Direction.x = vec.x;
-	GetInstance()->m_Direction.y = vec.y;
-	GetInstance()->m_Direction.z = vec.z;
+	GetInstance()->m_pLightPimpl->direction.x = vec.x;
+	GetInstance()->m_pLightPimpl->direction.y = vec.y;
+	GetInstance()->m_pLightPimpl->direction.z = vec.z;
 }
 
 void DirectionalLight::SetIntensity(float instensity)
 {
-	GetInstance()->m_LightColor.w = instensity;
+	GetInstance()->m_pLightPimpl->lightColor.w = instensity;
 }
 
 void DirectionalLight::SetColor(int r, int g, int b)
 {
 	DirectionalLight *temp = GetInstance();
-	temp->m_LightColor.x = (float)r * RGB;
-	temp->m_LightColor.y = (float)g * RGB;
-	temp->m_LightColor.z = (float)b * RGB;
+	temp->m_pLightPimpl->lightColor.x = (float)r * RGB;
+	temp->m_pLightPimpl->lightColor.y = (float)g * RGB;
+	temp->m_pLightPimpl->lightColor.z = (float)b * RGB;
 }
 
 void DirectionalLight::SetResolution(float width, float height)

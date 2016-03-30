@@ -26,7 +26,6 @@ private:
 	int m_EndTime;
 	float m_AlphaCnt;
 	Vector2D m_SelectPos;
-	RenderTask m_Render;
 	Timer m_Timer;
 	Image m_YouAreDeadImage;
 	Image m_RetryImage;

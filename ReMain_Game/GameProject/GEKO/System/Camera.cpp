@@ -119,6 +119,19 @@ void Camera::Update()
 	// 希望するクライアント領域のサイズを持つウィンドウサイズを計算
 	D3DXMatrixPerspectiveFovLH(&pInstance->m_Proj, (FLOAT)pInstance->m_ViewAngle, Width / Height, (FLOAT)pInstance->m_Near, (FLOAT)pInstance->m_Far);
 
+	/*
+	static float w2 = 0;
+	static float h2 = 0;
+
+	if (Input::KeyZ.Pressed()) w2--;
+	if (Input::KeyX.Pressed()) w2++;
+
+	if (Input::KeyA.Pressed()) h2--;
+	if (Input::KeyS.Pressed()) h2++;
+
+	D3DXMatrixOrthoLH(&pInstance->m_Proj, w2, h2, (FLOAT)pInstance->m_Near, (FLOAT)pInstance->m_Far);
+	*/
+
 	pInstance->m_ViewProj = pInstance->m_View * pInstance->m_Proj;
 
 	//ビューポート更新

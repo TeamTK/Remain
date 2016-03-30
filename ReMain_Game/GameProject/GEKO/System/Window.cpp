@@ -17,10 +17,7 @@ LRESULT CALLBACK MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 Window::Window() :
 	m_hWnd(NULL),
-	m_IsFixing(false),
-	m_Red(0.4f),
-	m_Green(0.4f),
-	m_Blue(1.0f)
+	m_IsFixing(false)
 {
 }
 
@@ -33,7 +30,7 @@ Window* Window::Get()
 LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
-	{
+	{		
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
@@ -148,13 +145,6 @@ const WindowSize *Window::GetWindowOriginSize() const
 	return &m_OriginWinSize;
 }
 
-void Window::SetScreenColor(float red, float green, float blue)
-{
-	m_Red = red;
-	m_Green = green;
-	m_Blue = blue;
-}
-
 void Window::SetFixing()
 {
 	m_IsFixing = true;
@@ -213,7 +203,7 @@ bool Window::Loop()
 	ShaderShadowMap::GetInstance()->Update();
 
 	//‰æ–ÊXV
-	Direct3D11::GetInstance()->Clear(m_Red, m_Green, m_Blue);
+	Direct3D11::GetInstance()->Clear();
 
 	return true;
 }

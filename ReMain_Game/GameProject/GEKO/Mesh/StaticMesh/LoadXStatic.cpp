@@ -400,7 +400,7 @@ HRESULT LoadXStatic::LoadXMesh(std::string fileName)
 		}
 	}
 
-	//バーテックスバッファーを作成
+	//頂点バッファーを作成
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.ByteWidth = sizeof(VertexInfo) * m_MeshInfo.vertexNumAll;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;

@@ -15,7 +15,6 @@ YouAreDead::YouAreDead(int endTime) :
 	m_SelectPos(RETRY_POS),
 	m_SelectState(SelectState::eRetry)
 {
-	m_Render.Regist(5, REGIST_RENDER_FUNC(YouAreDead::Render));
 	m_Timer.Start();
 
 	//‰æ‘œƒŠƒ\[ƒXŠ„‚è“–‚Ä
@@ -23,6 +22,18 @@ YouAreDead::YouAreDead(int endTime) :
 	m_RetryImage.SetAsset("Retry");
 	m_QuitImage.SetAsset("Quit");
 	m_SelectImage.SetAsset("Blood");
+
+	//•`‰æ“o˜^
+	m_YouAreDeadImage.SetDrawRegister(true, 5, 0);
+	m_RetryImage.SetDrawRegister(true, 5, 1);
+	m_QuitImage.SetDrawRegister(true, 5, 2);
+	m_SelectImage.SetDrawRegister(true, 5, 3);
+
+	//ˆÊ’u
+	m_YouAreDeadImage.SetPosition(DEAD_POS);
+	m_RetryImage.SetPosition(RETRY_POS);
+	m_QuitImage.SetPosition(QUIT_POS);
+	m_SelectImage.SetPosition(m_SelectPos);
 
 	m_YouAreDeadImage.SetCenter(m_YouAreDeadImage.GetWidth() / 2, m_YouAreDeadImage.GetHeight() / 2);
 
@@ -54,8 +65,6 @@ void YouAreDead::Update()
 {
 	if (m_Timer.GetSecond() > m_EndTime)
 	{
-		Select();
-
 		if (m_IsDecision)
 		{
 			m_Transfer_In.Update();
@@ -79,6 +88,10 @@ void YouAreDead::Update()
 					break;
 				}
 			}
+		}
+		else
+		{
+			Select();
 		}
 	}
 	else
@@ -129,19 +142,5 @@ void YouAreDead::Select()
 			break;
 		}
 	}
-}
-
-void YouAreDead::Render()
-{
-	//Œˆ’è‚·‚é‚Æ‰f‚ç‚¹‚È‚¢
-	if (!m_IsDecision)
-	{
-		m_YouAreDeadImage.Draw(DEAD_POS);
-		m_RetryImage.Draw(RETRY_POS);
-		m_QuitImage.Draw(QUIT_POS);
-
-		m_SelectImage.Draw(m_SelectPos);
-	}
-
-	m_Transfer_In.Render();
+	m_SelectImage.SetPosition(m_SelectPos);
 }

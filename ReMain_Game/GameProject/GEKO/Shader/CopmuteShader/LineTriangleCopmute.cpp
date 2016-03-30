@@ -100,7 +100,7 @@ bool LineTriangleCopmute::Calculation(const StaticMesh &staticMesh, const Vector
 	ID3D11DeviceContext* pDeviceContext = Direct3D11::GetInstance()->GetID3D11DeviceContext();
 
 	//モデルの変換行列
-	Matrix m = *staticMesh.GetSynthesisMatrix();
+	Matrix m = *staticMesh.GetModelMatrix();
 	Matrix inverse = m.GetInverse();
 
 	//頂点データとポリゴンのインデックス
@@ -116,8 +116,8 @@ bool LineTriangleCopmute::Calculation(const StaticMesh &staticMesh, const Vector
 	{
 		LineBuffer sg;
 
-		D3DXVECTOR4 s(tempStart.x, tempStart.y, tempStart.z, 1.0f);
-		D3DXVECTOR4 e(tempEnd.x, tempEnd.y, tempEnd.z, 1.0f);
+		Vector4D s(tempStart.x, tempStart.y, tempStart.z, 1.0f);
+		Vector4D e(tempEnd.x, tempEnd.y, tempEnd.z, 1.0f);
 
 		sg.start = s;
 		sg.end = e;

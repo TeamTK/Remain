@@ -15,7 +15,6 @@ public:
 	WeaponBase(int* anim, float* frame, bool* take, Matrix* m, const char *taskName, unsigned int priority);
 	virtual ~WeaponBase();
 	void Update();
-	void Render();
 	void Shot();
 	int GetAmmo();			//携帯弾数を取得
 	int GetLoadedAmmo();	//武器にロードしている弾数を取得
@@ -36,7 +35,6 @@ protected:
 	bool* m_TakeWeapon;		//プレイヤーが武器を持っているか
 	StaticMesh m_Model;
 	Matrix* m_BoneMtx;		//プレイヤーのボーン行列
-	RenderTask m_RenderTask;
 	EWeapons* m_Weapon;
 };
 

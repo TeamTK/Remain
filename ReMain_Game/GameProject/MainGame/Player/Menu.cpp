@@ -16,13 +16,23 @@ Menu::Menu() :
 	TaskManager::Start("Gravity");
 	TaskManager::Start("Menu");
 
-	m_Render.Regist(6, REGIST_RENDER_FUNC(Menu::Render));
-
 	//‰æ‘œƒŠƒ\[ƒXŠ„‚è“–‚Ä
 	m_RetryImage.SetAsset("Retry");
 	m_QuitImage.SetAsset("Quit");
 	m_SelectImage.SetAsset("Blood");
 	m_BackgroundImage.SetAsset("Transfer_Black");
+
+	//•`‰æ“o˜^
+	m_RetryImage.SetDrawRegister(true, 6, 0);
+	m_QuitImage.SetDrawRegister(true, 6, 1);
+	m_SelectImage.SetDrawRegister(true, 6, 2);
+	m_BackgroundImage.SetDrawRegister(true, 6, 3);
+
+	//ˆÊ’u‚ğİ’è
+	m_RetryImage.SetPosition(MENU_RETRY_POS);
+	m_QuitImage.SetPosition(MENU_QUIT_POS);
+	m_SelectImage.SetPosition(m_SelectPos);
+	m_BackgroundImage.SetPosition(0, 0);
 
 	m_BackgroundImage.SetAlpha(100);
 
@@ -78,21 +88,6 @@ void Menu::Update()
 	}
 }
 
-void Menu::Render()
-{
-	//Œˆ’è‚·‚é‚Æ‰f‚ç‚¹‚È‚¢
-	if (!m_IsDecision)
-	{
-		m_RetryImage.Draw(MENU_RETRY_POS);
-		m_QuitImage.Draw(MENU_QUIT_POS);
-
-		m_SelectImage.Draw(m_SelectPos);
-		m_BackgroundImage.Draw(0, 0);
-	}
-
-	m_Transfer_In.Render();
-}
-
 void Menu::Select()
 {
 	if ((Input::KeyEscape.Clicked() || Input::XInputPad1.StartClicked()) && !m_IsStop)
@@ -131,11 +126,23 @@ void Menu::Select()
 
 		case SelectState::eRetry:
 			m_IsDecision = true;
+			StopRendering();
 			break;
 
 		case SelectState::eQuit:
 			m_IsDecision = true;
+			StopRendering();
 			break;
 		}
 	}
+	m_SelectImage.SetPosition(m_SelectPos);
+}
+
+void Menu::StopRendering()
+{
+	//•`‰æ“o˜^
+	m_RetryImage.SetDrawRegister(false, 6, 0);
+	m_QuitImage.SetDrawRegister(false, 6, 1);
+	m_SelectImage.SetDrawRegister(false, 6, 2);
+	m_BackgroundImage.SetDrawRegister(false, 6, 3);
 }

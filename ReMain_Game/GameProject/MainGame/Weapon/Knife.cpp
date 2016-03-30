@@ -22,4 +22,6 @@ void Knife::Update()
 		m_Model.SetTranselate(0.0f, 0.01f, -0.03f);
 		m_Model.SetRotationDegree(0, 180, 0);
 	}
+
+	m_Model.SetSynthesisMatirx(*m_BoneMtx);
 }

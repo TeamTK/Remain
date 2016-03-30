@@ -9,7 +9,7 @@ ScreenRecovery::ScreenRecovery() :
 	m_IsFadeOut(false),
 	m_Alpha(0.0f)
 {
-	m_Render.Regist(6, REGIST_RENDER_FUNC(ScreenRecovery::Draw));
+	m_RecoveryImage.SetDrawRegister(true, 11, 1);
 	m_RecoveryImage.SetAsset("ScreenRecovery");
 	m_RecoveryImage.SetAlpha(0);
 }
@@ -40,9 +40,4 @@ void ScreenRecovery::Update()
 		m_Alpha += RECOVERY_ALPHA_FADE_IN_SPEED;
 	}
 	m_RecoveryImage.SetAlpha((int)m_Alpha);
-}
-
-void ScreenRecovery::Draw()
-{
-	m_RecoveryImage.Draw(0, 0);
 }

@@ -10,19 +10,19 @@
 //シェーダーに送る情報三角形
 struct TriangleInfo_GPU
 {
-	D3DXVECTOR3 vertexPos1;
-	D3DXVECTOR3 vertexPos2;
-	D3DXVECTOR3 vertexPos3;
-	D3DXVECTOR3 normal;
-	D3DXVECTOR3 contactPos;
+	Vector3D vertexPos1;
+	Vector3D vertexPos2;
+	Vector3D vertexPos3;
+	Vector3D normal;
+	Vector3D contactPos;
 	bool isHit;
 };
 
 //シェーダーに送る情報線分
 struct LineBuffer
 {
-	D3DXVECTOR4 start;
-	D3DXVECTOR4 end;
+	Vector4D start;
+	Vector4D end;
 };
 /*****************************/
 
@@ -33,11 +33,11 @@ struct LineBuffer
 //シェーダーに送る情報三角形（球版）
 struct Sphere_TriangleInfo_GPU
 {
-	D3DXVECTOR3 vertexPos1;
-	D3DXVECTOR3 vertexPos2;
-	D3DXVECTOR3 vertexPos3;
-	D3DXVECTOR3 normal;
-	D3DXVECTOR3 contactPos;
+	Vector3D vertexPos1;
+	Vector3D vertexPos2;
+	Vector3D vertexPos3;
+	Vector3D normal;
+	Vector3D contactPos;
 	float dist;
 	bool isHit;
 };
@@ -45,7 +45,7 @@ struct Sphere_TriangleInfo_GPU
 //シェーダーに送る情報球
 struct SphereBuffer
 {
-	D3DXVECTOR4 point;
+	Vector4D point;
 	float radius;
 };
 /*****************************/

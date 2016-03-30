@@ -9,10 +9,10 @@ public:
 	Menu();
 	~Menu();
 	void Update();
-	void Render();
 
 private:
 	void Select();
+	void StopRendering();
 
 private:
 	enum SelectState
@@ -25,7 +25,6 @@ private:
 	bool m_IsStop;
 	bool m_IsDecision;
 	Vector2D m_SelectPos;
-	RenderTask m_Render;
 	Image m_RetryImage;
 	Image m_QuitImage;
 	Image m_SelectImage;

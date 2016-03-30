@@ -30,15 +30,18 @@ UI_SelectWeapon* g_pUI_SelectWeapon;
 UI_SelectWeapon::UI_SelectWeapon() :
 	Task("UI_SelectWeapon", 1),
 	m_isSelected(false),
+	m_isOldSelected(m_isSelected),
 	m_CircleSize(0),
 	m_WeponUISize(0),
 	m_Selected(1),
 	m_OldSelected(1),
 	m_ScPos(400.0f, 155.0f, 0.0f)
 {
-	m_RenderTask.Regist(5, REGIST_RENDER_FUNC(UI_SelectWeapon::Draw));
 	State = eOpen;
+
 	m_Circle.SetAsset("SelectCircle");
+	m_Circle.SetPosition(400, 300);
+
 	m_SelectedCursor.SetAsset("SelectedCursor");
 	m_SelectedCursor.SetSize(256, 256);
 	m_SelectedCursor.SetCenter(128, 128);
@@ -51,6 +54,8 @@ UI_SelectWeapon::UI_SelectWeapon() :
 	{
 		m_WeaponUI[i].SetCenter(96, 96);
 		m_UIPos[i] = Vector3D(400.0f, 300.0f, 0.0f);
+
+		m_WeaponUI[i].SetDrawRegister(true, 5, 1);
 	}
 
 	m_CursorSound.SetAseet("Cursor");
@@ -152,6 +157,21 @@ void UI_SelectWeapon::Update()
 		}
 		State = eOpen;
 	}
+
+	//各武器UI
+	for (int i = 0; i < 4; i++)
+		m_WeaponUI[i].SetPosition(m_UIPos[i].x, m_UIPos[i].y);
+
+	//カーソル
+	if (State == eSelect)
+		m_SelectedCursor.SetPosition(m_ScPos.x, m_ScPos.y);
+
+	if (m_isSelected != m_isOldSelected)
+	{
+		m_SelectedCursor.SetDrawRegister(m_isSelected, 5, 0);
+		m_Circle.SetDrawRegister(m_isSelected, 5, 0);
+	}
+	m_isOldSelected = m_isSelected;
 }
 
 EWeapons UI_SelectWeapon::Select()
@@ -163,20 +183,6 @@ EWeapons UI_SelectWeapon::Select()
 EWeapons UI_SelectWeapon::GetSelect()
 {
 	return WeaponData[m_Selected].weapons;
-}
-
-void UI_SelectWeapon::Draw()
-{
-	//円
-	m_Circle.Draw(400, 300);
-
-	//各武器UI
-	for (int i = 0; i < 4; i++)
-		m_WeaponUI[i].Draw((int)m_UIPos[i].x, (int)m_UIPos[i].y);
-
-	//カーソル
-	if (State == eSelect)
-		m_SelectedCursor.Draw((int)m_ScPos.x, (int)m_ScPos.y);
 }
 
 bool UI_SelectWeapon::isSelected()

@@ -2,7 +2,6 @@
 #define AMMO_BOX_H
 
 #include "../../GEKO/GEKO.h"
-#include "../../GEKO/Collider/Collider.h"
 
 #define BOX_RADIUS 0.7f
 
@@ -10,18 +9,17 @@ class AmmoBoxBase : public Task
 {
 public:
 	AmmoBoxBase();
-	AmmoBoxBase(Vector3D pos, Vector3D rot, const char *taskName, unsigned int priority);
+	AmmoBoxBase(const char *taskName, unsigned int priority);
 	virtual ~AmmoBoxBase();
 	void Update();
-	void Render();
 	void HitPlayer(Result_Sphere& r);
 
 protected:
 	int m_AddedNum;	//íeñÚÇ™ï‚è[Ç≥ÇÍÇÈå¬êî
 	float m_Radius;	//î†ÇÃîºåa
 	StaticMesh m_Box;
+	Billboard m_Billboard;
 	Vector3D m_Pos;
-	RenderTask m_RenderTask;
 	Collider m_Collider;
 
 };
