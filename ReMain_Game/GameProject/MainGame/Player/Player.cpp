@@ -344,7 +344,7 @@ void Player::Attack()
 				TaskManager::Start("UI_SelectWeapon");
 				TaskManager::Start("Gravity");
 				TaskManager::Start("Player");
-				new UI_Life(100, &m_Hp);
+				new UI_Life(100, &m_Hp, &m_RecoveryItemNum);
 			}
 			m_SelectedWeapon = g_pUI_SelectWeapon->Select();
 		}
@@ -364,7 +364,6 @@ void Player::Attack()
 
 	if (g_pUI_SelectWeapon->isSelected())
 	{
-		m_RecItemNumber.NumDraw(Vector2D(590.0f, 340.0f), m_RecoveryItemNum, false);
 		return;
 	}
 	//•Ší‚ğ‚Æ‚é

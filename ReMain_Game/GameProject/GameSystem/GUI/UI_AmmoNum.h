@@ -11,7 +11,8 @@ public:
 	void Update();
 
 private:
-	Number m_Num;
+	Number m_AmmoNum;
+	Number m_LoadedAmmoNum;
 	Image m_Slash;
 };
 #endif

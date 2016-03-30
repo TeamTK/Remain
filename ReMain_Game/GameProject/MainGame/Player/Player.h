@@ -55,7 +55,6 @@ private:
 	AuditoryObject m_AuditoryObject; //聴覚対象
 	Timer m_Timer;					//ダメージを食らった後の無敵時間
 	Timer m_NoActionTime;			//ロード時の無操作時間
-	Number m_RecItemNumber;			//回復薬の個数表示
 	TracerouteTarget m_Target;		//経路探索対象
 
 	Collider m_Bullet;		//弾の当たり判定
