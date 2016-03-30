@@ -151,14 +151,12 @@ void StageObjectManager::LoadObject(char* filepath)
 
 void StageObjectManager::Update()
 {
-	/*
 	auto it = m_MapObjectList.begin();
 	for (; it != m_MapObjectList.end();)
 	{
 		it->Update();
 		it++;
 	}
-	*/
 }
 
 void StageObjectManager::ClearList()
