@@ -5,7 +5,7 @@
 Shotgun* g_pShotgun;
 
 Shotgun::Shotgun(int* anim, float* frame, bool* take, EWeapons* weapon, Matrix* m) :
-	WeaponBase(anim, frame, take, m, "Shotgun", 0)
+	WeaponBase(anim, frame, take, m, "Shotgun", 1)
 {
 	m_Model.SetAsset("Shotgun");
 	m_Model.SetMeshState(eBlockingLight | eParentMatirx);
@@ -45,7 +45,6 @@ void Shotgun::Update()
 		m_Model.SetTranselate(0.22f, 0.2f, 0.0f);
 		m_Model.SetRotationDegree(65, 0, 12);
 	}
-	m_Model.SetParentMatirx(m_BoneMtx);
 }
 
 

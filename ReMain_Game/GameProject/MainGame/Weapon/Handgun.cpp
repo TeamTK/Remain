@@ -5,7 +5,7 @@
 Handgun* g_pHandgun;
 
 Handgun::Handgun(int* anim, float* frame, bool* take, EWeapons* weapon, Matrix* m) :
-	WeaponBase(anim, frame, take, m, "Handgun", 0)
+	WeaponBase(anim, frame, take, m, "Handgun", 1)
 {
 	m_Model.SetAsset("Handgun");
 	m_Model.SetMeshState(eBlockingLight | eParentMatirx);
@@ -45,8 +45,6 @@ void Handgun::Update()
 		m_Model.SetTranselate(-0.15f, 0.0f, -0.15f);
 		m_Model.SetRotationDegree(10, 100, 0);
 	}
-
-	m_Model.SetParentMatirx(m_BoneMtx);
 }
 
 void Handgun::Reload()

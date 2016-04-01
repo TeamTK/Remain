@@ -8,11 +8,12 @@ WeaponBase::WeaponBase()
 WeaponBase::WeaponBase(int* anim, float* frame, bool* take, Matrix* m, const char *taskName, unsigned int priority) :
 	Task(taskName, priority)
 {
+	m_Model.SetParentMatirx(m);
 	m_BoneMtx = m;
 	m_PlayerAnim = anim;
 	m_TakeWeapon= take;
 	m_PlayerAnimFrame = frame;
-	m_Model.SetRenderingRegister(true, 1, 0);
+	m_Model.SetRenderingRegister(true, 2, 0);
 }
 
 WeaponBase::~WeaponBase()
