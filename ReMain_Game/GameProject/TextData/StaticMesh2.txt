@@ -26,3 +26,4 @@ StaticMesh media\Cabin_Collision.x Cabin_Collision
 StaticMesh media\Stone_A_Collision.x Stone_A_Collision
 StaticMesh media\Fence_Collision.x Fence_Collision
 StaticMesh media\RecoveryItem.x RecoveryItem
+StaticMesh media\Lamp.x Lamp

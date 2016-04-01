@@ -137,6 +137,7 @@
     <ClCompile Include="GEKO\Shader\Light\PointLightManager.cpp" />
     <ClCompile Include="GEKO\Shader\Light\DirectionalLight.cpp" />
     <ClCompile Include="GEKO\Shader\RenderingManager.cpp" />
+    <ClCompile Include="MainGame\Player\Lamp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Task\CollisionTask.h" />
@@ -346,6 +347,7 @@
     <ClInclude Include="GEKO\Shader\Light\PointLightManager.h" />
     <ClInclude Include="GEKO\Shader\RenderingManager.h" />
     <ClInclude Include="GameSystem\ScreenTransfer.h" />
+    <ClInclude Include="MainGame\Player\Lamp.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\Billboard.hlsl" />
