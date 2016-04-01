@@ -59,8 +59,6 @@ void RenderingManager::Render()
 	ConstantShader::GetInstance()->SetCommonInfoConstantBuffer();
 	ConstantShader::GetInstance()->SetForwardLightConstantBuffer(pDeviceContext);
 
-	int cnt = 0;
-
 	//‘O•ûƒŒƒ“ƒ_ƒŠƒ“ƒO
 	for (auto& i : m_pListPimpl->forwardRendering)
 	{
@@ -76,11 +74,6 @@ void RenderingManager::Render()
 		for (auto& j : i.second)
 		{
 			j->func();
-			//printf("cnt = %d ", cnt);
-			//printf("priorityGroup = %d ", j->priorityGroup);
-			//printf("priority = %d\n", j->priority);
-
-			cnt++;
 		}
 	}
 }

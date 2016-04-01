@@ -172,7 +172,6 @@ void StaticMesh::AllocationMeshData(const std::string &meshName)
 	}
 
 	m_pLocalMatrix = &data->localMatrix;
-	m_WorldMatrixInfo.pLocalMatrix = m_pLocalMatrix;
 }
 
 void StaticMesh::RenderFunc(Matrix &matrix, bool isShadow) const

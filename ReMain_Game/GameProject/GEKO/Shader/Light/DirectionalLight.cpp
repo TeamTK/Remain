@@ -1,6 +1,6 @@
 #include "DirectionalLight.h"
 #include "../ShadowMap/ShaderShadowMap.h"
-#include "../../System/Math.h"
+#include "../../System/Direct3D11.h"
 
 struct DirectionalLight::LightPimpl
 {

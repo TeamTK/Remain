@@ -283,7 +283,6 @@ void DynamicMesh::AllocationSkinMeshData(const std::string &meshName)
 	m_pMeshData->CopyBoneTree(&m_Bone, &m_CopyBoneArray, pBoneData->bone.child);
 
 	m_pLocalMatrix = &data->localMatrix;
-	m_WorldMatrixInfo.pLocalMatrix = m_pLocalMatrix;
 }
 
 void DynamicMesh::RenderFunc(Matrix &matrix, bool isShadow)
