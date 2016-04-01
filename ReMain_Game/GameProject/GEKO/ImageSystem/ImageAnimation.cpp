@@ -67,8 +67,14 @@ void ImageAnimation::FrameDivision(const std::string &assetName, int frameNum, i
 	int height = m_Image.GetHeight();
 
 	//幅縦の分割数カウント変数
-	int sizeW = width / divW;
-	int sizeH = height / divH;
+	int sizeW = 0;
+	int sizeH = 0;
+
+	if (divW == 0) sizeW = width / 1;
+	else		   sizeW = width / divW;
+
+	if (divH == 0) sizeH = height / 1;
+	else		   sizeH = height / divH;
 
 	//幅縦の分割数カウント変数
 	int cntW = 0;

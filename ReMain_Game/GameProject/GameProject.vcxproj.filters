@@ -177,7 +177,6 @@
     <ClInclude Include="Scene\NowLoading.h" />
     <ClInclude Include="MainGame\Player\Player.h" />
     <ClInclude Include="MainGame\Player\YouAreDead.h" />
-    <ClInclude Include="GameSystem\ScreenTransfer.h" />
     <ClInclude Include="MainGame\Player\TPSCamera.h" />
     <ClInclude Include="MainGame\Player\PlayerInfo.h" />
     <ClInclude Include="MainGame\Weapon\WeaponInfo.h" />
@@ -346,6 +345,7 @@
     <ClInclude Include="GEKO\Shader\Light\PointLight.h" />
     <ClInclude Include="GEKO\Shader\Light\PointLightManager.h" />
     <ClInclude Include="GEKO\Shader\RenderingManager.h" />
+    <ClInclude Include="GameSystem\ScreenTransfer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\Billboard.hlsl" />

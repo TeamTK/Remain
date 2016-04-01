@@ -502,8 +502,14 @@ void BillboardAnimation::FrameDivision(const std::string &assetName, int totalFr
 	m_pRightDwonUV = new Vector2D[m_TotalFrameNum];
 
 	//•c‚Ì•ªŠ„’·‚³
-	int divSizeW = m_pImageInfo->Width / divW;
-	int divSizeH = m_pImageInfo->Height / divH;
+	int divSizeW = 0;
+	int divSizeH = 0;
+
+	if (divW == 0) divSizeW = m_pImageInfo->Width / 1;
+	else		   divSizeW = m_pImageInfo->Width / divW;
+
+	if (divH == 0) divSizeH = m_pImageInfo->Height / 1;
+	else		   divSizeH = m_pImageInfo->Height / divH;
 
 	//•c‚Ì•ªŠ„”ƒJƒEƒ“ƒg•Ï”
 	int cntW = 0;

@@ -10,7 +10,8 @@ MeshBase::MeshBase(bool isRegister, unsigned int priorityGroup, unsigned int pri
 	m_MeshState(meshState),
 	m_Scale(1.0f, 1.0f, 1.0f),
 	m_pImageInfo(nullptr),
-	m_pLocalMatrix(nullptr),
+	m_pLocalMatrix(&g_LocalMatrixTemporary),
+	m_pParentMatirx(&g_LocalMatrixTemporary),
 	m_RenderingType(eForward)
 {
 	//レンダリング管理に登録
@@ -23,12 +24,7 @@ MeshBase::MeshBase(bool isRegister, unsigned int priorityGroup, unsigned int pri
 		RenderingManager::GetInstance()->AddForward(m_RenderingInfo.priorityGroup, &m_RenderingInfo);
 	}
 
-	m_WorldMatrixInfo.pWorldMatrix = &m_WorldMatrix;
-	m_WorldMatrixInfo.pModelMatrix = &m_ModelMatrix;
-	m_WorldMatrixInfo.pRotation = &m_Rotation;
-	m_WorldMatrixInfo.pScale = &m_Scale;
-	m_WorldMatrixInfo.pTranselate = &m_Transelate;
-	m_WorldMatrixInfo.pLocalMatrix = &g_LocalMatrixTemporary;
+	m_WorldMatrixInfo.func = std::bind(&MeshBase::SetModelMatrixBuilding, this);
 	WorldMatrixManager::GetInstance()->Add(&m_WorldMatrixInfo);
 }
 
@@ -57,11 +53,7 @@ MeshBase::~MeshBase()
 		}
 	}
 
-	m_WorldMatrixInfo.pWorldMatrix = nullptr;
-	m_WorldMatrixInfo.pRotation = nullptr;
-	m_WorldMatrixInfo.pScale = nullptr;
-	m_WorldMatrixInfo.pTranselate = nullptr;
-	WorldMatrixManager::GetInstance()->Clear();
+	WorldMatrixManager::GetInstance()->Clear(&m_WorldMatrixInfo);
 }
 
 void MeshBase::SetRenderingRegister(bool isRegister, unsigned int priorityGroup, unsigned int priority)
@@ -216,23 +208,21 @@ void MeshBase::SetAlphaAll(int alpha)
 	for (unsigned int i = 0; i < m_Diffuse.size(); i++) m_Diffuse[i].w = a;
 }
 
-void MeshBase::SetTexture(const std::string &assetName)
+void MeshBase::SetTexture(const std::string &assetName, bool isTexture)
 {
-	m_pImageInfo = ImageAsset::GetImage(assetName)->GetImageInfo();
+	if (isTexture) m_pImageInfo = ImageAsset::GetImage(assetName)->GetImageInfo();
+	else		   m_pImageInfo = nullptr;
 }
 
 void MeshBase::SetModelMatrixBuilding()
 {
-	D3DXQUATERNION qOut(0, 0, 0, 1); //単位クォータニオン
-	D3DXQUATERNION qX(0, 0, 0, 1); //単位クォータニオン
-	D3DXQUATERNION qY(0, 0, 0, 1); //単位クォータニオン
-	D3DXQUATERNION qZ(0, 0, 0, 1); //単位クォータニオン
-	Vector3D xAxis(1, 0, 0); //Xの中心軸
-	Vector3D yAxis(0, 1, 0); //Yの中心軸
-	Vector3D zAxis(0, 0, 1); //Zの中心軸
-	Matrix Mat;
-
-	Matrix mat;
+	static D3DXQUATERNION qOut(0, 0, 0, 1); //単位クォータニオン
+	static D3DXQUATERNION qX(0, 0, 0, 1); //単位クォータニオン
+	static D3DXQUATERNION qY(0, 0, 0, 1); //単位クォータニオン
+	static D3DXQUATERNION qZ(0, 0, 0, 1); //単位クォータニオン
+	static Vector3D xAxis(1, 0, 0); //Xの中心軸
+	static Vector3D yAxis(0, 1, 0); //Yの中心軸
+	static Vector3D zAxis(0, 0, 1); //Zの中心軸
 
 	D3DXQuaternionRotationAxis(&qX, &xAxis, m_Rotation.x);
 	D3DXQuaternionRotationAxis(&qY, &yAxis, m_Rotation.y);
@@ -240,33 +230,40 @@ void MeshBase::SetModelMatrixBuilding()
 	qOut = qX * qY * qZ;
 
 	//クオータニオンから行列に変更
-	D3DXMatrixRotationQuaternion(&mat, &qOut);
+	D3DXMatrixRotationQuaternion(&m_WorldMatrix, &qOut);
 
 	//拡大縮小
-	mat._11 *= m_Scale.x;
-	mat._21 *= m_Scale.x;
-	mat._31 *= m_Scale.x;
+	m_WorldMatrix._11 *= m_Scale.x;
+	m_WorldMatrix._21 *= m_Scale.x;
+	m_WorldMatrix._31 *= m_Scale.x;
 
-	mat._12 *= m_Scale.y;
-	mat._22 *= m_Scale.y;
-	mat._32 *= m_Scale.y;
+	m_WorldMatrix._12 *= m_Scale.y;
+	m_WorldMatrix._22 *= m_Scale.y;
+	m_WorldMatrix._32 *= m_Scale.y;
 
-	mat._13 *= m_Scale.z;
-	mat._23 *= m_Scale.z;
-	mat._33 *= m_Scale.z;
+	m_WorldMatrix._13 *= m_Scale.z;
+	m_WorldMatrix._23 *= m_Scale.z;
+	m_WorldMatrix._33 *= m_Scale.z;
 
 	//平行移動
-	mat._41 = m_Transelate.x;
-	mat._42 = m_Transelate.y;
-	mat._43 = m_Transelate.z;
+	m_WorldMatrix._41 = m_Transelate.x;
+	m_WorldMatrix._42 = m_Transelate.y;
+	m_WorldMatrix._43 = m_Transelate.z;
 
-	m_WorldMatrix = mat;
-	m_ModelMatrix = *m_pLocalMatrix * m_WorldMatrix;
+	if (m_MeshState & eParentMatirx)
+	{
+		m_ModelMatrix = *m_pLocalMatrix * *m_pLocalMatrix * m_WorldMatrix * *m_pParentMatirx;
+	}
+	else
+	{
+		m_ModelMatrix = *m_pLocalMatrix * m_WorldMatrix;
+	}
 }
 
-void MeshBase::SetSynthesisMatirx(Matrix &matrix)
+void MeshBase::SetParentMatirx(const Matrix *pParentMatrix)
 {
-	m_ModelMatrix = *m_pLocalMatrix * m_ModelMatrix * matrix;
+	m_pParentMatirx = pParentMatrix;
+	//m_ModelMatrix = *m_pLocalMatrix * m_ModelMatrix * matrix;
 }
 
 Vector3D MeshBase::GetScale() const
@@ -303,7 +300,7 @@ Vector3D MeshBase::GetAmbient(int materialIndex) const
 
 Vector3D MeshBase::GetAxisX(MatrixType matrixType) const
 {
-	Matrix matrix;
+	static Matrix matrix;
 	switch (matrixType)
 	{
 	case MatrixType::eLocalMatrix:
@@ -324,7 +321,7 @@ Vector3D MeshBase::GetAxisX(MatrixType matrixType) const
 
 Vector3D MeshBase::GetAxisY(MatrixType matrixType) const
 {
-	Matrix matrix;
+	static Matrix matrix;
 	switch (matrixType)
 	{
 	case MatrixType::eLocalMatrix:
@@ -345,7 +342,7 @@ Vector3D MeshBase::GetAxisY(MatrixType matrixType) const
 
 Vector3D MeshBase::GetAxisZ(MatrixType matrixType) const
 {
-	Matrix matrix;
+	static Matrix matrix;
 	switch (matrixType)
 	{
 	case MatrixType::eLocalMatrix:
@@ -381,10 +378,10 @@ const Matrix *MeshBase::GetModelMatrix() const
 
 void MeshBase::DebugAxis(MatrixType matrixType)
 {
-	Matrix matrix;
-	Vector3D x_Normal(1.0f, 0.0f, 0.0f);
-	Vector3D y_Normal(0.0f, 1.0f, 0.0f);
-	Vector3D z_Normal(0.0f, 0.0f, 1.0f);
+	static Matrix matrix;
+	static Vector3D x_Normal(1.0f, 0.0f, 0.0f);
+	static Vector3D y_Normal(0.0f, 1.0f, 0.0f);
+	static Vector3D z_Normal(0.0f, 0.0f, 1.0f);
 
 	switch (matrixType)
 	{

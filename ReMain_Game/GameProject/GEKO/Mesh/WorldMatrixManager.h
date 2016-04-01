@@ -2,16 +2,12 @@
 #define _WORLDMATRIXMANAGER_H_
 
 #include "..\System\Math.h"
+#include <functional>
 
 //モデルの行列を管理する情報
 struct WorldMatrixInfo
 {
-	Matrix *pLocalMatrix;
-	Matrix *pWorldMatrix;
-	Matrix *pModelMatrix;
-	Vector3D *pRotation;
-	Vector3D *pScale;
-	Vector3D *pTranselate;
+	std::function<void()> func;
 };
 
 //全ての3Dモデルの行列を管理
@@ -22,7 +18,7 @@ public:
 	static WorldMatrixManager *GetInstance();
 	void Add(WorldMatrixInfo *worldMatrixInfo);
 	void Update();
-	void Clear();
+	void Clear(WorldMatrixInfo *worldMatrixInfo);
 	void AllClear();
 
 private:

@@ -194,7 +194,7 @@ void Player::Update()
 	//プレイヤーの血表示時間
 	if (m_Timer.GetSecond() >= 11.0)
 	{
-		//m_Model.SetTexture(nullptr);
+		m_Model.SetTexture("Player_2", false);
 	}
 
 	m_SightPos = m_Model.GetBonePos(6); //頭のボーン位置

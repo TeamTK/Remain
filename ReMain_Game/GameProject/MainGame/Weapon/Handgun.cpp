@@ -8,7 +8,7 @@ Handgun::Handgun(int* anim, float* frame, bool* take, EWeapons* weapon, Matrix* 
 	WeaponBase(anim, frame, take, m, "Handgun", 0)
 {
 	m_Model.SetAsset("Handgun");
-	m_Model.SetMeshState(eBlockingLight);
+	m_Model.SetMeshState(eBlockingLight | eParentMatirx);
 
 	m_Ammo = DEFAULT_BULLET_HAVE;
 	m_Weapon = weapon;
@@ -46,7 +46,7 @@ void Handgun::Update()
 		m_Model.SetRotationDegree(10, 100, 0);
 	}
 
-	m_Model.SetSynthesisMatirx(*m_BoneMtx);
+	m_Model.SetParentMatirx(m_BoneMtx);
 }
 
 void Handgun::Reload()

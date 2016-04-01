@@ -250,6 +250,14 @@ float4 ShadowMap_PS(float depth, float4 lightTexCoord, float4 color)
 //ピクセルシェーダーでのライティング計算
 float4 GetPixel(VS_OUTPUT input)
 {
+	/*
+	float3 leng = g_Eye - input.worldPos;
+
+	if (length(leng) < 5)
+	{
+		return float4(1.0f, 0.0f, 0.0f, 1.0f);
+	}
+	*/
 	//環境光　項
 	float4 ambient = g_Ambient;
 

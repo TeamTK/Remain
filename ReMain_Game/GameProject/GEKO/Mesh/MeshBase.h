@@ -26,9 +26,9 @@ public:
 	void SetAmbient(int r, int g, int b, int materialIndex);
 	void SetAlpha(int alpha, int materialIndex);
 	void SetAlphaAll(int alpha);
-	void SetTexture(const std::string &assetName);
+	void SetTexture(const std::string &assetName, bool isTexture = true);
 	void SetModelMatrixBuilding();
-	void SetSynthesisMatirx(Matrix &matrix);
+	void SetParentMatirx(const Matrix *pParentMatrix);
 	Vector3D GetScale() const;
 	Vector3D GetRotation() const;
 	Vector3D GetTranselate() const;
@@ -53,6 +53,7 @@ protected:
 	Matrix *m_pLocalMatrix;			   //モデルのローカル行列へのポインタ
 	Matrix m_WorldMatrix;			   //モデルのワールド行列
 	Matrix m_ModelMatrix;		       //モデルのローカル × ワールド行列
+	const Matrix *m_pParentMatirx;	   //親のモデル行列
 	Vector3D m_Rotation;			   //モデルの回転値（X軸・Y軸・Z軸）
 	Vector3D m_Scale;				   //モデルの拡大率（X軸・Y軸・Z軸）
 	Vector3D m_Transelate;			   //モデルの平行移動（X軸・Y軸・Z軸）
