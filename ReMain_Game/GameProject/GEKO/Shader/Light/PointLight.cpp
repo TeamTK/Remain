@@ -7,7 +7,8 @@ PointLight::PointLight() :
 	m_Intensity(1.0f),
 	m_Color(1.0f, 1.0f, 1.0f)
 {
-	PointLightManager::GetInstance()->DeferredAdd(this);
+	//PointLightManager::GetInstance()->DeferredAdd(this);
+	PointLightManager::GetInstance()->ForwardAdd(this);
 }
 
 PointLight::PointLight(bool isForward) :

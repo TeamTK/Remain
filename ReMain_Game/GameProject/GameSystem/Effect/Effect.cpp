@@ -6,6 +6,7 @@ EffectPart::EffectPart(const Vector3D &dir, const Vector3D &pos, const std::stri
 {
 	m_Billboard.SetRenderingRegister(true, 10, 0);
 	m_Billboard.SetImageAsset(name);
+	m_Billboard.SetPosition(m_Pos);
 };
 
 EffectPart::~EffectPart()
@@ -21,11 +22,11 @@ void EffectPart::Update(float speed, float size, int time)
 {
 	m_Pos += (m_Direction * speed);
 	m_Billboard.SetPosition(m_Pos);
-	m_Billboard.SetSize(size / (float)time);
+	m_Billboard.SetSize(size / time);
 }
 
 Effect::Effect(const EffectInfo &info, const char* effectName) :
-	m_TimeCnt(0),
+	m_TimeCnt(1),
 	m_AllTime(0),
 	m_Speed(1.0f),
 	m_Size(1.0f),

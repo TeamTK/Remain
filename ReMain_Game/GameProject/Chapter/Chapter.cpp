@@ -31,6 +31,7 @@ void Kill()
 	TaskManager::Kill("MuzzleFlash");
 	TaskManager::Kill("Map");
 	TaskManager::Kill("RecoveryItem");
+	TaskManager::Kill("Lamp");
 	StageObjectManager::GetInstance()->ClearList();
 }
 

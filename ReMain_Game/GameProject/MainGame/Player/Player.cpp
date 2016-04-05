@@ -3,6 +3,7 @@
 #include "Menu.h"
 #include "TPSCamera.h"
 #include "PlayerData.h"
+#include "Lamp.h"
 #include "../../MainGame/Bullet/Bullet.h"
 #include "../../GameSystem/Effect/EffectSphere.h"
 #include "../../GameSystem/Effect/EffectParabola.h"
@@ -68,6 +69,7 @@ Player::Player(PData* data, Vector3D pos, float rotY, float horizontal, float ve
 	m_ChangePutBackWeapon(false),
 	m_isDead(false),
 	m_IsStop(false),
+	m_IsStageChange(false),
 	m_State(EPlayerState::eState_Idle)
 {
 	//プレイヤーモデル初期化
@@ -100,6 +102,8 @@ Player::Player(PData* data, Vector3D pos, float rotY, float horizontal, float ve
 	g_pShotgun->SetLoadedAmmo(data->Shotgun_LoadedAmmo);
 	g_pHandgun->SetAmmo(data->Handgun_Ammo);
 	g_pHandgun->SetLoadedAmmo(data->Handgun_LoadedAmmo);
+
+	//new Lamp(&m_MatrixL);
 
 	//弾薬箱の当たり判定
 	m_HitAmmoBox.Regist_S_vs_S(&m_pos, &m_Radius, REGIST_FUNC(Player::HitAmmoBox));
@@ -161,6 +165,45 @@ Player::~Player()
 
 void Player::Update()
 {
+	m_SightPos = m_Model.GetBonePos(6); //頭のボーン位置
+	m_MatrixK = m_Model.GetBoneMatrix(25, true);	//指のボーン位置
+
+	//プレイヤーのボーン行列の切り替え
+	if ((m_Anim == eAnim_TakeGun && m_Model.GetPlayTime() > 16) ||
+		m_Anim == eAnim_SetupGun || m_Anim == eAnim_IdleTakeGun ||
+		m_Anim == eAnim_WalkTakeGun || m_Anim == eAnim_RunTakeGun ||
+		m_Anim == eAnim_RecoilGun || m_Anim == eAnim_ReloadGun ||
+		(m_Anim == eAnim_Hit && m_isTakeWeapon) || m_Anim == eAnim_WalkReloadGun)
+	{
+		//手のボーン
+		m_MatrixS = m_Model.GetBoneMatrix(24, true);
+	}
+	else
+	{
+		//肩のボーン
+		m_MatrixS = m_Model.GetBoneMatrix(21, true);
+	}
+
+	if ((m_Anim == eAnim_TakeHandgun && m_Model.GetPlayTime() > 16) ||
+		m_Anim == eAnim_SetupHandgun || m_Anim == eAnim_IdleTakeHandgun ||
+		m_Anim == eAnim_WalkTakeHandgun || m_Anim == eAnim_RunTakeHandgun ||
+		m_Anim == eAnim_RecoilHandgun || m_Anim == eAnim_ReloadHandgun ||
+		(m_Anim == eAnim_Hit && m_isTakeWeapon) || m_Anim == eAnim_WalkReloadHandgun)
+	{
+		//手のボーン
+		m_MatrixH = m_Model.GetBoneMatrix(24, true);
+	}
+	else
+	{
+		//腰のボーン
+		m_MatrixH = m_Model.GetBoneMatrix(3, true);
+	}
+
+	//ランプ用ボーン
+	//m_MatrixL = m_Model.GetBoneMatrix(3, true);
+
+	if (m_IsStageChange) return;
+
 	//メニュー画面生成
 	if ((Input::KeyEscape.Clicked() || Input::XInputPad1.StartClicked()) && !m_SetupWeapon && !g_pUI_SelectWeapon->isSelected())
 	{
@@ -195,40 +238,6 @@ void Player::Update()
 	if (m_Timer.GetSecond() >= 11.0)
 	{
 		m_Model.SetTexture("Player_2", false);
-	}
-
-	m_SightPos = m_Model.GetBonePos(6); //頭のボーン位置
-	m_MatrixK = m_Model.GetBoneMatrix(25, true);	//指のボーン位置
-
-	//プレイヤーのボーン行列の切り替え
-	if ((m_Anim == eAnim_TakeGun && m_Model.GetPlayTime() > 16) ||
-		m_Anim == eAnim_SetupGun || m_Anim == eAnim_IdleTakeGun ||
-		m_Anim == eAnim_WalkTakeGun || m_Anim == eAnim_RunTakeGun ||
-		m_Anim == eAnim_RecoilGun || m_Anim == eAnim_ReloadGun ||
-		(m_Anim == eAnim_Hit && m_isTakeWeapon) || m_Anim == eAnim_WalkReloadGun)
-	{
-		//手のボーン
-		m_MatrixS = m_Model.GetBoneMatrix(24, true);
-	}
-	else
-	{
-		//肩のボーン
-		m_MatrixS = m_Model.GetBoneMatrix(21, true);
-	}
-
-	if ((m_Anim == eAnim_TakeHandgun && m_Model.GetPlayTime() > 16) ||
-		m_Anim == eAnim_SetupHandgun || m_Anim == eAnim_IdleTakeHandgun ||
-		m_Anim == eAnim_WalkTakeHandgun || m_Anim == eAnim_RunTakeHandgun ||
-		m_Anim == eAnim_RecoilHandgun || m_Anim == eAnim_ReloadHandgun ||
-		(m_Anim == eAnim_Hit && m_isTakeWeapon) || m_Anim == eAnim_WalkReloadHandgun)
-	{
-		//手のボーン
-		m_MatrixH = m_Model.GetBoneMatrix(24, true);
-	}
-	else
-	{
-		//腰のボーン
-		m_MatrixH = m_Model.GetBoneMatrix(3, true);
 	}
 
 	m_PlayAnim = m_Model.GetPlayAnimation();
@@ -1023,8 +1032,10 @@ void Player::StageChange(Result_Sphere &data)
 	PlayerData::SetData(&playerData);
 
 	m_HitEnemyAttack.Sleep();
-	Task::Stop();
+	//Task::Stop();
 	TaskManager::Stop("TPSCamera");
+
+	m_IsStageChange = true;
 }
 
 void Player::HitRecoveryItem(Result_Sphere &data)
