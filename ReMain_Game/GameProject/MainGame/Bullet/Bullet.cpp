@@ -18,7 +18,7 @@ Bullet::Bullet(const char *taskName, const Vector3D &start, const Vector3D &dir,
 
 	//マップとの当たり判定
 	m_ColliderMap.Regist_L_vs_SMesh(&m_Oldpos, &m_Pos, REGIST_FUNC(Bullet::HitMap));
-	m_ColliderMap.SetID(eHITID2, eHITID3 | eHITID4 | eHITID5 | eHITID6 | eHITID7);
+	m_ColliderMap.SetID(eHITID2, eHITID3 | eHITID4 | eHITID5 | eHITID6 | eHITID7 | eHITID8);
 }
 
 Bullet::~Bullet()
@@ -56,28 +56,34 @@ void Bullet::HitMap(Result_Porygon& r)
 
 	if (r.targetName == "Tree_1")
 	{
-		//std::cout << "木" << "\n";
+		std::cout << "木" << "\n";
 	}
 
 	if (r.targetName == "Tree_2")
 	{
-		//std::cout << "木2" << "\n";
+		std::cout << "木2" << "\n";
 	}
 
 	if (r.targetName == "Cabin")
 	{
-		//std::cout << "家" << "\n";
+		std::cout << "家" << "\n";
 	}
 
 	if (r.targetName == "Ground")
 	{
-		//std::cout << "地面" << "\n";
+		std::cout << "地面" << "\n";
 		effectData.imageName = "GunEffect";
 	}
 
 	if (r.targetName == "RockWall")
 	{
-		//std::cout << "壁" << "\n";
+		std::cout << "壁" << "\n";
+		effectData.imageName = "GunEffect";
+	}
+
+	if (r.targetName == "Stone")
+	{
+		std::cout << "石" << "\n";
 		effectData.imageName = "GunEffect";
 	}
 

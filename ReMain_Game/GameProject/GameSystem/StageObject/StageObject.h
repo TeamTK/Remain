@@ -265,7 +265,7 @@ public:
 
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
 		m_BulletHit.SetID(eHITID6, eHITID2);
-		m_BulletHit.SetName("Ground_1_1");
+		m_BulletHit.SetName("Ground");
 	}
 	~Ground_1_1() {}
 
@@ -293,7 +293,7 @@ public:
 
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
 		m_BulletHit.SetID(eHITID6, eHITID2);
-		m_BulletHit.SetName("Ground_1_2");
+		m_BulletHit.SetName("Ground");
 	}
 	~Ground_1_2() {}
 
@@ -322,7 +322,7 @@ public:
 
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
 		m_BulletHit.SetID(eHITID6, eHITID2 | eHITID8);
-		m_BulletHit.SetName("Ground_1_3");
+		m_BulletHit.SetName("Ground");
 	}
 	~Ground_1_3() {}
 
@@ -360,7 +360,7 @@ public:
 		//íeÇ∆ï«ÇÃìñÇΩÇËîªíË
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
 		m_BulletHit.SetID(eHITID7, eHITID2);
-		m_BulletHit.SetName("RockWall_1_1");
+		m_BulletHit.SetName("RockWall");
 	}
 	~RockWall_1_1() {}
 
@@ -399,7 +399,7 @@ public:
 		//íeÇ∆ï«ÇÃìñÇΩÇËîªíË
 		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
 		m_BulletHit.SetID(eHITID7, eHITID2);
-		m_BulletHit.SetName("RockWall_1_2");
+		m_BulletHit.SetName("RockWall");
 	}
 	~RockWall_1_2() {}
 
@@ -443,7 +443,7 @@ public:
 		//íeÇ∆ï«ÇÃìñÇΩÇËîªíË
 		m_BulletHit.Regist_SMesh_vs_L(&m_BulletHitMesh, true);
 		m_BulletHit.SetID(eHITID7, eHITID2 | eHITID8);
-		m_BulletHit.SetName("RockWall_1_3");
+		m_BulletHit.SetName("RockWall");
 	}
 	~RockWall_1_3() {}
 
@@ -563,6 +563,11 @@ public:
 		//ÉJÉÅÉâÇ∆ï«ÇÃìñÇΩÇËîªíË
 		m_CameraHit.Regist_SMesh_vs_L(&m_HitMesh, true);
 		m_CameraHit.SetID(eHITID1, eHITID0);
+
+		//íeÇ∆ï«ÇÃìñÇΩÇËîªíË
+		m_BulletHit.Regist_SMesh_vs_L(&m_Object, true);
+		m_BulletHit.SetID(eHITID8, eHITID2);
+		m_BulletHit.SetName("Stone");
 	}
 	~Stone_A() {}
 private:
@@ -570,6 +575,7 @@ private:
 	StaticMesh m_HitMesh;
 	Collider m_CharacterHit;
 	Collider m_CameraHit;
+	Collider m_BulletHit;
 };
 
 //óéÇøót

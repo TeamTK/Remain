@@ -28,7 +28,7 @@ public:
 	void SetAlphaAll(int alpha);
 	void SetTexture(const std::string &assetName, bool isTexture = true);
 	void SetModelMatrixBuilding();
-	void SetParentMatirx(const Matrix *pParentMatrix);
+	void SetParentMatirx(const Matrix &parentMatrix);
 	Vector3D GetScale() const;
 	Vector3D GetRotation() const;
 	Vector3D GetTranselate() const;
@@ -48,9 +48,9 @@ protected:
 	virtual void DeferredRendering();
 
 protected:
-	bool m_IsRenderingRegister;		   //レンダリング登録判断
+	bool m_IsRenderingRegister;	   //レンダリング登録判断
 	unsigned int m_MeshState;		   //モデルの状態を判断
-	Matrix *m_pLocalMatrix;			   //モデルのローカル行列へのポインタ
+	Matrix *m_pLocalMatrix;		   //モデルのローカル行列へのポインタ
 	Matrix m_WorldMatrix;			   //モデルのワールド行列
 	Matrix m_ModelMatrix;		       //モデルのローカル × ワールド行列
 	const Matrix *m_pParentMatirx;	   //親のモデル行列

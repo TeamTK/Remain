@@ -19,7 +19,6 @@ enum MeshState
 	eNothing = (1 << 0),
 	eBlockingLight = (1 << 1),
 	eShadow = (1 << 2),
-	eParentMatirx = (1 << 3),
 };
 
 enum MatrixType

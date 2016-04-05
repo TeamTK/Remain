@@ -12,7 +12,7 @@ public:
 
 private:
 	StaticMesh m_LampModel;
-
+	const Matrix *m_pParentMatrix;
 };
 
 #endif

@@ -4,7 +4,9 @@
 Knife::Knife(int* anim, float* frame, bool* take, Matrix* m) :
 	WeaponBase(anim, frame, take, m, "Knife", 0)
 {
+	m_Model.SetRenderingRegister(true, 1, 0);
 	m_Model.SetAsset("Knife");
+	m_pMatirx = m;
 }
 
 Knife::~Knife()
@@ -23,5 +25,5 @@ void Knife::Update()
 		m_Model.SetRotationDegree(0, 180, 0);
 	}
 
-	m_Model.SetParentMatirx(m_BoneMtx);
+	m_Model.SetParentMatirx(*m_pMatirx);
 }

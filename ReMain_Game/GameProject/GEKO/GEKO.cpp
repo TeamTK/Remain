@@ -53,6 +53,8 @@ namespace GEKO
 	{
 		Input::KeyManagement::Get().Update();
 		WorldMatrixManager::GetInstance()->Update(); //モデルの行列更新
+		WorldMatrixManager::GetInstance()->BoneUpdate();
+		TaskManager::Update();
 		ColliderManager::GetInstance()->Update();
 		Camera::Update();
 		RenderingManager::GetInstance()->Render();
