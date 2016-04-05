@@ -368,6 +368,11 @@
     <FxCompile Include="GEKO\HLSL\SkinMeshInfo.hlsl" />
     <FxCompile Include="GEKO\HLSL\Sphere3D.hlsl" />
     <FxCompile Include="GEKO\HLSL\Triangle3D.hlsl" />
+    <FxCompile Include="GEKO\HLSL\MeshHLSL\Forward\SkinMesh.hlsl" />
+    <FxCompile Include="GEKO\HLSL\MeshHLSL\Forward\SkinMesh_NoTexture.hlsl" />
+    <FxCompile Include="GEKO\HLSL\MeshHLSL\Forward\Mesh.hlsl" />
+    <FxCompile Include="GEKO\HLSL\MeshHLSL\Forward\Mesh_NoTexture.hlsl" />
+    <FxCompile Include="GEKO\HLSL\MeshHLSL\CommonMeshInfo.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="media\Cabin.png" />
