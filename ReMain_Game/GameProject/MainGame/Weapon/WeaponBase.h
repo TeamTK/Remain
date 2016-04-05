@@ -36,6 +36,7 @@ protected:
 	StaticMesh m_Model;
 	Matrix* m_BoneMtx;		//プレイヤーのボーン行列
 	EWeapons* m_Weapon;
+	Matrix *m_pMatirx;
 };
 
 #endif

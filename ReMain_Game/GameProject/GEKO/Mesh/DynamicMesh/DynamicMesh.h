@@ -38,6 +38,7 @@ public:
 	void AnimationDebug(int animNum) const;
 
 private:
+	void ModelBoneBuilding();
 	void ForwardRendering();
 	void DeferredRendering();
 	void AllocationSkinMeshData(const std::string &meshName);
@@ -52,6 +53,7 @@ private:
 	DyanmicMeshData *m_pMeshData;
 	CopyBone m_Bone;
 	std::vector<CopyBone*> m_CopyBoneArray;
+	BoneMatrixFuncInfo m_BoneMatrixFuncInfo;
 };
 
 #endif

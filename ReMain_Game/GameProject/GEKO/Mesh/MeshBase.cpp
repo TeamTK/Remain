@@ -250,20 +250,12 @@ void MeshBase::SetModelMatrixBuilding()
 	m_WorldMatrix._42 = m_Transelate.y;
 	m_WorldMatrix._43 = m_Transelate.z;
 
-	if (m_MeshState & eParentMatirx)
-	{
-		m_ModelMatrix = *m_pLocalMatrix * *m_pLocalMatrix * m_WorldMatrix * *m_pParentMatirx;
-	}
-	else
-	{
-		m_ModelMatrix = *m_pLocalMatrix * m_WorldMatrix;
-	}
+	m_ModelMatrix = *m_pLocalMatrix * m_WorldMatrix;
 }
 
-void MeshBase::SetParentMatirx(const Matrix *pParentMatrix)
+void MeshBase::SetParentMatirx(const Matrix &parentMatrix)
 {
-	m_pParentMatirx = pParentMatrix;
-	//m_ModelMatrix = *m_pLocalMatrix * m_ModelMatrix * matrix;
+	m_ModelMatrix = *m_pLocalMatrix * m_ModelMatrix * parentMatrix;
 }
 
 Vector3D MeshBase::GetScale() const

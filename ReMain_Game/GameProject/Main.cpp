@@ -30,8 +30,6 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 		GEKO::BackgroundColor(0, 0, 0);
 		GEKO::DrawFps();
 		StageObjectManager::GetInstance()->Update();
-		TaskManager::Update();
-		//TaskManager::DrawName();
 	}
 
 	GEKO::End();

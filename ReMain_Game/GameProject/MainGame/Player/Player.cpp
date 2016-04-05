@@ -341,6 +341,8 @@ void Player::Attack()
 			else
 			{
 				TaskManager::AllStop();
+				TaskManager::Start("Handgun");
+				TaskManager::Start("Shotgun");
 				TaskManager::Start("UI_SelectWeapon");
 				TaskManager::Start("Gravity");
 				TaskManager::Start("Player");
@@ -1022,6 +1024,7 @@ void Player::StageChange(Result_Sphere &data)
 
 	m_HitEnemyAttack.Sleep();
 	Task::Stop();
+	TaskManager::Stop("TPSCamera");
 }
 
 void Player::HitRecoveryItem(Result_Sphere &data)

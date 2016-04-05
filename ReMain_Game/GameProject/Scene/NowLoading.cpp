@@ -38,7 +38,7 @@ NowLoading::NowLoading(ChapterType type, bool isResource) :
 				GEKO::ScreenUpdate();
 				GEKO::ClearColor();
 				GEKO::ManualRendering();
-				g_NowLodingImage.PlayFrame(0.007f);
+				g_NowLodingImage.PlayFrame(0.2f * GEKO::GetOneFps());
 				g_NowLodingImage.Update();
 			}
 		};

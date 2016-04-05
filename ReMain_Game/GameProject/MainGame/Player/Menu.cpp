@@ -15,6 +15,8 @@ Menu::Menu() :
 	TaskManager::AllStop();
 	TaskManager::Start("Gravity");
 	TaskManager::Start("Menu");
+	TaskManager::Start("Handgun");
+	TaskManager::Start("Shotgun");
 
 	//‰æ‘œƒŠƒ\[ƒXŠ„‚è“–‚Ä
 	m_RetryImage.SetAsset("Retry");

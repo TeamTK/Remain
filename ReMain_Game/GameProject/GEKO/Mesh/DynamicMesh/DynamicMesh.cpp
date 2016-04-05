@@ -12,11 +12,14 @@ DynamicMesh::DynamicMesh() :
 	m_AnimFrame(0.0f),
 	m_pMeshData(nullptr)
 {
-
+	m_BoneMatrixFuncInfo.func = std::bind(&DynamicMesh::ModelBoneBuilding, this);
+	WorldMatrixManager::GetInstance()->Add(&m_BoneMatrixFuncInfo);
 }
 
 DynamicMesh::~DynamicMesh()
 {
+	WorldMatrixManager::GetInstance()->Clear(&m_BoneMatrixFuncInfo);
+
 	if (m_MeshState & MeshState::eBlockingLight)
 	{
 		ShaderShadowMap::GetInstance()->Clear(this);
@@ -34,6 +37,9 @@ DynamicMesh::DynamicMesh(const std::string &meshName, unsigned int priorityGroup
 	m_IsAnimEnd(false),
 	m_pMeshData(nullptr)
 {
+	m_BoneMatrixFuncInfo.func = std::bind(&DynamicMesh::ModelBoneBuilding, this);
+	WorldMatrixManager::GetInstance()->Add(&m_BoneMatrixFuncInfo);
+
 	AllocationSkinMeshData(meshName);
 
 	//モデルが光を遮って影になる対象
@@ -226,6 +232,15 @@ void DynamicMesh::AnimationDebug(int animNum) const
 
 }
 
+void DynamicMesh::ModelBoneBuilding()
+{
+	//アニメーション更新
+	if (m_IsAnimUpdate)
+	{
+		m_pMeshData->Update(&m_Bone, m_AnimNum, &m_AnimFrame, &m_IsAnimEnd);
+	}
+}
+
 void DynamicMesh::ForwardRendering()
 {
 	if (m_MeshState & eShadow)
@@ -295,11 +310,6 @@ void DynamicMesh::RenderFunc(Matrix &matrix, bool isShadow)
 	DynamicMeshShader::GetInstance()->SetShader(pDeviceContext, data->isTexture, isShadow);
 	ConstantShader::GetInstance()->SetTransformMatrixConstantBuffer(pDeviceContext, matrix, isShadow);
 
-	//アニメーション更新
-	if (m_IsAnimUpdate) 
-	{
-		m_pMeshData->Update(&m_Bone, m_AnimNum, &m_AnimFrame, &m_IsAnimEnd);
-	}
 	ConstantShader::GetInstance()->SetBoneConstantBuffer(pDeviceContext, GetBoneAllNum(), m_CopyBoneArray);
 
 	//属性ごとにレンダリング

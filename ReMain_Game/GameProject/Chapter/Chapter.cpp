@@ -111,7 +111,6 @@ void Chapter_1_1::Update()
 
 void Chapter_1_1::StageChange(Result_Sphere &data)
 {
-	TaskManager::Stop("TPSCamera");
 	m_StageChange.Sleep();
 	m_Transfer_In.Start(CHAPTER_TRANSFER_IN_SPEED);
 }
@@ -201,7 +200,6 @@ void Chapter_1_2::Update()
 
 void Chapter_1_2::StageChange(Result_Sphere &data)
 {
-	TaskManager::Stop("TPSCamera");
 	m_StageChange.Sleep();
 	m_Transfer_In.Start(CHAPTER_TRANSFER_IN_SPEED);
 }
