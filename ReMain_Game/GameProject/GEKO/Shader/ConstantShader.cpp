@@ -82,6 +82,9 @@ void ConstantShader::SetCommonInfoConstantBuffer()
 		Vector3D EyePos(Camera::GetEyePosition());
 		sg.eyePos = Vector4D(EyePos.x, EyePos.y, EyePos.z, 0);
 
+		sg.fogColor = Camera::GetInstance()->m_FogColor;
+		sg.fogDensity = Camera::GetInstance()->m_FogDensity;
+
 		memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(CommonInfoConstantBuffer));
 		pDeviceContext->Unmap(m_pCommonInfoConstantBuffer, 0);
 	}

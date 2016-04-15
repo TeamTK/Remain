@@ -29,6 +29,7 @@ private:
 	void DeferredRendering();
 	void AllocationMeshData(const std::string &meshName);
 	void RenderFunc(Matrix &matrix, bool isShadow) const;
+	void RenderFuncDeferred(Matrix &matrix, bool isShadow) const;
 
 private:
 	StaticMeshData *m_pMeshData; //モデルの情報へのポインタ

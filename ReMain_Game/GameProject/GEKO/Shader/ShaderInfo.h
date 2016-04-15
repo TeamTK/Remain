@@ -7,6 +7,8 @@
 #define FORWARD_LIGHT_MAX 10
 #define DEFERRED_LIGHT_MAX 100
 #define SHADER_TYPE_TOTAL 2
+#define SHADER_TYPE_TOTAL_VS 2
+#define SHADER_TYPE_TOTAL_PS 4
 
 //全てのメッシュに共通
 struct CommonInfoConstantBuffer
@@ -14,6 +16,8 @@ struct CommonInfoConstantBuffer
 	Vector4D lightDir;	//ライト方向
 	Vector4D intensity;	//ライトの明るさと色
 	Vector4D eyePos;	//カメラ位置
+	Vector4D fogColor;  //フォグの色
+	ALIGN16 float fogDensity; //フォグの密度
 };
 
 //シェーダーに渡す用(変換行列など)
@@ -65,6 +69,20 @@ enum class ShaderType
 {
 	eNormal = 0,
 	eShadow = 1,
+};
+
+enum class ShaderTypeVS
+{
+	eNormal = 0,
+	eNormal_Shadow = 1,
+};
+
+enum class ShaderTypePS
+{
+	eNormal = 0,
+	eNormal_Shadow = 1,
+	eNormal_Fog = 2,
+	eShadow_Fog = 3,
 };
 
 #endif

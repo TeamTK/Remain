@@ -89,7 +89,7 @@ public:
 	Tree_1(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 1);
-		m_Object.SetMeshState(eBlockingLight);
+		m_Object.SetMeshState(eBlockingLight | eFog);
 		SetObjectDynamicMesh(&m_Object, pos, rot, sca, name);
 
 		m_Collision.SetAsset("Tree_1");
@@ -124,7 +124,7 @@ public:
 	Tree_2(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 1);
-		m_Object.SetMeshState(eBlockingLight);
+		m_Object.SetMeshState(eBlockingLight | eFog);
 		SetObjectDynamicMesh(&m_Object, pos, rot, sca, name);
 
 		m_Collision.SetAsset("Tree_2");
@@ -160,7 +160,7 @@ public:
 	Tree_1_Trunk(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eBlockingLight);
+		m_Object.SetMeshState(eBlockingLight | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
@@ -185,7 +185,7 @@ public:
 	Grass_1(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eBlockingLight);
+		m_Object.SetMeshState(eBlockingLight | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 	}
 	~Grass_1() {}
@@ -200,7 +200,7 @@ public:
 	Grass_2(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eBlockingLight);
+		m_Object.SetMeshState(eBlockingLight | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 	}
 	~Grass_2() {}
@@ -215,7 +215,7 @@ public:
 	Cabin(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eShadow | eBlockingLight);
+		m_Object.SetMeshState(eShadow | eBlockingLight | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 
 		//当たり判定用メッシュ
@@ -254,7 +254,7 @@ public:
 	Ground_1_1(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eShadow);
+		m_Object.SetMeshState(eShadow | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
@@ -282,7 +282,7 @@ public:
 	Ground_1_2(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eShadow);
+		m_Object.SetMeshState(eShadow | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
@@ -311,7 +311,7 @@ public:
 	Ground_1_3(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eShadow);
+		m_Object.SetMeshState(eShadow | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 
 		m_CharacterHit.Regist_SMesh_vs_S(&m_Object);
@@ -340,7 +340,7 @@ public:
 	RockWall_1_1(XYZ pos, XYZ rot, XYZ sca, std::string name) 
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eShadow | eBlockingLight);
+		m_Object.SetMeshState(eShadow | eBlockingLight | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 
 		//当たり判定用のメッシュ初期化
@@ -379,7 +379,7 @@ public:
 	RockWall_1_2(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eShadow | eBlockingLight);
+		m_Object.SetMeshState(eShadow | eBlockingLight | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 
 		//当たり判定用のメッシュ初期化
@@ -418,7 +418,7 @@ public:
 	RockWall_1_3(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eShadow | eBlockingLight);
+		m_Object.SetMeshState(eShadow | eBlockingLight | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 
 		//当たり判定用のメッシュ初期化
@@ -477,7 +477,7 @@ public:
 	Bush(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eShadow);
+		m_Object.SetMeshState(eShadow | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 	}
 	~Bush() {}
@@ -492,7 +492,7 @@ public:
 	Clover(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eShadow);
+		m_Object.SetMeshState(eShadow | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 	}
 	~Clover() {}
@@ -507,7 +507,7 @@ public:
 	Fern(XYZ pos, XYZ rot, XYZ sca, std::string name) 
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eShadow | eBlockingLight);
+		m_Object.SetMeshState(eShadow | eBlockingLight | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 	}
 	~Fern() {}
@@ -522,7 +522,7 @@ public:
 	Fence(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eShadow | eBlockingLight);
+		m_Object.SetMeshState(eShadow | eBlockingLight | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 
 		m_HitMesh.SetAsset("Fence_Collision");
@@ -548,7 +548,7 @@ public:
 	Stone_A(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eShadow | eBlockingLight);
+		m_Object.SetMeshState(eShadow | eBlockingLight | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 
 		m_HitMesh.SetAsset("Stone_A_Collision");
@@ -585,7 +585,7 @@ public:
 	Fallen_leaves(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eShadow);
+		m_Object.SetMeshState(eShadow | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 	}
 	~Fallen_leaves() {}
@@ -603,7 +603,7 @@ public:
 	Shrub(XYZ pos, XYZ rot, XYZ sca, std::string name) 
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eBlockingLight);
+		m_Object.SetMeshState(eBlockingLight | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 	}
 	~Shrub() 
@@ -622,7 +622,7 @@ public:
 	Weeds(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eBlockingLight);
+		m_Object.SetMeshState(eBlockingLight | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 	}
 	~Weeds() {}
@@ -639,7 +639,7 @@ public:
 	WoodBox(XYZ pos, XYZ rot, XYZ sca, std::string name)
 	{
 		m_Object.SetRenderingRegister(true, 0, 0);
-		m_Object.SetMeshState(eShadow | eBlockingLight);
+		m_Object.SetMeshState(eShadow | eBlockingLight | eFog);
 		SetObjectMesh(&m_Object, pos, rot, sca, name);
 
 		//プレイヤーの判定は仮

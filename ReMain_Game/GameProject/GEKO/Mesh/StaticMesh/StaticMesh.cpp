@@ -1,9 +1,10 @@
 #include "StaticMesh.h"
 #include "..\..\Figure\Fiqure.h"
-#include "..\..\Shader\StaticMeshShader\StaticMeshShader.h"
+#include "..\..\Shader\ForwardShader\ForwardRendering.h"
 #include "..\..\Shader\ShadowMap\ShaderShadowMap.h"
 #include "..\..\Shader\ConstantShader.h"
 #include "..\..\ImageSystem\Image.h"
+#include "..\..\Shader\DeferredShader\DeferredRendering.h"
 
 StaticMesh::StaticMesh() :
 	MeshBase(false, 0, 0, MeshState::eNothing),
@@ -139,7 +140,16 @@ void StaticMesh::ForwardRendering()
 
 void StaticMesh::DeferredRendering()
 {
-
+	if (m_MeshState & eShadow)
+	{
+		DeferredRendering::GetInstance()->SetShaderMeshPass1(ShaderType::eShadow);
+		RenderFuncDeferred(m_ModelMatrix, true);
+	}
+	else
+	{
+		DeferredRendering::GetInstance()->SetShaderMeshPass1(ShaderType::eNormal);
+		RenderFuncDeferred(m_ModelMatrix, false);
+	}
 }
 
 void StaticMesh::AllocationMeshData(const std::string &meshName)
@@ -180,7 +190,7 @@ void StaticMesh::RenderFunc(Matrix &matrix, bool isShadow) const
 	MeshInfo *data = m_pMeshData->GetMeshInfo();
 
 	ConstantShader::GetInstance()->SetTransformMatrixConstantBuffer(pDeviceContext, matrix, isShadow);
-	StaticMeshShader::GetInstance()->SetShader(pDeviceContext, data->isTexture, isShadow);
+	ForwardRendering::GetInstance()->SetStaticMeshShader(pDeviceContext, m_MeshState);
 
 	//マルチテクスチャ
 	if (m_pImageInfo != nullptr)
@@ -215,6 +225,46 @@ void StaticMesh::RenderFunc(Matrix &matrix, bool isShadow) const
 		ambient.w = m_Diffuse[i].w;
 
 		ConstantShader::GetInstance()->SetMaterialConstantBuffer(pDeviceContext, m_Diffuse[i], specular, ambient);
+
+		pDeviceContext->PSSetSamplers(0, 1, &data->pSampleLinear);
+		pDeviceContext->PSSetShaderResources(0, 1, &data->pMaterial[i].pTexture);
+
+		//プリミティブをレンダリング
+		pDeviceContext->DrawIndexed(data->pMaterial[i].numPolygon * 3, 0, 0);
+	}
+
+	//テクスチャリソース初期化
+	ID3D11ShaderResourceView* pShaderResource = nullptr;
+	pDeviceContext->PSSetShaderResources(0, 1, &pShaderResource);
+	pDeviceContext->PSSetShaderResources(1, 1, &pShaderResource);
+	pDeviceContext->PSSetShaderResources(2, 1, &pShaderResource);
+}
+
+void StaticMesh::RenderFuncDeferred(Matrix &matrix, bool isShadow) const
+{
+	ID3D11DeviceContext *pDeviceContext = Direct3D11::GetInstance()->GetID3D11DeviceContext();
+	MeshInfo *data = m_pMeshData->GetMeshInfo();
+
+	ConstantShader::GetInstance()->SetTransformMatrixConstantBuffer(pDeviceContext, matrix, isShadow);
+
+	//マルチテクスチャ
+	if (m_pImageInfo != nullptr)
+	{
+		pDeviceContext->PSSetShaderResources(2, 1, &m_pImageInfo->pTexture);
+	}
+
+	//バーテックスバッファーをセット
+	UINT Stride = sizeof(VertexInfo);
+	UINT offset = 0;
+	pDeviceContext->IASetVertexBuffers(0, 1, &data->pVertexBuffer, &Stride, &offset);
+
+	//属性の数だけ、それぞれの属性のインデックスバッファ－を描画
+	for (int i = 0; i < data->materialNumAll; i++)
+	{
+		//使用されていないマテリアル対策
+		if (data->pMaterial[i].numPolygon == 0) continue;
+		//インデックスバッファーをセット
+		pDeviceContext->IASetIndexBuffer(data->ppIndexBuffer[i], DXGI_FORMAT_R32_UINT, 0);
 
 		pDeviceContext->PSSetSamplers(0, 1, &data->pSampleLinear);
 		pDeviceContext->PSSetShaderResources(0, 1, &data->pMaterial[i].pTexture);

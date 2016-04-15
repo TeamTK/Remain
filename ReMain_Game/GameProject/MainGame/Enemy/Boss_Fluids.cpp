@@ -20,6 +20,10 @@ Boss_Fluids::Boss_Fluids(const Vector3D &start, const Vector3D &dir, float speed
 	//ƒ}ƒbƒv‚Æ‚Ì“–‚½‚è”»’è
 	m_ColliderMap.Regist_L_vs_SMesh(&m_Oldpos, &m_Pos, REGIST_FUNC(Boss_Fluids::HitMap));
 	m_ColliderMap.SetID(eHITID8, eHITID4 | eHITID6 | eHITID7);
+
+	m_Fluids.SetRenderingRegister(true, 10, 0);
+	m_Fluids.SetImageAsset("Fluids_Par");
+	m_Fluids.SetSize(0.5f);
 }
 
 Boss_Fluids::~Boss_Fluids()
@@ -37,7 +41,7 @@ void Boss_Fluids::Update()
 	effectData.imageName = "Fluids_Par";
 	effectData.num = 12;
 	effectData.pos = m_Pos;
-	effectData.size = 0.4f;
+	effectData.size = 0.7f;
 	effectData.speed = 0.1f;
 	effectData.time = 10;
 	new EffectParabola(effectData, "Fluids", m_Dir);
@@ -52,6 +56,8 @@ void Boss_Fluids::Update()
 	}
 
 	m_Pos += m_Dir * m_Speed;
+
+	m_Fluids.SetPosition(m_Pos);
 }
 
 void Boss_Fluids::HitPlayer(Result_Capsule& data)

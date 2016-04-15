@@ -19,7 +19,7 @@ struct EffectInfo
 class EffectPart
 {
 public:
-	EffectPart(const Vector3D &dir, const Vector3D &pos, const std::string &name);
+	EffectPart(float size, const Vector3D &dir, const Vector3D &pos, const std::string &name);
 	~EffectPart();
 	void SetDirection(const Vector3D &direction);
 	void Update(float speed, float size, int time);

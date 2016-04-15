@@ -50,41 +50,44 @@ void Bullet::HitMap(Result_Porygon& r)
 	effectData.imageName = "MapHit";
 	effectData.num = 15;
 	effectData.pos = contactPos;
-	effectData.size = 0.1f;
+	effectData.size = 0.5f;
 	effectData.speed = 0.1f;
 	effectData.time = 60;
 
 	if (r.targetName == "Tree_1")
 	{
 		std::cout << "–Ø" << "\n";
+		effectData.imageName = "Wood_Par";
 	}
 
 	if (r.targetName == "Tree_2")
 	{
 		std::cout << "–Ø2" << "\n";
+		effectData.imageName = "Wood_Par";
 	}
 
 	if (r.targetName == "Cabin")
 	{
 		std::cout << "‰Æ" << "\n";
+		effectData.imageName = "Wood_Par";
 	}
 
 	if (r.targetName == "Ground")
 	{
 		std::cout << "’n–Ê" << "\n";
-		effectData.imageName = "GunEffect";
+		effectData.imageName = "Grass_Par";
 	}
 
 	if (r.targetName == "RockWall")
 	{
 		std::cout << "•Ç" << "\n";
-		effectData.imageName = "GunEffect";
+		effectData.imageName = "Rock_Par";
 	}
 
 	if (r.targetName == "Stone")
 	{
 		std::cout << "Î" << "\n";
-		effectData.imageName = "GunEffect";
+		effectData.imageName = "Rock_Par";
 	}
 
 	new EffectParabola(effectData, "Map", (m_Oldpos - contactPos).GetNormalize());

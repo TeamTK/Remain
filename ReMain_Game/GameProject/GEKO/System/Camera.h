@@ -3,8 +3,12 @@
 
 #include "Direct3D11.h"
 
+class ConstantShader;
+
 class Camera
 {
+	friend ConstantShader;
+
 public:
 	~Camera();
 
@@ -37,6 +41,12 @@ public:
 	* @return Vector3D型のカメラ位置
 	*/
 	const static Vector3D GetEyePosition();
+
+	/**
+	* @brief カメラの注視点を取得
+	* @return Vector3D型のカメラの注視点位置
+	*/
+	const static Vector3D GetLookAtPosition();
 
 	/**
 	* @brief カメラの手前クリップ距離と奥クリップ距離を設定
@@ -99,25 +109,45 @@ public:
 	*/
 	static void Update();
 
+	/**
+	* @brief カメラをTPS視点にしてマウスで操作出来る
+	* @param[in] 注視点位置
+	*/
 	static void SpaceViewTPS(const Vector3D &lookPos);
+
+	/**
+	* @brief 霧の色を変更
+	* @param[in] 赤（0～255）
+	* @param[in] 緑（0～255）
+	* @param[in] 青（0～255）
+	*/
+	static void FogColor(int red, int green, int blue);
+
+	/**
+	* @brief カメラが画面に描画する範囲と位置を設定
+	* @param[in] 霧の密度（0.0ｆ～1.0ｆ）
+	*/
+	static void FogDensity(float density);
 
 private:
 	Camera();
 	static Camera* GetInstance();
 
 private:
-	Matrix m_View;		//カメラ行列
-	Matrix m_Proj;		//射影行列
-	Matrix m_ViewProj;	//カメラビュー行列 × 射影行列
-	Matrix m_Viewport;	//ビューポート行列
-	Vector3D m_EyePt;	//視点位置
-	Vector3D m_LookatPt;//注視点位置
-	Vector3D m_UpVec;	//上方位置
-	float m_Near;			//カメラが描画する最小距離
-	float m_Far;			//カメラが描画する最大距離
-	float m_ViewAngle;		//視野角度（ラジアン）
-	float m_Vertical;		//
-	float m_Horizontal;		//
+	Matrix m_View;		  //カメラ行列
+	Matrix m_Proj;		  //射影行列
+	Matrix m_ViewProj;	  //カメラビュー行列 × 射影行列
+	Matrix m_Viewport;	  //ビューポート行列
+	Vector3D m_EyePt;	  //視点位置
+	Vector3D m_LookatPt;  //注視点位置
+	Vector3D m_UpVec;	  //上方位置
+	Vector4D m_FogColor;  //霧の色
+	float m_Near;		  //カメラが描画する最小距離
+	float m_Far;		  //カメラが描画する最大距離
+	float m_ViewAngle;	  //視野角度（ラジアン）
+	float m_Vertical;	  //カメラの垂直方向
+	float m_Horizontal;	  //カメラの水平方向
+	float m_FogDensity;   //霧の密度
 };
 
 #endif

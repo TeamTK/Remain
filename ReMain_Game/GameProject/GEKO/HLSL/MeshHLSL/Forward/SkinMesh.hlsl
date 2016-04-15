@@ -1,4 +1,4 @@
-#include "../CommonMeshInfo.hlsl"
+#include "ForwardMeshInfo.hlsl"
 #include "../SkinMeshInfo.hlsl"
 
 /******************************************/
@@ -34,4 +34,20 @@ VS_OUTPUT_SHADOWMAP VS_ShadowMap(float4 pos : POSITION, float3 normal : NORMAL, 
 float4 PS_ShadowMap(VS_OUTPUT_SHADOWMAP input) : SV_Target
 {
 	return GetPixelShadowMap(input);
+}
+
+/******************************************/
+//フォグレンダリング
+/******************************************/
+
+//ピクセルシェーダー
+float4 PS_Fog(VS_OUTPUT input) : SV_Target
+{
+	return GetPixelFog(input);
+}
+
+//ピクセルシェーダー
+float4 PS_ShadowMap_Fog(VS_OUTPUT_SHADOWMAP input) : SV_Target
+{
+	return GetPixelShadowMap_Fog(input);
 }

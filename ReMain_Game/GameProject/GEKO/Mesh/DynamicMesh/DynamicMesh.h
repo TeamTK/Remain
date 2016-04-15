@@ -22,7 +22,7 @@ public:
 	void SetTime(float animTime);	   //指定のアニメーション時間に設定
 	void StartAnimation();
 	void StopAnimation();
-	const SkinVertexInfo *GetVertex() const; 
+	const SkinVertexInfo *GetVertex() const;
 	float GetPlayTime() const;
 	int GetPlayAnimation() const;
 	int GetFaceAllNum() const;

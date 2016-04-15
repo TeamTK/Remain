@@ -11,8 +11,12 @@ Camera::Camera() :
 	m_Far(1000.0f),
 	m_ViewAngle(Math::ChangeToRadian(45)),
 	m_Vertical(1.0f),
-	m_Horizontal(1.0f)
+	m_Horizontal(1.0f),
+	m_FogDensity(0.1f)
 {
+	m_FogColor.x = 1.0f;
+	m_FogColor.y = 1.0f;
+	m_FogColor.z = 1.0f;
 }
 
 Camera::~Camera()
@@ -48,6 +52,11 @@ const Matrix* Camera::GetViewport()
 const Vector3D Camera::GetEyePosition()
 {
 	return GetInstance()->m_EyePt;
+}
+
+const Vector3D Camera::GetLookAtPosition()
+{
+	return GetInstance()->m_LookatPt;
 }
 
 void Camera::SetNearFar(float Near, float Far)
@@ -172,4 +181,18 @@ void Camera::SpaceViewTPS(const Vector3D &lookPos)
 
 	SetEye(pos);
 	SetLookat(lookPos);
+}
+
+void Camera::FogColor(int red, int green, int blue)
+{
+	Camera* pInstance = GetInstance();
+
+	pInstance->m_FogColor.x = red * RGB;
+	pInstance->m_FogColor.y = green * RGB;
+	pInstance->m_FogColor.z = blue * RGB;
+}
+
+void Camera::FogDensity(float density)
+{
+	GetInstance()->m_FogDensity = density;
 }

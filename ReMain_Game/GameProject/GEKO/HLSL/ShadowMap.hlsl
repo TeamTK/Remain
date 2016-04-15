@@ -50,7 +50,9 @@ float4 SkinVertex(float4 pos, uint4  bone, float4 weight)
 //深度値算出
 float GetDepth(float z, float w, float2 uv)
 {
+	//return (z / w + 1.0f) * 0.5f * g_texColor.Sample(g_samLinear, uv).a;
 	return z / w * g_texColor.Sample(g_samLinear, uv).a;
+	//return z / w * g_texColor.Sample(g_samLinear, uv).a;
 }
 
 //深度値算出(テクスチャなし)

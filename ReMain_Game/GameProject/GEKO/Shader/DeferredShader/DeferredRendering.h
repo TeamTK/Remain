@@ -10,9 +10,9 @@ public:
 	static DeferredRendering* GetInstance();
 	bool Init();
 	void ChangeRenderTarget();
-	void SetShaderMesh(ShaderType type);
-	void SetShaderSkinMesh(ShaderType type);
-	void Rendering();
+	void SetShaderMeshPass1(ShaderType type);
+	void SetShaderSkinMeshPass1(ShaderType type);
+	void RenderingPass2();
 	void Release();
 
 private:

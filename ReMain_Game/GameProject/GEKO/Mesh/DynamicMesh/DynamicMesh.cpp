@@ -1,5 +1,5 @@
 #include "DynamicMesh.h"
-#include "..\..\Shader\DynamicMeshShader\DynamicMeshShader.h"
+#include "..\..\Shader\ForwardShader\ForwardRendering.h"
 #include "..\..\Shader\ShadowMap\ShaderShadowMap.h"
 #include "..\..\Shader\ConstantShader.h"
 #include "..\..\ImageSystem\Image.h"
@@ -73,7 +73,7 @@ void DynamicMesh::SetAsset(const std::string &meshName)
 }
 
 void DynamicMesh::ChangeAnimation(unsigned int num)
-{	
+{
 	//アニメーションセットの範囲外アクセス防止
 	const BoneInfo *pBoneData = m_pMeshData->GetBoneInfo();
 	unsigned int AnimSetAllNum = pBoneData->AnimationSetFrameNum.size();
@@ -307,7 +307,7 @@ void DynamicMesh::RenderFunc(Matrix &matrix, bool isShadow)
 
 	const MeshInfo *data = m_pMeshData->GetMeshInfo();
 
-	DynamicMeshShader::GetInstance()->SetShader(pDeviceContext, data->isTexture, isShadow);
+	ForwardRendering::GetInstance()->SetDynamicMeshShader(pDeviceContext, m_MeshState);
 	ConstantShader::GetInstance()->SetTransformMatrixConstantBuffer(pDeviceContext, matrix, isShadow);
 
 	ConstantShader::GetInstance()->SetBoneConstantBuffer(pDeviceContext, GetBoneAllNum(), m_CopyBoneArray);
