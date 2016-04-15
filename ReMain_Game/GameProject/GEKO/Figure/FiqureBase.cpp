@@ -32,18 +32,14 @@ HRESULT FiqureBase::InitShader()
 	}
 
 	//頂点インプットレイアウトを定義
-	UINT numElements = 0;
-	D3D11_INPUT_ELEMENT_DESC layout;
-	D3D11_INPUT_ELEMENT_DESC tmp[] =
+	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	numElements = 1;
-	memcpy(&layout, tmp, sizeof(D3D11_INPUT_ELEMENT_DESC) * numElements);
 
 	//頂点インプットレイアウトを作成
 	if (FAILED(pDevice->CreateInputLayout(
-		&layout, numElements, pCompiledShader->GetBufferPointer(),
+		layout, 1, pCompiledShader->GetBufferPointer(),
 		pCompiledShader->GetBufferSize(), &m_FigureInfo.pVertexLayout)))
 	{
 		return FALSE;

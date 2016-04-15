@@ -237,7 +237,7 @@ Chapter_1_3::Chapter_1_3() :
 	new RecoveryItem(-2.0f, 0.0f, 0.0f);
 
 	BossState state;
-	state.hp = 60;
+	state.hp = 50;
 	state.flinch = 20;
 	state.spawnPos = Vector3D(4.0f, 0.0f, -12.0f);
 	state.spawnRot = Vector3D(0.0f, 180.0f, 0.0f);

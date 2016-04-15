@@ -93,14 +93,7 @@
     <ClCompile Include="GEKO\Mesh\WorldMatrixManager.cpp" />
     <ClCompile Include="GEKO\Shader\CopmuteShader\BaseCopmute.cpp" />
     <ClCompile Include="GEKO\Shader\CopmuteShader\LineTriangleCopmute.cpp" />
-    <ClCompile Include="GEKO\Shader\CopmuteShader\SphereTriangleCopmute.cpp" />
-    <ClCompile Include="GEKO\Shader\DynamicMeshShader\DynamicMesh_PixelInit.cpp" />
-    <ClCompile Include="GEKO\Shader\DynamicMeshShader\DynamicMesh_VertexInit.cpp" />
-    <ClCompile Include="GEKO\Shader\DynamicMeshShader\DynamicMeshShader.cpp" />
     <ClCompile Include="GEKO\Shader\ShadowMap\ShaderShadowMap.cpp" />
-    <ClCompile Include="GEKO\Shader\StaticMeshShader\StaticMesh_PixelInit.cpp" />
-    <ClCompile Include="GEKO\Shader\StaticMeshShader\StaticMesh_VertexInit.cpp" />
-    <ClCompile Include="GEKO\Shader\StaticMeshShader\StaticMeshShader.cpp" />
     <ClCompile Include="GEKO\Shader\ConstantShader.cpp" />
     <ClCompile Include="GEKO\SoundSystem\Sound.cpp">
       <Filter>GEKO3DX</Filter>
@@ -138,6 +131,8 @@
     <ClCompile Include="GEKO\Shader\Light\DirectionalLight.cpp" />
     <ClCompile Include="GEKO\Shader\RenderingManager.cpp" />
     <ClCompile Include="MainGame\Player\Lamp.cpp" />
+    <ClCompile Include="GEKO\Shader\ForwardShader\ForwardRendering.cpp" />
+    <ClCompile Include="GEKO\Shader\DeferredShader\DeferredRendering.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GEKO\Task\CollisionTask.h" />
@@ -305,10 +300,7 @@
     <ClInclude Include="GEKO\Shader\CopmuteShader\BaseCopmute.h" />
     <ClInclude Include="GEKO\Shader\CopmuteShader\CopmuteInfo.h" />
     <ClInclude Include="GEKO\Shader\CopmuteShader\LineTriangleCopmute.h" />
-    <ClInclude Include="GEKO\Shader\CopmuteShader\SphereTriangleCopmute.h" />
-    <ClInclude Include="GEKO\Shader\DynamicMeshShader\DynamicMeshShader.h" />
     <ClInclude Include="GEKO\Shader\ShadowMap\ShaderShadowMap.h" />
-    <ClInclude Include="GEKO\Shader\StaticMeshShader\StaticMeshShader.h" />
     <ClInclude Include="GEKO\Shader\ConstantShader.h" />
     <ClInclude Include="GEKO\Shader\ShaderInfo.h" />
     <ClInclude Include="GEKO\SoundSystem\Sound.h">
@@ -348,6 +340,8 @@
     <ClInclude Include="GEKO\Shader\RenderingManager.h" />
     <ClInclude Include="GameSystem\ScreenTransfer.h" />
     <ClInclude Include="MainGame\Player\Lamp.h" />
+    <ClInclude Include="GEKO\Shader\ForwardShader\ForwardRendering.h" />
+    <ClInclude Include="GEKO\Shader\DeferredShader\DeferredRendering.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GEKO\HLSL\Billboard.hlsl" />
@@ -357,21 +351,11 @@
       <Filter>GEKO3DX\HLSL</Filter>
     </FxCompile>
     <FxCompile Include="GEKO\HLSL\Line3D.hlsl" />
-    <FxCompile Include="GEKO\HLSL\MESH.hlsl">
-      <Filter>GEKO3DX\HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="GEKO\HLSL\Mesh_NoTexture.hlsl" />
-    <FxCompile Include="GEKO\HLSL\MeshTest.hlsl" />
     <FxCompile Include="GEKO\HLSL\ShadowMap.hlsl" />
-    <FxCompile Include="GEKO\HLSL\SkinMesh.hlsl" />
-    <FxCompile Include="GEKO\HLSL\SkinMesh_NoTexture.hlsl" />
-    <FxCompile Include="GEKO\HLSL\SkinMeshInfo.hlsl" />
     <FxCompile Include="GEKO\HLSL\Sphere3D.hlsl" />
     <FxCompile Include="GEKO\HLSL\Triangle3D.hlsl" />
     <FxCompile Include="GEKO\HLSL\MeshHLSL\Forward\SkinMesh.hlsl" />
-    <FxCompile Include="GEKO\HLSL\MeshHLSL\Forward\SkinMesh_NoTexture.hlsl" />
     <FxCompile Include="GEKO\HLSL\MeshHLSL\Forward\Mesh.hlsl" />
-    <FxCompile Include="GEKO\HLSL\MeshHLSL\Forward\Mesh_NoTexture.hlsl" />
     <FxCompile Include="GEKO\HLSL\MeshHLSL\CommonMeshInfo.hlsl" />
   </ItemGroup>
   <ItemGroup>

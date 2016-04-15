@@ -7,7 +7,7 @@
 #include "../Light/DirectionalLight.h"
 #include <list>
 
-#define SHADOW_MAP_FORMAT DXGI_FORMAT_R16_FLOAT
+#define SHADOW_MAP_FORMAT DXGI_FORMAT_R32_FLOAT
 
 struct ShadowInfo
 {
@@ -62,7 +62,7 @@ ShaderShadowMap::ShaderShadowMap() :
 	m_Width(1920.0f),
 	m_Height(1080.0f),
 	m_Near(1.0f),
-	m_Far(200.0f),
+	m_Far(1000.0f),
 	m_ViewAngle(Math::ChangeToRadian(45.0f)),
 	m_Distance(0.0f)
 {
@@ -140,7 +140,7 @@ bool ShaderShadowMap::Init()
 	tdesc.MipLevels = 1;
 	tdesc.ArraySize = 1;
 	tdesc.MiscFlags = 0;
-	tdesc.Format = DXGI_FORMAT_R16_TYPELESS;
+	tdesc.Format = SHADOW_MAP_FORMAT;
 	tdesc.SampleDesc.Count = 1;
 	tdesc.SampleDesc.Quality = 0;
 	tdesc.Usage = D3D11_USAGE_DEFAULT;
@@ -390,20 +390,16 @@ bool ShaderShadowMap::InitVertexShader(ID3D11Device *pDevice)
 	}
 
 	//頂点インプットレイアウトを定義
-	UINT numElements = 0;
-	D3D11_INPUT_ELEMENT_DESC layout[3];
-	D3D11_INPUT_ELEMENT_DESC tmp[] =
+	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	numElements = 3;
-	memcpy(layout, tmp, sizeof(D3D11_INPUT_ELEMENT_DESC)*numElements);
-	
+
 	//頂点インプットレイアウトを作成
 	if (FAILED(pDevice->CreateInputLayout(
-		layout, numElements, pCompiledShader->GetBufferPointer(),
+		layout, 3, pCompiledShader->GetBufferPointer(),
 		pCompiledShader->GetBufferSize(), &m_pShadowMaPimpl->pVertexLayout)))
 	{
 		SAFE_RELEASE(pCompiledShader);
@@ -429,8 +425,7 @@ bool ShaderShadowMap::InitVertexShader(ID3D11Device *pDevice)
 	}
 
 	//頂点インプットレイアウトを定義(dynamicMesh)
-	D3D11_INPUT_ELEMENT_DESC layoutSkin[5];
-	D3D11_INPUT_ELEMENT_DESC tmpSkin[] =
+	D3D11_INPUT_ELEMENT_DESC layoutSkin[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -438,12 +433,10 @@ bool ShaderShadowMap::InitVertexShader(ID3D11Device *pDevice)
 		{ "BONE_INDEX", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "BONE_WEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	numElements = 5;
-	memcpy(layoutSkin, tmpSkin, sizeof(D3D11_INPUT_ELEMENT_DESC) * numElements);
 
 	//頂点インプットレイアウトを作成
 	if (FAILED(pDevice->CreateInputLayout(
-		layoutSkin, numElements, pCompiledShader->GetBufferPointer(),
+		layoutSkin, 5, pCompiledShader->GetBufferPointer(),
 		pCompiledShader->GetBufferSize(), &m_pShadowMaPimpl->pVertexSkinLayout)))
 	{
 		SAFE_RELEASE(pCompiledShader);

@@ -1,12 +1,13 @@
 #include "Effect.h"
 
-EffectPart::EffectPart(const Vector3D &dir, const Vector3D &pos, const std::string &name) :
+EffectPart::EffectPart(float size, const Vector3D &dir, const Vector3D &pos, const std::string &name) :
 	m_Direction(dir),
 	m_Pos(pos)
 {
 	m_Billboard.SetRenderingRegister(true, 10, 0);
 	m_Billboard.SetImageAsset(name);
 	m_Billboard.SetPosition(m_Pos);
+	m_Billboard.SetSize(size);
 };
 
 EffectPart::~EffectPart()
@@ -57,7 +58,7 @@ void Effect::SetSize(float size)
 
 void Effect::Update()
 {
-	if (m_TimeCnt >= m_AllTime)
+	if (m_TimeCnt > m_AllTime)
 	{
 		auto it = m_list.begin();
 		auto itEnd = m_list.end();

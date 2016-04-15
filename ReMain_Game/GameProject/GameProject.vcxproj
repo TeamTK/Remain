@@ -55,18 +55,13 @@
     <ClCompile Include="GEKO\Shader\ConstantShader.cpp" />
     <ClCompile Include="GEKO\Shader\CopmuteShader\BaseCopmute.cpp" />
     <ClCompile Include="GEKO\Shader\CopmuteShader\LineTriangleCopmute.cpp" />
-    <ClCompile Include="GEKO\Shader\CopmuteShader\SphereTriangleCopmute.cpp" />
-    <ClCompile Include="GEKO\Shader\DynamicMeshShader\DynamicMeshShader.cpp" />
-    <ClCompile Include="GEKO\Shader\DynamicMeshShader\DynamicMesh_PixelInit.cpp" />
-    <ClCompile Include="GEKO\Shader\DynamicMeshShader\DynamicMesh_VertexInit.cpp" />
+    <ClCompile Include="GEKO\Shader\DeferredShader\DeferredRendering.cpp" />
+    <ClCompile Include="GEKO\Shader\ForwardShader\ForwardRendering.cpp" />
     <ClCompile Include="GEKO\Shader\Light\DirectionalLight.cpp" />
     <ClCompile Include="GEKO\Shader\Light\PointLight.cpp" />
     <ClCompile Include="GEKO\Shader\Light\PointLightManager.cpp" />
     <ClCompile Include="GEKO\Shader\RenderingManager.cpp" />
     <ClCompile Include="GEKO\Shader\ShadowMap\ShaderShadowMap.cpp" />
-    <ClCompile Include="GEKO\Shader\StaticMeshShader\StaticMeshShader.cpp" />
-    <ClCompile Include="GEKO\Shader\StaticMeshShader\StaticMesh_PixelInit.cpp" />
-    <ClCompile Include="GEKO\Shader\StaticMeshShader\StaticMesh_VertexInit.cpp" />
     <ClCompile Include="GEKO\SoundSystem\SoundAsset.cpp" />
     <ClCompile Include="GEKO\System\Camera.cpp" />
     <ClCompile Include="GEKO\System\Change.cpp" />
@@ -246,15 +241,14 @@
     <ClInclude Include="GEKO\Shader\CopmuteShader\BaseCopmute.h" />
     <ClInclude Include="GEKO\Shader\CopmuteShader\CopmuteInfo.h" />
     <ClInclude Include="GEKO\Shader\CopmuteShader\LineTriangleCopmute.h" />
-    <ClInclude Include="GEKO\Shader\CopmuteShader\SphereTriangleCopmute.h" />
-    <ClInclude Include="GEKO\Shader\DynamicMeshShader\DynamicMeshShader.h" />
+    <ClInclude Include="GEKO\Shader\DeferredShader\DeferredRendering.h" />
+    <ClInclude Include="GEKO\Shader\ForwardShader\ForwardRendering.h" />
     <ClInclude Include="GEKO\Shader\Light\DirectionalLight.h" />
     <ClInclude Include="GEKO\Shader\Light\PointLight.h" />
     <ClInclude Include="GEKO\Shader\Light\PointLightManager.h" />
     <ClInclude Include="GEKO\Shader\RenderingManager.h" />
     <ClInclude Include="GEKO\Shader\ShaderInfo.h" />
     <ClInclude Include="GEKO\Shader\ShadowMap\ShaderShadowMap.h" />
-    <ClInclude Include="GEKO\Shader\StaticMeshShader\StaticMeshShader.h" />
     <ClInclude Include="GEKO\SoundSystem\SoundAsset.h" />
     <ClInclude Include="GEKO\System\Camera.h" />
     <ClInclude Include="GEKO\System\Change.h" />
@@ -336,34 +330,16 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="GEKO\HLSL\MESH.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Effect</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
-    </FxCompile>
     <FxCompile Include="GEKO\HLSL\MeshHLSL\CommonMeshInfo.hlsl" />
     <FxCompile Include="GEKO\HLSL\MeshHLSL\Forward\Mesh.hlsl" />
-    <FxCompile Include="GEKO\HLSL\MeshHLSL\Forward\Mesh_NoTexture.hlsl" />
     <FxCompile Include="GEKO\HLSL\MeshHLSL\Forward\SkinMesh.hlsl" />
-    <FxCompile Include="GEKO\HLSL\MeshHLSL\Forward\SkinMesh_NoTexture.hlsl" />
-    <FxCompile Include="GEKO\HLSL\MeshTest.hlsl" />
-    <FxCompile Include="GEKO\HLSL\Mesh_NoTexture.hlsl" />
     <FxCompile Include="GEKO\HLSL\ShadowMap.hlsl" />
-    <FxCompile Include="GEKO\HLSL\SkinMesh.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Effect</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
-    </FxCompile>
     <FxCompile Include="GEKO\HLSL\Image.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="GEKO\HLSL\SkinMeshInfo.hlsl" />
-    <FxCompile Include="GEKO\HLSL\SkinMesh_NoTexture.hlsl" />
     <FxCompile Include="GEKO\HLSL\Sphere3D.hlsl" />
     <FxCompile Include="GEKO\HLSL\Triangle3D.hlsl">
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>

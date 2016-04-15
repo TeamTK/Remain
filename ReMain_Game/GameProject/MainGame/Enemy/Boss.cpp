@@ -94,6 +94,7 @@ Boss::Boss(BossState &bossState) :
 	m_pPlayerPos = g_pPlayerPos;
 	m_NoActionTime.Start();
 	m_Timer.Start();
+	m_Model.SetMeshState(eBlockingLight | eFog);
 }
 
 Boss::~Boss()
@@ -328,7 +329,7 @@ void Boss::HitBullet(Result_Sphere& r)
 	EffectAnimationInfo info;
 	info.frameNum = 8;
 	info.pos = r.position;
-	info.size = 2.0f;
+	info.size = 2.5f;
 	info.sizeW = 8;
 	info.sizeH = 1;
 	info.speed = 1.0f;

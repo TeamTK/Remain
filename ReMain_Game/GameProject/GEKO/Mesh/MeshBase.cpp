@@ -11,7 +11,6 @@ MeshBase::MeshBase(bool isRegister, unsigned int priorityGroup, unsigned int pri
 	m_Scale(1.0f, 1.0f, 1.0f),
 	m_pImageInfo(nullptr),
 	m_pLocalMatrix(&g_LocalMatrixTemporary),
-	m_pParentMatirx(&g_LocalMatrixTemporary),
 	m_RenderingType(eForward)
 {
 	//レンダリング管理に登録
@@ -39,7 +38,7 @@ MeshBase::~MeshBase()
 	m_Specular.clear();
 
 	m_pImageInfo = nullptr;
-	
+
 	//レンダリング管理削除
 	if (m_IsRenderingRegister)
 	{
@@ -164,8 +163,8 @@ void MeshBase::SetRotationRadian(float x, float y, float z)
 void MeshBase::SetRotationDegree(int x, int y, int z)
 {
 	m_Rotation = Vector3D(Math::ChangeToRadian((float)x),
-						  Math::ChangeToRadian((float)y),
-						  Math::ChangeToRadian((float)z));
+		Math::ChangeToRadian((float)y),
+		Math::ChangeToRadian((float)z));
 }
 
 void MeshBase::SetTranselate(float x, float y, float z)
@@ -276,8 +275,8 @@ Vector3D MeshBase::GetTranselate() const
 Vector3D MeshBase::GetDiffuse(int materialIndex) const
 {
 	return Vector3D(m_Diffuse[materialIndex].x,
-					m_Diffuse[materialIndex].y,
-					m_Diffuse[materialIndex].z);
+		m_Diffuse[materialIndex].y,
+		m_Diffuse[materialIndex].z);
 }
 
 Vector3D MeshBase::GetSpecular(int materialIndex) const

@@ -211,7 +211,7 @@ void Billboard::Render()
 	Direct3D11 *pDirect11 = Direct3D11::GetInstance();
 	ID3D11DeviceContext *pDeviceContext = pDirect11->GetID3D11DeviceContext();
 
-	pDirect11->ChangeBlendState2D();
+	//pDirect11->ChangeBlendState2D();
 
 	//使用するシェーダーのセット
 	pDeviceContext->VSSetShader(pInfo->pVertexShader, NULL, 0);
@@ -274,7 +274,7 @@ void Billboard::Render()
 	ID3D11ShaderResourceView* pShaderResource = nullptr;
 	pDeviceContext->PSSetShaderResources(0, 1, &pShaderResource);
 
-	pDirect11->ChangeBlendState3D();
+	//pDirect11->ChangeBlendState3D();
 }
 
 //ビルボードアニメーション
@@ -639,7 +639,7 @@ void BillboardAnimation::Render()
 	Direct3D11 *pDirect11 = Direct3D11::GetInstance();
 	ID3D11DeviceContext *pDeviceContext = pDirect11->GetID3D11DeviceContext();
 
-	pDirect11->ChangeBlendState2D();
+	//pDirect11->ChangeBlendState2D();
 
 	//使用するシェーダーのセット
 	pDeviceContext->VSSetShader(pInfo->pVertexShader, NULL, 0);
@@ -702,5 +702,5 @@ void BillboardAnimation::Render()
 	ID3D11ShaderResourceView* pShaderResource = nullptr;
 	pDeviceContext->PSSetShaderResources(0, 1, &pShaderResource);
 
-	pDirect11->ChangeBlendState3D();
+	//pDirect11->ChangeBlendState3D();
 }

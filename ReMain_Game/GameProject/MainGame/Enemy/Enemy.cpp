@@ -30,6 +30,7 @@ Enemy::Enemy(const char* name, EnemyState &enemyState) :
 	m_pos = enemyState.posSpawn;
 	m_rot = enemyState.rotation;
 	m_Model.SetAsset(name);
+	m_Model.SetMeshState(eBlockingLight | eFog);
 
 	//Ž‹ŠEƒVƒXƒeƒ€
 	m_SightData.angle = enemyState.sightAngle;

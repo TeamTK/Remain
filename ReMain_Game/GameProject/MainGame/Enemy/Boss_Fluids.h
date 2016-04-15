@@ -17,6 +17,7 @@ private:
 	Vector3D m_Dir;
 	Vector3D m_Pos;
 	Vector3D m_Oldpos;
+	Billboard m_Fluids;
 	float m_Speed;
 	float m_Cnt;
 	float m_LifeTime;

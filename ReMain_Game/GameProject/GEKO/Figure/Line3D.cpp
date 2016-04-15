@@ -78,8 +78,8 @@ HRESULT Line3D::InitShader()
 	pDevice = Direct3D11::GetInstance()->GetID3D11Device();
 
 	//hlslファイル読み込みブロブ作成
-	ID3D10Blob *pCompiledShader = NULL;
-	ID3D10Blob *pErrors = NULL;
+	ID3D10Blob *pCompiledShader = nullptr;
+	ID3D10Blob *pErrors = nullptr;
 
 	//ブロブからバーテックスシェーダー作成
 	if (FAILED(D3DX11CompileFromFile(TEXT("GEKO\\HLSL\\Line3D.hlsl"), NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
@@ -99,18 +99,14 @@ HRESULT Line3D::InitShader()
 	}
 
 	//頂点インプットレイアウトを定義
-	UINT numElements = 0;
-	D3D11_INPUT_ELEMENT_DESC layout;
-	D3D11_INPUT_ELEMENT_DESC tmp[] =
+	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{ "INDEX", 0, DXGI_FORMAT_R32_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	numElements = 1;
-	memcpy(&layout, tmp, sizeof(D3D11_INPUT_ELEMENT_DESC) * numElements);
 
 	//頂点インプットレイアウトを作成
 	if (FAILED(pDevice->CreateInputLayout(
-		&layout, numElements, pCompiledShader->GetBufferPointer(),
+		layout, 1, pCompiledShader->GetBufferPointer(),
 		pCompiledShader->GetBufferSize(), &m_FigureInfo.pVertexLayout)))
 	{
 		return FALSE;

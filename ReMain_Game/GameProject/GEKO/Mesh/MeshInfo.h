@@ -8,25 +8,29 @@
 #include <fstream>
 #include <map>
 
+//レンダリングの種類
 enum RenderingType
 {
 	eForward,
 	eDeferred,
 };
 
+//3Dモデルの状態
 enum MeshState
 {
 	eNothing = (1 << 0),
 	eBlockingLight = (1 << 1),
 	eShadow = (1 << 2),
+	eFog = (1 << 3),
 };
 
+//3Dモデル行列の種類
 enum MatrixType
 {
 	eLocalMatrix,
 	eWorldMatrix,
 	eModelMatrix,
-};	 
+};
 
 //マテリアル構造体
 struct MaterialInfo
@@ -105,6 +109,7 @@ struct SkinVertexInfo
 	}
 };
 
+//ボーンのデバック種類
 enum eBoneDebug
 {
 	eInitMat,

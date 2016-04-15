@@ -1,5 +1,7 @@
 #include "RenderingManager.h"
 #include "ConstantShader.h"
+#include "DeferredShader\DeferredRendering.h"
+#include "ForwardShader\ForwardRendering.h"
 #include <map>
 #include <list>
 
@@ -57,9 +59,23 @@ void RenderingManager::Render()
 	ID3D11DeviceContext *pDeviceContext = Direct3D11::GetInstance()->GetID3D11DeviceContext();
 
 	ConstantShader::GetInstance()->SetCommonInfoConstantBuffer();
-	ConstantShader::GetInstance()->SetForwardLightConstantBuffer(pDeviceContext);
+
+	/*
+	//後方レンダリング
+	DeferredRendering::GetInstance()->ChangeRenderTarget();
+	for (auto& i : m_pListPimpl->deferredRendering)
+	{
+		for (auto& j : i.second)
+		{
+			j->func();
+		}
+	}
+	ConstantShader::GetInstance()->SetDeferredLightConstantBuffer(pDeviceContext);
+	DeferredRendering::GetInstance()->RenderingPass2();
+	*/
 
 	//前方レンダリング
+	ConstantShader::GetInstance()->SetForwardLightConstantBuffer(pDeviceContext);
 	for (auto& i : m_pListPimpl->forwardRendering)
 	{
 		for (auto& j : i.second)
@@ -67,6 +83,8 @@ void RenderingManager::Render()
 			j->func();
 		}
 	}
+
+	//ForwardRendering::GetInstance()->Rendering();
 
 	//画像を描画
 	for (auto& i : m_pListPimpl->imageRendering)

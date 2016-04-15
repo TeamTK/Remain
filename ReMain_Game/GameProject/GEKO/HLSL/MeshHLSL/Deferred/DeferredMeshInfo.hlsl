@@ -19,7 +19,7 @@ struct VS_OUTPUT_DEFERRED
 {
 	float4 pos : SV_POSITION;
 	float3 normal : TEXCOORD0;
-	float3 worldPos : TEXCOORD1;
+	float4 worldPos : TEXCOORD1;
 	float2 uv : TEXCOORD2;
 };
 
@@ -46,64 +46,21 @@ struct PS_OUTPUT_DEFERRED
 };
 
 /******************************************/
-//頂点シェーダー用関数
-/******************************************/
-
-//頂点を変換
-VS_OUTPUT_DEFERRED GetVertexOutPut_Deferred(float4 pos, float3 normal, float2 uv)
-{
-	VS_OUTPUT_DEFERRED output = (VS_OUTPUT_DEFERRED)0;
-
-	output.pos = mul(pos, g_mWVP);
-	output.normal = mul(normal, (float3x3)g_mW);
-	output.worldPos = mul(pos, g_mW);
-	output.uv = uv;
-
-	return output;
-}
-
-//頂点を変換（影）
-VS_OUTPUT_DEFERRED_SHADOWMAP GetVertexShadowMapOutPut_Deferred(float4 pos, float3 normal, float2 uv)
-{
-	VS_OUTPUT_DEFERRED_SHADOWMAP output = (VS_OUTPUT_DEFERRED_SHADOWMAP)0;
-
-	output.pos = mul(pos, g_mWVP);
-
-	output.pos = mul(pos, g_mWVP);
-	output.normal = mul(normal, (float3x3)g_mW);
-	output.worldPos = mul(pos, g_mW);
-	output.uv = uv;
-	output.lightTexCoord = mul(pos, g_mWLP);
-
-	return output;
-}
-
-/******************************************/
 //ピクセルシェーダー用関数
 /******************************************/
 
-//ピクセルシェーダーでのライティング計算
-PS_OUTPUT_DEFERRED GetPixel_Deferred(VS_OUTPUT_DEFERRED input)
+float3 EncodeNormal(float3 normal)
 {
-	PS_OUTPUT_DEFERRED output = (VS_OUTPUT_DEFERRED)0;
-
-	output.albedo = GetTexture(input.uv);
-	output.normal = float4(input.normal, 1.0f);
-	output.position = float4(input.worldPos, 1.0f);
-
-	return output;
+	return normal * 0.5f + 0.5f;
 }
 
-//ピクセルシェーダーでのライティング計算(影用)
-PS_OUTPUT_DEFERRED GetPixelShadowMap_Deferred(VS_OUTPUT_DEFERRED_SHADOWMAP input)
+float3 DecodeNormal(float3 normal)
 {
-	PS_OUTPUT_DEFERRED output = (VS_OUTPUT_DEFERRED)0;
-	
-	return output;
+	return normal * 2.0f - 1.0f;
 }
 
 //後方レンダリング用ポイントライト計算
-float3 GetDeferredPointLight(float3 pos, float3 normal, float3 eyeVector)
+float3 GetDeferredPointLight(float3 pos, float3 normal, float3 eyeVector, float4 albedo)
 {
 	float3 color;     //最終結果色
 	float3 lightDir;  //頂点から点光源への方向
@@ -124,10 +81,10 @@ float3 GetDeferredPointLight(float3 pos, float3 normal, float3 eyeVector)
 
 		//拡散反射光　項
 		float NL = Lambert(normal, lightDir);
-		float4 diffuse = g_Diffuse * HalfLambert(NL);
+		float4 diffuse = albedo * HalfLambert(NL);
 
 		//鏡面反射光　項
-		float4 specular = g_Specular * BlinnPhong(normal, lightDir, eyeVector);
+		float4 specular = BlinnPhong(normal, lightDir, eyeVector);
 
 		//減衰計算
 		distance = length(lightVec);

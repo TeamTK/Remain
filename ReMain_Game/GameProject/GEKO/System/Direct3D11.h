@@ -18,9 +18,9 @@
 #include "..\System\Debug.h"
 
 #define INIT_NULLPOINTR(x)   x = nullptr;	 
-#define SAFE_DELETE(x)       if(x){ delete   x; x = nullptr;}
-#define SAFE_DELETE_ARRAY(x) if(x){ delete[] x; x = nullptr;}
-#define SAFE_RELEASE(x)		 if(x){ x->Release(); x = nullptr;}
+#define SAFE_DELETE(x)       if(x != nullptr){ delete   x; x = nullptr;}
+#define SAFE_DELETE_ARRAY(x) if(x != nullptr){ delete[] x; x = nullptr;}
+#define SAFE_RELEASE(x)		 if(x != nullptr){ x->Release(); x = nullptr;}
 #define ALIGN16				 _declspec(align(16))
 #define RGB 0.003921568627451f
 
