@@ -27,10 +27,12 @@ public:
 	void NumDraw(const Vector2D pos, int number, const bool leftShift);
 
 private:
-	Image m_Img;
+	Image m_Img1;
+	Image m_Img2;
 	int m_Num;
 	int m_x;
 	int m_y;
+	bool m_Digit2Avtive;
 };
 
 #endif
